@@ -49,6 +49,7 @@ namespace MD.Character
             movePos = new Vector2(Mathf.Clamp(movePos.x, minMoveBound.x + offset.x, maxMoveBound.x - offset.x),
                                 Mathf.Clamp(movePos.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));
             rigidBody.MovePosition(movePos);
+            EventSystems.EventManager.Instance.TriggerEvent(new MoveData(rigidBody.position.x, rigidBody.position.y));
         } 
         
         public void SetBounds(Vector2 minMoveBound, Vector2 maxMoveBound)
