@@ -1,13 +1,12 @@
-﻿using MD.UI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace EventSystems
 {
-    public abstract class EventListener : MonoBehaviour
+    public abstract class EventListener<T> : MonoBehaviour where T : IEventData
     {
-        
+        private Action<T> listener;
 
         protected virtual void Start()
         {
@@ -16,17 +15,20 @@ namespace EventSystems
 
         protected virtual void OnDestroy()
         {
-            
+            StopListening(listener);
         }
 
-        protected void StartListening<T>(Action<T> listener) where T : IEventData 
+        protected void StartListening(Action<T> listener) 
         {
+            this.listener = listener;
             EventManager.Instance.StartListening<T>(listener);
         }
 
-        protected void StopListening<T>(Action<T> listener) where T : IEventData
+        protected void StopListening(Action<T> listener)
         {
             EventManager.Instance.StopListening<T>(listener);
         }
+
+        protected abstract void BindListener(Action<T> listener);
     }
 }
