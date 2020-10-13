@@ -4926,7 +4926,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01881e8535b103844a0d6d71880fd40c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gem: {fileID: 3944022528217853538, guid: 27be5ae99ff552341ab827085fdcf8b0, type: 3}
+  commonGem: {fileID: 3894912951619401227, guid: cd9dc513d0ac12b48a51ac43e0e19b76,
+    type: 3}
+  uncommonGem: {fileID: 8145764596708574413, guid: 80bea2b6f21290e47bd090dfac425524,
+    type: 3}
+  rareGem: {fileID: 8238596618112684011, guid: 0d725f58251d3bc42a0f3af1aff8803c, type: 3}
 --- !u!4 &1325384321
 Transform:
   m_ObjectHideFlags: 0
