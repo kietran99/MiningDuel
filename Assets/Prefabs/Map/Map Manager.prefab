@@ -45,7 +45,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gemContainer: {fileID: 797171552380202156}
-  gem: {fileID: 3944022528217853538, guid: 27be5ae99ff552341ab827085fdcf8b0, type: 3}
+  generateZoneSideLength: 4
+  minAmountPerZone: 2
+  maxAmountPerZone: 4
+  commonGem: {fileID: 3944022528217853538, guid: 27be5ae99ff552341ab827085fdcf8b0,
+    type: 3}
+  uncommonGem: {fileID: 8145764596708574413, guid: 80bea2b6f21290e47bd090dfac425524,
+    type: 3}
+  rareGem: {fileID: 8238596618112684011, guid: 0d725f58251d3bc42a0f3af1aff8803c, type: 3}
 --- !u!1 &3710564033371691436
 GameObject:
   m_ObjectHideFlags: 0

@@ -25,6 +25,8 @@ public class Sonar : MonoBehaviour
     private IObjectPool tilePool;
     #endregion
 
+    private bool firstScan = true;
+
     private List<Image> gems = new List<Image>();
 
     void Start()
@@ -34,6 +36,7 @@ public class Sonar : MonoBehaviour
         EventSystems.EventManager.Instance.StartListening<MoveData>(UpdateScanArea);
         ServiceLocator.Resolve<IMapManager>(out mapManager);
         //Foo();
+        relativeScannablePos.Map(pos => tilePool.Pop().transform.position = new Vector3(.5f + pos.x, .5f + pos.y, 0f));
         Show(mapManager.GetScanAreaData(relativeScannablePos));
     }
 
@@ -44,11 +47,18 @@ public class Sonar : MonoBehaviour
 
     private void UpdateScanArea(MoveData moveData)
     {
-        //tilePool.Reset();
-        //scannablePos.Map(pos => tilePool.Pop().transform.position = 
-        //new Vector3(moveData.x + pos.x, moveData.y + pos.y, 0f));
+        if (firstScan)
+        {
+            firstScan = false;
+            return;
+        }
+
         Debug.Log(moveData.x + ", " + moveData.y);
-        Vector2[] scanArea = GetScannablePos(Mathf.Floor(moveData.x), Mathf.Floor(moveData.y)).ToArray();
+        tilePool.Reset();
+        relativeScannablePos.Map(pos => tilePool.Pop().transform.position = 
+            new Vector3(moveData.x + pos.x, moveData.y + pos.y, 0f));
+
+        Vector2[] scanArea = GetScannablePos(moveData.x, moveData.y).ToArray();
         Show(mapManager.GetScanAreaData(scanArea));
     }
 
@@ -71,8 +81,8 @@ public class Sonar : MonoBehaviour
 
             Vector2 pos = scanAreaData[i].Position;
             Rect testRect = testObject.rectTransform.rect;
-            gems.Add(Instantiate(testObject, sonarImage.position +
-                new Vector3(pos.x * testRect.width, pos.y * testRect.height, 0f), Quaternion.identity, sonarImage));            
+            Vector3 spawnPos = sonarImage.position + new Vector3(pos.x * testRect.width, pos.y * testRect.height, 0f);
+            gems.Add(Instantiate(testObject, spawnPos, Quaternion.identity, sonarImage));            
         }
     }
 
@@ -84,10 +94,10 @@ public class Sonar : MonoBehaviour
         {
             if (scanAreaData[i].Diggable == 0) continue;
 
-            var pos = scanAreaData[i].Position;
-            var testRect = testObject.rectTransform.rect;
-            Instantiate(testObject, sonarImage.position + 
-                new Vector3(pos.x * testRect.width, pos.y * testRect.height, 0f), Quaternion.identity, sonarImage);
+            Vector2 pos = scanAreaData[i].Position;
+            Rect testRect = testObject.rectTransform.rect;
+            Vector3 spawnPos = sonarImage.position + new Vector3(pos.x * testRect.width, pos.y * testRect.height, 0f);
+            Instantiate(testObject, spawnPos, Quaternion.identity, sonarImage);
         }
     }
 

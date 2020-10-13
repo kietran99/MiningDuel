@@ -7,7 +7,7 @@ namespace MD.Character
     public class MoveAction : MonoBehaviour
     {
         [SerializeField]
-        private float speed = 1f;        
+        private float speed = 1f;
 
         private Rigidbody2D rigidBody;
         private Vector2 moveVect, minMoveBound, maxMoveBound;
@@ -21,7 +21,7 @@ namespace MD.Character
 
         private void Start()
         {
-            EventSystems.EventManager.Instance.StartListening<JoystickDragData>(BindMoveVector);            
+            EventSystems.EventManager.Instance.StartListening<JoystickDragData>(BindMoveVector);
         }
 
         private void OnDestroy()
@@ -49,7 +49,9 @@ namespace MD.Character
                                 Mathf.Clamp(movePos.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));
             rigidBody.MovePosition(movePos);
 
-            if ((lastPos - rigidBody.position).sqrMagnitude <= Constants.EPSILON) return;
+            //if (((lastPos - rigidBody.position).sqrMagnitude - 1f) <= Constants.EPSILON) return;
+            if ((lastPos.x - rigidBody.position.x - 1f) <= Constants.EPSILON ||
+                (lastPos.y - rigidBody.position.y - 1f) <= Constants.EPSILON) return;
 
             lastPos = rigidBody.position;
             EventSystems.EventManager.Instance.TriggerEvent(new MoveData(rigidBody.position.x, rigidBody.position.y));

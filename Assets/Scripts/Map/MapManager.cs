@@ -13,16 +13,33 @@ public class MapManager :  MonoBehaviour, IMapManager
     private int generateZoneSideLength = 4;
 
     [SerializeField]
-    private int maxAmountPerZone = 2;
+    private int minAmountPerZone = 2;
 
-    public GameObject gem;
+    [SerializeField]
+    private int maxAmountPerZone = 3;
+
+    [SerializeField]
+    private GameObject commonGem;
+    [SerializeField]
+    private GameObject uncommonGem;
+    [SerializeField]
+    private GameObject rareGem;
+
+    //gem variables
+    //gem drop weight large == more chance 
+    private int commonDropWeight = 10;
+    private int uncommonDropWeight = 5;
+    private int rareDropWeight = 2;
+
+    //value to indicate type of gem in map data
+    private int uncommonGemValue = 4;
+    private int commonGemValue = 1;
+    private int rareGemValue = 10;
     #endregion
 
     #region FIELDS
     private Vector2 mapSize = new Vector2(24,20);
-    float rootX = -12f;
-    float rootY = -12f;
-    private float halfTileSize = .5f;
+    private float rootX = -12f, rootY = -12f, halfTileSize = .5f;
     private int[,] mapData;
 
     private float generateDelay = 2f;
@@ -30,20 +47,7 @@ public class MapManager :  MonoBehaviour, IMapManager
     #endregion
 
     public ScanAreaData GetScanAreaData(Vector2[] posToScan)
-    {
-        //ScanTileData[] tileData = new ScanTileData[posToScan.Length];
-
-        //ScanTileData tile;
-        //int idx = 0;
-        //foreach (Vector2 tilePos in posToScan)
-        //{
-        //    tile = new ScanTileData(tilePos, mapData[(int) tilePos.x,(int) tilePos.y]);
-        //    tileData[idx] = tile;
-        //    idx++;
-        //}
-        
-        //posToScan.Map((pos, idx) => tileData[idx] = new ScanTileData(pos, mapData[(int) pos.x, (int) pos.y]));
-        //return new ScanAreaData(tileData);
+    {        
         return new ScanAreaData(GenTileData(posToScan).ToArray());
     }
     
@@ -51,7 +55,7 @@ public class MapManager :  MonoBehaviour, IMapManager
     {
         foreach (var pos in posToScan)
         {
-            yield return new ScanTileData(pos, mapData[(int) pos.x - 12, (int) pos.y - 12]);
+            yield return new ScanTileData(pos, mapData[(int) pos.x + 12, (int) pos.y + 12]);
         }
     }
 
@@ -64,37 +68,32 @@ public class MapManager :  MonoBehaviour, IMapManager
     {
         mapData = new int[(int) mapSize.x, (int) mapSize.y];
         GenerateGems();
-        // StartCoroutine(GenerateNewGems());
+        canGenerateNewGem = true;
+        StartCoroutine(GenerateNewGems());
     }
     private void GenerateGems()
     {
-        //bottom left position of the map on grid
-        int rootX = -12;
-        int rootY = -12;
-        float halfTileSize = .5f;
-
-        int areaWidth = (int) mapSize.x/ generateZoneSideLength;
-        int areaHeight = (int) mapSize.y/ generateZoneSideLength;
-        Debug.Log(areaHeight + areaWidth);
-
+        int areaWidth = (int) mapSize.x / generateZoneSideLength;
+        int areaHeight = (int) mapSize.y / generateZoneSideLength;
         int amtPerZone, nGeneratedGems;
+        (GameObject prefab, int value) randomGem; 
 
         for (int y = 0; y < generateZoneSideLength; y++)
         {
             for (int x = 0; x < generateZoneSideLength; x++)
             {
-                amtPerZone = Random.Range(1, maxAmountPerZone + 1);
+                amtPerZone = Random.Range(minAmountPerZone, maxAmountPerZone + 1);
                 nGeneratedGems = 0;
-
                 while (nGeneratedGems < amtPerZone)
                 {
-                    int randomX = Random.Range(0, areaWidth) + areaWidth * x;
-                    int randomY = Random.Range(0, areaHeight) + areaHeight * y;
-                    
+                    int randomX = Random.Range(0, areaWidth) + areaWidth* x;
+                    int randomY = Random.Range(0, areaHeight) + areaHeight* y;
+
                     if (mapData[randomX, randomY] != 0) continue;
 
-                    mapData[randomX, randomY] = 1;
-                    Instantiate(gem, new Vector3(randomX + rootX + halfTileSize, randomY + rootY + halfTileSize, 0f),
+                    randomGem = GetRandomGem();
+                    mapData[randomX, randomY] = randomGem.value;
+                    Instantiate(randomGem.prefab, IndexToPosition(new Vector2(randomX, randomY)), 
                         Quaternion.identity, gemContainer);
                     nGeneratedGems++;
                 }
@@ -103,7 +102,52 @@ public class MapManager :  MonoBehaviour, IMapManager
         //generate gem-rich areas
 
     }
+    
+    (GameObject, int) GetRandomGem()
+    {
+        int random = Random.Range(1,commonDropWeight + uncommonDropWeight + rareDropWeight + 1);
+        if (random <= commonDropWeight)
+        {
+            return (commonGem, commonGemValue);
+        }
 
+        else if (random <= commonDropWeight + uncommonDropWeight)
+        {
+            return (uncommonGem, uncommonGemValue);
+        }
+        else
+        {
+            return (rareGem, rareGemValue);
+        }
+    }
+
+    //get random empty position's index in mapData return index (-1,-1) if fail
+    private Vector2Int GetRandomEmptyIndex()
+    {
+        int randomX = 0, randomY = 0;
+        bool foundLocation  = false;
+        //return fail after 10 tries
+        int maxTries = 10;
+        int timesTried = 0;
+
+        while(!foundLocation)
+        {
+            randomX = Random.Range(0,(int) mapSize.x);
+            randomY = Random.Range(0,(int) mapSize.y);
+            if (mapData[randomX, randomY] == 0)
+            {
+                foundLocation = true;                
+            }
+            if (timesTried > maxTries)
+            {
+                Debug.Log("failed to get empty position's index");
+                return -Vector2Int.one;
+            }
+            timesTried++;
+        }
+        return new Vector2Int(randomX, randomY);
+    }
+    
     private Vector3 IndexToPosition(Vector2 index)
     {
         return new Vector3(index.x + rootX + halfTileSize, index.y + rootY + halfTileSize, 0f);
@@ -111,10 +155,22 @@ public class MapManager :  MonoBehaviour, IMapManager
 
     private IEnumerator GenerateNewGems()
     {
+        WaitForSeconds waitTime = new WaitForSeconds(generateDelay);
+        (GameObject prefab, int value) newGem;
+        Vector2Int randomIndex; 
         while(canGenerateNewGem)
         {
-            
-            yield return new WaitForSeconds(generateDelay);
+            yield return waitTime;
+            newGem = GetRandomGem(); //get random gem include rare gem
+            randomIndex = GetRandomEmptyIndex();
+            //if failed to get empty index
+            if (randomIndex == -Vector2Int.one)
+            {
+                continue;
+            }
+            //store new gem data to mapData
+            mapData[randomIndex.x,randomIndex.y] = newGem.value;
+            Instantiate(newGem.prefab, IndexToPosition(randomIndex), Quaternion.identity);
         }
     }
 
