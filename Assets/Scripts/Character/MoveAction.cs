@@ -10,9 +10,8 @@ namespace MD.Character
         private float speed = 1f;        
 
         private Rigidbody2D rigidBody;
-        private Vector2 moveVect;
-        private Vector2 minMoveBound, maxMoveBound;
-
+        private Vector2 moveVect, minMoveBound, maxMoveBound;
+        private Vector2 lastPos = new Vector2(0f, 0f);
         private Vector2 offset = new Vector2(.5f, .6f);
 
         void Awake()
@@ -49,6 +48,10 @@ namespace MD.Character
             movePos = new Vector2(Mathf.Clamp(movePos.x, minMoveBound.x + offset.x, maxMoveBound.x - offset.x),
                                 Mathf.Clamp(movePos.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));
             rigidBody.MovePosition(movePos);
+
+            if ((lastPos - rigidBody.position).sqrMagnitude <= Constants.EPSILON) return;
+
+            lastPos = rigidBody.position;
             EventSystems.EventManager.Instance.TriggerEvent(new MoveData(rigidBody.position.x, rigidBody.position.y));
         } 
         

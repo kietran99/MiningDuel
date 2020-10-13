@@ -20,16 +20,21 @@ public class Sonar : MonoBehaviour
     #endregion
 
     #region FIELDS
-    private Vector2[] scannablePos;
+    private Vector2[] relativeScannablePos;
+    private IMapManager mapManager;
     private IObjectPool tilePool;
     #endregion
+
+    private List<Image> gems = new List<Image>();
 
     void Start()
     {
         tilePool = tilePoolObject.GetComponent<IObjectPool>();
-        scannablePos = GenerateScannablePositions(scanRange);
+        relativeScannablePos = GenerateScannablePositions(scanRange);
         EventSystems.EventManager.Instance.StartListening<MoveData>(UpdateScanArea);
-        Foo();
+        ServiceLocator.Resolve<IMapManager>(out mapManager);
+        //Foo();
+        Show(mapManager.GetScanAreaData(relativeScannablePos));
     }
 
     private void OnDestroy()
@@ -42,6 +47,33 @@ public class Sonar : MonoBehaviour
         //tilePool.Reset();
         //scannablePos.Map(pos => tilePool.Pop().transform.position = 
         //new Vector3(moveData.x + pos.x, moveData.y + pos.y, 0f));
+        Debug.Log(moveData.x + ", " + moveData.y);
+        Vector2[] scanArea = GetScannablePos(Mathf.Floor(moveData.x), Mathf.Floor(moveData.y)).ToArray();
+        Show(mapManager.GetScanAreaData(scanArea));
+    }
+
+    private IEnumerable<Vector2> GetScannablePos(float charX, float charY)
+    {
+        foreach (var pos in relativeScannablePos)
+        {
+            yield return new Vector2(charX + pos.x, charY + pos.y);
+        }
+    }
+
+    private void Show(ScanAreaData scanAreaData)
+    {
+        gems.Map(_ => Destroy(_));
+        gems.Clear();
+
+        for (int i = 0; i < scanAreaData.Tiles.Length; i++)
+        {
+            if (scanAreaData[i].Diggable == 0) continue;
+
+            Vector2 pos = scanAreaData[i].Position;
+            Rect testRect = testObject.rectTransform.rect;
+            gems.Add(Instantiate(testObject, sonarImage.position +
+                new Vector3(pos.x * testRect.width, pos.y * testRect.height, 0f), Quaternion.identity, sonarImage));            
+        }
     }
 
     private void Foo()
@@ -61,7 +93,7 @@ public class Sonar : MonoBehaviour
 
     private IEnumerable<ScanTileData> Boo()
     {
-        foreach (var pos in scannablePos)
+        foreach (var pos in relativeScannablePos)
         {
             yield return new ScanTileData(pos, UnityEngine.Random.Range(0, 2));
         }

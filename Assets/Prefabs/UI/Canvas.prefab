@@ -83,7 +83,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &72249920724013871
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1107,7 +1107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83d2a692782e8894e9a5f23327b77b6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capacity: 25
+  capacity: 37
   objectToPool: {fileID: 3944022528217853538, guid: 27be5ae99ff552341ab827085fdcf8b0,
     type: 3}
   parent: {fileID: 6970863643623541622}
@@ -1225,8 +1225,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scanRange: 3
+  sonarImage: {fileID: 72249920836065468}
   tilePoolObject: {fileID: 6970863643623541622}
-  gem: {fileID: 3944022528217853538, guid: 27be5ae99ff552341ab827085fdcf8b0, type: 3}
+  testObject: {fileID: 2147059735789899101, guid: c0de94fef49dfda4294cd3c9e9293d08,
+    type: 3}
 --- !u!1001 &72249922493982752
 PrefabInstance:
   m_ObjectHideFlags: 0

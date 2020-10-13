@@ -2,5 +2,5 @@
 
 public interface IMapManager
 {
-    ScanAreaData GetScanAreaData(Vector2[] tilesToScan);
+    ScanAreaData GetScanAreaData(Vector2[] posToScan);
 }
