@@ -162,20 +162,20 @@ public class MapManager :  MonoBehaviour, IMapManager
         WaitForSeconds waitTime = new WaitForSeconds(generateDelay);
         (GameObject prefab, int value) newGem;
         Vector2Int randomIndex; 
-
+        Vector3 worldPostion;
         while(canGenerateNewGem)
         {
             yield return waitTime;
-            newGem = GetRandomGem(); 
             randomIndex = GetRandomEmptyIndex();
-            
             if (randomIndex == -Vector2Int.one)
             {
                 continue;
             }
-            
+            newGem = GetRandomGem(); 
+            worldPostion = IndexToPosition(randomIndex);
             mapData[randomIndex.x,randomIndex.y] = newGem.value;
-            Instantiate(newGem.prefab, IndexToPosition(randomIndex), Quaternion.identity);
+            Instantiate(newGem.prefab, worldPostion, Quaternion.identity);
+            EventSystems.EventManager.Instance.TriggerEvent(new NewGemData(worldPostion.x,worldPostion.y,newGem.value));
         }
     }
 
