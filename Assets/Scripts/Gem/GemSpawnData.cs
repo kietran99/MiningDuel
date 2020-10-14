@@ -1,10 +1,10 @@
 ﻿
-public struct NewGemData: EventSystems.IEventData
+public struct GemSpawnData: EventSystems.IEventData
 {
     public float x,y;
     public int type;
 
-    public NewGemData(float x,float y,int type)
+    public GemSpawnData(float x,float y,int type)
     {
         this.x = x;
         this.y = y;

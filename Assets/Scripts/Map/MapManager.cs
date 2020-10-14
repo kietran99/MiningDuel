@@ -122,20 +122,18 @@ public class MapManager :  MonoBehaviour, IMapManager
     
     (GameObject, int) GetRandomGem()
     {
-        int random = Random.Range(1,commonDropWeight + uncommonDropWeight + rareDropWeight + 1);
+        int random = Random.Range(1, commonDropWeight + uncommonDropWeight + rareDropWeight + 1);
         if (random <= commonDropWeight)
         {
             return (commonGem, commonGemValue);
         }
 
-        else if (random <= commonDropWeight + uncommonDropWeight)
+        if (random <= commonDropWeight + uncommonDropWeight)
         {
             return (uncommonGem, uncommonGemValue);
         }
-        else
-        {
-            return (rareGem, rareGemValue);
-        }
+        
+        return (rareGem, rareGemValue);
     }
 
     //get random empty position's index in mapData return index (-1,-1) if fail
@@ -143,7 +141,7 @@ public class MapManager :  MonoBehaviour, IMapManager
     {
         int randomX = 0, randomY = 0;
         bool foundLocation  = false;
-        //return fail after 10 tries
+        
         int maxTries = 10;
         int timesTried = 0;
 
@@ -188,11 +186,10 @@ public class MapManager :  MonoBehaviour, IMapManager
             }
             newGem = GetRandomGem(); 
             worldPostion = IndexToPosition(randomIndex);
-            mapData[randomIndex.x,randomIndex.y] = newGem.value;
+            mapData[randomIndex.x, randomIndex.y] = newGem.value;
             Instantiate(newGem.prefab, worldPostion, Quaternion.identity);
-            EventSystems.EventManager.Instance.TriggerEvent(new NewGemData(worldPostion.x,worldPostion.y,newGem.value));
+            EventSystems.EventManager.Instance.TriggerEvent(
+                new GemSpawnData(worldPostion.x, worldPostion.y, newGem.value));
         }
-    }
-
-    
+    }   
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MD.Diggable;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,9 +37,9 @@ public class Sonar : MonoBehaviour
     {
         tilePool = tilePoolObject.GetComponent<IObjectPool>();
         relativeScannablePos = GenerateScannablePositions(scanRange);
-        EventSystems.EventManager.Instance.StartListening<MoveData>(AttemptToUpdateScanArea);
+        ListenToEvents();
         ServiceLocator.Resolve<IMapManager>(out mapManager);
-        //Foo();
+        
         if (shouldShowDebugTiles)
         {
             relativeScannablePos.Map(pos => tilePool.Pop().transform.position
@@ -46,6 +47,14 @@ public class Sonar : MonoBehaviour
         }
 
         Show(mapManager.GetScanAreaData(relativeScannablePos));
+    }
+
+    private void ListenToEvents()
+    {
+        var eventManager = EventSystems.EventManager.Instance;
+        eventManager.StartListening<MoveData>(AttemptToUpdateScanArea);
+        eventManager.StartListening<GemSpawnData>(UpdateScanArea);
+        eventManager.StartListening<GemDigSuccessData>(UpdateScanArea);
     }
 
     private void OnDestroy()
@@ -70,6 +79,21 @@ public class Sonar : MonoBehaviour
         (float roundedX, float roundedY) = (Mathf.Floor(moveData.x), Mathf.Floor(moveData.y)); 
         MoveData roundedMoveData = new MoveData(roundedX, roundedY);
         UpdateScanArea(roundedMoveData);
+    }
+
+    private void UpdateScanArea(GemSpawnData gemSpawnData)
+    {
+
+    }
+
+    private void UpdateScanArea(GemDigSuccessData gemDigSuccessData)
+    {
+
+    }
+
+    private Vector2 WorldToScannablePos(Vector2 worldPos)
+    {
+        return Vector2.zero;
     }
 
     private void UpdateScanArea(MoveData moveData)
