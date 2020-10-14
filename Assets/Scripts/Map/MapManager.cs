@@ -43,16 +43,13 @@ public class MapManager :  MonoBehaviour, IMapManager
     private bool canGenerateNewGem;
     #endregion
 
-    public ScanAreaData GetScanAreaData(Vector2[] posToScan)
-    {        
-        return new ScanAreaData(GenTileData(posToScan).ToArray());
-    }
+    public ScanAreaData GetScanAreaData(Vector2[] posToScan) => new ScanAreaData(GenTileData(posToScan).ToArray());
     
     private IEnumerable<ScanTileData> GenTileData(Vector2[] posToScan)
     {
         foreach (var pos in posToScan)
         {
-            yield return new ScanTileData(pos, mapData[(int) pos.x + 12, (int) pos.y + 12]);
+            yield return new ScanTileData(pos, mapData[(int)pos.x - (int)rootX, (int)pos.y - (int)rootY]);
         }
     }
 
@@ -66,7 +63,7 @@ public class MapManager :  MonoBehaviour, IMapManager
         mapData = new int[(int) mapSize.x, (int) mapSize.y];
         GenerateGems();
         canGenerateNewGem = true;
-        //StartCoroutine(GenerateNewGems());
+        StartCoroutine(GenerateNewGems());
     }
     private void GenerateGems()
     {

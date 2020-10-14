@@ -1224,7 +1224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dee1183576bce614aa1c496278f42dcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldShowDebugTiles: 1
+  shouldShowDebugTiles: 0
   scanRange: 3
   sonarImage: {fileID: 72249920836065468}
   tilePoolObject: {fileID: 6970863643623541622}
