@@ -22,11 +22,10 @@ public class Sonar : MonoBehaviour
     #region FIELDS
     private Vector2[] relativeScannablePos;
     private IMapManager mapManager;
-    private IObjectPool tilePool;
-    #endregion
-
-    private Vector2 lastCenterPos = new Vector2(MapConstants.spriteOffset.x, MapConstants.spriteOffset.y);
+    private Vector2 lastCenterPos = Vector2.zero;
     private bool firstScan = true;
+    private IObjectPool tilePool;
+    #endregion   
 
     private List<Image> gems = new List<Image>();
 
@@ -55,15 +54,14 @@ public class Sonar : MonoBehaviour
             return;
         }
 
-        var deltaX = Mathf.Abs(lastCenterPos.x - moveData.x);
-        var deltaY = Mathf.Abs(lastCenterPos.y - moveData.y);
+        float deltaX = lastCenterPos.x.DeltaInt(moveData.x);
+        float deltaY = lastCenterPos.y.DeltaInt(moveData.y);
 
-        if ((deltaX - 1f) <= Mathf.Epsilon && (deltaY - 1f) <= Mathf.Epsilon) return;
+        if (deltaX <= Mathf.Epsilon && deltaY <= Mathf.Epsilon) return;
 
-        Debug.Log("Update scan area");
+        //Debug.Log("Update scan area");
         lastCenterPos = new Vector2(moveData.x, moveData.y);
-        float roundedX = moveData.x.Round();
-        float roundedY = moveData.y.Round();
+        (float roundedX, float roundedY) = (Mathf.Floor(moveData.x), Mathf.Floor(moveData.y)); 
         MoveData roundedMoveData = new MoveData(roundedX, roundedY);
         UpdateScanArea(roundedMoveData);
     }
@@ -72,7 +70,6 @@ public class Sonar : MonoBehaviour
     {       
         //Debug.Log(moveData.x + ", " + moveData.y);
         ShowDebugArea(moveData);
-
         Vector2[] scanArea = GetScannablePos(moveData.x, moveData.y).ToArray();
         Show(mapManager.GetScanAreaData(scanArea));
     }
@@ -80,10 +77,9 @@ public class Sonar : MonoBehaviour
     private void ShowDebugArea(MoveData moveData)
     {
         tilePool.Reset();
-        
-        relativeScannablePos.Map(pos => 
-        tilePool.Pop().transform.position = 
-        new Vector3(moveData.x + pos.x + .5f, moveData.y + pos.y + .5f, 0f));        
+        relativeScannablePos.Map(pos => tilePool.Pop().transform.position = 
+        new Vector3(moveData.x + pos.x + MapConstants.spriteOffset.x, 
+        moveData.y + pos.y + MapConstants.spriteOffset.y, 0f));        
     }
 
     private IEnumerable<Vector2> GetScannablePos(float charX, float charY)
@@ -109,30 +105,7 @@ public class Sonar : MonoBehaviour
             gems.Add(Instantiate(testObject, spawnPos, Quaternion.identity, sonarImage));            
         }
     }
-
-    private void Foo()
-    {
-        var scanAreaData = new ScanAreaData(Boo().ToArray());
-        
-        for (int i = 0; i < scanAreaData.Tiles.Length; i++)
-        {
-            if (scanAreaData[i].Diggable == 0) continue;
-
-            Vector2 pos = scanAreaData[i].Position;
-            Rect testRect = testObject.rectTransform.rect;
-            Vector3 spawnPos = sonarImage.position + new Vector3(pos.x * testRect.width, pos.y * testRect.height, 0f);
-            Instantiate(testObject, spawnPos, Quaternion.identity, sonarImage);
-        }
-    }
-
-    private IEnumerable<ScanTileData> Boo()
-    {
-        foreach (var pos in relativeScannablePos)
-        {
-            yield return new ScanTileData(pos, UnityEngine.Random.Range(0, 2));
-        }
-    }
-
+    
     #region SCANNABLE POSITIONS GENERATOR
     private Vector2[] GenerateScannablePositions(int scanRange)
     {
