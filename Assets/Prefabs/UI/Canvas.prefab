@@ -1228,7 +1228,11 @@ MonoBehaviour:
   scanRange: 3
   sonarImage: {fileID: 72249920836065468}
   tilePoolObject: {fileID: 6970863643623541622}
-  testObject: {fileID: 2147059735789899101, guid: c0de94fef49dfda4294cd3c9e9293d08,
+  commonGemImage: {fileID: 2147059735789899101, guid: c0de94fef49dfda4294cd3c9e9293d08,
+    type: 3}
+  uncommonGemImage: {fileID: 3668037181640177690, guid: 70211e17221dcaf43b22c234482299d6,
+    type: 3}
+  rareGemImage: {fileID: 3114126997942761217, guid: 50d4fdfedac712f4a8d3b25c1b5a2e92,
     type: 3}
 --- !u!1001 &72249922493982752
 PrefabInstance:
