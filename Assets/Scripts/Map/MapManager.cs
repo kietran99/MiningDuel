@@ -19,25 +19,22 @@ public class MapManager :  MonoBehaviour, IMapManager
     private int maxAmountPerZone = 3;
 
     [SerializeField]
-    private GameObject commonGem;
+    private GameObject commonGem = null;
     [SerializeField]
-    private GameObject uncommonGem;
+    private GameObject uncommonGem = null;
     [SerializeField]
-    private GameObject rareGem;
+    private GameObject rareGem = null;
+    #endregion
 
-    //gem variables
-    //gem drop weight large == more chance 
+    #region FIELDS
     private int commonDropWeight = 10;
     private int uncommonDropWeight = 5;
     private int rareDropWeight = 2;
 
-    //value to indicate type of gem in map data
     private int uncommonGemValue = 4;
     private int commonGemValue = 1;
     private int rareGemValue = 10;
-    #endregion
 
-    #region FIELDS
     private Vector2 mapSize = new Vector2(24,20);
     private float rootX = -12f, rootY = -12f, halfTileSize = .5f;
     private int[,] mapData;
@@ -69,7 +66,7 @@ public class MapManager :  MonoBehaviour, IMapManager
         mapData = new int[(int) mapSize.x, (int) mapSize.y];
         GenerateGems();
         canGenerateNewGem = true;
-        StartCoroutine(GenerateNewGems());
+        //StartCoroutine(GenerateNewGems());
     }
     private void GenerateGems()
     {
@@ -158,17 +155,18 @@ public class MapManager :  MonoBehaviour, IMapManager
         WaitForSeconds waitTime = new WaitForSeconds(generateDelay);
         (GameObject prefab, int value) newGem;
         Vector2Int randomIndex; 
+
         while(canGenerateNewGem)
         {
             yield return waitTime;
-            newGem = GetRandomGem(); //get random gem include rare gem
+            newGem = GetRandomGem(); 
             randomIndex = GetRandomEmptyIndex();
-            //if failed to get empty index
+            
             if (randomIndex == -Vector2Int.one)
             {
                 continue;
             }
-            //store new gem data to mapData
+            
             mapData[randomIndex.x,randomIndex.y] = newGem.value;
             Instantiate(newGem.prefab, IndexToPosition(randomIndex), Quaternion.identity);
         }
