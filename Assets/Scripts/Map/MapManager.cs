@@ -49,7 +49,17 @@ public class MapManager :  MonoBehaviour, IMapManager
     {
         foreach (var pos in posToScan)
         {
-            yield return new ScanTileData(pos, mapData[(int)pos.x - (int)rootX, (int)pos.y - (int)rootY]);
+            if (pos.x - (int)rootX < mapData.GetLength(0) && 
+                pos.x - (int)rootX >= 0 && 
+                pos.y - (int)rootY < mapData.GetLength(1) && 
+                pos.y - (int)rootY >= 0)
+            {
+                yield return new ScanTileData(pos, mapData[(int) pos.x - (int)rootX, (int) pos.y - (int)rootY]);
+            }
+            else
+            {
+                yield return new ScanTileData(pos,0);
+            }
         }
     }
 
@@ -65,6 +75,7 @@ public class MapManager :  MonoBehaviour, IMapManager
         canGenerateNewGem = true;
         StartCoroutine(GenerateNewGems());
     }
+
     private void GenerateGems()
     {
         int areaWidth = (int) mapSize.x / generateZoneSideLength;
