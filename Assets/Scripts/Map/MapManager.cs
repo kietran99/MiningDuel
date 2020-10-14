@@ -52,7 +52,14 @@ public class MapManager :  MonoBehaviour, IMapManager
     {
         foreach (var pos in posToScan)
         {
-            yield return new ScanTileData(pos, mapData[(int) pos.x + 12, (int) pos.y + 12]);
+            if (pos.x + 12 < mapData.GetLength(0) && pos.x + 12 >= 0 && pos.y + 12 < mapData.GetLength(1) && pos.y + 12 >= 0)
+            {
+                yield return new ScanTileData(pos, mapData[(int) pos.x + 12, (int) pos.y + 12]);
+            }
+            else
+            {
+                yield return new ScanTileData(pos,0);
+            }
         }
     }
 
