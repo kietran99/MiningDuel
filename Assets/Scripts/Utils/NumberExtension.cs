@@ -17,6 +17,6 @@ public static class NumberExtension
 
     public static bool IsEqual(this float num_1, float num_2)
     {
-        return num_1 - num_2 <= Mathf.Epsilon;
+        return Mathf.Abs(num_1 - num_2) <= Mathf.Epsilon;
     }
 }

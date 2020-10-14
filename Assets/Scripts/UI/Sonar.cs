@@ -45,18 +45,20 @@ public class Sonar : MonoBehaviour
     }
 
     private List<SonarSymbol> sonarSymbols = new List<SonarSymbol>();
+    private Rect symbolSize;
 
     void Start()
     {
+        symbolSize = testObject.rectTransform.rect;
         tilePool = tilePoolObject.GetComponent<IObjectPool>();
-        relativeScannablePos = GenerateScannablePositions(scanRange);
+        relativeScannablePos = GenScannablePositions(scanRange);
         ListenToEvents();
         ServiceLocator.Resolve<IMapManager>(out mapManager);
         
         if (shouldShowDebugTiles)
         {
             relativeScannablePos.Map(pos => tilePool.Pop().transform.position
-            = new Vector3(MapConstants.spriteOffset.x + pos.x, MapConstants.spriteOffset.y + pos.y, 0f));
+            = new Vector3(MapConstants.SPRITE_OFFSET.x + pos.x, MapConstants.SPRITE_OFFSET.y + pos.y, 0f));
         }
 
         Show(mapManager.GetScanAreaData(relativeScannablePos));
@@ -96,19 +98,35 @@ public class Sonar : MonoBehaviour
 
     private void UpdateScanArea(GemSpawnData gemSpawnData)
     {
+        Debug.Log("World position: " + gemSpawnData.x + ", " + gemSpawnData.y);
+        if (!TryWorldToScannablePos(new Vector2(gemSpawnData.x, gemSpawnData.y), out Vector2 scannablePos)) return;
 
+        Debug.Log("Output: " + scannablePos);
+        sonarSymbols.Add(GenSonarSymbol(scannablePos.x, scannablePos.y));
+    }
+    private bool TryWorldToScannablePos(Vector2 worldPos, out Vector2 scannablePos)
+    {
+        Vector2 relaPos = new Vector2(Mathf.Floor(worldPos.x - lastCenterPos.x), 
+            Mathf.Floor(worldPos.y - lastCenterPos.y));
+        //Debug.Log(relaPos);
+        (Vector2 resPos, int idx) = relativeScannablePos.LookUp(
+            pos => pos.x.IsEqual(relaPos.x) && pos.y.IsEqual(relaPos.y));
+        scannablePos = resPos;
+        return !idx.Equals(Constants.INVALID);
     }
 
+    private SonarSymbol GenSonarSymbol(float relToCenterPosX, float relToCenterPosY)
+    {
+        float posOnSonarX = relToCenterPosX * symbolSize.width;
+        float posOnSonarY = relToCenterPosY * symbolSize.height;
+        Vector3 spawnPos = sonarImage.position + new Vector3(posOnSonarX, posOnSonarY, 0f);
+        Image symbolImage = Instantiate(testObject, spawnPos, Quaternion.identity, sonarImage);
+        return new SonarSymbol(relToCenterPosX, relToCenterPosY, symbolImage);
+    }
+   
     private void UpdateScanArea(GemDigSuccessData digSuccessData)
     {
-        (SonarSymbol gem, int idx) = sonarSymbols.ToArray().LookUp(
-            _ =>
-            {
-                //var gemPos = _.transform.position;
-                Vector2 pos = relativeScannablePos[0];
-                //return gemPos.x.IsEqual(digSuccessData.posX) && gemPos.y.IsEqual(digSuccessData.posY);
-                return _.posX.IsEqual(0f) && _.posY.IsEqual(0f);
-            });
+        (SonarSymbol gem, int idx) = sonarSymbols.ToArray().LookUp(_ =>_.posX.IsEqual(0f) && _.posY.IsEqual(0f));
 
         if (idx.Equals(Constants.INVALID)) return;
 
@@ -116,12 +134,7 @@ public class Sonar : MonoBehaviour
         Destroy(gem.symbol);
         sonarSymbols.Remove(gem);
     }
-
-    private Vector2 WorldToScannablePos(Vector2 worldPos)
-    {
-        return Vector2.zero;
-    }
-
+   
     private void UpdateScanArea(MoveData moveData)
     {       
         //Debug.Log(moveData.x + ", " + moveData.y);
@@ -134,8 +147,8 @@ public class Sonar : MonoBehaviour
     {
         tilePool.Reset();
         relativeScannablePos.Map(pos => tilePool.Pop().transform.position = 
-        new Vector3(moveData.x + pos.x + MapConstants.spriteOffset.x, 
-        moveData.y + pos.y + MapConstants.spriteOffset.y, 0f));        
+        new Vector3(moveData.x + pos.x + MapConstants.SPRITE_OFFSET.x, 
+        moveData.y + pos.y + MapConstants.SPRITE_OFFSET.y, 0f));        
     }
 
     private IEnumerable<Vector2> GetScannablePos(float charX, float charY)
@@ -150,31 +163,26 @@ public class Sonar : MonoBehaviour
     {
         sonarSymbols.Map(_ => Destroy(_.symbol));
         sonarSymbols.Clear();
-
+        
         for (int i = 0; i < scanAreaData.Tiles.Length; i++)
         {
             if (scanAreaData[i].Diggable == 0) continue;
 
             Vector2 pos = relativeScannablePos[i];
-            Rect testRect = testObject.rectTransform.rect;
-            Vector3 spawnPos = sonarImage.position + new Vector3(pos.x * testRect.width, pos.y * testRect.height, 0f);
-            var symbol = new SonarSymbol(pos.x, pos.y, Instantiate(testObject, spawnPos, Quaternion.identity, sonarImage));
-            sonarSymbols.Add(symbol);            
+            sonarSymbols.Add(GenSonarSymbol(pos.x, pos.y));            
         }
-
-        //gems.Map(_ => Debug.Log(_.posX + ", " + _.posY));
     }
-    
+        
     #region SCANNABLE POSITIONS GENERATOR
-    private Vector2[] GenerateScannablePositions(int scanRange)
+    private Vector2[] GenScannablePositions(int scanRange)
     {
         var temp = new List<Vector2>();
-        temp.AddRange(GenerateDiamondPositions(scanRange));
-        temp.AddRange(GenerateFillerPositions(scanRange));
+        temp.AddRange(GenDiamondPositions(scanRange));
+        temp.AddRange(GenFillerPositions(scanRange));
         return temp.ToArray();
     }
 
-    private List<Vector2> GenerateDiamondPositions(int range)
+    private List<Vector2> GenDiamondPositions(int range)
     {
         var res = new List<Vector2>();
 
@@ -191,7 +199,7 @@ public class Sonar : MonoBehaviour
         return res;
     }
 
-    private List<Vector2> GenerateFillerPositions(int range)
+    private List<Vector2> GenFillerPositions(int range)
     {
         var res = new List<Vector2>();
         var fillerRange = range + 1;

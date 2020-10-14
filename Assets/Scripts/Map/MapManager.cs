@@ -21,6 +21,9 @@ public class MapManager :  MonoBehaviour, IMapManager
     private int maxAmountPerZone = 3;
 
     [SerializeField]
+    private float generateDelay = 2f;
+
+    [SerializeField]
     private GameObject commonGem = null;
     [SerializeField]
     private GameObject uncommonGem = null;
@@ -41,7 +44,6 @@ public class MapManager :  MonoBehaviour, IMapManager
     private float rootX = -12f, rootY = -12f, halfTileSize = .5f;
     private int[,] mapData;
 
-    private float generateDelay = 2f;
     private bool canGenerateNewGem;
     #endregion
 
@@ -181,6 +183,7 @@ public class MapManager :  MonoBehaviour, IMapManager
         (GameObject prefab, int value) newGem;
         Vector2Int randomIndex; 
         Vector3 worldPostion;
+
         while(canGenerateNewGem)
         {
             yield return waitTime;
@@ -194,7 +197,8 @@ public class MapManager :  MonoBehaviour, IMapManager
             mapData[randomIndex.x, randomIndex.y] = newGem.value;
             Instantiate(newGem.prefab, worldPostion, Quaternion.identity, gemContainer);
             EventSystems.EventManager.Instance.TriggerEvent(
-                new GemSpawnData(worldPostion.x, worldPostion.y, newGem.value));
+                new GemSpawnData(worldPostion.x - MapConstants.SPRITE_OFFSET.x, 
+                worldPostion.y - MapConstants.SPRITE_OFFSET.y, newGem.value));
         }
     }   
 }
