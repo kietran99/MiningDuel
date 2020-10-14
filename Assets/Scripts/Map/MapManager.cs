@@ -77,7 +77,12 @@ public class MapManager :  MonoBehaviour, IMapManager
 
     private void RemoveGemFromMapData(GemDigSuccessData obj)
     {
-        throw new System.NotImplementedException();
+        int indexX = Mathf.FloorToInt(obj.posX) - (int)rootX;
+        int indexY = Mathf.FloorToInt(obj.posY) - (int)rootY;
+        if (indexX >= 0 && indexX < mapData.GetLength(0) && indexY >= 0 && indexY < mapData.GetLength(1))
+        {
+            mapData[indexX, indexY] = 0;
+        }
     }
 
     public void GenerateMap()
