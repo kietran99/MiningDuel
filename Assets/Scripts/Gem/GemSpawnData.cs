@@ -1,5 +1,4 @@
-﻿
-public struct GemSpawnData: EventSystems.IEventData
+﻿public struct GemSpawnData: EventSystems.IEventData
 {
     public float x,y;
     public int type;

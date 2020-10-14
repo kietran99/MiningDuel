@@ -14,4 +14,9 @@ public static class NumberExtension
     {
         return Mathf.Abs(Mathf.Floor(num_1) - Mathf.Floor(num_2));
     }
+
+    public static bool IsEqual(this float num_1, float num_2)
+    {
+        return num_1 - num_2 <= Mathf.Epsilon;
+    }
 }

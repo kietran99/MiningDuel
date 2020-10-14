@@ -192,7 +192,7 @@ public class MapManager :  MonoBehaviour, IMapManager
             newGem = GetRandomGem(); 
             worldPostion = IndexToPosition(randomIndex);
             mapData[randomIndex.x, randomIndex.y] = newGem.value;
-            Instantiate(newGem.prefab, worldPostion, Quaternion.identity);
+            Instantiate(newGem.prefab, worldPostion, Quaternion.identity, gemContainer);
             EventSystems.EventManager.Instance.TriggerEvent(
                 new GemSpawnData(worldPostion.x, worldPostion.y, newGem.value));
         }

@@ -31,7 +31,20 @@ public class Sonar : MonoBehaviour
     private IObjectPool tilePool;
     #endregion   
 
-    private List<Image> gems = new List<Image>();
+    private struct SonarSymbol
+    {
+        public float posX, posY;
+        public Image symbol;
+
+        public SonarSymbol(float posX, float posY, Image symbol)
+        {
+            this.posX = posX;
+            this.posY = posY;
+            this.symbol = symbol;
+        }
+    }
+
+    private List<SonarSymbol> sonarSymbols = new List<SonarSymbol>();
 
     void Start()
     {
@@ -86,9 +99,22 @@ public class Sonar : MonoBehaviour
 
     }
 
-    private void UpdateScanArea(GemDigSuccessData gemDigSuccessData)
+    private void UpdateScanArea(GemDigSuccessData digSuccessData)
     {
+        (SonarSymbol gem, int idx) = sonarSymbols.ToArray().LookUp(
+            _ =>
+            {
+                //var gemPos = _.transform.position;
+                Vector2 pos = relativeScannablePos[0];
+                //return gemPos.x.IsEqual(digSuccessData.posX) && gemPos.y.IsEqual(digSuccessData.posY);
+                return _.posX.IsEqual(0f) && _.posY.IsEqual(0f);
+            });
 
+        if (idx.Equals(Constants.INVALID)) return;
+
+        Debug.Log("Found");
+        Destroy(gem.symbol);
+        sonarSymbols.Remove(gem);
     }
 
     private Vector2 WorldToScannablePos(Vector2 worldPos)
@@ -122,8 +148,8 @@ public class Sonar : MonoBehaviour
 
     private void Show(ScanAreaData scanAreaData)
     {
-        gems.Map(_ => Destroy(_));
-        gems.Clear();
+        sonarSymbols.Map(_ => Destroy(_.symbol));
+        sonarSymbols.Clear();
 
         for (int i = 0; i < scanAreaData.Tiles.Length; i++)
         {
@@ -132,8 +158,11 @@ public class Sonar : MonoBehaviour
             Vector2 pos = relativeScannablePos[i];
             Rect testRect = testObject.rectTransform.rect;
             Vector3 spawnPos = sonarImage.position + new Vector3(pos.x * testRect.width, pos.y * testRect.height, 0f);
-            gems.Add(Instantiate(testObject, spawnPos, Quaternion.identity, sonarImage));            
+            var symbol = new SonarSymbol(pos.x, pos.y, Instantiate(testObject, spawnPos, Quaternion.identity, sonarImage));
+            sonarSymbols.Add(symbol);            
         }
+
+        //gems.Map(_ => Debug.Log(_.posX + ", " + _.posY));
     }
     
     #region SCANNABLE POSITIONS GENERATOR
