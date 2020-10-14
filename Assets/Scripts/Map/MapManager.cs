@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using EventSystems;
+using MD.Diggable;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -66,6 +68,16 @@ public class MapManager :  MonoBehaviour, IMapManager
     void Awake()
     {
         GenerateMap();
+    }
+
+    void Start()
+    {
+        EventManager.Instance.StartListening<GemDigSuccessData>(RemoveGemFromMapData);
+    }
+
+    private void RemoveGemFromMapData(GemDigSuccessData obj)
+    {
+        throw new System.NotImplementedException();
     }
 
     public void GenerateMap()
@@ -182,4 +194,5 @@ public class MapManager :  MonoBehaviour, IMapManager
         }
     }
 
+    
 }

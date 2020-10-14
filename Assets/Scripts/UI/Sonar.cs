@@ -66,7 +66,6 @@ public class Sonar : MonoBehaviour
 
         if (deltaX <= Mathf.Epsilon && deltaY <= Mathf.Epsilon) return;
 
-        //Debug.Log("Update scan area");
         lastCenterPos = new Vector2(moveData.x, moveData.y);
         (float roundedX, float roundedY) = (Mathf.Floor(moveData.x), Mathf.Floor(moveData.y)); 
         MoveData roundedMoveData = new MoveData(roundedX, roundedY);
