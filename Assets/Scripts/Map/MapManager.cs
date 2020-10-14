@@ -131,10 +131,12 @@ public class MapManager :  MonoBehaviour, IMapManager
         {
             randomX = Random.Range(0,(int) mapSize.x);
             randomY = Random.Range(0,(int) mapSize.y);
+
             if (mapData[randomX, randomY] == 0)
             {
                 foundLocation = true;                
             }
+
             if (timesTried > maxTries)
             {
                 Debug.Log("failed to get empty position's index");

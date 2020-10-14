@@ -7,6 +7,9 @@ public class Sonar : MonoBehaviour
 {
     #region SERIALIZE FIELDS
     [SerializeField]
+    private bool shouldShowDebugTiles = false;
+
+    [SerializeField]
     private int scanRange = 3;
 
     [SerializeField]
@@ -36,8 +39,12 @@ public class Sonar : MonoBehaviour
         EventSystems.EventManager.Instance.StartListening<MoveData>(AttemptToUpdateScanArea);
         ServiceLocator.Resolve<IMapManager>(out mapManager);
         //Foo();
-        relativeScannablePos.Map(pos => tilePool.Pop().transform.position 
-        = new Vector3(MapConstants.spriteOffset.x + pos.x, MapConstants.spriteOffset.y + pos.y, 0f));
+        if (shouldShowDebugTiles)
+        {
+            relativeScannablePos.Map(pos => tilePool.Pop().transform.position
+            = new Vector3(MapConstants.spriteOffset.x + pos.x, MapConstants.spriteOffset.y + pos.y, 0f));
+        }
+
         Show(mapManager.GetScanAreaData(relativeScannablePos));
     }
 
@@ -69,7 +76,7 @@ public class Sonar : MonoBehaviour
     private void UpdateScanArea(MoveData moveData)
     {       
         //Debug.Log(moveData.x + ", " + moveData.y);
-        ShowDebugArea(moveData);
+        if (shouldShowDebugTiles) ShowDebugArea(moveData);
         Vector2[] scanArea = GetScannablePos(moveData.x, moveData.y).ToArray();
         Show(mapManager.GetScanAreaData(scanArea));
     }
