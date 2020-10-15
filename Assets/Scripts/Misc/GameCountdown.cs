@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace MD.UI
 {
     [RequireComponent(typeof(Text))]
-    public class GameTimer : MonoBehaviour
+    public class GameCountdown : MonoBehaviour
     {
         private Text timerText;
 

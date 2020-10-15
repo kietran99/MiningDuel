@@ -98,17 +98,16 @@ public class Sonar : MonoBehaviour
 
     private void UpdateScanArea(GemSpawnData gemSpawnData)
     {
-        Debug.Log("World position: " + gemSpawnData.x + ", " + gemSpawnData.y);
+        //Debug.Log("World position: " + gemSpawnData.x + ", " + gemSpawnData.y);
         if (!TryWorldToScannablePos(new Vector2(gemSpawnData.x, gemSpawnData.y), out Vector2 scannablePos)) return;
 
-        Debug.Log("Output: " + scannablePos);
+        //Debug.Log("Output: " + scannablePos);
         sonarSymbols.Add(GenSonarSymbol(scannablePos.x, scannablePos.y, gemSpawnData.type));
     }
     private bool TryWorldToScannablePos(Vector2 worldPos, out Vector2 scannablePos)
     {
         Vector2 relaPos = new Vector2(Mathf.Floor(worldPos.x - lastCenterPos.x), 
             Mathf.Floor(worldPos.y - lastCenterPos.y));
-        //Debug.Log(relaPos);
         (Vector2 resPos, int idx) = relativeScannablePos.LookUp(
             pos => pos.x.IsEqual(relaPos.x) && pos.y.IsEqual(relaPos.y));
         scannablePos = resPos;
@@ -121,7 +120,6 @@ public class Sonar : MonoBehaviour
         float posOnSonarY = relToCenterPosY * symbolSize.height;
         Vector3 spawnPos = sonarImage.position + new Vector3(posOnSonarX, posOnSonarY, 0f);
         Image symbolImage = Instantiate(GetGemImage(gemValue), spawnPos, Quaternion.identity, sonarImage);
-        Debug.Log(GetGemImage(gemValue).name);
         return new SonarSymbol(relToCenterPosX, relToCenterPosY, symbolImage);
     }
    
@@ -142,7 +140,6 @@ public class Sonar : MonoBehaviour
 
         if (idx.Equals(Constants.INVALID)) return;
 
-        Debug.Log("Found");
         Destroy(gem.symbol);
         sonarSymbols.Remove(gem);
     }
