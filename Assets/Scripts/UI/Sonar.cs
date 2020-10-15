@@ -98,10 +98,10 @@ public class Sonar : MonoBehaviour
 
     private void UpdateScanArea(GemSpawnData gemSpawnData)
     {
-        //Debug.Log("World position: " + gemSpawnData.x + ", " + gemSpawnData.y);
+        Debug.Log("World position: " + gemSpawnData.x + ", " + gemSpawnData.y);
         if (!TryWorldToScannablePos(new Vector2(gemSpawnData.x, gemSpawnData.y), out Vector2 scannablePos)) return;
 
-        //Debug.Log("Output: " + scannablePos);
+        Debug.Log("Output: " + scannablePos);
         sonarSymbols.Add(GenSonarSymbol(scannablePos.x, scannablePos.y, gemSpawnData.type));
     }
     private bool TryWorldToScannablePos(Vector2 worldPos, out Vector2 scannablePos)

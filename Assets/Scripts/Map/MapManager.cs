@@ -77,6 +77,26 @@ public class MapManager :  MonoBehaviour, IMapManager
         EventManager.Instance.StartListening<GemDigSuccessData>(RemoveGemFromMapData);
     }
 
+    void Update()
+    {
+#if UNITY_EDITOR
+        if (!Input.GetKeyDown(KeyCode.Alpha1)) return;
+
+        var randomIndex = GetRandomEmptyIndex();
+        if (randomIndex == -Vector2Int.one)
+        {
+            return;
+        }
+        (GameObject prefab, int value) = GetRandomGem();
+        var worldPostion = IndexToPosition(randomIndex);
+        mapData[randomIndex.x, randomIndex.y] = value;
+        Instantiate(prefab, worldPostion, Quaternion.identity, gemContainer);
+        EventSystems.EventManager.Instance.TriggerEvent(
+            new GemSpawnData(worldPostion.x - MapConstants.SPRITE_OFFSET.x,
+            worldPostion.y - MapConstants.SPRITE_OFFSET.y, value));
+#endif
+    }
+
     private void RemoveGemFromMapData(GemDigSuccessData obj)
     {
         int indexX = Mathf.FloorToInt(obj.posX) - (int)rootX;
