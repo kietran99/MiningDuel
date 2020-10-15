@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     }
 
     private static Player instance;
+
     private void Awake()
     {
         if (instance != null)
