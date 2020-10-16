@@ -1,17 +1,20 @@
 ﻿using UnityEngine;
 
-public class RoomController : MonoBehaviour
+namespace MD.UI.MainMenu
 {
-    [SerializeField]
-    private GameObject container = null;
-
-    public void ShowWindow()
+    public class RoomController : MonoBehaviour
     {
-        container.SetActive(true);
-    }
+        [SerializeField]
+        private GameObject container = null;
 
-    public void Exit()
-    {
-        container.SetActive(false);
+        public void ShowWindow()
+        {
+            container.SetActive(true);
+        }
+
+        public void Exit()
+        {
+            container.SetActive(false);
+        }
     }
 }

@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 
-public class MainMenu : MonoBehaviour
+namespace MD.UI.MainMenu
 {
-    [SerializeField]
-    private RoomController roomController = null;
-
-    public void OpenRoomWindow()
+    public class MainMenu : MonoBehaviour
     {
-        roomController.ShowWindow();
+        [SerializeField]
+        private RoomController roomController = null;
+
+        public void OpenRoomWindow()
+        {
+            roomController.ShowWindow();
+        }
     }
 }

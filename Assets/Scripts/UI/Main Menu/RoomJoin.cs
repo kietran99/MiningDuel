@@ -1,18 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class RoomJoin : MonoBehaviour
+namespace MD.UI.MainMenu
 {
-    [SerializeField]
-    private string sceneToLoad = string.Empty;
-
-    void Start()
+    public class RoomJoin : MonoBehaviour
     {
+        [SerializeField]
+        private string sceneToLoad = string.Empty;
         
-    }
-
-    public void Join()
-    {
-        SceneManager.LoadScene(sceneToLoad);
+        public void Join()
+        {
+            SceneManager.LoadScene(sceneToLoad);
+        }
     }
 }
