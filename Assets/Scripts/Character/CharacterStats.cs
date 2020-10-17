@@ -2,18 +2,31 @@
 
 namespace MD.Character
 {
-    public class CharacterStats : MonoBehaviour
+    [CreateAssetMenu(fileName = "Character Stats", menuName = "Generator/Character/Stats")]
+    public class CharacterStats : ScriptableObject
     {
-        // Start is called before the first frame update
-        void Start()
-        {
+        [SerializeField]
+        private Sprite characterSprite = null;
 
-        }
+        [SerializeField]
+        private string characterName;
 
-        // Update is called once per frame
-        void Update()
-        {
+        [SerializeField]
+        private int power = 2;
 
-        }
+        [SerializeField]
+        private int speed = 2;
+
+        [SerializeField]
+        [TextArea]
+        private string description;
+
+        public Sprite CharacterSprite { get => characterSprite; }
+        
+        public string CharacterName { get => characterName; }
+
+        public int Power { get => power; }
+
+        public int Speed { get => speed; }
     }
 }

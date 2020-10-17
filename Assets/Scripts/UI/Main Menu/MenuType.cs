@@ -4,6 +4,7 @@
     {
         LOBBY = 0,
         RECORD = 1,
-        CHARACTER = 2
+        CHARACTER = 2,
+        SETTINGS = 3
     }
 }

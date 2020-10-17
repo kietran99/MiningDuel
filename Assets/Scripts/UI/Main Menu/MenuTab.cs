@@ -13,6 +13,9 @@ namespace MD.UI.MainMenu
         private MenuType type;
 
         [SerializeField]
+        private GameObject layout = null;
+        
+        [SerializeField]
         private Button activeButton, inactiveButton = null;
         #endregion
 
@@ -29,12 +32,14 @@ namespace MD.UI.MainMenu
         {
             activeButton.gameObject.SetActive(true);
             inactiveButton.gameObject.SetActive(false);
+            layout.SetActive(true);
         }
 
         public void Deactivate()
         {
             activeButton.gameObject.SetActive(false);
             inactiveButton.gameObject.SetActive(true);
+            layout.SetActive(false);
         }
     }
 }
