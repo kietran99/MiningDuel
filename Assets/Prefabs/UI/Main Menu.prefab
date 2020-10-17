@@ -885,6 +885,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 561ceadf4631d804e9b674cf892ab400, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tabs: []
 --- !u!1 &2013951054960761244
 GameObject:
   m_ObjectHideFlags: 0
@@ -4352,17 +4353,17 @@ PrefabInstance:
     - target: {fileID: 9135736478868272586, guid: a755385c059ca854ab6a3e31edaf4dee,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.0513973
+      value: 0.13029547
       objectReference: {fileID: 0}
     - target: {fileID: 9135736478868272586, guid: a755385c059ca854ab6a3e31edaf4dee,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.092714064
+      value: 0.21888305
       objectReference: {fileID: 0}
     - target: {fileID: 9135736478868272586, guid: a755385c059ca854ab6a3e31edaf4dee,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.3301887
+      value: 0.4528302
       objectReference: {fileID: 0}
     - target: {fileID: 9135736478868272586, guid: a755385c059ca854ab6a3e31edaf4dee,
         type: 3}
@@ -4487,7 +4488,7 @@ PrefabInstance:
     - target: {fileID: 4133757774197405085, guid: 8d69c45f3f7777941bb2bf6ae9b4392a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 46
       objectReference: {fileID: 0}
     - target: {fileID: 4133757774197405085, guid: 8d69c45f3f7777941bb2bf6ae9b4392a,
         type: 3}
@@ -5073,17 +5074,17 @@ PrefabInstance:
     - target: {fileID: 9135736478868272586, guid: a755385c059ca854ab6a3e31edaf4dee,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.082280174
+      value: 0.13333334
       objectReference: {fileID: 0}
     - target: {fileID: 9135736478868272586, guid: a755385c059ca854ab6a3e31edaf4dee,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.16886438
+      value: 0.21960784
       objectReference: {fileID: 0}
     - target: {fileID: 9135736478868272586, guid: a755385c059ca854ab6a3e31edaf4dee,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.4056604
+      value: 0.45490196
       objectReference: {fileID: 0}
     - target: {fileID: 9135736478868272586, guid: a755385c059ca854ab6a3e31edaf4dee,
         type: 3}
