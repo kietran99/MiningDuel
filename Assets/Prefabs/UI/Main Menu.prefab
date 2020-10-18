@@ -2048,7 +2048,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3089146983d11eb4f84fa3fabd7a391b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: Sonar Scene
+  sceneToLoad: Tutorial Scene
 --- !u!1 &3935664824791877033
 GameObject:
   m_ObjectHideFlags: 0

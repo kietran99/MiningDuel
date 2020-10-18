@@ -11,6 +11,9 @@ public class Sonar : MonoBehaviour
     private bool shouldShowDebugTiles = false;
 
     [SerializeField]
+    private bool isTutorial = false;
+
+    [SerializeField]
     private int scanRange = 3;
 
     [SerializeField]
@@ -25,7 +28,7 @@ public class Sonar : MonoBehaviour
 
     #region FIELDS
     private Vector2[] relativeScannablePos;
-    private IMapManager mapManager;
+    private IMapManager genManager;
     private Vector2 lastCenterPos = Vector2.zero;
     private bool firstScan = true;
     private IObjectPool tilePool;
@@ -53,15 +56,28 @@ public class Sonar : MonoBehaviour
         tilePool = tilePoolObject.GetComponent<IObjectPool>();
         relativeScannablePos = GenScannablePositions(scanRange);
         ListenToEvents();
-        ServiceLocator.Resolve<IMapManager>(out mapManager);
-        
+               
         if (shouldShowDebugTiles)
         {
             relativeScannablePos.Map(pos => tilePool.Pop().transform.position
             = new Vector3(MapConstants.SPRITE_OFFSET.x + pos.x, MapConstants.SPRITE_OFFSET.y + pos.y, 0f));
         }
 
-        Show(mapManager.GetScanAreaData(relativeScannablePos));
+        if (!isTutorial && genManager == null)
+        {
+            ServiceLocator.Resolve<IMapManager>(out genManager);           
+            return;
+        }
+
+        if (genManager != null)
+        {
+            Show(genManager.GetScanAreaData(relativeScannablePos));
+        }
+    }
+
+    public void BindScanAreaData(IMapManager genManager)
+    {
+        this.genManager = genManager;
     }
 
     private void ListenToEvents()
@@ -74,7 +90,10 @@ public class Sonar : MonoBehaviour
 
     private void OnDestroy()
     {
-        EventSystems.EventManager.Instance.StopListening<MoveData>(UpdateScanArea);
+        var eventManager = EventSystems.EventManager.Instance;
+        eventManager.StopListening<MoveData>(UpdateScanArea);
+        eventManager.StopListening<GemSpawnData>(UpdateScanArea);
+        eventManager.StopListening<GemDigSuccessData>(UpdateScanArea);
     }
 
     private void AttemptToUpdateScanArea(MoveData moveData)
@@ -104,6 +123,7 @@ public class Sonar : MonoBehaviour
         //Debug.Log("Output: " + scannablePos);
         sonarSymbols.Add(GenSonarSymbol(scannablePos.x, scannablePos.y, gemSpawnData.type));
     }
+    
     private bool TryWorldToScannablePos(Vector2 worldPos, out Vector2 scannablePos)
     {
         Vector2 relaPos = new Vector2(Mathf.Floor(worldPos.x - lastCenterPos.x), 
@@ -149,7 +169,7 @@ public class Sonar : MonoBehaviour
         //Debug.Log(moveData.x + ", " + moveData.y);
         if (shouldShowDebugTiles) ShowDebugArea(moveData);
         Vector2[] scanArea = GetScannablePos(moveData.x, moveData.y).ToArray();
-        Show(mapManager.GetScanAreaData(scanArea));
+        Show(genManager.GetScanAreaData(scanArea));
     }
 
     private void ShowDebugArea(MoveData moveData)
@@ -182,7 +202,7 @@ public class Sonar : MonoBehaviour
         }
     }
         
-    #region SCANNABLE POSITIONS GENERATOR
+    #region GENERATE SCANNABLE POSITIONS
     private Vector2[] GenScannablePositions(int scanRange)
     {
         var temp = new List<Vector2>();

@@ -16,7 +16,7 @@ namespace MD.UI.MainMenu
         private GameObject layout = null;
         
         [SerializeField]
-        private Button activeButton, inactiveButton = null;
+        private Button activeButton = null, inactiveButton = null;
         #endregion
 
         public MenuType MenuType { get => type; }

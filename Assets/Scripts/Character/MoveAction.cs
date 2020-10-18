@@ -11,7 +11,6 @@ namespace MD.Character
 
         private Rigidbody2D rigidBody;
         private Vector2 moveVect, minMoveBound, maxMoveBound;
-        private Vector2 lastPos = new Vector2(0f, 0f);
         private Vector2 offset = new Vector2(.5f, .6f);
 
         void Awake()
@@ -50,7 +49,6 @@ namespace MD.Character
             rigidBody.MovePosition(movePos);
 
             
-            lastPos = rigidBody.position;
             EventSystems.EventManager.Instance.TriggerEvent(new MoveData(rigidBody.position.x, rigidBody.position.y));
         } 
         

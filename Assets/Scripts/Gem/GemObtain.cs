@@ -29,6 +29,7 @@ namespace MD.Diggable.Gem
 
             EventSystems.EventManager.Instance.TriggerEvent(
                 new GemDigSuccessData(transform.position.x, transform.position.y, gemValue.Value));
+
             Destroy(gameObject);
         }
         
