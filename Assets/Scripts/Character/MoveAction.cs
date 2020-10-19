@@ -33,8 +33,7 @@ namespace MD.Character
 #if UNITY_EDITOR
             var moveX = Input.GetAxisRaw("Horizontal");
             var moveY = Input.GetAxisRaw("Vertical");
-            // Comment this line to move the player with joystick
-            moveVect = new Vector2(moveX, moveY);
+            EventSystems.EventManager.Instance.TriggerEvent(new JoystickDragData(new Vector2(moveX, moveY)));
 #endif
             MoveCharacter();
         }

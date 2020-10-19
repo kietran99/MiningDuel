@@ -8,51 +8,68 @@ namespace Timer
         private enum TimerState { ON, OFF }
 
         [SerializeField]
-        private float interval = 2f;
+        private float[] timeStamps;
 
-        [SerializeField]
-        private TimerState state = TimerState.ON;
+        private TimerState state = TimerState.OFF;
 
         private ITickListener listener;
+
+        private bool startTicking = false;
+
+        private int curStampIdx = 0;
+        private float curCounter = 0f;
 
         void Start()
         {
             listener = GetComponent<ITickListener>();
         }
 
-        private IEnumerator Tick()
+        void Update()
         {
-            var secToNextTick = new WaitForSecondsRealtime(interval);
+            if (!startTicking) return;
 
-            while (state.Equals(TimerState.ON))
+            if (timeStamps.Length == 0) return;
+
+            if (curStampIdx == timeStamps.Length)
             {
-                listener.OnTick();
+                startTicking = false;
+                return;
+            }
 
-                yield return secToNextTick;
+            curCounter += Time.deltaTime;
+
+            if (curCounter >= timeStamps[curStampIdx])
+            {
+                listener.OnTick(timeStamps[curStampIdx]);
+                curStampIdx++;
+                return;
+            }           
+        }
+
+        private IEnumerator Tick()
+        {            
+            while (state.Equals(TimerState.ON))
+            {     
+                for (int i = 0; i < timeStamps.Length; i++)
+                {
+                    yield return new WaitForSecondsRealtime(timeStamps[i]);
+
+                    listener.OnTick(timeStamps[i]);
+                }               
             }
         }
 
         public void Activate()
-        {
-            if (listener == null)
-            {
-                Debug.LogError("Can't find ITickListener script on this GameObject");
-                return;
-            }
-
+        {            
             state = TimerState.ON;
-            StartCoroutine(Tick());
+            //StartCoroutine(Tick());
+            startTicking = true;
         }
 
         public void Stop()
-        {
-            if (listener == null)
-            {
-                Debug.LogError("Can't find ITickListener script on this GameObject");
-                return;
-            }
-
-            StopCoroutine(Tick());
+        {            
+            //StopCoroutine(Tick());
+            startTicking = false;
             state = TimerState.OFF;
         }
     }

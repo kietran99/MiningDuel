@@ -1,5 +1,5 @@
-﻿using MD.UI;
-using System;
+﻿using MD.Diggable.Projectile;
+using MD.UI;
 using UnityEngine;
 
 public class ThrowAction : MonoBehaviour
@@ -7,30 +7,34 @@ public class ThrowAction : MonoBehaviour
     [SerializeField]
     private float baseDistance = 1f;
 
-    private GameObject projectile;
     private Vector2 throwDir;
+    private GameObject projectile;
 
     void Start()
     {
         EventSystems.EventManager.Instance.StartListening<ThrowInvokeData>(ThrowProjectile);
-        EventSystems.EventManager.Instance.StartListening<JoystickDragData>(BindThrowDir);
+        EventSystems.EventManager.Instance.StartListening<JoystickDragData>(BindThrowDirection);
     }
 
     void OnDestroy()
     {
         EventSystems.EventManager.Instance.StopListening<ThrowInvokeData>(ThrowProjectile);
-        EventSystems.EventManager.Instance.StopListening<JoystickDragData>(BindThrowDir);
+        EventSystems.EventManager.Instance.StopListening<JoystickDragData>(BindThrowDirection);
     }
 
-    private void BindThrowDir(JoystickDragData dragData)
+    private void BindThrowDirection(JoystickDragData dragData)
     {
-        throwDir = new Vector2(dragData.InputDirection.x, dragData.InputDirection.y);
+        if (projectile == null) return;
+
+        projectile.GetComponent<ProjectileLauncher>().BindThrowDirection(
+            new Vector2(dragData.InputDirection.x, dragData.InputDirection.y));
     }
 
     public void BindProjectile(GameObject projectile) => this.projectile = projectile;
 
     private void ThrowProjectile(ThrowInvokeData data)
     {
-        //projectile.GetComponent<Rigidbody2D>().AddForce(throwDir.normalized * baseDistance, ForceMode2D.Impulse);
+        projectile.GetComponent<ProjectileLauncher>().Throw(baseDistance);
+        projectile = null;
     }
 }

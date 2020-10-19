@@ -9,7 +9,6 @@ namespace MD.Character
         [SerializeField]
         private int power = 1;
         
-
         [SerializeField]
         private GameObject bombPrefab = null;
 

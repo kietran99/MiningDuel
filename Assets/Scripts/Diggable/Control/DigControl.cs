@@ -1,35 +1,45 @@
 ﻿using MD.Diggable.Projectile;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace MD.UI
 {
-    [RequireComponent (typeof(Button))]
     public class DigControl : MonoBehaviour
     {
-        private Button button;
-
-        private void Awake()
-        {
-            button = GetComponent<Button>();
-            button.onClick.AddListener(Invoke);
-        }
-
+        [SerializeField]
+        private Button button = null;
+        
         private void Start()
         {
+            button.onClick.AddListener(Invoke);
             EventSystems.EventManager.Instance.StartListening<ProjectileObtainData>(HideButton);
-        }
-
-        
-        private void OnDestroy()
-        {
-            EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(HideButton);
+            EventSystems.EventManager.Instance.StartListening<ThrowInvokeData>(ShowButton);
+            EventSystems.EventManager.Instance.StartListening<ExplodeData>(ShowButton);
         }
 
         public void Invoke()
         {
             EventSystems.EventManager.Instance.TriggerEvent(new DigInvokeData());
         }
+
+        private void OnDestroy()
+        {
+            EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(HideButton);
+            EventSystems.EventManager.Instance.StopListening<ThrowInvokeData>(ShowButton);
+            EventSystems.EventManager.Instance.StopListening<ExplodeData>(ShowButton);
+        }
+
+        private void ShowButton(ExplodeData obj)
+        {
+            button.gameObject.SetActive(true);
+        }
+
+        private void ShowButton(ThrowInvokeData obj)
+        {
+            button.gameObject.SetActive(true);
+        }
+
 
         private void HideButton(ProjectileObtainData obj)
         {

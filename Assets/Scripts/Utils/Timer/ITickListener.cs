@@ -2,6 +2,6 @@
 {
     public interface ITickListener
     {
-        void OnTick(/*float time*/);
+        void OnTick(float timeStamp);
     }
 }
