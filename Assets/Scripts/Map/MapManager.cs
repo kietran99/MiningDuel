@@ -4,9 +4,40 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+public enum MapDataType
+{
+    Empty = 0,
+    CommonGem = 1,
+    UncommonGem = 4,
+    RareGem = 10,
+    NormalBomb = -1
+}
+public static class MapDataTypeExtensions
+{
+    public static bool IsGem(this MapDataType type)
+    {
+        switch(type)
+        {
+            case MapDataType.CommonGem:
+            case MapDataType.UncommonGem:
+            case MapDataType.RareGem:
+                return true;
+            default: return false;
+        }
+    }
+    public static bool IsBomb(this MapDataType type)
+    {
+        switch(type)
+        {
+            case MapDataType.NormalBomb:
+                return true;
+            default: return false;
+        }
+    }
+}
 public class MapManager :  MonoBehaviour, IMapManager
 {
+
     #region SERIALIZE FIELDS
     [SerializeField]
     private Transform gemContainer = null;
@@ -36,11 +67,11 @@ public class MapManager :  MonoBehaviour, IMapManager
     private int uncommonDropWeight = 5;
     private int rareDropWeight = 2;
 
-    private int uncommonGemValue = 4;
-    private int commonGemValue = 1;
-    private int rareGemValue = 10;
+    // private int uncommonGemValue = 4;
+    // private int commonGemValue = 1;
+    // private int rareGemValue = 10;
 
-    private Vector2 mapSize = new Vector2(24,20);
+    private Vector2Int mapSize = new Vector2Int(24,20);
     private float rootX = -12f, rootY = -12f, halfTileSize = .5f;
     private int[,] mapData;
 
@@ -70,6 +101,7 @@ public class MapManager :  MonoBehaviour, IMapManager
     void Awake()
     {
         GenerateMap();
+        ServiceLocator.Register<MapManager>(this);
     }
 
     void Start()
@@ -109,7 +141,7 @@ public class MapManager :  MonoBehaviour, IMapManager
 
     public void GenerateMap()
     {
-        mapData = new int[(int) mapSize.x, (int) mapSize.y];
+        mapData = new int[mapSize.x, mapSize.y];
         GenerateGems();
         canGenerateNewGem = true;
         StartCoroutine(GenerateNewGems());
@@ -144,7 +176,6 @@ public class MapManager :  MonoBehaviour, IMapManager
             }
         }
         //generate gem-rich areas
-
     }
     
     (GameObject, int) GetRandomGem()
@@ -152,15 +183,15 @@ public class MapManager :  MonoBehaviour, IMapManager
         int random = Random.Range(1, commonDropWeight + uncommonDropWeight + rareDropWeight + 1);
         if (random <= commonDropWeight)
         {
-            return (commonGem, commonGemValue);
+            return (commonGem, (int) MapDataType.CommonGem);
         }
 
         if (random <= commonDropWeight + uncommonDropWeight)
         {
-            return (uncommonGem, uncommonGemValue);
+            return (uncommonGem, (int) MapDataType.UncommonGem);
         }
         
-        return (rareGem, rareGemValue);
+        return (rareGem, (int) MapDataType.RareGem);
     }
 
     //get random empty position's index in mapData return index (-1,-1) if fail
@@ -174,8 +205,8 @@ public class MapManager :  MonoBehaviour, IMapManager
 
         while(!foundLocation)
         {
-            randomX = Random.Range(0,(int) mapSize.x);
-            randomY = Random.Range(0,(int) mapSize.y);
+            randomX = Random.Range(0, mapSize.x);
+            randomY = Random.Range(0, mapSize.y);
 
             if (mapData[randomX, randomY] == 0)
             {
@@ -220,5 +251,25 @@ public class MapManager :  MonoBehaviour, IMapManager
                 new GemSpawnData(worldPostion.x - MapConstants.SPRITE_OFFSET.x, 
                 worldPostion.y - MapConstants.SPRITE_OFFSET.y, newGem.value));
         }
+    }
+
+    public Vector2Int GetMapSize()
+    {
+        return mapSize;
+    }
+
+    public Vector2Int PositionToIndex(Vector2 position)
+    {
+        return new Vector2Int(Mathf.FloorToInt(position.x),Mathf.FloorToInt(position.y));
+    }
+    public bool TrySpawnDiggableAtIndex(Vector2Int idx, MapDataType diggable, GameObject prefab)
+    {
+        if ( mapData[idx.x,idx.y] != (int) MapDataType.Empty)
+        { 
+            return false;
+        }
+        mapData[idx.x, idx.y] = (int) diggable;
+        Instantiate(prefab, IndexToPosition(idx), Quaternion.identity, gemContainer);
+        return true;
     }   
 }
