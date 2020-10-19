@@ -5,20 +5,20 @@ namespace MD.Diggable.Projectile
     public class ProjectileObtain : MonoBehaviour
     {
         [SerializeField]
-        private SpriteRenderer spriteRenderer = null;
+        private ProjectileStats stats = null;
 
         private bool diggable = false;
 
         void Start()
         {
-            EventSystems.EventManager.Instance.StartListening<DigControlData>(Dig);
+            EventSystems.EventManager.Instance.StartListening<DigInvokeData>(Dig);
         }
 
-        private void Dig(DigControlData obj)
+        private void Dig(DigInvokeData obj)
         {
             if (!diggable) return;
 
-            EventSystems.EventManager.Instance.TriggerEvent(new ProjectilePickupData(spriteRenderer.sprite));
+            EventSystems.EventManager.Instance.TriggerEvent(new ProjectileObtainData(stats));
             Destroy(gameObject);
         }
 

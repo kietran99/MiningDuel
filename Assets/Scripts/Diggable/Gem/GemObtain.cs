@@ -15,15 +15,15 @@ namespace MD.Diggable.Gem
         {
             gemValue = GetComponent<GemValue>();
             diggable = false;
-            EventSystems.EventManager.Instance.StartListening<DigControlData>(Dig);
+            EventSystems.EventManager.Instance.StartListening<DigInvokeData>(Dig);
         }
 
         void OnDestroy()
         {
-            EventSystems.EventManager.Instance.StopListening<DigControlData>(Dig);
+            EventSystems.EventManager.Instance.StopListening<DigInvokeData>(Dig);
         }
 
-        private void Dig(DigControlData data)
+        private void Dig(DigInvokeData data)
         {
             if (!diggable) return;
 

@@ -67,7 +67,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2741622bf49b9f74bb7a98863a0186fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalBombPrefab: {fileID: 4262454349504806188, guid: fe79a140d56e5b940b60ba348d3177a5,
+  normalBombPrefab: {fileID: 4262454349504806188, guid: bfa835d739a03c545a90d6eae9f643f1,
     type: 3}
   maxAmountPerZone: 5
 --- !u!1 &3710564033371691436

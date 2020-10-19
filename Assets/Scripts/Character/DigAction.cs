@@ -3,30 +3,34 @@ using UnityEngine;
 
 namespace MD.Character
 {
+    [RequireComponent(typeof(ThrowAction))]
     public class DigAction : MonoBehaviour
     {
         [SerializeField]
         private int power = 1;
+        
 
         [SerializeField]
-        private GameObject projectile = null;
+        private GameObject bombPrefab = null;
+
+        private ThrowAction throwAction;
 
         public int Power { get => power; }
 
         private void Start()
         {
-            EventSystems.EventManager.Instance.StartListening<ProjectilePickupData>(ShowProjectileSprite);
+            throwAction = GetComponent<ThrowAction>();
+            EventSystems.EventManager.Instance.StartListening<ProjectileObtainData>(BindAndHoldProjectile);
         }
 
         private void OnDestroy()
         {
-            EventSystems.EventManager.Instance.StopListening<ProjectilePickupData>(ShowProjectileSprite);
+            EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(BindAndHoldProjectile);
         }
 
-        private void ShowProjectileSprite(ProjectilePickupData data)
+        private void BindAndHoldProjectile(ProjectileObtainData data)
         {
-            projectile.SetActive(true);
-            projectile.GetComponent<SpriteRenderer>().sprite = data.sprite;
+            throwAction.BindProjectile(Instantiate(bombPrefab, gameObject.transform));
         }
     }
 }

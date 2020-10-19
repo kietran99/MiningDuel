@@ -1,4 +1,5 @@
 ﻿using MD.Diggable.Projectile;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,15 +10,21 @@ public class ThrowControl : MonoBehaviour
 
     private void Start()
     {
-        EventSystems.EventManager.Instance.StartListening<ProjectilePickupData>(ShowButton);
+        button.onClick.AddListener(Invoke);
+        EventSystems.EventManager.Instance.StartListening<ProjectileObtainData>(ShowButton);
     }
     
     private void OnDestroy()
     {
-        EventSystems.EventManager.Instance.StopListening<ProjectilePickupData>(ShowButton);
+        EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(ShowButton);
     }
 
-    private void ShowButton(ProjectilePickupData obj)
+    private void Invoke()
+    {
+        EventSystems.EventManager.Instance.TriggerEvent(new ThrowInvokeData());
+    }
+
+    private void ShowButton(ProjectileObtainData obj)
     {
         button.gameObject.SetActive(true);
     }

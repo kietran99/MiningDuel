@@ -1,4 +1,5 @@
 ﻿using MD.Diggable;
+using MD.Diggable.Projectile;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -87,6 +88,7 @@ public class Sonar : MonoBehaviour
         eventManager.StartListening<MoveData>(AttemptToUpdateScanArea);
         eventManager.StartListening<GemSpawnData>(UpdateScanArea);
         eventManager.StartListening<GemDigSuccessData>(UpdateScanArea);
+        eventManager.StartListening<ProjectileObtainData>(UpdateScanArea);
     }
 
     private void OnDestroy()
@@ -95,15 +97,16 @@ public class Sonar : MonoBehaviour
         eventManager.StopListening<MoveData>(UpdateScanArea);
         eventManager.StopListening<GemSpawnData>(UpdateScanArea);
         eventManager.StopListening<GemDigSuccessData>(UpdateScanArea);
+        eventManager.StopListening<ProjectileObtainData>(UpdateScanArea);
     }
 
     private void AttemptToUpdateScanArea(MoveData moveData)
     {
-        if (firstScan)
-        {
-            firstScan = false;
-            return;
-        }
+        //if (firstScan)
+        //{
+        //    firstScan = false;
+        //    return;
+        //}
 
         float deltaX = lastCenterPos.x.DeltaInt(moveData.x);
         float deltaY = lastCenterPos.y.DeltaInt(moveData.y);
@@ -158,20 +161,30 @@ public class Sonar : MonoBehaviour
 
     private void UpdateScanArea(GemDigSuccessData digSuccessData)
     {
-        (SonarSymbol gem, int idx) = sonarSymbols.ToArray().LookUp(_ =>_.posX.IsEqual(0f) && _.posY.IsEqual(0f));
-
-        if (idx.Equals(Constants.INVALID)) return;
-
-        Destroy(gem.symbol);
-        sonarSymbols.Remove(gem);
+        RemoveSymbolAtCentre();
     }
-   
+       
     private void UpdateScanArea(MoveData moveData)
     {       
         //Debug.Log(moveData.x + ", " + moveData.y);
         if (shouldShowDebugTiles) ShowDebugArea(moveData);
         Vector2[] scanArea = GetScannablePos(moveData.x, moveData.y).ToArray();
         Show(genManager.GetScanAreaData(scanArea));
+    }
+
+    private void UpdateScanArea(ProjectileObtainData obj)
+    {
+        RemoveSymbolAtCentre();
+    }
+
+    private void RemoveSymbolAtCentre()
+    {
+        (SonarSymbol item, int idx) = sonarSymbols.ToArray().LookUp(_ => _.posX.IsEqual(0f) && _.posY.IsEqual(0f));
+
+        if (idx.Equals(Constants.INVALID)) return;
+
+        Destroy(item.symbol);
+        sonarSymbols.Remove(item);
     }
 
     private void ShowDebugArea(MoveData moveData)

@@ -17,21 +17,21 @@ namespace MD.UI
 
         private void Start()
         {
-            EventSystems.EventManager.Instance.StartListening<ProjectilePickupData>(HideButton);
+            EventSystems.EventManager.Instance.StartListening<ProjectileObtainData>(HideButton);
         }
 
         
         private void OnDestroy()
         {
-            EventSystems.EventManager.Instance.StopListening<ProjectilePickupData>(HideButton);
+            EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(HideButton);
         }
 
         public void Invoke()
         {
-            EventSystems.EventManager.Instance.TriggerEvent<DigControlData>(new DigControlData());
+            EventSystems.EventManager.Instance.TriggerEvent(new DigInvokeData());
         }
 
-        private void HideButton(ProjectilePickupData obj)
+        private void HideButton(ProjectileObtainData obj)
         {
             button.gameObject.SetActive(false);
         }
