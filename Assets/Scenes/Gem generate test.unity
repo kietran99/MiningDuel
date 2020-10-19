@@ -264,7 +264,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 662463101
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 94404988b68db4d4eac5742e247a907b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -4907,6 +4907,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1325384321}
   - component: {fileID: 1325384320}
+  - component: {fileID: 1325384322}
   m_Layer: 0
   m_Name: Test generate
   m_TagString: Untagged
@@ -4926,7 +4927,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01881e8535b103844a0d6d71880fd40c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  commonGem: {fileID: 3894912951619401227, guid: cd9dc513d0ac12b48a51ac43e0e19b76,
+  gemContainer: {fileID: 1325384321}
+  generateZoneSideLength: 4
+  minAmountPerZone: 2
+  maxAmountPerZone: 3
+  generateDelay: 2
+  commonGem: {fileID: 3944022528217853538, guid: 27be5ae99ff552341ab827085fdcf8b0,
     type: 3}
   uncommonGem: {fileID: 8145764596708574413, guid: 80bea2b6f21290e47bd090dfac425524,
     type: 3}
@@ -4945,6 +4951,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1325384322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325384319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2741622bf49b9f74bb7a98863a0186fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  normalBombPrefab: {fileID: 4262454349504806188, guid: bfa835d739a03c545a90d6eae9f643f1,
+    type: 3}
+  maxAmountPerZone: 5
 --- !u!1001 &1766195248
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5126,7 +5147,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 662463101
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: e0ddba6d3fcf21f49949fcc95c849aac, type: 3}
   m_Color: {r: 0.10012458, g: 0.8490566, b: 0.77596086, a: 1}
@@ -5283,6 +5304,11 @@ PrefabInstance:
         type: 3}
       propertyPath: capacity
       value: 37
+      objectReference: {fileID: 0}
+    - target: {fileID: 9164753891225428203, guid: 445ad5f27f6d1d647a615c6a1ed5e078,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
