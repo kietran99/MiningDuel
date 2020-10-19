@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Timer;
+using UnityEngine;
 
 namespace MD.Diggable.Projectile
 {
@@ -8,14 +9,19 @@ namespace MD.Diggable.Projectile
         [SerializeField]
         private ProjectileStats stats = null;
 
+        [SerializeField]
+        private bool isDug = false;
+
+        private ITimer timer = null;
+
         void Start()
         {
-            
+            timer = GetComponent<ITimer>();
         }
 
         void Update()
         {
-
+            if (isDug && Input.GetKeyDown(KeyCode.A)) timer.Activate();
         }
 
         public void OnTick()

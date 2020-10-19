@@ -5,7 +5,7 @@ namespace Timer
 {
     public class Timer : MonoBehaviour, ITimer
     {
-        public enum TimerState { ON, OFF }
+        private enum TimerState { ON, OFF }
 
         [SerializeField]
         private float interval = 2f;
@@ -18,14 +18,6 @@ namespace Timer
         void Start()
         {
             listener = GetComponent<ITickListener>();
-
-            if (listener == null)
-            {
-                Debug.LogError("Can't find ITickListener script on this GameObject");
-                return;
-            }
-
-            StartCoroutine(Tick());
         }
 
         private IEnumerator Tick()
@@ -42,12 +34,24 @@ namespace Timer
 
         public void Activate()
         {
+            if (listener == null)
+            {
+                Debug.LogError("Can't find ITickListener script on this GameObject");
+                return;
+            }
+
             state = TimerState.ON;
             StartCoroutine(Tick());
         }
 
         public void Stop()
         {
+            if (listener == null)
+            {
+                Debug.LogError("Can't find ITickListener script on this GameObject");
+                return;
+            }
+
             StopCoroutine(Tick());
             state = TimerState.OFF;
         }

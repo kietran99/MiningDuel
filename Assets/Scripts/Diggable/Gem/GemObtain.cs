@@ -1,5 +1,4 @@
 ﻿using MD.Character;
-using MD.UI;
 using UnityEngine;
 
 namespace MD.Diggable.Gem
@@ -16,10 +15,15 @@ namespace MD.Diggable.Gem
         {
             gemValue = GetComponent<GemValue>();
             diggable = false;
-            DigControl.digButtonClick += Dig;
+            EventSystems.EventManager.Instance.StartListening<DigControlData>(Dig);
         }
 
-        private void Dig()
+        void OnDestroy()
+        {
+            EventSystems.EventManager.Instance.StopListening<DigControlData>(Dig);
+        }
+
+        private void Dig(DigControlData data)
         {
             if (!diggable) return;
 

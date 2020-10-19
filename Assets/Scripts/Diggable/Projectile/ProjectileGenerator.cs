@@ -1,6 +1,5 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+
 public class ProjectileGenerator: MonoBehaviour
 {
     #region SERIALIZE FIELDS
@@ -10,19 +9,21 @@ public class ProjectileGenerator: MonoBehaviour
     [SerializeField]
     private int maxAmountPerZone = 5;
     #endregion
+
     #region FIELDS
     private IMapManager mapManager = null;
+
     private Vector2Int mapSize = Vector2Int.zero;
     #endregion
 
     private void Start()
     {
         bool exist = ServiceLocator.Resolve<IMapManager>(out mapManager);
-        if (exist)
-        {
-            mapSize = mapManager.GetMapSize();
-            GenerateProjectiles();
-        }
+
+        if (!exist) return;
+
+        mapSize = mapManager.GetMapSize();
+        GenerateProjectiles();
     }
 
     private void GenerateProjectiles()
