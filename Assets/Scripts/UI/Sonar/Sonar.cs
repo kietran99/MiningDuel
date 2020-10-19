@@ -23,7 +23,8 @@ public class Sonar : MonoBehaviour
     private GameObject tilePoolObject = null;
 
     [SerializeField]
-    private Image commonGemImage = null, uncommonGemImage = null, rareGemImage = null;
+    private Image commonGemImage = null, uncommonGemImage = null, rareGemImage = null,
+                    normalBombImage = null;
     #endregion
 
     #region FIELDS
@@ -150,6 +151,7 @@ public class Sonar : MonoBehaviour
             case 1: return commonGemImage; 
             case 4: return uncommonGemImage;
             case 10: return rareGemImage;
+            case -1: return normalBombImage;
             default: return commonGemImage;
         }
     }

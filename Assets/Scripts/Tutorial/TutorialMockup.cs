@@ -41,5 +41,20 @@ namespace MD.Tutorial
                 yield return new ScanTileData(posToScan[i], 0);
             }
         }
+
+        public Vector2Int GetMapSize()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Vector2Int PositionToIndex(Vector2 position)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool TrySpawnDiggableAtIndex(Vector2Int idx, DiggableType diggable, GameObject prefab)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -4,32 +4,26 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-public enum MapDataType
-{
-    Empty = 0,
-    CommonGem = 1,
-    UncommonGem = 4,
-    RareGem = 10,
-    NormalBomb = -1
-}
+
 public static class MapDataTypeExtensions
 {
-    public static bool IsGem(this MapDataType type)
+    public static bool IsGem(this DiggableType type)
     {
         switch(type)
         {
-            case MapDataType.CommonGem:
-            case MapDataType.UncommonGem:
-            case MapDataType.RareGem:
+            case DiggableType.CommonGem:
+            case DiggableType.UncommonGem:
+            case DiggableType.RareGem:
                 return true;
             default: return false;
         }
     }
-    public static bool IsBomb(this MapDataType type)
+
+    public static bool IsBomb(this DiggableType type)
     {
         switch(type)
         {
-            case MapDataType.NormalBomb:
+            case DiggableType.NormalBomb:
                 return true;
             default: return false;
         }
@@ -101,12 +95,16 @@ public class MapManager :  MonoBehaviour, IMapManager
     void Awake()
     {
         GenerateMap();
-        ServiceLocator.Register<MapManager>(this);
     }
 
     void Start()
     {
         EventManager.Instance.StartListening<GemDigSuccessData>(RemoveGemFromMapData);
+    }
+
+    void OnDestroy()
+    {
+        EventManager.Instance.StopListening<GemDigSuccessData>(RemoveGemFromMapData);
     }
 
     void Update()
@@ -129,10 +127,10 @@ public class MapManager :  MonoBehaviour, IMapManager
 #endif
     }
 
-    private void RemoveGemFromMapData(GemDigSuccessData obj)
+    private void RemoveGemFromMapData(GemDigSuccessData gemDigSuccessData)
     {
-        int indexX = Mathf.FloorToInt(obj.posX) - (int)rootX;
-        int indexY = Mathf.FloorToInt(obj.posY) - (int)rootY;
+        int indexX = Mathf.FloorToInt(gemDigSuccessData.posX) - (int)rootX;
+        int indexY = Mathf.FloorToInt(gemDigSuccessData.posY) - (int)rootY;
         if (indexX >= 0 && indexX < mapData.GetLength(0) && indexY >= 0 && indexY < mapData.GetLength(1))
         {
             mapData[indexX, indexY] = 0;
@@ -149,8 +147,8 @@ public class MapManager :  MonoBehaviour, IMapManager
 
     private void GenerateGems()
     {
-        int areaWidth = (int) mapSize.x / generateZoneSideLength;
-        int areaHeight = (int) mapSize.y / generateZoneSideLength;
+        int areaWidth = mapSize.x / generateZoneSideLength;
+        int areaHeight = mapSize.y / generateZoneSideLength;
         int amtPerZone, nGeneratedGems;
         (GameObject prefab, int value) randomGem; 
 
@@ -178,23 +176,22 @@ public class MapManager :  MonoBehaviour, IMapManager
         //generate gem-rich areas
     }
     
-    (GameObject, int) GetRandomGem()
+    private (GameObject, int) GetRandomGem()
     {
         int random = Random.Range(1, commonDropWeight + uncommonDropWeight + rareDropWeight + 1);
         if (random <= commonDropWeight)
         {
-            return (commonGem, (int) MapDataType.CommonGem);
+            return (commonGem, (int) DiggableType.CommonGem);
         }
 
         if (random <= commonDropWeight + uncommonDropWeight)
         {
-            return (uncommonGem, (int) MapDataType.UncommonGem);
+            return (uncommonGem, (int) DiggableType.UncommonGem);
         }
         
-        return (rareGem, (int) MapDataType.RareGem);
+        return (rareGem, (int) DiggableType.RareGem);
     }
 
-    //get random empty position's index in mapData return index (-1,-1) if fail
     private Vector2Int GetRandomEmptyIndex()
     {
         int randomX = 0, randomY = 0;
@@ -253,18 +250,16 @@ public class MapManager :  MonoBehaviour, IMapManager
         }
     }
 
-    public Vector2Int GetMapSize()
-    {
-        return mapSize;
-    }
+    public Vector2Int GetMapSize() => mapSize;
 
     public Vector2Int PositionToIndex(Vector2 position)
     {
         return new Vector2Int(Mathf.FloorToInt(position.x),Mathf.FloorToInt(position.y));
     }
-    public bool TrySpawnDiggableAtIndex(Vector2Int idx, MapDataType diggable, GameObject prefab)
+
+    public bool TrySpawnDiggableAtIndex(Vector2Int idx, DiggableType diggable, GameObject prefab)
     {
-        if ( mapData[idx.x,idx.y] != (int) MapDataType.Empty)
+        if ( mapData[idx.x,idx.y] != (int) DiggableType.Empty)
         { 
             return false;
         }
