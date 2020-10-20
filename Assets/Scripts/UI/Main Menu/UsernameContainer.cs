@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class UsernameText : MonoBehaviour
+public class UsernameContainer : MonoBehaviour
 {
     private void Start()
     {
