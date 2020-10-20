@@ -171,6 +171,9 @@ namespace MD.Tutorial
 
         public void SkipTutorial()
         {
+            EventSystems.EventManager.Instance.StopListening<MoveData>(AccumCurMoveDist);
+            EventSystems.EventManager.Instance.StopListening<GemCollideTutorialData>(ShowDigButton);
+            EventSystems.EventManager.Instance.StopListening<GemCollideTutorialData>(ShowDigButton);
             SceneManager.LoadScene(mainGameSceneName);
         }
 
