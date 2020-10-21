@@ -97,7 +97,7 @@ MonoBehaviour:
   idleSprite: {fileID: 21300000, guid: 080113ce64e913b4d9e00218739357b5, type: 3}
   projectileHoldSprite: {fileID: 21300000, guid: 07d429c8e0a233f439460c13f760d45e,
     type: 3}
-  digSprite: {fileID: 0}
+  digSprite: {fileID: 21300000, guid: b65b2c131b6005e468a976552cf1636e, type: 3}
 --- !u!1 &7091697347460261900
 GameObject:
   m_ObjectHideFlags: 0
