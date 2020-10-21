@@ -15,6 +15,9 @@ namespace MD.Diggable.Projectile
         [SerializeField]
         private SpriteRenderer spriteRenderer = null;
 
+        [SerializeField]
+        private Sprite explodeSprite = null;
+
         private ITimer timer = null;
 
         private bool canCollide = false;
@@ -55,8 +58,14 @@ namespace MD.Diggable.Projectile
 
         private void Explode()
         {
-            Destroy(projectileObject);
+            spriteRenderer.sprite = explodeSprite;
+            Invoke(nameof(Destroy), .2f);
             EventSystems.EventManager.Instance.TriggerEvent(new ExplodeData());
+        }
+
+        private void Destroy()
+        {
+            Destroy(projectileObject);
         }
     }
 }
