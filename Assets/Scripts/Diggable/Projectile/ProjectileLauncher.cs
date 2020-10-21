@@ -29,9 +29,9 @@ namespace MD.Diggable.Projectile
 
         void FixedUpdate()
         {
-            if (!shouldLaunch) return;
+            // if (!shouldLaunch) return;
 
-            rigidBody.AddForce(throwDir.normalized * power, ForceMode2D.Impulse);
+            // rigidBody.AddForce(throwDir.normalized * power, ForceMode2D.Impulse);
             //rigidBody.velocity = throwDir.normalized * power;
         }
 
@@ -44,6 +44,7 @@ namespace MD.Diggable.Projectile
         {
             this.power = power;
             shouldLaunch = true;
+            rigidBody.AddForce(throwDir.normalized * power, ForceMode2D.Impulse);
         }
     }
 }
