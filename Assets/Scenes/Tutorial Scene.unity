@@ -332,7 +332,7 @@ PrefabInstance:
     - target: {fileID: 5299018348562810284, guid: 27be5ae99ff552341ab827085fdcf8b0,
         type: 3}
       propertyPath: m_SortingOrder
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 27be5ae99ff552341ab827085fdcf8b0, type: 3}
@@ -3363,6 +3363,12 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &1804350554 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7091697348273341020, guid: 63380a81c31cefd48942fe91ed06e81f,
+    type: 3}
+  m_PrefabInstance: {fileID: 363786560}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1988308461 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7091697348273341026, guid: 63380a81c31cefd48942fe91ed06e81f,
@@ -3563,6 +3569,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Tutorial Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 3578896697300397322, guid: 49b9db6f71878b0428c6ba5c4fed462a,
+        type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1804350554}
+    - target: {fileID: 3578896697300397322, guid: 49b9db6f71878b0428c6ba5c4fed462a,
+        type: 3}
+      propertyPath: lines.Array.data[38]
+      value: So make sure to run and throw it at your opponent
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49b9db6f71878b0428c6ba5c4fed462a, type: 3}
