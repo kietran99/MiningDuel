@@ -9,21 +9,19 @@
 public class Loader : MonoBehaviour
 {
     #region SINGLETON
-    private static Loader instance;
+    //private static Loader instance;
 
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else if (instance != this)
-        {
-            Destroy(gameObject);
-        }
-
-        DontDestroyOnLoad(gameObject);
-    }
+    //private void Awake()
+    //{
+    //    if (instance == null)
+    //    {
+    //        instance = this;
+    //    }
+    //    else if (instance != this)
+    //    {
+    //        Destroy(gameObject);
+    //    }
+    //}
     #endregion
 
     [SerializeField]
@@ -32,5 +30,11 @@ public class Loader : MonoBehaviour
     private void Start()
     {
         ServiceLocator.Register<IMapManager>(Instantiate(mapManager).GetComponent<IMapManager>());
+    }
+
+    private void OnDestroy()
+    {
+        ServiceLocator.Reset();
+        //instance = null;
     }
 }

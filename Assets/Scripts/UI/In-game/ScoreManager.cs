@@ -36,5 +36,12 @@ namespace MD.UI
         {
             CurrentScore += data.value;
         }
+
+#if UNITY_EDITOR
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1)) CurrentScore += 100;
+        }
+#endif
     }
 }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Joe Stats
   m_EditorClassIdentifier: 
   characterSprite: {fileID: 21300000, guid: 080113ce64e913b4d9e00218739357b5, type: 3}
-  characterName: 
+  characterName: Joe
   power: 2
   speed: 2
   description: Balance stats overall, a great choice for starters.

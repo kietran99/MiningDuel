@@ -102,11 +102,11 @@ public class Sonar : MonoBehaviour
 
     private void AttemptToUpdateScanArea(MoveData moveData)
     {
-        //if (firstScan)
-        //{
-        //    firstScan = false;
-        //    return;
-        //}
+        if (firstScan)
+        {
+            firstScan = false;
+            return;
+        }
 
         float deltaX = lastCenterPos.x.DeltaInt(moveData.x);
         float deltaY = lastCenterPos.y.DeltaInt(moveData.y);

@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class ThrowAction : MonoBehaviour
 {      
+    // [SerializeField]
+    // private float baseDistance = 1f;
     [SerializeField]
-    private float baseDistance = 1f;
+    private float basePower = 100f;
 
     private Vector2 throwDir;
     private GameObject projectile;
@@ -34,7 +36,7 @@ public class ThrowAction : MonoBehaviour
 
     private void ThrowProjectile(ThrowInvokeData data)
     {
-        projectile.GetComponent<ProjectileLauncher>().Throw(baseDistance);
+        projectile.GetComponent<ProjectileLauncher>().Throw(basePower);
         projectile = null;
     }
 }
