@@ -18,6 +18,7 @@ namespace MD.Diggable.Projectile
         private ITimer timer = null;
 
         private bool canCollide = false;
+        private bool isPlayerCollidedBoom = false;
 
         void Start()
         {
@@ -49,12 +50,16 @@ namespace MD.Diggable.Projectile
         private void OnTriggerExit2D(Collider2D other)
         {
             if (!other.CompareTag(Constants.PLAYER_TAG)) return;
-
+            if (isPlayerCollidedBoom)
+            {
+                Debug.Log("Bùm");
+            }
             canCollide = true;
         }
 
         private void Explode()
         {
+            isPlayerCollidedBoom = true;
             Destroy(projectileObject);
             EventSystems.EventManager.Instance.TriggerEvent(new ExplodeData());
         }
