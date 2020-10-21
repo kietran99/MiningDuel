@@ -322,6 +322,7 @@ MonoBehaviour:
   timer: {fileID: 1746936436705194005}
   scoreCounter: {fileID: 1746936436053618377}
   digButton: {fileID: 1746936435825803794}
+  throwButton: {fileID: 858927582192799161}
   lines:
   - Hello there!
   - I guess you are a newbie!
@@ -355,7 +356,14 @@ MonoBehaviour:
   - Rarer gems nets you more score
   - but be careful as they take more swings to dig.
   - Thus making you more vulnerable!
-  - And...
+  - By the way
+  - There are lots of explosive underground!
+  - Be careful as they explodes quickly after dug up.
+  - 'Any character that get exploded '
+  - will be stunned briefly and drop some of their gems!
+  - Which includes you and other players.
+  - So make sure to throw it at your opponent
+  - to gain better adavantages!
   - That was all the basics!
   - Congrats!
   - You're ready to take on any opponents
@@ -1220,16 +1228,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6848964792062988296}
-  m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1746936435310891755}
   m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 100}
+  m_AnchoredPosition: {x: 342, y: -71}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5545855794388426224
@@ -2138,7 +2146,7 @@ PrefabInstance:
     - target: {fileID: 2900253976682946702, guid: f7e3093fe5cf872478fd3778c89b2cff,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2900253976875378529, guid: f7e3093fe5cf872478fd3778c89b2cff,
         type: 3}

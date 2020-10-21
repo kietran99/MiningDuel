@@ -27,7 +27,7 @@ namespace MD.Character
             EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(BindAndHoldProjectile);
         }
 
-        private void BindAndHoldProjectile(ProjectileObtainData data)
+        public void BindAndHoldProjectile(ProjectileObtainData data)
         {
             throwAction.BindProjectile(Instantiate(bombPrefab, gameObject.transform));
         }

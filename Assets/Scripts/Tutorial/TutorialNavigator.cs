@@ -1,4 +1,5 @@
-﻿using MD.Diggable;
+﻿using MD.Character;
+using MD.Diggable;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -28,7 +29,8 @@ namespace MD.Tutorial
         private Text skipText = null;
 
         [SerializeField]
-        private GameObject sonar = null, timer = null, scoreCounter = null, digButton = null;
+        private GameObject sonar = null, timer = null, scoreCounter = null, digButton = null, throwButton = null,
+                            player = null;
 
         [SerializeField]
         private string[] lines = null;
@@ -59,9 +61,10 @@ namespace MD.Tutorial
 
         private readonly int TUT_JOYSTICK_IDX = 6;
         private readonly int TUT_SONAR_IDX = 17;
-        private readonly int TUT_MOVE_TO_GEM_IDX = 23;
+        private readonly int TUT_MOVE_TO_GEM_IDX = 23;        
         private readonly int TUT_SCORE_IDX = 27;
-        private readonly int TUT_TIMER_IDX = 37;
+        private readonly int TUT_THROW_IDX = 38;
+        private readonly int TUT_TIMER_IDX = 44;
 
         void Start()
         {
@@ -79,9 +82,7 @@ namespace MD.Tutorial
         private void Update()
         {
             if (!CanProceedNextLine) return;
-
-            //if (currentLine >= lines.Length - 1) skipText.text = "Start";
-
+           
             if (!Input.GetMouseButtonDown(0)) return;
 
             if (currentLine >= lines.Length - 2)
@@ -122,6 +123,12 @@ namespace MD.Tutorial
             if (currentLine == TUT_SCORE_IDX)
             {
                 ShowScoreCounter();                
+                return;
+            }
+
+            if (currentLine == TUT_THROW_IDX)
+            {
+                ShowThrowButton();
                 return;
             }
 
@@ -186,6 +193,15 @@ namespace MD.Tutorial
         {
             scoreCounter.SetActive(true);
             ShowIndicator(IndicatorDir.UP, 330f, 120f);
+        }
+
+        private void ShowThrowButton()
+        {
+            digButton.SetActive(false);
+            throwButton.SetActive(true);
+            player.GetComponentInChildren<SpriteSwapper>().SwapProjHoldSprite(null);
+            player.GetComponent<DigAction>().BindAndHoldProjectile(null);
+            ShowIndicator(IndicatorDir.DOWN, 342f, -71f);
         }
 
         private void ShowTimer()

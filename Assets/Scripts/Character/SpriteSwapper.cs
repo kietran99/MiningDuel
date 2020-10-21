@@ -32,7 +32,7 @@ public class SpriteSwapper : MonoBehaviour
         Invoke(nameof(SwapIdleSprite), .2f);
     }
 
-    private void SwapProjHoldSprite(ProjectileObtainData obj)
+    public void SwapProjHoldSprite(ProjectileObtainData obj)
     {
         spriteRenderer.sprite = projectileHoldSprite;
     }
