@@ -6,11 +6,16 @@ namespace MD.UI
     [RequireComponent(typeof(Text))]
     public class GameCountdown : MonoBehaviour
     {
+        [SerializeField]
+        private ScoreManager scoreManager = null;
+
         private Text timerText;
 
         private int currentMin, currentSec;
 
         private float timeToNextSec;
+
+        private bool gameEnded = false;
 
         private void Awake()
         {
@@ -25,9 +30,19 @@ namespace MD.UI
 
         void Update()
         {
+#if UNITY_EDITOR
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(scoreManager.CurrentScore));
+            }
+#endif
+            if (gameEnded) return;
+
             if (currentMin == 0 && currentSec == 0)
             {
                 Debug.Log("Game Over");
+                EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(scoreManager.CurrentScore));
+                gameEnded = true;
                 return;
             }
 
@@ -38,7 +53,7 @@ namespace MD.UI
             }
 
             UpdateRemainingTime();
-            timeToNextSec = 1;
+            timeToNextSec = 1f;
         }
 
         private (int min, int sec) GetMinAndSec(string time)
