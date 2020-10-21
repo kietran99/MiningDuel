@@ -4,14 +4,12 @@ namespace MD.Diggable.Projectile
 {
     [RequireComponent(typeof(Rigidbody2D))]
     public class ProjectileLauncher : MonoBehaviour
-    {
+    {       
         private bool shouldLaunch = false;
         private Rigidbody2D rigidBody;
         private Vector3 holdPos;
         private Transform player;
-
         private Vector2 throwDir;
-        private float power;
 
         void Start()
         {
@@ -26,23 +24,14 @@ namespace MD.Diggable.Projectile
 
             rigidBody.transform.position = player.position + holdPos;
         }
-
-        void FixedUpdate()
-        {
-            // if (!shouldLaunch) return;
-
-            // rigidBody.AddForce(throwDir.normalized * power, ForceMode2D.Impulse);
-            //rigidBody.velocity = throwDir.normalized * power;
-        }
-
+        
         public void BindThrowDirection(Vector2 throwDir)
         {
             this.throwDir = throwDir;
         }
 
-        public void Throw(float power)
+        public void Launch(float power)
         {
-            this.power = power;
             shouldLaunch = true;
             rigidBody.AddForce(throwDir.normalized * power, ForceMode2D.Impulse);
         }

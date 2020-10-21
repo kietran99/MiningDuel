@@ -24,7 +24,7 @@ namespace MD.Diggable.Gem
         }
 
         private void Dig(DigInvokeData data)
-        {
+        {           
             if (!diggable) return;
 
             gemValue.DecreaseValue(digger.Power);

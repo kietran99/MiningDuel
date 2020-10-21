@@ -23,13 +23,16 @@ namespace MD.Tutorial
         {
             for (int i = 0; i < posToScan.Length; i++)
             {
+                
                 if (!setGemPos && commonGemMockup != null &&
-                    posToScan[i].x.IsEqual(Mathf.Floor(player.position.x) + offsetX) &&
-                    posToScan[i].y.IsEqual(Mathf.Floor(player.position.y) + offsetY))
+                posToScan[i].x.IsEqual((player.position.x + .5f).Round() + offsetX) &&
+                posToScan[i].y.IsEqual((player.position.y + .5f).Round() + offsetY))
                 {
+                    Debug.Log((player.position.x).Round() + " " + (player.position.y).Round());
                     commonGemMockup.transform.position = new Vector3(
-                        Mathf.Floor(player.position.x) + offsetX,
-                        Mathf.Floor(player.position.y) + offsetY, 0f);
+                        (player.position.x + .5f).Round() + offsetX,
+                        (player.position.y + .5f).Round() + offsetY,
+                        0f);
                     setGemPos = true;
                 }
 

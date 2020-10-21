@@ -6,8 +6,8 @@ public static class NumberExtension
     {
         bool isPositive = floatNum > 0f;
         float delta = floatNum - Mathf.Floor(floatNum);
-        bool shouldRoundUp = isPositive ? delta > .5f : delta < .5f;
-        return shouldRoundUp ? Mathf.Ceil(floatNum) : Mathf.Floor(floatNum);
+        //bool shouldRoundUp = de;
+        return delta > .45f ? Mathf.Ceil(floatNum) : Mathf.Floor(floatNum);
     }
 
     public static float DeltaInt(this float num_1, float num_2)

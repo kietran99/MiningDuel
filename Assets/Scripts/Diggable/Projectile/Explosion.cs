@@ -5,7 +5,7 @@ namespace MD.Diggable.Projectile
 {
     [RequireComponent(typeof(Timer.Timer))]
     public class Explosion : MonoBehaviour, Timer.ITickListener
-    {
+    {        
         [SerializeField]
         private GameObject projectileObject = null;
 

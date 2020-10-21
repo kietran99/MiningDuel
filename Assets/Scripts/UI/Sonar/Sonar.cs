@@ -67,8 +67,7 @@ public class Sonar : MonoBehaviour
 
         if (!isTutorial && genManager == null)
         {
-            ServiceLocator.Resolve<IMapManager>(out genManager);           
-            return;
+            ServiceLocator.Resolve<IMapManager>(out genManager);    
         }
 
         if (genManager != null)
@@ -114,7 +113,8 @@ public class Sonar : MonoBehaviour
         if (deltaX <= Mathf.Epsilon && deltaY <= Mathf.Epsilon) return;
 
         lastCenterPos = new Vector2(moveData.x, moveData.y);
-        (float roundedX, float roundedY) = (Mathf.Floor(moveData.x), Mathf.Floor(moveData.y)); 
+        (float roundedX, float roundedY) = //(Mathf.Floor(moveData.x), Mathf.Floor(moveData.y)); 
+            ((moveData.x).Round(), (moveData.y).Round());
         MoveData roundedMoveData = new MoveData(roundedX, roundedY);
         UpdateScanArea(roundedMoveData);
     }
