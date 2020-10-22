@@ -8,15 +8,19 @@ public class DropObtain : MonoBehaviour
     private int value = 1;
     [SerializeField]
     private bool canObtain;
+
+    [SerializeField]
+    private float obtainWaitTime = 3f;
     void Start()
     {
         canObtain = false;
-        Invoke("EnableObtain",1f);
+        Invoke("EnableObtain",obtainWaitTime);
     }
     
     private void EnableObtain()
     {
         canObtain = true;
+        transform.GetComponentInChildren<SpriteRenderer>().color = Color.white;
     }
     void OnTriggerEnter2D(Collider2D other)
     {

@@ -247,4 +247,4 @@ MonoBehaviour:
   explodeSprite: {fileID: 21300044, guid: 7384dec0e667b8643bee02d3ecaf659c, type: 3}
   droppingGemPrefab: {fileID: 4802790712231606850, guid: d56af095d3afca945b6f0310bc2f873c,
     type: 3}
-  maxExplosionForce: 100
+  maxExplosionForce: 250

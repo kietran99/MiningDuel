@@ -22,11 +22,11 @@ namespace MD.Diggable.Projectile
         private GameObject droppingGemPrefab = null;
 
         [SerializeField]
-        private float maxExplosionForce = 50f;
+        private float maxExplosionForce = 250f;
 
         private ITimer timer = null;
 
-        private bool canCollide = false;
+        private bool isThrown = false;
 
         void Start()
         {
@@ -44,20 +44,27 @@ namespace MD.Diggable.Projectile
             if (timeStamp == 3f)
             {
                 timer.Stop();
-                Explode();
+                if (!isThrown)
+                {
+                    ExplodeWithPlayer(transform.position);
+                }
+                else
+                {
+                    Explode();
+                }
             }     
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (!canCollide || !other.CompareTag(Constants.PLAYER_TAG)) return;
+            if (!isThrown || !other.CompareTag(Constants.PLAYER_TAG)) return;
             ExplodeWithPlayer(other.transform.position);
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
             if (!other.CompareTag(Constants.PLAYER_TAG)) return;
-            canCollide = true;
+            isThrown = true;
         }
 
         private void ExplodeWithPlayer(Vector2 center)
@@ -67,7 +74,6 @@ namespace MD.Diggable.Projectile
             
             int numOfGem = Mathf.FloorToInt(scoreManager.GetCurrentScore()*stats.GemDropPercentage/100f);
             scoreManager.DecreaseScore(numOfGem);
-
             for (int i = 0; i < numOfGem; i++)
             {
                 droppingGem = Instantiate(droppingGemPrefab, center, Quaternion.identity);
@@ -87,7 +93,7 @@ namespace MD.Diggable.Projectile
 
         private float GetExplosionForce()
         {
-            return Random.Range(1f, maxExplosionForce);
+            return Random.Range(100f, maxExplosionForce);
         }
         private Vector2 GetExplosionDirection()
         {
