@@ -5,7 +5,8 @@ namespace MD.Diggable.Projectile
 {
     [RequireComponent(typeof(Timer.Timer))]
     public class Explosion : MonoBehaviour, Timer.ITickListener
-    {        
+    {
+        #region SERIALIZE FIELDS
         [SerializeField]
         private GameObject projectileObject = null;
 
@@ -23,6 +24,7 @@ namespace MD.Diggable.Projectile
 
         [SerializeField]
         private float maxExplosionForce = 250f;
+        #endregion
 
         private ITimer timer = null;
 
@@ -44,8 +46,9 @@ namespace MD.Diggable.Projectile
             if (timeStamp == 3f)
             {
                 timer.Stop();
+
                 if (!isThrown)
-                {
+                {                    
                     ExplodeWithPlayer(transform.position);
                 }
                 else
@@ -58,6 +61,7 @@ namespace MD.Diggable.Projectile
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!isThrown || !other.CompareTag(Constants.PLAYER_TAG)) return;
+            
             ExplodeWithPlayer(other.transform.position);
         }
 
@@ -82,6 +86,7 @@ namespace MD.Diggable.Projectile
 
             Explode();
         }
+
         private void Explode()
         {
             spriteRenderer.sprite = explodeSprite;
@@ -95,6 +100,7 @@ namespace MD.Diggable.Projectile
         {
             return Random.Range(100f, maxExplosionForce);
         }
+
         private Vector2 GetExplosionDirection()
         {
             Vector2 randomDir = Vector2.zero;

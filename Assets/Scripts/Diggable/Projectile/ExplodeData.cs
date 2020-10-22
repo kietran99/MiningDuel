@@ -1,4 +1,4 @@
-﻿public class ExplodeData : EventSystems.IEventData
+﻿public struct ExplodeData : EventSystems.IEventData
 {
     
 }

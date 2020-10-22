@@ -17,7 +17,7 @@ public class ThrowControl : MonoBehaviour
     }
 
     private void Invoke()
-    {
+    { 
         EventSystems.EventManager.Instance.TriggerEvent(new ThrowInvokeData());
     }
 
