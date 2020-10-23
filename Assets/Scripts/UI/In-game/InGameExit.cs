@@ -4,10 +4,7 @@ using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
 public class InGameExit : MonoBehaviour
-{
-    [SerializeField]
-    private GameObject endGameStatsContainer = null;
-
+{    
     void Start()
     {
         GetComponent<Button>().onClick.AddListener(ExitToLobby);

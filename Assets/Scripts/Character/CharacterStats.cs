@@ -9,7 +9,7 @@ namespace MD.Character
         private Sprite characterSprite = null;
 
         [SerializeField]
-        private string characterName;
+        private string characterName = string.Empty;
 
         [SerializeField]
         private int power = 2;

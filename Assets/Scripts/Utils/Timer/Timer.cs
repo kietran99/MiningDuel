@@ -8,7 +8,7 @@ namespace Timer
         private enum TimerState { ON, OFF }
 
         [SerializeField]
-        private float[] timeStamps;
+        private float[] timeStamps = null;
 
         private TimerState state = TimerState.OFF;
 

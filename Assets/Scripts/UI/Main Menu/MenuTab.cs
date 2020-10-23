@@ -10,7 +10,7 @@ namespace MD.UI.MainMenu
         private MainMenuTabToggler toggler = null;
 
         [SerializeField]
-        private MenuType type;
+        private MenuType type = MenuType.LOBBY;
 
         [SerializeField]
         private GameObject layout = null;

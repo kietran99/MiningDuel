@@ -83,7 +83,7 @@ public static class CollectionExtension
         return currentVal;
     }
 
-    public static void Map<T>(this T[] iter, Action<T> function)
+    public static void ForEach<T>(this T[] iter, Action<T> function)
     {
         for (int i = 0; i < iter.Length; i++)
         {
@@ -91,7 +91,7 @@ public static class CollectionExtension
         }
     }
 
-    public static void Map<T>(this T[] iter, Action<T, int> function)
+    public static void ForEach<T>(this T[] iter, Action<T, int> function)
     {
         for (int i = 0; i < iter.Length; i++)
         {
@@ -99,7 +99,7 @@ public static class CollectionExtension
         }
     }
 
-    public static T2[] Map<T1, T2>(this T1[] iter, Func<T1, T2> function)
+    public static T2[] ForEach<T1, T2>(this T1[] iter, Func<T1, T2> function)
     {
         var result = new List<T2>();
 
@@ -111,7 +111,7 @@ public static class CollectionExtension
         return result.ToArray();
     }
 
-    public static void Map<T>(this List<T> iter, Action<T> function)
+    public static void ForEach<T>(this List<T> iter, Action<T> function)
     {
         for (int i = 0; i < iter.Count; i++)
         {
@@ -119,7 +119,7 @@ public static class CollectionExtension
         }
     }
 
-    public static void Map<T>(this HashSet<T> iter, Action<T> function)
+    public static void ForEach<T>(this HashSet<T> iter, Action<T> function)
     {
         foreach (var ele in iter)
         {

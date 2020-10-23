@@ -11,7 +11,7 @@ namespace MD.Tutorial
     {
         #region SERIALIZE FIELDS
         [SerializeField]
-        private string mainGameSceneName;
+        private string mainGameSceneName = string.Empty;
 
         [SerializeField]
         private GameObject tutorialContainer = null;
