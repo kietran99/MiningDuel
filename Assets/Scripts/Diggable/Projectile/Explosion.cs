@@ -6,7 +6,9 @@ namespace MD.Diggable.Projectile
     [RequireComponent(typeof(Timer.Timer))]
     public class Explosion : MonoBehaviour, Timer.ITickListener
     {
-        #region SERIALIZE FIELDS
+        [SerializeField]
+        private float explosionRadius = 5f;
+
         [SerializeField]
         private GameObject projectileObject = null;
 
@@ -24,7 +26,6 @@ namespace MD.Diggable.Projectile
 
         [SerializeField]
         private float maxExplosionForce = 250f;
-        #endregion
 
         private ITimer timer = null;
 
@@ -46,49 +47,57 @@ namespace MD.Diggable.Projectile
             if (timeStamp == 3f)
             {
                 timer.Stop();
-
-                if (!isThrown)
-                {                    
-                    ExplodeWithPlayer(transform.position);
-                }
-                else
-                {
-                    Explode();
-                }
+                // if (!isThrown)
+                // {
+                //     ExplodeWithPlayer(transform.position);
+                // }
+                // else
+                // {
+                Explode();
+                // }
             }     
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (!isThrown || !other.CompareTag(Constants.PLAYER_TAG)) return;
-            
-            ExplodeWithPlayer(other.transform.position);
+            if (!isThrown) return;
+            // ExplodeWithPlayer(other.transform.position);
+            if (other.CompareTag(Constants.PLAYER_TAG)) Explode();
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (!other.CompareTag(Constants.PLAYER_TAG)) return;
-            isThrown = true;
+            if (other.CompareTag(Constants.PLAYER_TAG))  isThrown = true;
         }
 
-        private void ExplodeWithPlayer(Vector2 center)
-        {
-            GameObject droppingGem;
-            if (!ServiceLocator.Resolve<IScoreManager>(out IScoreManager scoreManager)) return;
+        // private void ExplodeWithPlayer(Vector2 center)
+        // {
+        //     GameObject droppingGem;
+        //     if (!ServiceLocator.Resolve<IScoreManager>(out IScoreManager scoreManager)) return;
             
-            int numOfGem = Mathf.FloorToInt(scoreManager.GetCurrentScore()*stats.GemDropPercentage/100f);
-            scoreManager.DecreaseScore(numOfGem);
-            for (int i = 0; i < numOfGem; i++)
-            {
-                droppingGem = Instantiate(droppingGemPrefab, center, Quaternion.identity);
-                droppingGem.GetComponent<Rigidbody2D>().AddForce(GetExplosionForce() * GetExplosionDirection());
-            }
+        //     int numOfGem = Mathf.FloorToInt(scoreManager.GetCurrentScore()*stats.GemDropPercentage/100f);
+        //     scoreManager.DecreaseScore(numOfGem);
+        //     for (int i = 0; i < numOfGem; i++)
+        //     {
+        //         droppingGem = Instantiate(droppingGemPrefab, center, Quaternion.identity);
+        //         droppingGem.GetComponent<Rigidbody2D>().AddForce(GetExplosionForce() * GetExplosionDirection());
+        //     }
 
-            Explode();
-        }
-
+        //     Explode();
+        // }
         private void Explode()
         {
+            //check collision
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position,explosionRadius);
+            foreach (Collider2D collide in colliders)
+            {
+                if (collide.CompareTag(Constants.PLAYER_TAG))
+                {
+                    Debug.Log(collide.transform.name);
+                }
+            }
+
+            //effects
             spriteRenderer.sprite = explodeSprite;
             Invoke(nameof(DestroyProjectile), .2f);
             EventSystems.EventManager.Instance.TriggerEvent(new ExplodeData());
@@ -100,7 +109,6 @@ namespace MD.Diggable.Projectile
         {
             return Random.Range(100f, maxExplosionForce);
         }
-
         private Vector2 GetExplosionDirection()
         {
             Vector2 randomDir = Vector2.zero;
