@@ -194,6 +194,7 @@ GameObject:
   - component: {fileID: 7091697348273341027}
   - component: {fileID: 7091697348273341030}
   - component: {fileID: 223839035}
+  - component: {fileID: 1499878171468811934}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -307,3 +308,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   basePower: 100
+--- !u!114 &1499878171468811934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7091697348273341020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a1ca051c3490fd4084a50cb9bfe2004, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  droppingGemPrefab: {fileID: 4802790712231606850, guid: d56af095d3afca945b6f0310bc2f873c,
+    type: 3}
+  maxExplosionForce: 250

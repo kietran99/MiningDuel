@@ -63,7 +63,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5512573233695929278}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
@@ -71,7 +71,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: -0.04, y: -0.22}
   serializedVersion: 2
-  m_Radius: 0.65
+  m_Radius: 0.54
 --- !u!114 &5170740038248656859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,7 +213,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -0.12}
   serializedVersion: 2
-  m_Radius: 0.75537235
+  m_Radius: 0.49
 --- !u!114 &4289731040685933445
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,6 +241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ba0498518173194bad8aac115ed6d6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosionRadius: 1.5
   projectileObject: {fileID: 5512573233695929278}
   stats: {fileID: 11400000, guid: 1e2aa287b485d584991bba88ec458bf7, type: 2}
   spriteRenderer: {fileID: 6175424214477684141}
@@ -248,3 +249,6 @@ MonoBehaviour:
   droppingGemPrefab: {fileID: 4802790712231606850, guid: d56af095d3afca945b6f0310bc2f873c,
     type: 3}
   maxExplosionForce: 250
+  explodeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1

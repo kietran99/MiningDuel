@@ -35,5 +35,9 @@ namespace MD.Diggable.Projectile
             shouldLaunch = true;
             rigidBody.AddForce(throwDir.normalized * power, ForceMode2D.Impulse);
         }
+        public void StopOnCollide()
+        {
+            rigidBody.velocity = Vector2.zero;
+        }
     }
 }
