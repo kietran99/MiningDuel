@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using MD.Diggable.Projectile;
 using UnityEngine;
 
-public class ExplodedHandler : MonoBehaviour, IExplodable
+public class ExplosionHandler : MonoBehaviour, IExplodable
 {
     #region  SERIALIZE FIELDS
     [SerializeField]
@@ -14,14 +13,15 @@ public class ExplodedHandler : MonoBehaviour, IExplodable
 
     public void ProcessExplosion(float gemDropPercentage, float stunTime, int bombType)
     {
-        Debug.Log(transform.name + "taked bomb");
-        GameObject droppingGem;
+        Debug.Log(transform.name + " was exploded");
         if (!ServiceLocator.Resolve<IScoreManager>(out IScoreManager scoreManager)) return;
-        int numOfGem = Mathf.FloorToInt(scoreManager.GetCurrentScore()*gemDropPercentage*.01f);
+
+        int numOfGem = Mathf.FloorToInt(scoreManager.GetCurrentScore() * gemDropPercentage * .01f);
         scoreManager.DecreaseScore(numOfGem);
+
         for (int i = 0; i < numOfGem; i++)
         {
-            droppingGem = Instantiate(droppingGemPrefab, transform.position, Quaternion.identity);
+            GameObject droppingGem = Instantiate(droppingGemPrefab, transform.position, Quaternion.identity);
             droppingGem.GetComponent<Rigidbody2D>().AddForce(GetExplosionForce() * GetExplosionDirection());
         }
     }
@@ -30,6 +30,7 @@ public class ExplodedHandler : MonoBehaviour, IExplodable
     {
         return Random.Range(100f, maxExplosionForce);
     }
+
     private Vector2 GetExplosionDirection()
     {
         Vector2 randomDir = Vector2.zero;

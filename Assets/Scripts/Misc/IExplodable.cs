@@ -1,4 +1,7 @@
-public interface IExplodable
+namespace MD.Diggable.Projectile
 {
-    void ProcessExplosion(float gemDropPercentage, float stunTime, int bombType);
+    public interface IExplodable
+    {
+        void ProcessExplosion(float gemDropPercentage, float stunTime, int bombType);
+    }
 }

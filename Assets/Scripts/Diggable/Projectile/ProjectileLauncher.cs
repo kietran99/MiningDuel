@@ -25,19 +25,14 @@ namespace MD.Diggable.Projectile
             rigidBody.transform.position = player.position + holdPos;
         }
         
-        public void BindThrowDirection(Vector2 throwDir)
-        {
-            this.throwDir = throwDir;
-        }
+        public void BindThrowDirection(Vector2 throwDir) => this.throwDir = throwDir;
 
         public void Launch(float power)
         {
             shouldLaunch = true;
             rigidBody.AddForce(throwDir.normalized * power, ForceMode2D.Impulse);
         }
-        public void StopOnCollide()
-        {
-            rigidBody.velocity = Vector2.zero;
-        }
+
+        public void StopOnCollide() => rigidBody.velocity = Vector2.zero;
     }
 }

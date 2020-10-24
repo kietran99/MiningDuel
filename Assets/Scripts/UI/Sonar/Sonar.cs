@@ -93,7 +93,7 @@ namespace MD.UI
         private void OnDestroy()
         {
             var eventManager = EventSystems.EventManager.Instance;
-            eventManager.StopListening<MoveData>(UpdateScanArea);
+            eventManager.StopListening<MoveData>(AttemptToUpdateScanArea);
             eventManager.StopListening<GemSpawnData>(UpdateScanArea);
             eventManager.StopListening<GemDigSuccessData>(UpdateScanArea);
             eventManager.StopListening<ProjectileObtainData>(UpdateScanArea);
