@@ -61,7 +61,7 @@ namespace MD.UI
 
             if (shouldShowDebugTiles)
             {
-                relScannablePos.ForEach(pos => tilePool.Pop().transform.position
+                relScannablePos.Map(pos => tilePool.Pop().transform.position
                 = new Vector3(MapConstants.SPRITE_OFFSET.x + pos.x, MapConstants.SPRITE_OFFSET.y + pos.y, 0f));
             }
 
@@ -191,7 +191,7 @@ namespace MD.UI
         private void ShowDebugArea(MoveData moveData)
         {
             tilePool.Reset();
-            relScannablePos.ForEach(pos => tilePool.Pop().transform.position =
+            relScannablePos.Map(pos => tilePool.Pop().transform.position =
             new Vector3(moveData.x + pos.x + MapConstants.SPRITE_OFFSET.x,
             moveData.y + pos.y + MapConstants.SPRITE_OFFSET.y, 0f));
         }

@@ -99,7 +99,7 @@ public static class CollectionExtension
         }
     }
 
-    public static T2[] ForEach<T1, T2>(this T1[] iter, Func<T1, T2> function)
+    public static T2[] Map<T1, T2>(this T1[] iter, Func<T1, T2> function)
     {
         var result = new List<T2>();
 
