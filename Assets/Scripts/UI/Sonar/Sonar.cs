@@ -145,6 +145,7 @@ namespace MD.UI
             float posOnSonarY = relToCenterPosY * symbolContainer.rect.height / diameter;
             Vector3 spawnPos = symbolContainer.position + new Vector3(posOnSonarX, posOnSonarY, 0f);
             Image symbolImage = Instantiate(GetGemImage(gemValue), spawnPos, Quaternion.identity, symbolContainer);
+            symbolImage.rectTransform.sizeDelta = new Vector2(symbolContainer.rect.width / diameter, symbolContainer.rect.width / diameter);
             return new SonarSymbol(relToCenterPosX, relToCenterPosY, symbolImage);
         }
 
