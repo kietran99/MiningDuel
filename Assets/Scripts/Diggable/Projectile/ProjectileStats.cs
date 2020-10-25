@@ -19,7 +19,7 @@ namespace MD.Diggable.Projectile
 
         public int DigValue { get => 1; }
 
-        public Sprite ProjectileSprite { get => projectileSprite; }
+        public Sprite DiggableSprite { get => projectileSprite; }
 
         public float StunTime { get => stunTime; }
 

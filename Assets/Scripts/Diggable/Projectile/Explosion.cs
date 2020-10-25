@@ -23,7 +23,7 @@ namespace MD.Diggable.Projectile
         private Sprite explodeSprite = null;
 
         [SerializeField]
-        private LayerMask explodeLayerMask;
+        private LayerMask explodeLayerMask = 1;
 
         #endregion
         

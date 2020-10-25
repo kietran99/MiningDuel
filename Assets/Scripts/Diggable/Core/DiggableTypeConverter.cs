@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MD.Diggable.Core
 {
-    public class DiggableTypeConverter
+    public static class DiggableTypeConverter
     {
         private readonly static string GEM_PATH = "Gem/";
         private readonly static string NAME_COMMON_GEM = "Common Gem Stats";

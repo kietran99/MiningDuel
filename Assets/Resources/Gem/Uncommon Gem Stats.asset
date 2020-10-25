@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b99af2f2d98f10747b4e50d16230c73c, type: 3}
   m_Name: Uncommon Gem Stats
   m_EditorClassIdentifier: 
+  gemSprite: {fileID: 21300000, guid: 6f5bea299d36924408b405dad700ee18, type: 3}
   value: 4
