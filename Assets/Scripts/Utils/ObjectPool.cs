@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectPool : MonoBehaviour, IObjectPool
@@ -9,13 +10,13 @@ public class ObjectPool : MonoBehaviour, IObjectPool
     [SerializeField]
     private GameObject objectToPool = null;
 
-    [SerializeField]
-    private GameObject parent = null;
+    private Transform parent = null;
 
     private Queue<GameObject> pooledObjects, freeObjects;
 
     void Awake()
     {
+        parent = transform;
         pooledObjects = new Queue<GameObject>(capacity);
         freeObjects = new Queue<GameObject>(capacity);
         InitObjects(capacity);
@@ -25,7 +26,7 @@ public class ObjectPool : MonoBehaviour, IObjectPool
     {
         if (capacity > 1) InitObjects(--capacity);
 
-        GameObject instance = Instantiate(objectToPool, parent.transform);
+        GameObject instance = Instantiate(objectToPool, parent);
         instance.SetActive(false);
         pooledObjects.Enqueue(instance);        
     }
@@ -55,4 +56,6 @@ public class ObjectPool : MonoBehaviour, IObjectPool
         pooledObjects.Enqueue(obj);
         Reset();
     }
+    
+    public (GameObject item, int idx) LookUp(Predicate<GameObject> condition) => freeObjects.ToArray().LookUp(condition);
 }

@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Rare Gem Stats
   m_EditorClassIdentifier: 
   gemSprite: {fileID: 21300000, guid: 8cf23e933441f1b408a3752dc0711b7c, type: 3}
+  sonarSprite: {fileID: 21300000, guid: e5f03a96f81dcd141abfaf67390df1e8, type: 3}
   value: 10

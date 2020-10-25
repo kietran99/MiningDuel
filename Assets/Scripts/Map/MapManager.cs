@@ -1,5 +1,6 @@
 ﻿using EventSystems;
 using MD.Diggable;
+using MD.Diggable.Gem;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ public static class MapDataTypeExtensions
         }
     }
 }
-public class MapManager :  MonoBehaviour, IMapManager
+public class MapManager : MonoBehaviour, IMapManager
 {
 
     #region SERIALIZE FIELDS
@@ -105,27 +106,7 @@ public class MapManager :  MonoBehaviour, IMapManager
     void OnDestroy()
     {
         EventManager.Instance.StopListening<GemDigSuccessData>(RemoveGemFromMapData);
-    }
-
-    void Update()
-    {
-#if UNITY_EDITOR
-        if (!Input.GetKeyDown(KeyCode.Alpha1)) return;
-
-        var randomIndex = GetRandomEmptyIndex();
-        if (randomIndex == -Vector2Int.one)
-        {
-            return;
-        }
-        (GameObject prefab, int value) = GetRandomGem();
-        var worldPostion = IndexToPosition(randomIndex);
-        mapData[randomIndex.x, randomIndex.y] = value;
-        Instantiate(prefab, worldPostion, Quaternion.identity, gemContainer);
-        EventSystems.EventManager.Instance.TriggerEvent(
-            new GemSpawnData(worldPostion.x - MapConstants.SPRITE_OFFSET.x,
-            worldPostion.y - MapConstants.SPRITE_OFFSET.y, value));
-#endif
-    }
+    }   
 
     private void RemoveGemFromMapData(GemDigSuccessData gemDigSuccessData)
     {
@@ -246,7 +227,7 @@ public class MapManager :  MonoBehaviour, IMapManager
             Instantiate(newGem.prefab, worldPostion, Quaternion.identity, gemContainer);
             EventSystems.EventManager.Instance.TriggerEvent(
                 new GemSpawnData(worldPostion.x - MapConstants.SPRITE_OFFSET.x, 
-                worldPostion.y - MapConstants.SPRITE_OFFSET.y, newGem.value));
+                worldPostion.y - MapConstants.SPRITE_OFFSET.y, (DiggableType)newGem.value));
         }
     }
 

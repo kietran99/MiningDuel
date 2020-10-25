@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a8ab0fd45821ab4c80dfb1ea0d42501, type: 3}
-  m_Name: Bomb
+  m_Name: Bomb Stats
   m_EditorClassIdentifier: 
   projectileSprite: {fileID: 21300000, guid: 8c6be1f0b5ab4504786e427510d3f07a, type: 3}
+  sonarSprite: {fileID: 21300000, guid: 8c6be1f0b5ab4504786e427510d3f07a, type: 3}
   stunTime: 1
   gemDropPercentage: 20

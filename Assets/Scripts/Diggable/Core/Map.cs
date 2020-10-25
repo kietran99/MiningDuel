@@ -18,6 +18,7 @@ namespace MD.Diggable.Core
         public Map(TileData[,] tileData)
         {
             this.tileData = tileData;
+            nullTile = new NullTileData();
         }
 
         public bool TryGet(int x, int y, out TileData data)

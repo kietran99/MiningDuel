@@ -1,4 +1,6 @@
 ﻿using MD.Diggable;
+using MD.Diggable.Core;
+using MD.Diggable.Gem;
 using MD.Diggable.Projectile;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,11 +25,10 @@ namespace MD.UI
         private RectTransform symbolContainer = null;
 
         [SerializeField]
-        private GameObject tilePoolObject = null;
+        private GameObject symbolPoolObject = null;
 
         [SerializeField]
-        private Image commonGemImage = null, uncommonGemImage = null, rareGemImage = null,
-                        normalBombImage = null;
+        private GameObject tilePoolObject = null;        
         #endregion
 
         #region FIELDS
@@ -35,26 +36,15 @@ namespace MD.UI
         private IMapManager genManager;
         private Vector2 lastCenterPos = Vector2.zero;
         private bool firstScan = true;
+        private float symbolSize;
         private IObjectPool tilePool;
+        private IObjectPool symbolPool;
         #endregion
-
-        private struct SonarSymbol
-        {
-            public float posX, posY;
-            public Image symbol;
-
-            public SonarSymbol(float posX, float posY, Image symbol)
-            {
-                this.posX = posX;
-                this.posY = posY;
-                this.symbol = symbol;
-            }
-        }
-
-        private List<SonarSymbol> sonarSymbols = new List<SonarSymbol>();
-
+        
         void Start()
         {
+            symbolPool = symbolPoolObject.GetComponent<IObjectPool>();
+            symbolSize = symbolContainer.rect.width / (2 * scanRange + 1);
             tilePool = tilePoolObject.GetComponent<IObjectPool>();
             relScannablePos = GenSquarePositions().ToArray();
             ListenToEvents();
@@ -74,6 +64,38 @@ namespace MD.UI
             {
                 Show(genManager.GetScanAreaData(relScannablePos));
             }
+        }
+
+        private void Show(ScanAreaData scanAreaData)
+        {
+            symbolPool.Reset();
+
+            for (int i = 0; i < scanAreaData.Tiles.Length; i++)
+            {
+                if (scanAreaData[i].Diggable == 0) continue;
+                GenSymbol(relScannablePos[i], (DiggableType)scanAreaData[i].Diggable);
+            }
+        }
+
+        private void Show(TileData[] tileData)
+        {
+
+        }
+
+        private IEnumerable<TileData> ConvertToTileData(ScanTileData[] tileData)
+        {
+            for (int i = 0; i < tileData.Length; i++)
+            {
+                yield return new TileData((DiggableType)tileData[i].Diggable);
+            }
+        }
+
+        private void GenSymbol(Vector2 pos, DiggableType diggableType)
+        {
+            var symbol = symbolPool.Pop().GetComponent<Image>();
+            symbol.transform.position = symbolContainer.position + new Vector3(pos.x * symbolSize, pos.y * symbolSize, 0f);
+            symbol.rectTransform.sizeDelta = new Vector2(symbolSize, symbolSize);
+            symbol.sprite = DiggableTypeConverter.Convert(diggableType).SonarSprite;
         }
 
         public void BindScanAreaData(IMapManager genManager)
@@ -99,6 +121,7 @@ namespace MD.UI
             eventManager.StopListening<ProjectileObtainData>(UpdateScanArea);
         }
 
+        #region UPDATE SCAN AREA
         private void AttemptToUpdateScanArea(MoveData moveData)
         {
             if (firstScan)
@@ -125,7 +148,7 @@ namespace MD.UI
             if (!TryWorldToScannablePos(new Vector2(gemSpawnData.x, gemSpawnData.y), out Vector2 scannablePos)) return;
 
             //Debug.Log("Output: " + scannablePos);
-            sonarSymbols.Add(GenSonarSymbol(scannablePos.x, scannablePos.y, gemSpawnData.type));
+            GenSymbol(scannablePos, gemSpawnData.type);
         }
 
         private bool TryWorldToScannablePos(Vector2 worldPos, out Vector2 scannablePos)
@@ -137,30 +160,7 @@ namespace MD.UI
             scannablePos = resPos;
             return !idx.Equals(Constants.INVALID);
         }
-
-        private SonarSymbol GenSonarSymbol(float relToCenterPosX, float relToCenterPosY, int gemValue)
-        {
-            var diameter = 2 * scanRange + 1;
-            float posOnSonarX = relToCenterPosX * symbolContainer.rect.width / diameter;
-            float posOnSonarY = relToCenterPosY * symbolContainer.rect.height / diameter;
-            Vector3 spawnPos = symbolContainer.position + new Vector3(posOnSonarX, posOnSonarY, 0f);
-            Image symbolImage = Instantiate(GetGemImage(gemValue), spawnPos, Quaternion.identity, symbolContainer);
-            symbolImage.rectTransform.sizeDelta = new Vector2(symbolContainer.rect.width / diameter, symbolContainer.rect.width / diameter);
-            return new SonarSymbol(relToCenterPosX, relToCenterPosY, symbolImage);
-        }
-
-        private Image GetGemImage(int gemValue)
-        {
-            switch (gemValue)
-            {
-                case 1: return commonGemImage;
-                case 4: return uncommonGemImage;
-                case 10: return rareGemImage;
-                case -1: return normalBombImage;
-                default: return commonGemImage;
-            }
-        }
-
+                
         private void UpdateScanArea(GemDigSuccessData digSuccessData)
         {
             RemoveSymbolAtCentre();
@@ -180,14 +180,16 @@ namespace MD.UI
         }
 
         private void RemoveSymbolAtCentre()
-        {
-            (SonarSymbol item, int idx) = sonarSymbols.ToArray().LookUp(_ => _.posX.IsEqual(0f) && _.posY.IsEqual(0f));
-
+        {                          
+            (GameObject item, int idx) = symbolPool.LookUp(
+                symbol => symbol.transform.position.x.IsEqual(symbolContainer.position.x) && 
+                symbol.transform.position.y.IsEqual(symbolContainer.position.y));
+            
             if (idx.Equals(Constants.INVALID)) return;
 
-            Destroy(item.symbol);
-            sonarSymbols.Remove(item);
+            symbolPool.Push(item.gameObject);
         }
+        #endregion
 
         private void ShowDebugArea(MoveData moveData)
         {
@@ -204,21 +206,7 @@ namespace MD.UI
                 yield return new Vector2(charX + pos.x, charY + pos.y);
             }
         }
-
-        private void Show(ScanAreaData scanAreaData)
-        {
-            CollectionExtension.ForEach(sonarSymbols, _ => Destroy(_.symbol));
-            sonarSymbols.Clear();
-
-            for (int i = 0; i < scanAreaData.Tiles.Length; i++)
-            {
-                if (scanAreaData[i].Diggable == 0) continue;
-
-                Vector2 pos = relScannablePos[i];
-                sonarSymbols.Add(GenSonarSymbol(pos.x, pos.y, scanAreaData[i].Diggable));
-            }
-        }
-
+                
         #region GENERATE SCANNABLE POSITIONS
         private IEnumerable<Vector2> GenSquarePositions()
         {

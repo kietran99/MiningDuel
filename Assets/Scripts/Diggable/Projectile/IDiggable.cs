@@ -5,6 +5,7 @@ namespace MD.Diggable.Core
     public interface IDiggable
     {
         int DigValue { get; }
-        Sprite DiggableSprite { get; }
+        Sprite WorldSprite { get; }
+        Sprite SonarSprite { get; }
     }
 }

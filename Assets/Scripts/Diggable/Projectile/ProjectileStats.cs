@@ -11,6 +11,9 @@ namespace MD.Diggable.Projectile
         private Sprite projectileSprite = null;
 
         [SerializeField]
+        private Sprite sonarSprite = null;
+
+        [SerializeField]
         private float stunTime = .5f;
 
         [SerializeField]
@@ -19,10 +22,11 @@ namespace MD.Diggable.Projectile
 
         public int DigValue { get => 1; }
 
-        public Sprite DiggableSprite { get => projectileSprite; }
+        public Sprite WorldSprite { get => projectileSprite; }
 
         public float StunTime { get => stunTime; }
 
         public float GemDropPercentage { get => gemDropPercentage; }
+        public Sprite SonarSprite { get => sonarSprite; }
     }
 }

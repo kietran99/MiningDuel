@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 public static class CollectionExtension
 {
-    public static (T item, int idx) LookUp<T>(this T[] arr, Predicate<T> conditions)
+    public static (T item, int idx) LookUp<T>(this T[] arr, Predicate<T> condition)
     {
         for (int i = 0; i < arr.Length; i++)
         {
-            if (conditions(arr[i]))
+            if (condition(arr[i]))
             {
                 return (arr[i], i);
             }

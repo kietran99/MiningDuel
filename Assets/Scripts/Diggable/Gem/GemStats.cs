@@ -10,9 +10,13 @@ namespace MD.Diggable.Gem
         private Sprite gemSprite = null;
 
         [SerializeField]
+        private Sprite sonarSprite = null;
+
+        [SerializeField]
         private int value = 1;
 
         public int DigValue { get => value; }
-        public Sprite DiggableSprite { get => gemSprite; }
+        public Sprite WorldSprite { get => gemSprite; }
+        public Sprite SonarSprite { get => sonarSprite; }
     }
 }
