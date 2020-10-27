@@ -1,18 +1,80 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using MD.Diggable.Projectile;
+using MD.UI;
 using UnityEngine;
 
-public class AnimatorController : MonoBehaviour
+namespace MD.Character
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [RequireComponent(typeof(Animator))]
+    public class AnimatorController : MonoBehaviour
+    {        
+        private Animator animator;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private float lastX, lastY;
+
+        void Awake()
+        {
+            animator = GetComponent<Animator>();
+        }
+
+        void Start()
+        {
+            var eventManager = EventSystems.EventManager.Instance;
+            eventManager.StartListening<JoystickDragData>(SetMovementState);
+            eventManager.StartListening<DigInvokeData>(InvokeDig);
+            eventManager.StartListening<ProjectileObtainData>(SetHoldState);
+            eventManager.StartListening<ThrowInvokeData>(RevertToIdleState);
+        }
+
+        private void OnDestroy()
+        {
+            var eventManager = EventSystems.EventManager.Instance;
+            eventManager.StopListening<JoystickDragData>(SetMovementState);
+            eventManager.StopListening<DigInvokeData>(InvokeDig);
+            eventManager.StopListening<ProjectileObtainData>(SetHoldState);
+            eventManager.StopListening<ThrowInvokeData>(RevertToIdleState);
+        }
+
+        private void RevertToIdleState(ThrowInvokeData obj)
+        {
+            animator.SetBool(AnimatorConstants.IS_HOLDING, false);
+        }
+
+        private void SetHoldState(ProjectileObtainData obj)
+        {
+            animator.SetBool(AnimatorConstants.IS_HOLDING, true);
+        }
+
+        private void InvokeDig(DigInvokeData obj)
+        {
+            animator.SetTrigger(AnimatorConstants.INVOKE_DIG);
+        }
+
+        private void SetMovementState(JoystickDragData dragData)
+        {
+            var speed = dragData.InputDirection.sqrMagnitude;
+            animator.SetFloat(AnimatorConstants.HORIZONTAL, dragData.InputDirection.x);
+            animator.SetFloat(AnimatorConstants.VERTICAL, dragData.InputDirection.y);
+            animator.SetFloat(AnimatorConstants.SPEED, speed);
+
+            if (speed.IsEqual(0f))
+            {
+                PlayIdle();
+                return;
+            }
+
+            BindLastMoveStats(dragData.InputDirection.x, dragData.InputDirection.y);
+        }
+
+        private void PlayIdle()
+        {
+            animator.SetFloat(AnimatorConstants.LAST_X, lastX);
+            animator.SetFloat(AnimatorConstants.LAST_Y, lastY);
+        }
+
+        private void BindLastMoveStats(float lastX, float lastY)
+        {
+            this.lastX = lastX;
+            this.lastY = lastY;
+        }        
     }
 }
