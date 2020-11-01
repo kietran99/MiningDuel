@@ -1,10 +1,11 @@
 ﻿using MD.UI;
 using UnityEngine;
+using Mirror;
 
 namespace MD.Character
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class MoveAction : MonoBehaviour
+    public class MoveAction : NetworkBehaviour
     {
         [SerializeField]
         private float speed = 1f;
@@ -18,23 +19,26 @@ namespace MD.Character
             rigidBody = GetComponent<Rigidbody2D>();
         }
 
-        private void Start()
-        {
-            EventSystems.EventManager.Instance.StartListening<JoystickDragData>(BindMoveVector);
-        }
+        // private void Start()
+        // {
+        //     EventSystems.EventManager.Instance.StartListening<JoystickDragData>(BindMoveVector);
+        // }
 
-        private void OnDestroy()
-        {
-            EventSystems.EventManager.Instance.StopListening<JoystickDragData>(BindMoveVector);
-        }
+        // private void OnDestroy()
+        // {
+        //     EventSystems.EventManager.Instance.StopListening<JoystickDragData>(BindMoveVector);
+        // }
 
         void FixedUpdate()
         {
-#if UNITY_EDITOR
+// #if UNITY_EDITOR
+        if (isLocalPlayer)
+        {
             var moveX = Input.GetAxisRaw("Horizontal");
             var moveY = Input.GetAxisRaw("Vertical");
-            EventSystems.EventManager.Instance.TriggerEvent(new JoystickDragData(new Vector2(moveX, moveY)));
-#endif
+        }
+            // EventSystems.EventManager.Instance.TriggerEvent(new JoystickDragData(new Vector2(moveX, moveY)));
+// #endif
             MoveCharacter();
         }
 
@@ -47,7 +51,7 @@ namespace MD.Character
                                 Mathf.Clamp(movePos.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));
             rigidBody.MovePosition(movePos);
             
-            EventSystems.EventManager.Instance.TriggerEvent(new MoveData(rigidBody.position.x, rigidBody.position.y));
+            // EventSystems.EventManager.Instance.TriggerEvent(new MoveData(rigidBody.position.x, rigidBody.position.y));
         } 
         
         public void SetBounds(Vector2 minMoveBound, Vector2 maxMoveBound)
