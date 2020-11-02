@@ -13,7 +13,7 @@ namespace MD.Diggable.Projectile
 
         void Start()
         {
-            player = Player.Instance.transform;
+            player = transform;
             rigidBody = GetComponent<Rigidbody2D>();
             holdPos = rigidBody.transform.localPosition;
         }

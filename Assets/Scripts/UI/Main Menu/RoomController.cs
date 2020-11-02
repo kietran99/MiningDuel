@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 
+
 namespace MD.UI.MainMenu
 {
     public class RoomController : MonoBehaviour
     {
         [SerializeField]
         private GameObject container = null;
+
+
 
         public void ShowWindow()
         {
@@ -18,5 +21,6 @@ namespace MD.UI.MainMenu
             container.SetActive(false);
             EventSystems.EventManager.Instance.TriggerEvent(new RoomWindowToggleData(false));
         }
+
     }
 }
