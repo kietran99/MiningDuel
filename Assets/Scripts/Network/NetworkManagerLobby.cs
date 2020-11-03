@@ -45,11 +45,12 @@ public class NetworkManagerLobby : NetworkManager
 
     public override void OnServerConnect(NetworkConnection conn)
     {
-        // if (numPlayers == maximumPlayers || SceneManager.GetActiveScene().path != menuScene)
-        // {
-        //     conn.Disconnect();
-        //     return;
-        // }
+        Debug.Log("num palyer " + numPlayers);
+        if (numPlayers == maximumPlayers || SceneManager.GetActiveScene().path != menuScene)
+        {
+            conn.Disconnect();
+            return;
+        }
     }
 
     public override void OnServerDisconnect(NetworkConnection conn)

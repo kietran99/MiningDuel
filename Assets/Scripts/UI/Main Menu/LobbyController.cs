@@ -19,7 +19,7 @@ namespace MD.UI.MainMenu
         {
             // OpenRoomWindow(createRoomWindow);
             networkManager.StartHost();
-            mainMenu.SetActive(false);
+            // mainMenu.SetActive(false);
         }
 
         public void OpenJoinRoomWindow()

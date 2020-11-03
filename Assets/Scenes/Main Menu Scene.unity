@@ -826,7 +826,7 @@ MonoBehaviour:
   playerSpawnMethod: 0
   spawnPrefabs: []
   menuScene: Assets/Scenes/Main Menu Scene.unity
-  maximumPlayers: 2
+  maximumPlayers: 4
   minimumPlayers: 2
   roomPlayerPrefab: {fileID: 9037775071047316419, guid: c0e7ecaf0d50b5748919f41920282256,
     type: 3}

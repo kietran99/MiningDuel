@@ -101,6 +101,18 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
         startGameButton.interactable = readyToStart;
     }
 
+    public void ExitLobby()
+    {
+        if (netIdentity == room.roomPlayers[0].netIdentity)
+        {
+            room.StopHost();
+        }
+        else
+        {
+            room.StopClient();
+        }
+    }
+
     [Command]
     public void CmdSetDisplayName(string displayName)
     {
