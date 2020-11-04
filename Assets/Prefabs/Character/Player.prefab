@@ -71,7 +71,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 662463101
-  m_SortingLayer: 2
+  m_SortingLayer: 0
   m_SortingOrder: 10
   m_Sprite: {fileID: -522798739330844983, guid: dfc39f382af3df54c865c31cedf22169,
     type: 3}
@@ -201,7 +201,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 662463101
-  m_SortingLayer: 2
+  m_SortingLayer: 0
   m_SortingOrder: 10
   m_Sprite: {fileID: 21300000, guid: 51df306a9a3455343868713250c9912f, type: 3}
   m_Color: {r: 0.8207547, g: 0.23392229, b: 0.16647384, a: 1}
@@ -229,6 +229,7 @@ GameObject:
   - component: {fileID: 7091697348273341030}
   - component: {fileID: 223839035}
   - component: {fileID: 1499878171468811934}
+  - component: {fileID: 1439791001010254802}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -296,11 +297,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7091697348273341020}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45845cecbc02f974a8311b7da560686f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   speed: 5
 --- !u!114 &7091697348273341030
 MonoBehaviour:
@@ -345,3 +348,19 @@ MonoBehaviour:
   droppingGemPrefab: {fileID: 4802790712231606850, guid: d56af095d3afca945b6f0310bc2f873c,
     type: 3}
   maxExplosionForce: 250
+--- !u!114 &1439791001010254802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7091697348273341020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0

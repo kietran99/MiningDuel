@@ -38,9 +38,39 @@ public class Player : NetworkBehaviour
     string playerName;
     
     [SyncVar]
-    bool canMove;
+    bool canMove = false;
 
     [SyncVar]
     bool isReady = true;
+
+    private NetworkManagerLobby room;
+    private NetworkManagerLobby Room
+    {
+        get
+        {
+            if (room != null) return room;
+            return room = NetworkManager.singleton as NetworkManagerLobby;
+        }
+    
+    }
+
+     public override void OnStartClient()
+    {
+        DontDestroyOnLoad(this);
+        Room.players.Add(this);
+    }
+
+    public override void OnStopClient()
+    {
+        Room.players.Remove(this);
+    }
+
+
+
+    [Server]
+    public void SetPlayerName(string name)
+    {
+        playerName = name;
+    }
 
 }

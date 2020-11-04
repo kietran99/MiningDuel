@@ -36,10 +36,10 @@ namespace MD.Character
         {
             var moveX = Input.GetAxisRaw("Horizontal");
             var moveY = Input.GetAxisRaw("Vertical");
+            MoveCharacter();
         }
             // EventSystems.EventManager.Instance.TriggerEvent(new JoystickDragData(new Vector2(moveX, moveY)));
 // #endif
-            MoveCharacter();
         }
 
         private void BindMoveVector(JoystickDragData data) => moveVect = data.InputDirection;

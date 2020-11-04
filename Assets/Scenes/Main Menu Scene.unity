@@ -224,7 +224,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 649429222}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
@@ -731,7 +731,7 @@ MonoBehaviour:
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
-  m_Text: 
+  m_Text: localhost
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
@@ -826,9 +826,12 @@ MonoBehaviour:
   playerSpawnMethod: 0
   spawnPrefabs: []
   menuScene: Assets/Scenes/Main Menu Scene.unity
+  gamePlayScene: Assets/Scenes/Multiplayer.unity
   maximumPlayers: 4
   minimumPlayers: 2
   roomPlayerPrefab: {fileID: 9037775071047316419, guid: c0e7ecaf0d50b5748919f41920282256,
+    type: 3}
+  networkPlayerPrefab: {fileID: -7965588256565871280, guid: 1be21954c69befb4991ea09688e9b2af,
     type: 3}
 --- !u!4 &1242888158
 Transform:
@@ -1444,7 +1447,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: localhost
 --- !u!222 &2057529155
 CanvasRenderer:
   m_ObjectHideFlags: 0

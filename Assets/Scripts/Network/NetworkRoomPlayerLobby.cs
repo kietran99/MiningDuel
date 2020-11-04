@@ -23,6 +23,9 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
     [SyncVar(hook = nameof(HandleReadyStatusChanged))]
     public bool isReady = true;
 
+    [SyncVar]
+    public int charaterIndex = 0;
+
     private NetworkManagerLobby room;
     private NetworkManagerLobby Room
     {
@@ -131,6 +134,13 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
     {
         if (Room.roomPlayers[0].connectionToClient != connectionToClient) return;
         if (Room.isReadyToStart())
-            Debug.Log("start game");
+            room.StartGame();
+    }
+
+    [Command]
+    public void ChangeCharacter(int index)
+    {
+        //validate
+        charaterIndex = index;
     }
 }
