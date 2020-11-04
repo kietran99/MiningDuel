@@ -2,6 +2,7 @@
 using Mirror;
 public class Player : NetworkBehaviour
 {
+    static public Player LocalPlayer = null; 
     // #region SINGLETON
     // public static Player Instance
     // {
@@ -38,9 +39,44 @@ public class Player : NetworkBehaviour
     string playerName;
     
     [SyncVar]
-    bool canMove;
+    public bool canMove = true;
 
     [SyncVar]
     bool isReady = true;
+
+    private NetworkManagerLobby room;
+    private NetworkManagerLobby Room
+    {
+        get
+        {
+            if (room != null) return room;
+            return room = NetworkManager.singleton as NetworkManagerLobby;
+        }
+    
+    }
+
+    public override void OnStartClient()
+    {
+        DontDestroyOnLoad(this);
+        Room.players.Add(this);
+    }
+
+    public override void OnStopClient()
+    {
+        Room.players.Remove(this);
+    }
+    public override void OnStartAuthority()
+    {
+        base.OnStartAuthority();
+        LocalPlayer = this;
+    }
+
+
+
+    [Server]
+    public void SetPlayerName(string name)
+    {
+        playerName = name;
+    }
 
 }
