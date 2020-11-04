@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+
 namespace MD.UI.MainMenu
 {
-public class JoinRoomController : MonoBehaviour
-{
+    public class JoinRoomController : MonoBehaviour
+    {
         [SerializeField]
         private InputField ipAddressInputField;
 
@@ -14,7 +13,7 @@ public class JoinRoomController : MonoBehaviour
 
         [SerializeField]
         private Button joinButton = null;
-
+        
         void OnEnable()
         {
             NetworkManagerLobby.OnClientConnected += HandleClientConnected;
@@ -44,5 +43,5 @@ public class JoinRoomController : MonoBehaviour
             if (joinButton)
             joinButton.interactable = true;
         }
-}
+    }
 }
