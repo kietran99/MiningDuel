@@ -80,9 +80,9 @@ namespace MD.UI
         private void Show(ScanAreaData scanAreaData)
         {
             symbolPool.Reset();
-
             for (int i = 0; i < scanAreaData.Tiles.Length; i++)
             {
+                // Debug.Log("pos " + scanAreaData[i].Position + " value:" + scanAreaData[i].Diggable);
                 if (scanAreaData[i].Diggable == 0) continue;
                 GenSymbol(relScannablePos[i], (DiggableType)scanAreaData[i].Diggable);
             }
