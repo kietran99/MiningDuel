@@ -11,7 +11,10 @@ public class PlayerNameInput : MonoBehaviour
     private Button continueButton = null;
 
     [SerializeField]
-    GameObject backGround = null;
+    private GameObject background = null;
+
+    [SerializeField]
+    private Text shownPlayerNameText = null;
 
     public static string DisplayName { get; private set; }
 
@@ -41,5 +44,6 @@ public class PlayerNameInput : MonoBehaviour
         
         PlayerPrefs.SetString(PLAYER_PREF_NAME_KEY, DisplayName);
         gameObject.SetActive(false);
+        shownPlayerNameText.text = DisplayName;
     }
 }
