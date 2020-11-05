@@ -25,6 +25,8 @@ public class NetworkManagerLobby : NetworkManager
     private NetworkRoomPlayerLobby roomPlayerPrefab = null;
 
     private readonly string NAME_PLAYER_ONLINE = "Player Online";
+
+    private readonly string MAP_MANAGER = "Map Manager";
     private Player networkPlayerPrefab = null;
     private Player NetworkPlayerPrefab
     {
@@ -36,11 +38,23 @@ public class NetworkManagerLobby : NetworkManager
             return networkPlayerPrefab;
         }
     }
+    private MapManager mapManagerPrefab = null;
+    private MapManager MapManagerPrefab
+    {
+        set => mapManagerPrefab = value;
+        get
+        {
+            if (mapManagerPrefab != null) return mapManagerPrefab;
+            mapManagerPrefab = spawnPrefabs.Find(prefab => prefab.name.Equals(MAP_MANAGER)).GetComponent<MapManager>();
+            return mapManagerPrefab;
+        }
+    }
 
     public List<NetworkRoomPlayerLobby> RoomPlayers { get; } = new List<NetworkRoomPlayerLobby>();
     public List<Player> Players { get; } = new List<Player>();
 
     private readonly string NAME_CAMERA = "Main Camera";
+    private MapManager mapManager;
 
     public static event Action OnClientConnected;
     public static event Action OnClientDisconnnected;
@@ -126,8 +140,13 @@ public class NetworkManagerLobby : NetworkManager
 
     public override void ServerChangeScene(string sceneName)
     {
-        if (true)
+        if (SceneManager.GetActiveScene().path == menuScene)
         {
+            base.OnServerSceneChanged(sceneName);
+            Debug.Log("Spawn Map Manager");
+            mapManager = Instantiate(MapManagerPrefab);
+            DontDestroyOnLoad(mapManager);
+            NetworkServer.Spawn(mapManager.gameObject);
             foreach (NetworkRoomPlayerLobby roomPlayer in RoomPlayers.ToArray())
             {
                 //Debug.Log("Spawn cameras");
@@ -143,10 +162,16 @@ public class NetworkManagerLobby : NetworkManager
                 var conn = roomPlayer.netIdentity.connectionToClient;
                 NetworkServer.Destroy(conn.identity.gameObject);
                 NetworkServer.ReplacePlayerForConnection(conn, player.gameObject, true);
+                player.TargetRegisterIMapManager(mapManager.netIdentity);
             }
         }
-
         base.ServerChangeScene(sceneName);
+    }
+
+    public override void OnServerSceneChanged(string sceneName)
+    {
+        //check ingame scene
+        mapManager.GenerateMap();
     }
 
     public void StartGame()

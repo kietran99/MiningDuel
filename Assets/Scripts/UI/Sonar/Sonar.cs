@@ -34,6 +34,17 @@ namespace MD.UI
         #region FIELDS
         private Vector2[] relScannablePos;
         private IMapManager genManager;
+
+        private IMapManager GenManager
+        {
+            get
+            {
+                if (genManager!= null) return genManager;
+                ServiceLocator.Resolve<IMapManager>(out genManager);
+                return genManager;
+            }
+        }
+
         private Vector2 lastCenterPos = Vector2.zero;
         private bool firstScan = true;
         private float symbolSize;
@@ -55,14 +66,14 @@ namespace MD.UI
                 = new Vector3(MapConstants.SPRITE_OFFSET.x + pos.x, MapConstants.SPRITE_OFFSET.y + pos.y, 0f));
             }
 
-            if (!isTutorial && genManager == null)
-            {
-                ServiceLocator.Resolve(out genManager);
-            }
+            // if (!isTutorial && genManager == null)
+            // {
+            //     ServiceLocator.Resolve(out genManager);
+            // }
 
             if (genManager != null)
             {
-                Show(genManager.GetScanAreaData(relScannablePos));
+                Show(GenManager.GetScanAreaData(relScannablePos));
             }
         }
 
@@ -107,18 +118,18 @@ namespace MD.UI
         {
             var eventManager = EventSystems.EventManager.Instance;
             eventManager.StartListening<MoveData>(AttemptToUpdateScanArea);
-            eventManager.StartListening<GemSpawnData>(UpdateScanArea);
-            eventManager.StartListening<GemDigSuccessData>(UpdateScanArea);
-            eventManager.StartListening<ProjectileObtainData>(UpdateScanArea);
+            // eventManager.StartListening<GemSpawnData>(UpdateScanArea);
+            // eventManager.StartListening<GemDigSuccessData>(UpdateScanArea);
+            // eventManager.StartListening<ProjectileObtainData>(UpdateScanArea);
         }
 
         private void OnDestroy()
         {
             var eventManager = EventSystems.EventManager.Instance;
             eventManager.StopListening<MoveData>(AttemptToUpdateScanArea);
-            eventManager.StopListening<GemSpawnData>(UpdateScanArea);
-            eventManager.StopListening<GemDigSuccessData>(UpdateScanArea);
-            eventManager.StopListening<ProjectileObtainData>(UpdateScanArea);
+            // eventManager.StopListening<GemSpawnData>(UpdateScanArea);
+            // eventManager.StopListening<GemDigSuccessData>(UpdateScanArea);
+            // eventManager.StopListening<ProjectileObtainData>(UpdateScanArea);
         }
 
         #region UPDATE SCAN AREA
@@ -171,7 +182,7 @@ namespace MD.UI
             //Debug.Log(moveData.x + ", " + moveData.y);
             if (shouldShowDebugTiles) ShowDebugArea(moveData);
             Vector2[] scanArea = GetScannablePos(moveData.x, moveData.y).ToArray();
-            Show(genManager.GetScanAreaData(scanArea));
+            Show(GenManager.GetScanAreaData(scanArea));
         }
 
         private void UpdateScanArea(ProjectileObtainData obj)

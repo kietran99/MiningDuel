@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Mirror;
 
 public static class MapDataTypeExtensions
 {
@@ -30,7 +31,7 @@ public static class MapDataTypeExtensions
         }
     }
 }
-public class MapManager : MonoBehaviour, IMapManager
+public class MapManager : NetworkBehaviour, IMapManager
 {
 
     #region SERIALIZE FIELDS
@@ -67,8 +68,26 @@ public class MapManager : MonoBehaviour, IMapManager
     // private int rareGemValue = 10;
 
     private Vector2Int mapSize = new Vector2Int(24,20);
-    private float rootX = -12f, rootY = -12f, halfTileSize = .5f;
-    private int[,] mapData;
+    private int rootX = -12, rootY = -12;
+    private float halfTileSize = .5f;
+    private SyncList<int> mapData = new SyncList<int>();
+
+    private int ToMapIndex(Vector2Int idx)
+    {   
+        if (idx.x >= mapSize.x || idx.x < 0 || 
+            idx.y >= mapSize.y || idx.y < 0)
+        {
+            return -1;
+        }
+        int index = idx.x*mapSize.y + idx.y;
+        Debug.Log(mapData.Count);
+        if (index < 0 || index >= mapData.Count)
+        {
+            // Debug.Log("failed at pos x:" +idx.x + " y:" + idx.y);
+            return -1;
+        }
+        return index;
+    }
 
     private bool canGenerateNewGem;
     #endregion
@@ -77,14 +96,13 @@ public class MapManager : MonoBehaviour, IMapManager
     
     private IEnumerable<ScanTileData> GenTileData(Vector2[] posToScan)
     {
+        int index;
         foreach (var pos in posToScan)
         {
-            if (pos.x - (int)rootX < mapData.GetLength(0) && 
-                pos.x - (int)rootX >= 0 && 
-                pos.y - (int)rootY < mapData.GetLength(1) && 
-                pos.y - (int)rootY >= 0)
+            index = ToMapIndex(new Vector2Int((int)pos.x - rootX,(int)pos.y-rootY));
+            if (index != -1)
             {
-                yield return new ScanTileData(pos, mapData[(int) pos.x - (int)rootX, (int) pos.y - (int)rootY]);
+                yield return new ScanTileData(pos, mapData[index]);
             }
             else
             {
@@ -93,46 +111,68 @@ public class MapManager : MonoBehaviour, IMapManager
         }
     }
 
-    void Awake()
-    {
-        GenerateMap();
-    }
+    // [Server]
+    // public void RegisterMapManager()
+    // {
+    //     Debug.Log("Calling");
+    //     RpcRegisterMapManager();
+    // }
 
-    void Start()
-    {
-        EventManager.Instance.StartListening<GemDigSuccessData>(RemoveGemFromMapData);
-    }
+    // [ClientRpc]
+    // void RpcRegisterMapManager()
+    // {
+    //     Debug.Log("registering mapmanager");
+    //     ServiceLocator.Register<IMapManager>(GetComponent<IMapManager>());
+    //     IMapManager imap;
+    //     ServiceLocator.Resolve<IMapManager>(out imap);
+    //     Debug.Log(imap);
+    // }
 
-    void OnDestroy()
-    {
-        EventManager.Instance.StopListening<GemDigSuccessData>(RemoveGemFromMapData);
-    }   
+    // void Start()
+    // {
+    //     EventManager.Instance.StartListening<GemDigSuccessData>(RemoveGemFromMapData);
+    // }
 
+    // void OnDestroy()
+    // {
+    //     EventManager.Instance.StopListening<GemDigSuccessData>(RemoveGemFromMapData);
+    // }   
+
+    [Server]
     private void RemoveGemFromMapData(GemDigSuccessData gemDigSuccessData)
     {
-        int indexX = Mathf.FloorToInt(gemDigSuccessData.posX) - (int)rootX;
-        int indexY = Mathf.FloorToInt(gemDigSuccessData.posY) - (int)rootY;
-        if (indexX >= 0 && indexX < mapData.GetLength(0) && indexY >= 0 && indexY < mapData.GetLength(1))
+        Vector2Int index2D = Vector2Int.zero;
+        index2D.x = Mathf.FloorToInt(gemDigSuccessData.posX) - (int)rootX;
+        index2D.y = Mathf.FloorToInt(gemDigSuccessData.posY) - (int)rootY;
+        int index = ToMapIndex(index2D);
+        if (index != -1)
         {
-            mapData[indexX, indexY] = 0;
+            mapData[index] = 0;
         }
     }
 
+    [Server]
     public void GenerateMap()
     {
-        mapData = new int[mapSize.x, mapSize.y];
+        Debug.Log(mapSize.x*mapSize.y);
+        for (int i=0; i<(int)mapSize.x*mapSize.y;i++)
+        {
+            mapData.Add(0);
+        }
+        Debug.Log(mapData);
         GenerateGems();
         canGenerateNewGem = true;
-        StartCoroutine(GenerateNewGems());
+        // StartCoroutine(GenerateNewGems());
     }
 
+    [Server]
     private void GenerateGems()
     {
         int areaWidth = mapSize.x / generateZoneSideLength;
         int areaHeight = mapSize.y / generateZoneSideLength;
-        int amtPerZone, nGeneratedGems;
+        int amtPerZone, nGeneratedGems, index;
         (GameObject prefab, int value) randomGem; 
-
+        Vector2Int randomPos = Vector2Int.zero;
         for (int y = 0; y < generateZoneSideLength; y++)
         {
             for (int x = 0; x < generateZoneSideLength; x++)
@@ -141,15 +181,16 @@ public class MapManager : MonoBehaviour, IMapManager
                 nGeneratedGems = 0;
                 while (nGeneratedGems < amtPerZone)
                 {
-                    int randomX = Random.Range(0, areaWidth) + areaWidth* x;
-                    int randomY = Random.Range(0, areaHeight) + areaHeight* y;
-
-                    if (mapData[randomX, randomY] != 0) continue;
+                    randomPos.x= Random.Range(0, areaWidth) + areaWidth* x;
+                    randomPos.y = Random.Range(0, areaHeight) + areaHeight* y;
+                    index = ToMapIndex(randomPos);
+                    if (index == -1 || mapData[index] != 0) continue;
 
                     randomGem = GetRandomGem();
-                    mapData[randomX, randomY] = randomGem.value;
-                    Instantiate(randomGem.prefab, IndexToPosition(new Vector2(randomX, randomY)), 
+                    mapData[index] = randomGem.value;
+                    var Gem = Instantiate(randomGem.prefab, IndexToPosition(randomPos), 
                         Quaternion.identity, gemContainer);
+                    NetworkServer.Spawn(Gem);
                     nGeneratedGems++;
                 }
             }
@@ -157,6 +198,7 @@ public class MapManager : MonoBehaviour, IMapManager
         //generate gem-rich areas
     }
     
+    [Server]
     private (GameObject, int) GetRandomGem()
     {
         int random = Random.Range(1, commonDropWeight + uncommonDropWeight + rareDropWeight + 1);
@@ -172,21 +214,22 @@ public class MapManager : MonoBehaviour, IMapManager
         
         return (rareGem, (int) DiggableType.RareGem);
     }
-
+    [Server]
     private Vector2Int GetRandomEmptyIndex()
     {
-        int randomX = 0, randomY = 0;
+        Vector2Int randomPos = Vector2Int.zero;
         bool foundLocation  = false;
         
         int maxTries = 10;
         int timesTried = 0;
+        int index;
 
         while(!foundLocation)
         {
-            randomX = Random.Range(0, mapSize.x);
-            randomY = Random.Range(0, mapSize.y);
-
-            if (mapData[randomX, randomY] == 0)
+            randomPos.x = Random.Range(0, mapSize.x);
+            randomPos.y = Random.Range(0, mapSize.y);
+            index = ToMapIndex(randomPos);
+            if (index != -1 && mapData[index] == 0)
             {
                 foundLocation = true;                
             }
@@ -198,7 +241,7 @@ public class MapManager : MonoBehaviour, IMapManager
             }
             timesTried++;
         }
-        return new Vector2Int(randomX, randomY);
+        return randomPos;
     }
     
     private Vector3 IndexToPosition(Vector2 index)
@@ -206,6 +249,7 @@ public class MapManager : MonoBehaviour, IMapManager
         return new Vector3(index.x + rootX + halfTileSize, index.y + rootY + halfTileSize, 0f);
     }
 
+    [Server]
     private IEnumerator GenerateNewGems()
     {
         WaitForSeconds waitTime = new WaitForSeconds(generateDelay);
@@ -223,7 +267,7 @@ public class MapManager : MonoBehaviour, IMapManager
             }
             newGem = GetRandomGem(); 
             worldPostion = IndexToPosition(randomIndex);
-            mapData[randomIndex.x, randomIndex.y] = newGem.value;
+            mapData[ToMapIndex(randomIndex)] = newGem.value;
             Instantiate(newGem.prefab, worldPostion, Quaternion.identity, gemContainer);
             EventSystems.EventManager.Instance.TriggerEvent(
                 new GemSpawnData(worldPostion.x - MapConstants.SPRITE_OFFSET.x, 
@@ -238,14 +282,15 @@ public class MapManager : MonoBehaviour, IMapManager
         return new Vector2Int(Mathf.FloorToInt(position.x),Mathf.FloorToInt(position.y));
     }
 
+    [Server]
     public bool TrySpawnDiggableAtIndex(Vector2Int idx, DiggableType diggable, GameObject prefab)
     {
-        if ( mapData[idx.x,idx.y] != (int) DiggableType.Empty)
-        { 
-            return false;
-        }
-        mapData[idx.x, idx.y] = (int) diggable;
-        Instantiate(prefab, IndexToPosition(idx), Quaternion.identity, gemContainer);
+        // if ( mapData[idx.x,idx.y] != (int) DiggableType.Empty)
+        // { 
+        //     return false;
+        // }
+        // mapData[idx.x, idx.y] = (int) diggable;
+        // Instantiate(prefab, IndexToPosition(idx), Quaternion.identity, gemContainer);
         return true;
     }   
 }

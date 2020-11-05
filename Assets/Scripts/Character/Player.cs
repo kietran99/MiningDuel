@@ -53,4 +53,10 @@ public class Player : NetworkBehaviour
         playerName = name;
     }
 
+    [TargetRpc]
+    public void TargetRegisterIMapManager(NetworkIdentity mapManager)
+    {
+        ServiceLocator.Register<IMapManager>(mapManager.GetComponent<IMapManager>());
+    }
+
 }
