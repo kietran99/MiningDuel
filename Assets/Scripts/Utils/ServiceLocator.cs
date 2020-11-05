@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public static class ServiceLocator
 {
@@ -7,11 +8,12 @@ public static class ServiceLocator
 
     public static void Register<T>(T serviceInstance)
     {
+        Debug.Log("Register instance of type: " + typeof(T));
         services[typeof(T)] = serviceInstance;
     }
 
     public static bool Resolve<T>(out T registeredService)
-    {
+    {        
         if (!services.TryGetValue(typeof(T), out object service))
         {
             registeredService = default;

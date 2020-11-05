@@ -1,33 +1,52 @@
 ﻿using UnityEngine;
+using Mirror;
 
-public class Player : MonoBehaviour
-{
-    #region SINGLETON
-    public static Player Instance
+public class Player : NetworkBehaviour
+{    
+    [Header("Game Stats")]
+    [SyncVar]
+    private int score;
+
+    [SyncVar]
+    private string playerName;
+    
+    [SyncVar]
+    public bool canMove = true;
+
+    [SyncVar]
+    private bool isReady = true;
+
+    private NetworkManagerLobby room;
+    private NetworkManagerLobby Room
     {
         get
         {
-            if (instance != null) return instance;
-
-            instance = FindObjectOfType<Player>();
-
-            if (instance == null)
-            {
-                instance = new GameObject("Player").AddComponent<Player>();
-            }
-
-            return instance;
+            if (room != null) return room;
+            return room = NetworkManager.singleton as NetworkManagerLobby;
         }
+    
     }
 
-    private static Player instance;
-
-    private void Awake()
+    public override void OnStartClient()
     {
-        if (instance != null)
-        {
-            Destroy(gameObject);
-        }
+        DontDestroyOnLoad(this);
+        Room.Players.Add(this);
     }
-    #endregion 
+    
+    public override void OnStopClient()
+    {
+        Room.Players.Remove(this);
+    }
+
+    public override void OnStartAuthority()
+    {
+        ServiceLocator.Register(this);
+    }
+
+    [Server]
+    public void SetPlayerName(string name)
+    {
+        playerName = name;
+    }
+
 }
