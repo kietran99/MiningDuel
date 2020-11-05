@@ -162,7 +162,7 @@ namespace MD.Tutorial
         private void ShowDigButton(GemCollideTutorialData gemCollideData)
         {
             digButton.SetActive(true);
-            ShowIndicator(IndicatorDir.DOWN, 340f, -74f);
+            ShowIndicator(IndicatorDir.DOWN, 830f, -180f);
             ShowNextLine();
             EventSystems.EventManager.Instance.StartListening<GemDigSuccessData>(ProceedToScore);
             EventSystems.EventManager.Instance.StopListening<GemCollideTutorialData>(ShowDigButton);                      
@@ -186,13 +186,13 @@ namespace MD.Tutorial
 
         private void ShowJoystick()
         {
-            ShowIndicator(IndicatorDir.DOWN, -329f, -47f);
+            ShowIndicator(IndicatorDir.DOWN, -780f, -100f);
         }
 
         private void ShowScoreCounter()
         {
             scoreCounter.SetActive(true);
-            ShowIndicator(IndicatorDir.UP, 330f, 120f);
+            ShowIndicator(IndicatorDir.UP, 810f, 210f);
         }
 
         private void ShowThrowButton()
@@ -201,13 +201,13 @@ namespace MD.Tutorial
             throwButton.SetActive(true);
             player.GetComponentInChildren<SpriteSwapper>().SwapProjHoldSprite(null);
             player.GetComponent<DigAction>().BindAndHoldProjectile(null);
-            ShowIndicator(IndicatorDir.DOWN, 342f, -71f);
+            ShowIndicator(IndicatorDir.DOWN, 830f, -180f);
         }
 
         private void ShowTimer()
         {
             timer.SetActive(true);
-            ShowIndicator(IndicatorDir.UP, 0f, 100f);
+            ShowIndicator(IndicatorDir.UP, 0f, 250f);
         }
 
         private void ShowIndicator(IndicatorDir dir, float posX, float posY)

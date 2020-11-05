@@ -1589,14 +1589,6 @@ MonoBehaviour:
   symbolContainer: {fileID: 7423720443794862423}
   symbolPoolObject: {fileID: 8043784178281137202}
   tilePoolObject: {fileID: 6970863643623541622}
-  commonGemImage: {fileID: 2147059735789899101, guid: c0de94fef49dfda4294cd3c9e9293d08,
-    type: 3}
-  uncommonGemImage: {fileID: 3668037181640177690, guid: 70211e17221dcaf43b22c234482299d6,
-    type: 3}
-  rareGemImage: {fileID: 3114126997942761217, guid: 50d4fdfedac712f4a8d3b25c1b5a2e92,
-    type: 3}
-  normalBombImage: {fileID: 3521804631420210204, guid: d6334c67b13617a4eb4ed4ddfe736235,
-    type: 3}
 --- !u!1001 &72249922493982752
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2934,7 +2926,7 @@ PrefabInstance:
     - target: {fileID: 4133757774197405085, guid: 8d69c45f3f7777941bb2bf6ae9b4392a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 167.72
+      value: 168
       objectReference: {fileID: 0}
     - target: {fileID: 4133757774197405085, guid: 8d69c45f3f7777941bb2bf6ae9b4392a,
         type: 3}
@@ -2944,7 +2936,7 @@ PrefabInstance:
     - target: {fileID: 4133757774197405085, guid: 8d69c45f3f7777941bb2bf6ae9b4392a,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 312.73813
+      value: 313
       objectReference: {fileID: 0}
     - target: {fileID: 4133757774197405085, guid: 8d69c45f3f7777941bb2bf6ae9b4392a,
         type: 3}

@@ -40,5 +40,6 @@ public class PlayerNameInput : MonoBehaviour
         DisplayName = nameInputField.text;
         
         PlayerPrefs.SetString(PLAYER_PREF_NAME_KEY, DisplayName);
+        gameObject.SetActive(false);
     }
 }

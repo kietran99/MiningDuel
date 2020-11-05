@@ -9,17 +9,14 @@ namespace MD.UI.MainMenu
 
         [SerializeField]
         private RoomController joinRoomWindow = null;
-        [SerializeField]
-        private NetworkManagerLobby networkManager = null;
 
         [SerializeField]
-        private GameObject mainMenu = null;
+        private NetworkManagerLobby networkManager = null;
 
         public void OpenCreateRoomWindow()
         {
             // OpenRoomWindow(createRoomWindow);
             networkManager.StartHost();
-            // mainMenu.SetActive(false);
         }
 
         public void OpenJoinRoomWindow()
