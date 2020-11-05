@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,8 +24,18 @@ public class NetworkManagerLobby : NetworkManager
     [SerializeField]
     private NetworkRoomPlayerLobby roomPlayerPrefab = null;
 
-    [SerializeField]
+    private readonly string NAME_PLAYER_ONLINE = "Player Online";
     private Player networkPlayerPrefab = null;
+    private Player NetworkPlayerPrefab
+    {
+        set => networkPlayerPrefab = value;
+        get
+        {
+            if (networkPlayerPrefab != null) return networkPlayerPrefab;
+            networkPlayerPrefab = spawnPrefabs.Find(prefab => prefab.name.Equals(NAME_PLAYER_ONLINE)).GetComponent<Player>();
+            return networkPlayerPrefab;
+        }
+    }
 
     public List<NetworkRoomPlayerLobby> RoomPlayers { get; } = new List<NetworkRoomPlayerLobby>();
     public List<Player> Players { get; } = new List<Player>();
@@ -61,7 +70,7 @@ public class NetworkManagerLobby : NetworkManager
 
     public override void OnServerConnect(NetworkConnection conn)
     {
-        Debug.Log("num palyer " + numPlayers);
+        Debug.Log("Num players: " + numPlayers);
         if (numPlayers == maximumPlayers || SceneManager.GetActiveScene().path != menuScene)
         {
             conn.Disconnect();
@@ -79,8 +88,9 @@ public class NetworkManagerLobby : NetworkManager
         }
         base.OnServerDisconnect(conn);
     }
+
     public override void OnServerAddPlayer(NetworkConnection conn)
-    {
+    {        
         if (SceneManager.GetActiveScene().path == menuScene)
         {
             bool isHost = RoomPlayers.Count == 0;
@@ -126,7 +136,9 @@ public class NetworkManagerLobby : NetworkManager
                 //NetworkServer.Spawn(camera);
                 
                 Debug.Log("Spawn players");
-                var player =  Instantiate(networkPlayerPrefab);
+                //var player =  Instantiate(networkPlayerPrefab);
+                //var player = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals("Player Online"))).GetComponent<Player>();
+                var player = Instantiate(NetworkPlayerPrefab);
                 player.SetPlayerName(roomPlayer.DisplayName);
                 var conn = roomPlayer.netIdentity.connectionToClient;
                 NetworkServer.Destroy(conn.identity.gameObject);

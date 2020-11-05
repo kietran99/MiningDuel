@@ -1,46 +1,24 @@
-﻿using Mirror;
+﻿using Mirror.SimpleWeb;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class CameraController : NetworkBehaviour
+public class CameraController : MonoBehaviour
 {
     [SerializeField]
     private Tilemap map = null;
 
     private Transform player;
     private Vector3 botLeftLimit, topRightLimit;
-
-    private void Awake()
-    {
-        Player.OnPlayerSpawn += StartFollowing;
-    }
-
-    private void OnDestroy()
-    {
-        Player.OnPlayerSpawn -= StartFollowing;
-    }
-
-    private void StartFollowing(GameObject player)
-    {
-        this.player = player.transform;
-        DisableIfNotLocal();
-    }
-
-    private void DisableIfNotLocal()
-    {
-        if (player.GetComponent<Player>().isLocalPlayer) { return; }
-
-        GetComponent<Camera>().enabled = false;
-    }
-
+    
     void Start()
     {
-        // player = Player.Instance.transform;
-        //player = Player.LocalPlayer.transform;
+        if (!ServiceLocator.Resolve(out Player player)) return; 
+
+        this.player = player.transform;
         var mainCamera = Camera.main;
         var camHalfHeight = mainCamera.orthographicSize;
         var camHalfWidth = mainCamera.aspect * camHalfHeight;
-        return;
+        
         botLeftLimit = map.localBounds.min + new Vector3(camHalfWidth, camHalfHeight, 0f);
         topRightLimit = map.localBounds.max - new Vector3(camHalfWidth, camHalfHeight, 0f);
 
@@ -48,12 +26,13 @@ public class CameraController : NetworkBehaviour
     }
 
     void LateUpdate()
-    {        
+    {
+        if (player == null) return;
+
         transform.position = new Vector3(player.position.x, player.position.y, transform.position.z);
-        return;
+        
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, botLeftLimit.x, topRightLimit.x),
                                         Mathf.Clamp(transform.position.y, botLeftLimit.y, topRightLimit.y),
-                                        transform.position.z
-            );
+                                        transform.position.z);
     }
 }

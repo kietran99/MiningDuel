@@ -1,37 +1,8 @@
 ﻿using UnityEngine;
 using Mirror;
+
 public class Player : NetworkBehaviour
-{
-    static public Player LocalPlayer = null; 
-    // #region SINGLETON
-    // public static Player Instance
-    // {
-    //     get
-    //     {
-    //         if (instance != null) return instance;
-
-    //         instance = FindObjectOfType<Player>();
-
-    //         if (instance == null)
-    //         {
-    //             instance = new GameObject("Player").AddComponent<Player>();
-    //         }
-
-    //         return instance;
-    //     }
-    // }
-
-    // private static Player instance;
-
-    // private void Awake()
-    // {
-    //     if (instance != null)
-    //     {
-    //         Destroy(gameObject);
-    //     }
-    // }
-    // #endregion 
-
+{    
     [Header("Game Stats")]
     [SyncVar]
     private int score;
@@ -56,19 +27,12 @@ public class Player : NetworkBehaviour
     
     }
 
-    public static event System.Action<GameObject> OnPlayerSpawn;
-
     public override void OnStartClient()
     {
         DontDestroyOnLoad(this);
         Room.Players.Add(this);
     }
-
-    public override void OnStartLocalPlayer()
-    {
-        OnPlayerSpawn?.Invoke(gameObject);
-    }
-
+    
     public override void OnStopClient()
     {
         Room.Players.Remove(this);
@@ -76,8 +40,7 @@ public class Player : NetworkBehaviour
 
     public override void OnStartAuthority()
     {
-        base.OnStartAuthority();
-        LocalPlayer = this;
+        ServiceLocator.Register(this);
     }
 
     [Server]

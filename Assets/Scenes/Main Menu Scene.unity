@@ -824,8 +824,7 @@ MonoBehaviour:
     type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
-  spawnPrefabs:
-  - {fileID: 2072605618777854769, guid: d069204396386724e8772d7865a67a19, type: 3}
+  spawnPrefabs: []
   menuScene: Assets/Scenes/Main Menu Scene.unity
   gamePlayScene: Assets/Scenes/Multiplayer.unity
   maximumPlayers: 4
