@@ -16,6 +16,9 @@ public class Player : NetworkBehaviour
     [SyncVar]
     private bool isReady = true;
 
+    [SerializeField]
+    private SpriteRenderer indicator;
+
     private NetworkManagerLobby room;
     private NetworkManagerLobby Room
     {
@@ -41,6 +44,7 @@ public class Player : NetworkBehaviour
     public override void OnStartAuthority()
     {
         ServiceLocator.Register(this);
+        indicator.color = Color.green;
     }
 
     [Server]

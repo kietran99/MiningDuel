@@ -22,7 +22,7 @@ public class CameraController : MonoBehaviour
         botLeftLimit = map.localBounds.min + new Vector3(camHalfWidth, camHalfHeight, 0f);
         topRightLimit = map.localBounds.max - new Vector3(camHalfWidth, camHalfHeight, 0f);
 
-        // player.GetComponent<MD.Character.MoveAction>().SetBounds(map.localBounds.min, map.localBounds.max);
+        player.GetComponent<MD.Character.MoveAction>().SetBounds(map.localBounds.min, map.localBounds.max);
     }
 
     void LateUpdate()
