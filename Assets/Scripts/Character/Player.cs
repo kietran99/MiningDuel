@@ -31,18 +31,19 @@ public class Player : NetworkBehaviour
     //     }
     // }
     // #endregion 
+
     [Header("Game Stats")]
     [SyncVar]
-    int score;
+    private int score;
 
     [SyncVar]
-    string playerName;
+    private string playerName;
     
     [SyncVar]
     public bool canMove = true;
 
     [SyncVar]
-    bool isReady = true;
+    private bool isReady = true;
 
     private NetworkManagerLobby room;
     private NetworkManagerLobby Room
@@ -55,23 +56,29 @@ public class Player : NetworkBehaviour
     
     }
 
+    public static event System.Action<GameObject> OnPlayerSpawn;
+
     public override void OnStartClient()
     {
         DontDestroyOnLoad(this);
-        Room.players.Add(this);
+        Room.Players.Add(this);
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        OnPlayerSpawn?.Invoke(gameObject);
     }
 
     public override void OnStopClient()
     {
-        Room.players.Remove(this);
+        Room.Players.Remove(this);
     }
+
     public override void OnStartAuthority()
     {
         base.OnStartAuthority();
         LocalPlayer = this;
     }
-
-
 
     [Server]
     public void SetPlayerName(string name)

@@ -1,25 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
+
 public class NetworkRoomPlayerLobby : NetworkBehaviour
 {
     [Header("UI")]
 
     [SerializeField]
     GameObject lobbyUI = null;
+
     [SerializeField]
-    private Text[] playerNameTexts = new Text[4];
+    private Text[] playerNameTexts = new Text[4], playerReadyStatusTexts = new Text[4];
+
     [SerializeField]
-    private Text[] playerReadyStatusTexts = new Text[4];
-    [SerializeField]
-    private Button startGameButton;
-    [SerializeField]
-    private Button readyButton;
-    public bool isHost;
+    private Button startGameButton = null, readyButton = null;
+    
     [SyncVar(hook = nameof(HandleDisplayNameChanged))]
     public string DisplayName = "Loading....";
+
     [SyncVar(hook = nameof(HandleReadyStatusChanged))]
     public bool isReady = true;
 
@@ -31,23 +29,23 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
     {
         get
         {
-            if (room != null) return room;
-            return room = NetworkManager.singleton as NetworkManagerLobby;
+            room = room ?? NetworkManager.singleton as NetworkManagerLobby;
+            return room;
         }
     
     }
+
+    private bool isHost;
     public bool IsHost
     {
         set
         {
             isHost = value;
-            if (isHost)
-            {
-                startGameButton.gameObject.SetActive(true);
-                readyButton.gameObject.SetActive(false);
-                isReady = true;
-            }
-
+            if (!isHost) return;
+            
+            startGameButton.gameObject.SetActive(true);
+            readyButton.gameObject.SetActive(false);
+            isReady = true;           
         }
     }
 
@@ -59,13 +57,13 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        Room.roomPlayers.Add(this);
+        Room.RoomPlayers.Add(this);
         UpdateDisplay();
     }
 
     public override void OnStopClient()
     {
-        Room.roomPlayers.Remove(this);
+        Room.RoomPlayers.Remove(this);
         UpdateDisplay();
     }
 
@@ -76,7 +74,7 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
     {
         if (!hasAuthority)
         {
-            foreach(var player in Room.roomPlayers)
+            foreach(var player in Room.RoomPlayers)
             {
                 if (player.hasAuthority)
                 {
@@ -84,17 +82,20 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
                     break;
                 }
             }
+
             return;
         }
+
         for (int i= 0; i< playerNameTexts.Length; i++)
         {
             playerNameTexts[i].text = "Waitting for Player...";
             playerReadyStatusTexts[i].text = string.Empty;
         }
-        for (int i=0; i< Room.roomPlayers.Count; i++)
+
+        for (int i=0; i< Room.RoomPlayers.Count; i++)
         {
-            playerNameTexts[i].text = Room.roomPlayers[i].DisplayName;
-            playerReadyStatusTexts[i].text = Room.roomPlayers[i].isReady? "Ready":"";
+            playerNameTexts[i].text = Room.RoomPlayers[i].DisplayName;
+            playerReadyStatusTexts[i].text = Room.RoomPlayers[i].isReady? "Ready":"";
         }
     }
 
@@ -106,7 +107,7 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
 
     public void ExitLobby()
     {
-        if (netIdentity == room.roomPlayers[0].netIdentity)
+        if (netIdentity == room.RoomPlayers[0].netIdentity)
         {
             room.StopHost();
         }
@@ -132,8 +133,8 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
     [Command]
     public void CmdStartGame()
     {
-        if (Room.roomPlayers[0].connectionToClient != connectionToClient) return;
-        if (Room.isReadyToStart())
+        if (Room.RoomPlayers[0].connectionToClient != connectionToClient) return;
+        if (Room.IsReadyToStart())
             room.StartGame();
     }
 

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,9 +16,10 @@ namespace Mirror.Examples.Basic
 
         // These are set in OnStartServer and used in OnStartClient
         [SyncVar]
-        int playerNo;
+        private int playerNo;
+
         [SyncVar]
-        Color playerColor;
+        private Color playerColor;
 
         // This is updated by UpdateData which is called from OnStartServer via InvokeRepeating
         [SyncVar(hook = nameof(OnPlayerDataChanged))]
@@ -37,7 +39,7 @@ namespace Mirror.Examples.Basic
 
             // Set SyncVar values
             playerNo = connectionToClient.connectionId;
-            playerColor = Random.ColorHSV(0f, 1f, 0.9f, 0.9f, 1f, 1f);
+            playerColor = UnityEngine.Random.ColorHSV(0f, 1f, 0.9f, 0.9f, 1f, 1f);
 
             // Start generating updates
             InvokeRepeating(nameof(UpdateData), 1, 1);
@@ -47,7 +49,7 @@ namespace Mirror.Examples.Basic
         [ServerCallback]
         void UpdateData()
         {
-            playerData = Random.Range(100, 1000);
+            playerData = UnityEngine.Random.Range(100, 1000);
         }
 
         // This fires on all clients when this player object is network-ready

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Mirror;
+
 public class NetworkManagerLobby : NetworkManager
 {
     [Header("Scene")]
@@ -17,19 +18,26 @@ public class NetworkManagerLobby : NetworkManager
     [Header("Room")]
     [SerializeField]
     private int maximumPlayers = 4;
+
     [SerializeField]
     private int minimumPlayers = 2;
+
     [SerializeField]
     private NetworkRoomPlayerLobby roomPlayerPrefab = null;
+
     [SerializeField]
     private Player networkPlayerPrefab = null;
 
-    public List<NetworkRoomPlayerLobby> roomPlayers {get;} = new List<NetworkRoomPlayerLobby>();
-    public List<Player> players {get;} = new List<Player>();
+    public List<NetworkRoomPlayerLobby> RoomPlayers { get; } = new List<NetworkRoomPlayerLobby>();
+    public List<Player> Players { get; } = new List<Player>();
+
+    private readonly string NAME_CAMERA = "Main Camera";
 
     public static event Action OnClientConnected;
     public static event Action OnClientDisconnnected;
+
     public override void OnStartServer() => spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList();
+
     public override void OnStartClient()
     {
         var spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs");
@@ -66,7 +74,7 @@ public class NetworkManagerLobby : NetworkManager
         if (conn.identity != null)
         {
             var player = conn.identity.GetComponent<NetworkRoomPlayerLobby>();
-            roomPlayers.Remove(player);
+            RoomPlayers.Remove(player);
             NotifyPlayersOfReadyState();
         }
         base.OnServerDisconnect(conn);
@@ -75,7 +83,7 @@ public class NetworkManagerLobby : NetworkManager
     {
         if (SceneManager.GetActiveScene().path == menuScene)
         {
-            bool isHost = roomPlayers.Count == 0;
+            bool isHost = RoomPlayers.Count == 0;
             NetworkRoomPlayerLobby roomPlayer = Instantiate(roomPlayerPrefab);
             roomPlayer.IsHost = isHost;
             NetworkServer.AddPlayerForConnection(conn, roomPlayer.gameObject);
@@ -85,22 +93,21 @@ public class NetworkManagerLobby : NetworkManager
 
     public void NotifyPlayersOfReadyState()
     {
-        foreach (var player in roomPlayers)
+        foreach (var player in RoomPlayers)
         {
-            player.HandleReadyToStart(isReadyToStart());
+            player.HandleReadyToStart(IsReadyToStart());
         }
     }
 
-
     public override void OnStopServer()
     {
-        roomPlayers.Clear();
+        RoomPlayers.Clear();
     }
 
-    public bool isReadyToStart()
+    public bool IsReadyToStart()
     {
         if (numPlayers < minimumPlayers)    return false;
-        foreach(var player in roomPlayers)
+        foreach(var player in RoomPlayers)
         {
             if (!player.isReady) return false;
         }
@@ -111,9 +118,14 @@ public class NetworkManagerLobby : NetworkManager
     {
         if (true)
         {
-            foreach (NetworkRoomPlayerLobby roomPlayer in roomPlayers.ToArray())
+            foreach (NetworkRoomPlayerLobby roomPlayer in RoomPlayers.ToArray())
             {
-                Debug.Log("sapwn player");
+                //Debug.Log("Spawn cameras");
+                //var camera = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(NAME_CAMERA)),
+                //    new Vector3(0f, 0f, -10f), Quaternion.identity);
+                //NetworkServer.Spawn(camera);
+                
+                Debug.Log("Spawn players");
                 var player =  Instantiate(networkPlayerPrefab);
                 player.SetPlayerName(roomPlayer.DisplayName);
                 var conn = roomPlayer.netIdentity.connectionToClient;
@@ -121,6 +133,7 @@ public class NetworkManagerLobby : NetworkManager
                 NetworkServer.ReplacePlayerForConnection(conn, player.gameObject, true);
             }
         }
+
         base.ServerChangeScene(sceneName);
     }
 
@@ -130,7 +143,7 @@ public class NetworkManagerLobby : NetworkManager
         if (SceneManager.GetActiveScene().path == menuScene)
         {
             Debug.Log("here2");
-            if (isReadyToStart())
+            if (IsReadyToStart())
             {
                 Debug.Log("here3");
                 ServerChangeScene(gamePlayScene);

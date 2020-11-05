@@ -418,9 +418,9 @@ MonoBehaviour:
   - {fileID: 3248198728449757447}
   startGameButton: {fileID: 8235856875331893703}
   readyButton: {fileID: 4711264818248555841}
-  isHost: 0
   DisplayName: Loading....
   isReady: 0
+  charaterIndex: 0
 --- !u!114 &4288996794870619247
 MonoBehaviour:
   m_ObjectHideFlags: 0
