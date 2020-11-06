@@ -16,6 +16,9 @@ public class Player : NetworkBehaviour
     [SyncVar]
     private bool isReady = true;
 
+    [SerializeField]
+    private SpriteRenderer indicator;
+
     private NetworkManagerLobby room;
     private NetworkManagerLobby Room
     {
@@ -41,12 +44,19 @@ public class Player : NetworkBehaviour
     public override void OnStartAuthority()
     {
         ServiceLocator.Register(this);
+        indicator.color = Color.green;
     }
 
     [Server]
     public void SetPlayerName(string name)
     {
         playerName = name;
+    }
+
+    [TargetRpc]
+    public void TargetRegisterIMapManager(NetworkIdentity mapManager)
+    {
+        ServiceLocator.Register<IMapManager>(mapManager.GetComponent<IMapManager>());
     }
 
 }

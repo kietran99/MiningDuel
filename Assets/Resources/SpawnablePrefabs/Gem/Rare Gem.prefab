@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8238596618112684006}
   - component: {fileID: 8238596618112684009}
   - component: {fileID: 8238596618112684008}
+  - component: {fileID: -3077284932065403956}
   m_Layer: 0
   m_Name: Rare Gem
   m_TagString: Untagged
@@ -126,3 +127,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5006449e4ef9c64bb153044d23874ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-3077284932065403956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8238596618112684011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0

@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
-
+using Mirror;
 namespace MD.Diggable.Gem
 {
-    public class GemValue : MonoBehaviour
+    public class GemValue : NetworkBehaviour
     {
         [SerializeField]
         private int value = 1;
@@ -13,7 +13,18 @@ namespace MD.Diggable.Gem
 
         private void Start()
         {
+            Debug.Log("spawned gem");
             RemainingHit = value;    
+            if (isClient)
+            {
+                Debug.Log("spawned gem is client");
+                IMapManager mapManager;
+                if (ServiceLocator.Resolve<IMapManager>(out mapManager))
+                {
+                    mapManager.NotifyNewGem(transform.position,value);
+                    Debug.Log("spawned gem finished");
+                }
+            }
         }
 
         public void DecreaseValue(int power)
