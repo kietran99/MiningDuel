@@ -11,9 +11,6 @@ public class PlayerNameInput : MonoBehaviour
     private Button continueButton = null;
 
     [SerializeField]
-    private GameObject background = null;
-
-    [SerializeField]
     private Text shownPlayerNameText = null;
 
     public static string DisplayName { get; private set; }

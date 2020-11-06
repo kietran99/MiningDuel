@@ -15,8 +15,8 @@ namespace MD.UI
         [SerializeField]
         private bool shouldShowDebugTiles = false;
 
-        [SerializeField]
-        private bool isTutorial = false;
+        // [SerializeField]
+        // private bool isTutorial = false;
 
         [SerializeField]
         private int scanRange = 3;
@@ -75,19 +75,21 @@ namespace MD.UI
                 Show(GenManager.GetScanAreaData(relScannablePos));
             }
         }
-
+        private bool flag = true;
         private void Show(ScanAreaData scanAreaData)
         {
             symbolPool.Reset();
             for (int i = 0; i < scanAreaData.Tiles.Length; i++)
             {
-                if (firstScan)
+                if (flag)
                 {
-                    Debug.Log("POS: " + scanAreaData[i].Position + " VALUE:" + scanAreaData[i].Diggable);
+                    Debug.Log("POS: " + scanAreaData[i].Position + " VALUE: " + scanAreaData[i].Diggable);
                 }
                 if (scanAreaData[i].Diggable == 0) continue;
                 GenSymbol(relScannablePos[i], (DiggableType)scanAreaData[i].Diggable);
             }
+
+            flag = false;
         }
 
         private void Show(TileData[] tileData)

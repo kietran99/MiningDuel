@@ -164,7 +164,7 @@ public class MapManager : NetworkBehaviour, IMapManager
         {
             mapData[index.x,index.y] = 0;
             Diggables[index.x,index.y] = null;
-            gemDigSuccessData.digger.GetComponent<Player>().IncreaseScore(gemDigSuccessData.value);
+            gemDigSuccessData.digger.GetComponent<MD.Character.Player>().IncreaseScore(gemDigSuccessData.value);
         }
         catch
         {

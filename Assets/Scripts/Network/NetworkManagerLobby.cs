@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Mirror;
+using MD.Character;
 
 public class NetworkManagerLobby : NetworkManager
 {
@@ -136,11 +137,13 @@ public class NetworkManagerLobby : NetworkManager
 
     public bool IsReadyToStart()
     {
-        if (numPlayers < minimumPlayers)    return false;
+        if (numPlayers < minimumPlayers) return false;
+
         foreach(var player in RoomPlayers)
         {
             if (!player.isReady) return false;
         }
+
         return true;
     }
 
@@ -149,26 +152,31 @@ public class NetworkManagerLobby : NetworkManager
         if (SceneManager.GetActiveScene().path == menuScene)
         {
             spawnPointPicker.Reset();
-
-            base.OnServerSceneChanged(sceneName);
-            Debug.Log("Spawn Map Manager");
-            mapManager = Instantiate(MapManagerPrefab);
-            // ServiceLocator.Register<IMapManager>(mapManager.GetComponent<IMapManager>());
-            DontDestroyOnLoad(mapManager);
-            NetworkServer.Spawn(mapManager.gameObject);
-
-            foreach (NetworkRoomPlayerLobby roomPlayer in RoomPlayers.ToArray())
-            {                
-                Debug.Log("Spawn players");               
-                var player = Instantiate(NetworkPlayerPrefab, spawnPointPicker.NextSpawnPoint.position, Quaternion.identity);
-                player.SetPlayerName(roomPlayer.DisplayName);
-                var conn = roomPlayer.netIdentity.connectionToClient;
-                NetworkServer.Destroy(conn.identity.gameObject);
-                NetworkServer.ReplacePlayerForConnection(conn, player.gameObject, true);
-                player.TargetRegisterIMapManager(mapManager.netIdentity);
-            }
+            SpawnMapManager();
+            RoomPlayers.ToArray().ForEach(SpawnNetworkPlayer);            
         }
+
         base.ServerChangeScene(sceneName);
+    }
+
+    private void SpawnMapManager()
+    {        
+        Debug.Log("Spawn Map Manager");
+        mapManager = Instantiate(MapManagerPrefab);
+        // ServiceLocator.Register<IMapManager>(mapManager.GetComponent<IMapManager>());
+        DontDestroyOnLoad(mapManager);
+        NetworkServer.Spawn(mapManager.gameObject);
+    }
+
+    private void SpawnNetworkPlayer(NetworkRoomPlayerLobby roomPlayer)
+    {
+        Debug.Log("Spawn a player");               
+        var player = Instantiate(NetworkPlayerPrefab, spawnPointPicker.NextSpawnPoint.position, Quaternion.identity);
+        player.SetPlayerName(roomPlayer.DisplayName);
+        var conn = roomPlayer.netIdentity.connectionToClient;
+        NetworkServer.Destroy(conn.identity.gameObject);
+        NetworkServer.ReplacePlayerForConnection(conn, player.gameObject, true);
+        player.TargetRegisterIMapManager(mapManager.netIdentity);
     }
 
     public override void OnServerSceneChanged(string sceneName)

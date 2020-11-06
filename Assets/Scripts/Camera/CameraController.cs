@@ -1,5 +1,4 @@
-﻿using Mirror.SimpleWeb;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class CameraController : MonoBehaviour
@@ -12,7 +11,7 @@ public class CameraController : MonoBehaviour
     
     void Start()
     {
-        if (!ServiceLocator.Resolve(out Player player)) return; 
+        if (!ServiceLocator.Resolve(out MD.Character.Player player)) return; 
 
         this.player = player.transform;
         var mainCamera = Camera.main;

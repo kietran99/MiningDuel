@@ -1,14 +1,12 @@
-﻿using UnityEngine;
+﻿using MD.Character;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace MD.UI
 {
     [RequireComponent(typeof(Text))]
     public class GameCountdown : MonoBehaviour
-    {
-        [SerializeField]
-        private ScoreManager scoreManager = null;
-
+    {       
         private Text timerText;
 
         private int currentMin, currentSec;

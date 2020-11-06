@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DropObtain : MonoBehaviour
 {
-    [SerializeField]
-    private int value = 1;
+    // [SerializeField]
+    // private int value = 1;
+
     [SerializeField]
     private bool canObtain;
 

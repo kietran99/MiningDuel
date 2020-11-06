@@ -4,8 +4,8 @@ namespace MD.UI.MainMenu
 {
     public class LobbyController : MonoBehaviour
     {
-        [SerializeField]
-        private RoomController createRoomWindow = null;
+        // [SerializeField]
+        // private RoomController createRoomWindow = null;
 
         [SerializeField]
         private RoomController joinRoomWindow = null;
