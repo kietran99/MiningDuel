@@ -13,16 +13,13 @@ namespace MD.Diggable.Gem
 
         private void Start()
         {
-            Debug.Log("spawned gem");
             RemainingHit = value;    
             if (isClient)
             {
-                Debug.Log("spawned gem is client");
                 IMapManager mapManager;
                 if (ServiceLocator.Resolve<IMapManager>(out mapManager))
                 {
                     mapManager.NotifyNewGem(transform.position,value);
-                    Debug.Log("spawned gem finished");
                 }
             }
         }

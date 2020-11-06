@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Mirror;
+using MD.Character;
 
 public static class MapDataTypeExtensions
 {
@@ -71,6 +72,7 @@ public class MapManager : NetworkBehaviour, IMapManager
     private int rootX = -12, rootY = -12;
     private float halfTileSize = .5f;
     private int[,] mapData;
+    private GameObject[,] Diggables;
 
     // private int ToMapIndex(Vector2Int idx)
     // {   
@@ -130,43 +132,51 @@ public class MapManager : NetworkBehaviour, IMapManager
     //     ServiceLocator.Resolve<IMapManager>(out imap);
     //     Debug.Log(imap);
     // }
-
+    [Server]
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+        EventManager.Instance.StartListening<GemDigSuccessData>(HandleDigSuccess);
+    }
     [Client]
     void Start()
     {
-        EventManager.Instance.StartListening<GemDigSuccessData>(RemoveGemFromMapData);
+        // EventManager.Instance.StartListening<GemDigSuccessData>(RemoveGemFromMapData);
         mapData = new int[mapSize.x,mapSize.y];
     }
-    [Client]
-    void OnDestroy()
-    {
-        EventManager.Instance.StopListening<GemDigSuccessData>(RemoveGemFromMapData);
-    }  
+    // [Client]
+    // void OnDestroy()
+    // {
+    //     EventManager.Instance.StopListening<GemDigSuccessData>(RemoveGemFromMapData);
+    // }  
     [Client]
     public void NotifyNewGem(Vector2 pos, int diggable)
     {
-        Vector2Int idx = PositionToIndex(pos - Vector2.one*rootX);
-        Debug.Log(idx);
+        Vector2Int idx = PositionToIndex(pos);
         mapData[idx.x,idx.y] = diggable;
     }
 
     [Server]
-    private void RemoveGemFromMapData(GemDigSuccessData gemDigSuccessData)
+    private void HandleDigSuccess(GemDigSuccessData gemDigSuccessData)
     {
-        Vector2Int index = Vector2Int.zero;
-        index.x = Mathf.FloorToInt(gemDigSuccessData.posX) - (int)rootX;
-        index.y = Mathf.FloorToInt(gemDigSuccessData.posY) - (int)rootY;
+        Vector2Int index = PositionToIndex(new Vector2(gemDigSuccessData.posX,gemDigSuccessData.posY));
         try
         {
             mapData[index.x,index.y] = 0;
+            Diggables[index.x,index.y] = null;
+            gemDigSuccessData.digger.GetComponent<Player>().IncreaseScore(gemDigSuccessData.value);
         }
-        catch{}
+        catch
+        {
+            Debug.Log("failed to remove gem at index " + index);
+        }
     }
 
     [Server]
     public void GenerateMap()
     {
         mapData = new int[mapSize.x,mapSize.y];
+        Diggables = new GameObject[mapSize.x,mapSize.y];
         GenerateGems();
         canGenerateNewGem = true;
         // StartCoroutine(GenerateNewGems());
@@ -194,9 +204,10 @@ public class MapManager : NetworkBehaviour, IMapManager
 
                     randomGem = GetRandomGem();
                     mapData[randomPos.x,randomPos.y] = randomGem.value;
-                    var Gem = Instantiate(randomGem.prefab, IndexToPosition(randomPos), 
+                    GameObject Gem = Instantiate(randomGem.prefab, IndexToPosition(randomPos), 
                         Quaternion.identity, gemContainer);
                     NetworkServer.Spawn(Gem);
+                    Diggables[randomPos.x,randomPos.y] = Gem;
                     nGeneratedGems++;
                 }
             }
@@ -272,7 +283,9 @@ public class MapManager : NetworkBehaviour, IMapManager
             newGem = GetRandomGem(); 
             worldPostion = IndexToPosition(randomIndex);
             mapData[randomIndex.x,randomIndex.y] = newGem.value;
-            Instantiate(newGem.prefab, worldPostion, Quaternion.identity, gemContainer);
+            var gem =  Instantiate(newGem.prefab, worldPostion, Quaternion.identity, gemContainer);
+            Diggables[randomIndex.x,randomIndex.y] = gem;
+            NetworkServer.Spawn(gem);
             EventSystems.EventManager.Instance.TriggerEvent(
                 new GemSpawnData(worldPostion.x - MapConstants.SPRITE_OFFSET.x, 
                 worldPostion.y - MapConstants.SPRITE_OFFSET.y, (DiggableType)newGem.value));
@@ -283,7 +296,7 @@ public class MapManager : NetworkBehaviour, IMapManager
 
     public Vector2Int PositionToIndex(Vector2 position)
     {
-        return new Vector2Int(Mathf.FloorToInt(position.x),Mathf.FloorToInt(position.y));
+        return new Vector2Int(Mathf.FloorToInt(position.x - rootX),Mathf.FloorToInt(position.y - rootY));
     }
 
     [Server]
@@ -297,4 +310,24 @@ public class MapManager : NetworkBehaviour, IMapManager
         // Instantiate(prefab, IndexToPosition(idx), Quaternion.identity, gemContainer);
         return true;
     }   
+
+
+
+    [Server]
+    public void DigAtPosition(NetworkIdentity player)
+    {
+        DigAction digger = player.GetComponent<DigAction>();
+        Vector2Int index = PositionToIndex(player.transform.position);
+        GameObject gem = null;
+        try
+        {
+            gem = Diggables[index.x,index.y];
+        }
+        catch{return;}
+        if (gem != null)
+        {
+            gem.GetComponent<GemObtain>().Dig(digger);
+        }
+    }
+
 }

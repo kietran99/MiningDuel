@@ -4,7 +4,7 @@ using Mirror;
 public class Player : NetworkBehaviour
 {    
     [Header("Game Stats")]
-    [SyncVar]
+    [SyncVar(hook= nameof(OnScoreChange))][SerializeField]
     private int score;
 
     [SyncVar]
@@ -28,6 +28,21 @@ public class Player : NetworkBehaviour
             return room = NetworkManager.singleton as NetworkManagerLobby;
         }
     
+    }
+    private IScoreManager scoreManager = null;
+    private IScoreManager ScoreManager
+    {
+        get
+        {
+            if (scoreManager != null) return scoreManager;
+            ServiceLocator.Resolve<IScoreManager>(out scoreManager);
+            return scoreManager;
+        }
+    }
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+        score = 0;
     }
 
     public override void OnStartClient()
@@ -57,6 +72,21 @@ public class Player : NetworkBehaviour
     public void TargetRegisterIMapManager(NetworkIdentity mapManager)
     {
         ServiceLocator.Register<IMapManager>(mapManager.GetComponent<IMapManager>());
+    }
+
+    [Server]
+    public void IncreaseScore(int amount)
+    {
+        this.score += amount;
+    }
+    public void OnScoreChange(int oldValue, int newValue)
+    {
+        if (isLocalPlayer)
+            ScoreManager.UpdateScoreText(newValue);
+    }
+    public int GetCurrentScore()
+    {
+        return score;
     }
 
 }

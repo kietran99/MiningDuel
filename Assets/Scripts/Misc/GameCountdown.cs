@@ -33,7 +33,7 @@ namespace MD.UI
 #if UNITY_EDITOR
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(scoreManager.CurrentScore));
+                EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(GetCurrentScore()));
             }
 #endif
             if (gameEnded) return;
@@ -41,7 +41,7 @@ namespace MD.UI
             if (currentMin == 0 && currentSec == 0)
             {
                 Debug.Log("Game Over");
-                EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(scoreManager.CurrentScore));
+                EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(GetCurrentScore()));
                 gameEnded = true;
                 return;
             }
@@ -55,6 +55,14 @@ namespace MD.UI
             UpdateRemainingTime();
             timeToNextSec = 1f;
         }
+
+        private int GetCurrentScore()
+        {
+            Player player;
+            if(ServiceLocator.Resolve<Player>(out player))
+                return player.GetCurrentScore();
+            return -1;
+        }   
 
         private (int min, int sec) GetMinAndSec(string time)
         {

@@ -153,6 +153,7 @@ public class NetworkManagerLobby : NetworkManager
             base.OnServerSceneChanged(sceneName);
             Debug.Log("Spawn Map Manager");
             mapManager = Instantiate(MapManagerPrefab);
+            // ServiceLocator.Register<IMapManager>(mapManager.GetComponent<IMapManager>());
             DontDestroyOnLoad(mapManager);
             NetworkServer.Spawn(mapManager.gameObject);
 
