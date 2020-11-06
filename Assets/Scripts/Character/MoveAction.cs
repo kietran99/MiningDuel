@@ -34,31 +34,21 @@ namespace MD.Character
         {
             if (!isLocalPlayer) return;
             
-//#if UNITY_EDITOR
+#if UNITY_EDITOR
             var moveX = Input.GetAxisRaw("Horizontal");
             var moveY = Input.GetAxisRaw("Vertical");
-            //EventSystems.EventManager.Instance.TriggerEvent(new JoystickDragData(new Vector2(moveX, moveY)));
-            MoveCharacter(moveX,moveY);
-//#endif
-            //MoveCharacter();            
+            EventSystems.EventManager.Instance.TriggerEvent(new JoystickDragData(new Vector2(moveX, moveY)));
+            //MoveCharacter(moveVect.x, moveVect.y);
+#endif
+            MoveCharacter(moveVect.x, moveVect.y);
         }
 
         private void BindMoveVector(JoystickDragData data) => moveVect = data.InputDirection;
-
-        private void MoveCharacter()
-        {
-            var movePos = rigidBody.position + moveVect * speed * Time.fixedDeltaTime;
-            movePos = new Vector2(Mathf.Clamp(movePos.x, minMoveBound.x + offset.x, maxMoveBound.x - offset.x),
-                                Mathf.Clamp(movePos.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));
-            rigidBody.MovePosition(movePos);
-
-            //EventSystems.EventManager.Instance.TriggerEvent(new MoveData(rigidBody.position.x, rigidBody.position.y));
-        }
-
+        
         private void MoveCharacter(float moveX, float moveY)
         {
-            var movePos = new Vector2(moveX,moveY).normalized*speed;
-            transform.Translate(movePos*Time.fixedDeltaTime);
+            var movePos = new Vector2(moveX,moveY).normalized * speed;
+            transform.Translate(movePos * Time.fixedDeltaTime);
             transform.position = new Vector2(Mathf.Clamp(transform.position.x, minMoveBound.x + offset.x, maxMoveBound.x - offset.x),
                                 Mathf.Clamp(transform.position.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));
             // rigidBody.MovePosition(movePos*Time.fixedDeltaTime);
