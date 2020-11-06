@@ -971,6 +971,8 @@ MonoBehaviour:
   minimumPlayers: 2
   roomPlayerPrefab: {fileID: 9037775071047316419, guid: c0e7ecaf0d50b5748919f41920282256,
     type: 3}
+  spawnPointPicker: {fileID: -5008208810592905108, guid: ef6f40e00172b8549ae0c3d7e98b2fd9,
+    type: 3}
 --- !u!4 &1242888158
 Transform:
   m_ObjectHideFlags: 0
@@ -12006,7 +12008,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameInputField: {fileID: 676635142}
   continueButton: {fileID: 1968156595}
-  backGround: {fileID: 0}
+  background: {fileID: 0}
+  shownPlayerNameText: {fileID: 0}
 --- !u!114 &8227228526648656813
 MonoBehaviour:
   m_ObjectHideFlags: 0

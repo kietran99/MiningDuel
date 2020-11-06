@@ -1,12 +1,16 @@
 ﻿using MD.Diggable.Projectile;
 using MD.UI;
+using Mirror;
 using UnityEngine;
 
 namespace MD.Character
 {
     [RequireComponent(typeof(Animator))]
     public class AnimatorController : MonoBehaviour
-    {        
+    {
+        [SerializeField]
+        private NetworkAnimator networkAnimator = null;
+
         private Animator animator;
 
         private float lastX, lastY;
@@ -46,7 +50,8 @@ namespace MD.Character
 
         private void InvokeDig(DigInvokeData obj)
         {
-            animator.SetTrigger(AnimatorConstants.INVOKE_DIG);
+            //animator.SetTrigger(AnimatorConstants.INVOKE_DIG);
+            networkAnimator.SetTrigger(AnimatorConstants.INVOKE_DIG);
         }
 
         private void SetMovementState(JoystickDragData dragData)

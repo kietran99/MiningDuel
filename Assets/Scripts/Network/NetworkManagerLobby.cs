@@ -7,6 +7,7 @@ using Mirror;
 
 public class NetworkManagerLobby : NetworkManager
 {
+    #region SERIALIZE FIELDS
     [Header("Scene")]
     [Scene] [SerializeField]
     private string menuScene = string.Empty;
@@ -24,8 +25,14 @@ public class NetworkManagerLobby : NetworkManager
     [SerializeField]
     private NetworkRoomPlayerLobby roomPlayerPrefab = null;
 
+    [SerializeField]
+    private SpawnPointPicker spawnPointPicker = null;
+    #endregion
+
     private readonly string NAME_PLAYER_ONLINE = "Player Online";
+
     private Player networkPlayerPrefab = null;
+
     private Player NetworkPlayerPrefab
     {
         set => networkPlayerPrefab = value;
@@ -39,8 +46,6 @@ public class NetworkManagerLobby : NetworkManager
 
     public List<NetworkRoomPlayerLobby> RoomPlayers { get; } = new List<NetworkRoomPlayerLobby>();
     public List<Player> Players { get; } = new List<Player>();
-
-    private readonly string NAME_CAMERA = "Main Camera";
 
     public static event Action OnClientConnected;
     public static event Action OnClientDisconnnected;
@@ -128,17 +133,12 @@ public class NetworkManagerLobby : NetworkManager
     {
         if (true)
         {
+            spawnPointPicker.Reset();
+
             foreach (NetworkRoomPlayerLobby roomPlayer in RoomPlayers.ToArray())
-            {
-                //Debug.Log("Spawn cameras");
-                //var camera = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(NAME_CAMERA)),
-                //    new Vector3(0f, 0f, -10f), Quaternion.identity);
-                //NetworkServer.Spawn(camera);
-                
-                Debug.Log("Spawn players");
-                //var player =  Instantiate(networkPlayerPrefab);
-                //var player = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals("Player Online"))).GetComponent<Player>();
-                var player = Instantiate(NetworkPlayerPrefab);
+            {                
+                Debug.Log("Spawn players");               
+                var player = Instantiate(NetworkPlayerPrefab, spawnPointPicker.NextSpawnPoint.position, Quaternion.identity);
                 player.SetPlayerName(roomPlayer.DisplayName);
                 var conn = roomPlayer.netIdentity.connectionToClient;
                 NetworkServer.Destroy(conn.identity.gameObject);
@@ -151,13 +151,13 @@ public class NetworkManagerLobby : NetworkManager
 
     public void StartGame()
     {
-        Debug.Log("here");
+        //Debug.Log("here");
         if (SceneManager.GetActiveScene().path == menuScene)
         {
-            Debug.Log("here2");
+            //Debug.Log("here2");
             if (IsReadyToStart())
             {
-                Debug.Log("here3");
+                //Debug.Log("here3");
                 ServerChangeScene(gamePlayScene);
             }
         }

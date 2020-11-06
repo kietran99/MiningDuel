@@ -6,7 +6,7 @@ namespace MD.UI.MainMenu
     public class JoinRoomController : MonoBehaviour
     {
         [SerializeField]
-        private InputField ipAddressInputField;
+        private InputField ipAddressInputField = null;
 
         [SerializeField]
         private NetworkManagerLobby networkManager = null;
