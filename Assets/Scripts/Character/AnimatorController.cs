@@ -22,6 +22,8 @@ namespace MD.Character
 
         void Start()
         {
+            if (!networkAnimator.isLocalPlayer) return;
+
             var eventManager = EventSystems.EventManager.Instance;
             eventManager.StartListening<JoystickDragData>(SetMovementState);
             eventManager.StartListening<DigInvokeData>(InvokeDig);
@@ -31,6 +33,8 @@ namespace MD.Character
 
         private void OnDestroy()
         {
+            if (!networkAnimator.isLocalPlayer) return;
+
             var eventManager = EventSystems.EventManager.Instance;
             eventManager.StopListening<JoystickDragData>(SetMovementState);
             eventManager.StopListening<DigInvokeData>(InvokeDig);
