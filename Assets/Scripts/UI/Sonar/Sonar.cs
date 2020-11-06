@@ -34,30 +34,29 @@ namespace MD.UI
         #region FIELDS
         private Vector2[] relScannablePos;
         private IMapManager genManager;
-
-        private IMapManager GenManager
-        {
-            get
-            {
-                if (genManager!= null) return genManager;
-                ServiceLocator.Resolve<IMapManager>(out genManager);
-                return genManager;
-            }
-        }
-
         private Vector2 lastCenterPos = Vector2.zero;
         private bool firstScan = true;
         private float symbolSize;
         private IObjectPool tilePool;
         private IObjectPool symbolPool;
         #endregion
-        
+
+        private IMapManager GenManager
+        {
+            get
+            {
+                if (genManager != null) return genManager;
+                ServiceLocator.Resolve<IMapManager>(out genManager);
+                return genManager;
+            }
+        }
+
         void Start()
         {
             symbolPool = symbolPoolObject.GetComponent<IObjectPool>();
             symbolSize = symbolContainer.rect.width / (2 * scanRange + 1);
             tilePool = tilePoolObject.GetComponent<IObjectPool>();
-            relScannablePos = GenSquarePositions().ToArray();
+            relScannablePos = GenSquarePositions().ToArray();            
             ListenToEvents();
 
             if (shouldShowDebugTiles)
@@ -82,7 +81,10 @@ namespace MD.UI
             symbolPool.Reset();
             for (int i = 0; i < scanAreaData.Tiles.Length; i++)
             {
-                // Debug.Log("pos " + scanAreaData[i].Position + " value:" + scanAreaData[i].Diggable);
+                if (firstScan)
+                {
+                    Debug.Log("POS: " + scanAreaData[i].Position + " VALUE:" + scanAreaData[i].Diggable);
+                }
                 if (scanAreaData[i].Diggable == 0) continue;
                 GenSymbol(relScannablePos[i], (DiggableType)scanAreaData[i].Diggable);
             }
@@ -144,7 +146,7 @@ namespace MD.UI
             float deltaX = lastCenterPos.x.DeltaInt(moveData.x);
             float deltaY = lastCenterPos.y.DeltaInt(moveData.y);
 
-            if (deltaX <= Mathf.Epsilon && deltaY <= Mathf.Epsilon) return;
+            //if (deltaX <= Mathf.Epsilon && deltaY <= Mathf.Epsilon) return;
 
             lastCenterPos = new Vector2(moveData.x, moveData.y);
             (float roundedX, float roundedY) = //(Mathf.Floor(moveData.x), Mathf.Floor(moveData.y)); 

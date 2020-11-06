@@ -4717,6 +4717,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2017428497, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
+      propertyPath: shouldShowDebugTiles
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 72249921851178018, guid: 445ad5f27f6d1d647a615c6a1ed5e078,
         type: 3}
       propertyPath: m_Name

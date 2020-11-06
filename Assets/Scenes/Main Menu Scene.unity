@@ -743,6 +743,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 391939099842595159, guid: 7e5faac118d45034d801dc524e23f18b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 904619449983878319, guid: 7e5faac118d45034d801dc524e23f18b,
         type: 3}
       propertyPath: networkManager
