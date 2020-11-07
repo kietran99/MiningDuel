@@ -47,7 +47,7 @@ namespace MD.Character
         
         private void MoveCharacter(float moveX, float moveY)
         {
-            var movePos = new Vector2(moveX,moveY).normalized * speed;
+            var movePos = new Vector2(moveX, moveY).normalized * speed;
             transform.Translate(movePos * Time.fixedDeltaTime);
             transform.position = new Vector2(Mathf.Clamp(transform.position.x, minMoveBound.x + offset.x, maxMoveBound.x - offset.x),
                                 Mathf.Clamp(transform.position.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));

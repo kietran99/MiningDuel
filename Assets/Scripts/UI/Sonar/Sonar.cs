@@ -117,8 +117,8 @@ namespace MD.UI
         private void GenSymbol(Vector2 pos, DiggableType diggableType)
         {
             var symbol = symbolPool.Pop().GetComponent<Image>();
-            symbol.transform.position = symbolContainer.position + new Vector3(pos.x * symbolSize, pos.y * symbolSize, 0f);
             symbol.rectTransform.sizeDelta = new Vector2(symbolSize, symbolSize);
+            symbol.transform.position = symbolContainer.position + new Vector3(pos.x * symbolSize, pos.y * symbolSize, 0f);           
             symbol.sprite = DiggableTypeConverter.Convert(diggableType).SonarSprite;
         }
 
@@ -157,7 +157,7 @@ namespace MD.UI
             float deltaX = lastCenterPos.x.DeltaInt(moveData.x);
             float deltaY = lastCenterPos.y.DeltaInt(moveData.y);
 
-            //if (deltaX <= Mathf.Epsilon && deltaY <= Mathf.Epsilon) return;
+            if (deltaX <= Mathf.Epsilon && deltaY <= Mathf.Epsilon) return;
 
             lastCenterPos = new Vector2(moveData.x, moveData.y);
             (float roundedX, float roundedY) = //(moveData.x.Round(), moveData.y.Round());
@@ -212,6 +212,16 @@ namespace MD.UI
             if (idx.Equals(Constants.INVALID)) return;
 
             symbolPool.Push(item.gameObject);
+        }
+
+        private void Update() 
+        {
+            
+        }
+
+        private Vector2 GetSymbolAt(float x, float y)
+        {
+            return symbolContainer.position + new Vector3(x * symbolSize, y * symbolSize, 0f);
         }
         #endregion
 
