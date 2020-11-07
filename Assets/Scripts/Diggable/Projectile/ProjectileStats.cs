@@ -4,7 +4,7 @@ using UnityEngine;
 namespace MD.Diggable.Projectile
 {
     [CreateAssetMenu(fileName = "Projectile Stats", menuName = "Generator/Diggable/Projectile/Stats")]
-    public class ProjectileStats : ScriptableObject, IDiggable
+    public class ProjectileStats : ScriptableObject, Core.IDiggable
     {
         #region SERIALIZE FIELDS
         [SerializeField]

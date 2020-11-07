@@ -1,8 +1,6 @@
 ﻿using MD.Character;
 using MD.Diggable;
 using MD.Diggable.Core;
-using MD.Diggable.Gem;
-using MD.Diggable.Projectile;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -70,7 +68,7 @@ namespace MD.UI
             // {
             //     ServiceLocator.Resolve(out genManager);
             // }
-            Debug.Log("Sonar start");
+            
             if (GenManager != null)
             {
                 InitScanArea();
@@ -84,7 +82,7 @@ namespace MD.UI
             UpdateScanArea(new MoveData(player.transform.position.x, player.transform.position.y));
         }
 
-        //private bool flag = true;
+        // private bool flag = false;
         private void Show(ScanAreaData scanAreaData)
         {
             symbolPool.Reset();
@@ -92,15 +90,14 @@ namespace MD.UI
             {
                 // if (flag)
                 // {
-                //     Debug.Log("POS: " + scanAreaData[i].Position + " VALUE: " + scanAreaData[i].Diggable);
+                //     // Debug.Log("POS: " + scanAreaData[i].Position + " VALUE: " + scanAreaData[i].Diggable);
                 // }
-                if (scanAreaData[i].Diggable == 0) continue;
+                if (scanAreaData[i].Diggable == 0)  continue;
                 GenSymbol(relScannablePos[i], (DiggableType)scanAreaData[i].Diggable);
             }
-
-            //flag = false;
+            // flag = false;
         }
-
+        
         private void Show(TileData[] tileData)
         {
 
@@ -131,8 +128,8 @@ namespace MD.UI
         {
             var eventManager = EventSystems.EventManager.Instance;
             eventManager.StartListening<MoveData>(AttemptToUpdateScanArea);
-            // eventManager.StartListening<GemSpawnData>(UpdateScanArea);
-            // eventManager.StartListening<GemDigSuccessData>(UpdateScanArea);
+            eventManager.StartListening<DiggableSpawnData>(UpdateScanArea);
+            eventManager.StartListening<DiggableDestroyData>(UpdateScanArea);
             // eventManager.StartListening<ProjectileObtainData>(UpdateScanArea);
         }
 
@@ -140,8 +137,8 @@ namespace MD.UI
         {
             var eventManager = EventSystems.EventManager.Instance;
             eventManager.StopListening<MoveData>(AttemptToUpdateScanArea);
-            // eventManager.StopListening<GemSpawnData>(UpdateScanArea);
-            // eventManager.StopListening<GemDigSuccessData>(UpdateScanArea);
+            eventManager.StopListening<DiggableSpawnData>(UpdateScanArea);
+            eventManager.StopListening<DiggableDestroyData>(UpdateScanArea);
             // eventManager.StopListening<ProjectileObtainData>(UpdateScanArea);
         }
 
@@ -166,28 +163,36 @@ namespace MD.UI
             UpdateScanArea(roundedMoveData);
         }
 
-        private void UpdateScanArea(GemSpawnData gemSpawnData)
+        private void UpdateScanArea(DiggableSpawnData data)
         {
             //Debug.Log("World position: " + gemSpawnData.x + ", " + gemSpawnData.y);
-            if (!TryWorldToScannablePos(new Vector2(gemSpawnData.x, gemSpawnData.y), out Vector2 scannablePos)) return;
+            if (!TryWorldToScannablePos(new Vector2(data.posX, data.posY), out Vector2 scannablePos)) return;
 
             //Debug.Log("Output: " + scannablePos);
-            GenSymbol(scannablePos, gemSpawnData.type);
+            GenSymbol(scannablePos, data.diggable.ToDiggable());
         }
 
         private bool TryWorldToScannablePos(Vector2 worldPos, out Vector2 scannablePos)
         {
-            Vector2 relaPos = new Vector2(Mathf.Floor(worldPos.x - lastCenterPos.x),
-                Mathf.Floor(worldPos.y - lastCenterPos.y));
+            Vector2 relaPos = new Vector2(Mathf.Floor(worldPos.x) - Mathf.Floor(lastCenterPos.x),
+                Mathf.Floor(worldPos.y) - Mathf.Floor(lastCenterPos.y));
             (Vector2 resPos, int idx) = relScannablePos.LookUp(
                 pos => pos.x.IsEqual(relaPos.x) && pos.y.IsEqual(relaPos.y));
             scannablePos = resPos;
             return !idx.Equals(Constants.INVALID);
         }
                 
-        private void UpdateScanArea(GemDigSuccessData digSuccessData)
+        private void UpdateScanArea(DiggableDestroyData digSuccessData)
         {
-            RemoveSymbolAtCentre();
+            //TODO: check if outside of sonar range return\
+            // RemoveSymbolAtCentre(digSuccessData.posX,digSuccessData.posY);
+            if (TryWorldToScannablePos(new Vector2(digSuccessData.posX,digSuccessData.posY), out Vector2 relPos))
+            {
+                RemoveSymbolAt(relPos.x,relPos.y);
+            }
+            // flag = true;
+
+            // InitScanArea();
         }
 
         private void UpdateScanArea(MoveData moveData)
@@ -198,28 +203,18 @@ namespace MD.UI
             Show(GenManager.GetScanAreaData(scanArea));
         }
 
-        private void UpdateScanArea(ProjectileObtainData obj)
-        {
-            RemoveSymbolAtCentre();
-        }
-
-        private void RemoveSymbolAtCentre()
+        private void RemoveSymbolAt(float x, float y)
         {                          
+            Vector2 pos = GetSymbolPos(x,y);
             (GameObject item, int idx) = symbolPool.LookUp(
-                symbol => symbol.transform.position.x.IsEqual(symbolContainer.position.x) && 
-                symbol.transform.position.y.IsEqual(symbolContainer.position.y));
+                symbol => symbol.transform.position.x.IsEqual(pos.x) && 
+                symbol.transform.position.y.IsEqual(pos.y));
             
             if (idx.Equals(Constants.INVALID)) return;
-
+            Debug.Log("co chay");
             symbolPool.Push(item.gameObject);
         }
-
-        private void Update() 
-        {
-            
-        }
-
-        private Vector2 GetSymbolAt(float x, float y)
+        private Vector2 GetSymbolPos(float x, float y)
         {
             return symbolContainer.position + new Vector3(x * symbolSize, y * symbolSize, 0f);
         }

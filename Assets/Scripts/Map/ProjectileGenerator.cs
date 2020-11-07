@@ -1,5 +1,6 @@
 using UnityEngine;
-
+using Mirror;
+[RequireComponent(typeof(IMapManager))]
 public class ProjectileGenerator: MonoBehaviour
 {
     #region SERIALIZE FIELDS
@@ -11,25 +12,22 @@ public class ProjectileGenerator: MonoBehaviour
     #endregion
 
     #region FIELDS
-    private IMapManager mapManager = null;
-
+    private IMapManager mapManager = null; 
     private Vector2Int mapSize = Vector2Int.zero;
     #endregion
 
-    private void Start()
+    [Server]
+    public void StartGenerate(IMapManager mapManager)
     {
-        bool exist = ServiceLocator.Resolve<IMapManager>(out mapManager);
-
-        if (!exist) return;
-
+        this.mapManager = mapManager;
         mapSize = mapManager.GetMapSize();
         GenerateProjectiles();
     }
 
+    [Server]
     private void GenerateProjectiles()
     {
-        if (mapManager == null) return;
-
+        Debug.Log("generate bombs");
         int HalfMapWidth = mapSize.x/2 + 1;
         int HalfMapHeight = mapSize.y/2 + 1;
         Vector2Int randomIndex = Vector2Int.zero;

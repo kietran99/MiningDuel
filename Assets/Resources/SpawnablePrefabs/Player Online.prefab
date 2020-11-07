@@ -273,7 +273,7 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.09}
   serializedVersion: 2
   m_Radius: 0.6
 --- !u!114 &-7965588256565871280
@@ -299,7 +299,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7091697348273341020}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45845cecbc02f974a8311b7da560686f, type: 3}
   m_Name: 
@@ -346,9 +346,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7091697348273341020}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a1ca051c3490fd4084a50cb9bfe2004, type: 3}
+  m_Script: {fileID: 11500000, guid: 587de6153c0b3fd44abcae8c6c05444b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  droppingGemPrefab: {fileID: 4802790712231606850, guid: d56af095d3afca945b6f0310bc2f873c,
+    type: 3}
+  maxExplosionForce: 250
 --- !u!114 &-3517038025138646833
 MonoBehaviour:
   m_ObjectHideFlags: 0

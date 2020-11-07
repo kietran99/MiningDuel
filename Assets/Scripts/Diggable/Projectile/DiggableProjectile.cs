@@ -1,16 +1,25 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Mirror;
-namespace MD.Diggable.Gem
+namespace MD.Diggable.Projectile
 {
-    public class GemValue : NetworkBehaviour
+    public class DiggableProjectile : NetworkBehaviour
     {
         [SerializeField]
+        private int projectileType = -1;
+        
+        [SerializeField]
         private int value = 1;
+        [SerializeField]
+        private ProjectileStats stats = null;
 
         public int RemainingHit { get; private set; }
 
         public int Value { get => value; set => this.value = value; }
 
+        public ProjectileStats GetStats()
+        {
+            return stats;
+        }
         private void Start()
         {
             RemainingHit = value;    
@@ -19,7 +28,7 @@ namespace MD.Diggable.Gem
                 IMapManager mapManager;
                 if (ServiceLocator.Resolve<IMapManager>(out mapManager))
                 {
-                    mapManager.NotifyNewGem(transform.position,value.ToDiggable());
+                    mapManager.NotifyNewGem(transform.position,projectileType.ToDiggable());
                 }
             }
         }
