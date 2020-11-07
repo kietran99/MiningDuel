@@ -22,6 +22,8 @@ namespace MD.Character
         // [SyncVar]
         // private bool isReady = true;
 
+        //private Vector3 startPos;
+
         private NetworkManagerLobby room;
         private NetworkManagerLobby Room
         {
@@ -42,6 +44,7 @@ namespace MD.Character
                 return scoreManager;
             }
         }
+        
         public override void OnStartServer()
         {
             base.OnStartServer();
@@ -62,8 +65,11 @@ namespace MD.Character
         public override void OnStartAuthority()
         {
             ServiceLocator.Register(this);
+            //transform.position = startPos;
             indicator.color = Color.green;
         }
+
+        //public void SetStartPosition(Vector3 startPosition) => this.startPos = startPosition;
 
         [Server]
         public void SetPlayerName(string name)

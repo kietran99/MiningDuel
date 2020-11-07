@@ -1,4 +1,5 @@
-﻿using MD.Diggable;
+﻿using MD.Character;
+using MD.Diggable;
 using MD.Diggable.Core;
 using MD.Diggable.Gem;
 using MD.Diggable.Projectile;
@@ -69,27 +70,35 @@ namespace MD.UI
             // {
             //     ServiceLocator.Resolve(out genManager);
             // }
-
-            if (genManager != null)
+            Debug.Log("Sonar start");
+            if (GenManager != null)
             {
-                Show(GenManager.GetScanAreaData(relScannablePos));
+                InitScanArea();
             }
         }
-        private bool flag = true;
+
+        private void InitScanArea()
+        {
+            if (!ServiceLocator.Resolve<Player>(out Player player)) { return; }
+
+            UpdateScanArea(new MoveData(player.transform.position.x, player.transform.position.y));
+        }
+
+        //private bool flag = true;
         private void Show(ScanAreaData scanAreaData)
         {
             symbolPool.Reset();
             for (int i = 0; i < scanAreaData.Tiles.Length; i++)
             {
-                if (flag)
-                {
-                    Debug.Log("POS: " + scanAreaData[i].Position + " VALUE: " + scanAreaData[i].Diggable);
-                }
+                // if (flag)
+                // {
+                //     Debug.Log("POS: " + scanAreaData[i].Position + " VALUE: " + scanAreaData[i].Diggable);
+                // }
                 if (scanAreaData[i].Diggable == 0) continue;
                 GenSymbol(relScannablePos[i], (DiggableType)scanAreaData[i].Diggable);
             }
 
-            flag = false;
+            //flag = false;
         }
 
         private void Show(TileData[] tileData)
@@ -151,8 +160,8 @@ namespace MD.UI
             //if (deltaX <= Mathf.Epsilon && deltaY <= Mathf.Epsilon) return;
 
             lastCenterPos = new Vector2(moveData.x, moveData.y);
-            (float roundedX, float roundedY) = //(Mathf.Floor(moveData.x), Mathf.Floor(moveData.y)); 
-                (moveData.x.Round(), moveData.y.Round());
+            (float roundedX, float roundedY) = //(moveData.x.Round(), moveData.y.Round());
+            (Mathf.Floor(moveData.x), Mathf.Floor(moveData.y));
             MoveData roundedMoveData = new MoveData(roundedX, roundedY);
             UpdateScanArea(roundedMoveData);
         }

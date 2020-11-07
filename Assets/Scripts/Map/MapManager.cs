@@ -96,24 +96,42 @@ public class MapManager : NetworkBehaviour, IMapManager
 
     public ScanAreaData GetScanAreaData(Vector2[] posToScan) {
         // Debug.Log("se" + mapData.Length);
+        Debug.Log("Input positions to scan: ");
+        foreach (var i in posToScan) Debug.Log(i);
         return new ScanAreaData(GenTileData(posToScan).ToArray());    
     }
     
     private IEnumerable<ScanTileData> GenTileData(Vector2[] posToScan)
     {
-        int res;
+        //int res;
         foreach (var pos in posToScan)
         {
-            try
-            {
-                res = mapData[(int)pos.x - rootX,(int) pos.y - rootY];
-            }
-            catch
-            {
-                res = 0;
-            }
-            yield return new ScanTileData(pos,res);
+            // try
+            // {
+            //     res = mapData[(int)pos.x - rootX,(int) pos.y - rootY];
+            // }
+            // catch
+            // {
+            //     res = 0;
+            // }
+            yield return new ScanTileData(pos, TryGetDiggableAt(pos));
         }
+    }
+
+    private int TryGetDiggableAt(Vector2 pos)
+    {
+        //int res;
+
+        try 
+        {
+            return mapData[(int)pos.x - rootX,(int) pos.y - rootY];
+        }
+        catch
+        {
+            return 0;
+        }
+
+        //return res;
     }
 
     // [Server]
@@ -132,23 +150,27 @@ public class MapManager : NetworkBehaviour, IMapManager
     //     ServiceLocator.Resolve<IMapManager>(out imap);
     //     Debug.Log(imap);
     // }
+
     [Server]
     public override void OnStartServer()
     {
         base.OnStartServer();
         EventManager.Instance.StartListening<GemDigSuccessData>(HandleDigSuccess);
     }
+
     [Client]
     void Start()
     {
         // EventManager.Instance.StartListening<GemDigSuccessData>(RemoveGemFromMapData);
         mapData = new int[mapSize.x,mapSize.y];
     }
+    
     // [Client]
     // void OnDestroy()
     // {
     //     EventManager.Instance.StopListening<GemDigSuccessData>(RemoveGemFromMapData);
-    // }  
+    // } 
+
     [Client]
     public void NotifyNewGem(Vector2 pos, int diggable)
     {
@@ -160,6 +182,7 @@ public class MapManager : NetworkBehaviour, IMapManager
     private void HandleDigSuccess(GemDigSuccessData gemDigSuccessData)
     {
         Vector2Int index = PositionToIndex(new Vector2(gemDigSuccessData.posX,gemDigSuccessData.posY));
+
         try
         {
             mapData[index.x,index.y] = 0;
@@ -168,7 +191,7 @@ public class MapManager : NetworkBehaviour, IMapManager
         }
         catch
         {
-            Debug.Log("failed to remove gem at index " + index);
+            Debug.Log("Failed to remove gem at index: " + index);
         }
     }
 
@@ -231,6 +254,7 @@ public class MapManager : NetworkBehaviour, IMapManager
         
         return (rareGem, (int) DiggableType.RareGem);
     }
+
     [Server]
     private Vector2Int GetRandomEmptyIndex()
     {
@@ -294,10 +318,8 @@ public class MapManager : NetworkBehaviour, IMapManager
 
     public Vector2Int GetMapSize() => mapSize;
 
-    public Vector2Int PositionToIndex(Vector2 position)
-    {
-        return new Vector2Int(Mathf.FloorToInt(position.x - rootX),Mathf.FloorToInt(position.y - rootY));
-    }
+    public Vector2Int PositionToIndex(Vector2 position) => 
+    new Vector2Int(Mathf.FloorToInt(position.x - rootX), Mathf.FloorToInt(position.y - rootY));
 
     [Server]
     public bool TrySpawnDiggableAtIndex(Vector2Int idx, DiggableType diggable, GameObject prefab)
@@ -311,23 +333,25 @@ public class MapManager : NetworkBehaviour, IMapManager
         return true;
     }   
 
-
-
     [Server]
     public void DigAtPosition(NetworkIdentity player)
     {
         DigAction digger = player.GetComponent<DigAction>();
         Vector2Int index = PositionToIndex(player.transform.position);
         GameObject gem = null;
+
         try
         {
             gem = Diggables[index.x,index.y];
         }
-        catch{return;}
+        catch
+        {
+            return;
+        }
+
         if (gem != null)
         {
             gem.GetComponent<GemObtain>().Dig(digger);
         }
     }
-
 }
