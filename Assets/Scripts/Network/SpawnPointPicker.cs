@@ -17,7 +17,7 @@ public class SpawnPointPicker : MonoBehaviour
         get
         {
             idx++;
-            Debug.Log("Spawn at: " + spawnPositions[idx].position);            
+            //Debug.Log("Spawn at: " + spawnPositions[idx].position);            
             return spawnPositions[idx];            
         }
     }

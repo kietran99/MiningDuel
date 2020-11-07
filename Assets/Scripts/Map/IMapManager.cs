@@ -1,6 +1,6 @@
-﻿using MD.Diggable.Core;
-using UnityEngine;
+﻿using UnityEngine;
 using Mirror;
+
 public interface IMapManager
 {
     //Map GetScanArea(Vector2[] posToScan);

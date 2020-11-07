@@ -93,26 +93,66 @@ public class MapManager : NetworkBehaviour, IMapManager
     private bool canGenerateNewGem;
     #endregion
 
+    bool flag = false;
     public ScanAreaData GetScanAreaData(Vector2[] posToScan) {
+        // Debug.Log("se" + mapData.Length);
+        // Debug.Log("Input positions to scan: ");
+        // foreach (var i in posToScan) Debug.Log(i);
         return new ScanAreaData(GenTileData(posToScan).ToArray());    
     }
     
     private IEnumerable<ScanTileData> GenTileData(Vector2[] posToScan)
     {
-        int res;
+        //int res;
         foreach (var pos in posToScan)
         {
-            try
-            {
-                res = (int) mapData[(int)pos.x - rootX,(int) pos.y - rootY];
-            }
-            catch
-            {
-                res = 0;
-            }
-            yield return new ScanTileData(pos,res);
+            // try
+            // {
+            //     res = mapData[(int)pos.x - rootX,(int) pos.y - rootY];
+            // }
+            // catch
+            // {
+            //     res = 0;
+            // }
+            // if (flag)
+            // Debug.Log("---------------------------------index "+ pos + " " + TryGetDiggableAt(pos));
+            yield return new ScanTileData(pos, TryGetDiggableAt(pos));
         }
+        flag = false;
     }
+
+    private int TryGetDiggableAt(Vector2 pos)
+    {
+        //int res;
+
+        try 
+        {
+            return (int)mapData[(int)pos.x - rootX,(int) pos.y - rootY];
+        }
+        catch
+        {
+            return 0;
+        }
+
+        //return res;
+    }
+
+    // [Server]
+    // public void RegisterMapManager()
+    // {
+    //     Debug.Log("Calling");
+    //     RpcRegisterMapManager();
+    // }
+
+    // [ClientRpc]
+    // void RpcRegisterMapManager()
+    // {
+    //     Debug.Log("registering mapmanager");
+    //     ServiceLocator.Register<IMapManager>(GetComponent<IMapManager>());
+    //     IMapManager imap;
+    //     ServiceLocator.Resolve<IMapManager>(out imap);
+    //     Debug.Log(imap);
+    // }
 
     [Server]
     public override void OnStartServer()
@@ -121,6 +161,7 @@ public class MapManager : NetworkBehaviour, IMapManager
         EventManager.Instance.StartListening<GemDigSuccessData>(HandleDigSuccess);
         EventManager.Instance.StartListening<ProjectileObtainData>(HandleDigSuccess);
     }
+
     [Client]
     void Start()
     {
@@ -141,10 +182,10 @@ public class MapManager : NetworkBehaviour, IMapManager
             EventManager.Instance.StopListening<DiggableSpawnData>(AddDiggableToMapData);
         }
     }  
-    [Client]
     private void RemoveDiggableFromMapData(DiggableDestroyData data)
     {
         Debug.Log("Removing " + data.diggable.ToDiggable());
+        flag= true;
         if (data.diggable == -1)
             Debug.Log("removing bomb");
         Vector2Int idx = PositionToIndex(new Vector2(data.posX,data.posY));
@@ -155,6 +196,7 @@ public class MapManager : NetworkBehaviour, IMapManager
         catch{
             Debug.Log("cant remove "+ data.diggable.ToDiggable() + " in mapdata at index " + idx);
         }
+        Debug.Log("******************************** "+ mapData[idx.x,idx.y]);
     }
     [Client]
     private void AddDiggableToMapData(DiggableSpawnData data)
@@ -179,6 +221,7 @@ public class MapManager : NetworkBehaviour, IMapManager
     private  void HandleDigSuccess(GemDigSuccessData gemDigSuccessData)
     {
         Vector2Int index = PositionToIndex(new Vector2(gemDigSuccessData.posX,gemDigSuccessData.posY));
+
         try
         {
             mapData[index.x,index.y] = 0;
@@ -187,7 +230,7 @@ public class MapManager : NetworkBehaviour, IMapManager
         }
         catch
         {
-            Debug.Log("failed to remove gem at index " + index);
+            Debug.Log("Failed to remove gem at index: " + index);
         }
     }
     [Server]
@@ -274,6 +317,7 @@ public class MapManager : NetworkBehaviour, IMapManager
         
         return (rareGem, DiggableType.RareGem);
     }
+
     [Server]
     private Vector2Int GetRandomEmptyIndex()
     {
@@ -338,10 +382,8 @@ public class MapManager : NetworkBehaviour, IMapManager
 
     public Vector2Int GetMapSize() => mapSize;
 
-    public Vector2Int PositionToIndex(Vector2 position)
-    {
-        return new Vector2Int(Mathf.FloorToInt(position.x - rootX),Mathf.FloorToInt(position.y - rootY));
-    }
+    public Vector2Int PositionToIndex(Vector2 position) => 
+    new Vector2Int(Mathf.FloorToInt(position.x - rootX), Mathf.FloorToInt(position.y - rootY));
 
     [Server]
     public bool TrySpawnDiggableAtIndex(Vector2Int idx, DiggableType diggable, GameObject prefab)
@@ -364,8 +406,6 @@ public class MapManager : NetworkBehaviour, IMapManager
         Debug.Log("diggables in spawnandregister " + Diggables.Length);
         Diggables[x,y] = instance;
     }
-
-
 
     [Server]
     public void DigAtPosition(NetworkIdentity player)
@@ -391,5 +431,4 @@ public class MapManager : NetworkBehaviour, IMapManager
             }
         }
     }
-
 }

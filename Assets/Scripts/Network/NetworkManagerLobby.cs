@@ -170,12 +170,14 @@ public class NetworkManagerLobby : NetworkManager
 
     private void SpawnNetworkPlayer(NetworkRoomPlayerLobby roomPlayer)
     {
-        Debug.Log("Spawn a player");               
+        Debug.Log("Spawn a player");          
+        //var player = Instantiate(NetworkPlayerPrefab);     
         var player = Instantiate(NetworkPlayerPrefab, spawnPointPicker.NextSpawnPoint.position, Quaternion.identity);
         player.SetPlayerName(roomPlayer.DisplayName);
         var conn = roomPlayer.netIdentity.connectionToClient;
         NetworkServer.Destroy(conn.identity.gameObject);
         NetworkServer.ReplacePlayerForConnection(conn, player.gameObject, true);
+        //player.SetStartPosition(spawnPointPicker.NextSpawnPoint.position);
         player.TargetRegisterIMapManager(mapManager.netIdentity);
     }
 

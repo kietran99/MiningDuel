@@ -1,7 +1,7 @@
 namespace MD.Diggable
 {
     //data for sonar and map on client to update
-    public class DiggableDestroyData : EventSystems.IEventData
+    public struct DiggableDestroyData : EventSystems.IEventData
     {
         public float posX;
         public float posY;

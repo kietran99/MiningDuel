@@ -5614,7 +5614,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f5552605be6dca4ead398764bf1a70b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  createRoomWindow: {fileID: 0}
   joinRoomWindow: {fileID: 6761929905331909617}
   networkManager: {fileID: 1242888157}
 --- !u!1 &2275941263234495169
@@ -12013,7 +12012,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameInputField: {fileID: 676635142}
   continueButton: {fileID: 1968156595}
-  background: {fileID: 0}
   shownPlayerNameText: {fileID: 0}
 --- !u!114 &8227228526648656813
 MonoBehaviour:
