@@ -1,53 +1,53 @@
 ﻿using MD.Character;
 using UnityEngine;
 using Mirror;
+using MD.Diggable;
 namespace MD.Diggable.Gem
 {
     [RequireComponent (typeof(CircleCollider2D))]
     [RequireComponent(typeof(GemValue))]
-    public class GemObtain : MonoBehaviour
+    public class GemObtain : MonoBehaviour, IcanDig
     {
-        private GemValue gemValue;
         private DigAction currentDigger;
 
         private MapManager mapMangerServer;
-        // private bool diggable;
-        [Server]
+
+        private GemValue gemValue = null;
+        private GemValue GemValue
+        {
+            get
+            {
+                if (gemValue != null) return gemValue;
+                return gemValue = GetComponent<GemValue>();
+            }
+        }        
+        [Client]
         void Start()
         {
-            gemValue = GetComponent<GemValue>();
-            // diggable = false;
-            // EventSystems.EventManager.Instance.StartListening<DigInvokeData>(Dig);
+            EventSystems.EventManager.Instance.TriggerEvent(
+                new DiggableSpawnData(GemValue.Value,transform.position.x,transform.position.y));
+        }
+        [Client]
+        void OnDestroy()
+        {
+            //fire an event for sonar to update
+            EventSystems.EventManager.Instance.TriggerEvent(
+                new DiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y));            
         }
 
         [Server]
         public void Dig(DigAction digger)
         {           
-            // if (!diggable) return;
             this.currentDigger = digger;
-            gemValue.DecreaseValue(currentDigger.Power);
+            GemValue.DecreaseValue(currentDigger.Power);
 
-            if (gemValue.RemainingHit > 0) return;
+            if (GemValue.RemainingHit > 0) return;
 
             EventSystems.EventManager.Instance.TriggerEvent(
-                new GemDigSuccessData(transform.position.x, transform.position.y, gemValue.Value, currentDigger));
+                new GemDigSuccessData(transform.position.x, transform.position.y, GemValue.Value, currentDigger));
 
             Destroy(gameObject);
         }
         
-        // private void OnTriggerEnter2D(Collider2D other)
-        // {
-        //     if (!other.CompareTag(Constants.PLAYER_TAG)) return;
-            
-        //     diggable = true;
-        //     digger = other.GetComponent<DigAction>();
-        // }
-
-        // private void OnTriggerExit2D(Collider2D other)
-        // {
-        //     if (!other.CompareTag(Constants.PLAYER_TAG)) return;
-
-        //     diggable = false;
-        // }
     }
 }

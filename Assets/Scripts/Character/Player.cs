@@ -82,6 +82,12 @@ namespace MD.Character
         {
             score += amount;
         }
+        [Server]
+        public void DecreaseScore(int amount)
+        {
+            score -= amount;
+            score = score < 0? 0 : score;
+        }
 
         public void OnScoreChange(int oldValue, int newValue)
         {

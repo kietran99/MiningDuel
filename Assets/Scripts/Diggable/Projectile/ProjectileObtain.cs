@@ -1,39 +1,45 @@
 ﻿using UnityEngine;
-
+using Mirror;
+using MD.Character;
 namespace MD.Diggable.Projectile
 {
-    public class ProjectileObtain : MonoBehaviour
+    [RequireComponent(typeof(DiggableProjectile))]
+    public class ProjectileObtain : MonoBehaviour, IcanDig
     {
-        [SerializeField]
-        private ProjectileStats stats = null;
-
-        private bool diggable = false;
-
+        // private bool diggable = false;
+        private DigAction currentDigger = null;
+        
+        private DiggableProjectile projectile = null;
+        private DiggableProjectile Projectile
+        {
+            get
+            {
+                if (projectile != null) return projectile;
+                return projectile = GetComponent<DiggableProjectile>();
+            }
+        }  
+        [Client]
         void Start()
         {
-            EventSystems.EventManager.Instance.StartListening<DigInvokeData>(Dig);
+            EventSystems.EventManager.Instance.TriggerEvent(
+                new DiggableSpawnData(Projectile.GetStats().DigValue,transform.position.x,transform.position.y));
+        }
+        [Client]
+        void OnDestroy()
+        {
+            //fire an event for sonar to update
+            EventSystems.EventManager.Instance.TriggerEvent(
+                new DiggableDestroyData(Projectile.GetStats().DigValue,transform.position.x,transform.position.y));
         }
 
-        private void Dig(DigInvokeData obj)
+        [Server]
+        public void Dig(DigAction digger)
         {
-            if (!diggable) return;
-
-            EventSystems.EventManager.Instance.TriggerEvent(new ProjectileObtainData(stats));
+            currentDigger = digger;
+            EventSystems.EventManager.Instance.TriggerEvent(
+                new ProjectileObtainData(Projectile.GetStats(),transform.position.x,transform.position.y));
             Destroy(gameObject);
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
-        {
-            if (!other.CompareTag(Constants.PLAYER_TAG)) return;
-
-            diggable = true;
-        }
-
-        private void OnTriggerExit2D(Collider2D other)
-        {
-            if (!other.CompareTag(Constants.PLAYER_TAG)) return;
-
-            diggable = false;
-        }
     }
 }
