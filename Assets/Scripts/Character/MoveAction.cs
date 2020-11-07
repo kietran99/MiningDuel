@@ -15,13 +15,9 @@ namespace MD.Character
         private Vector2 moveVect, minMoveBound, maxMoveBound;
         private Vector2 offset = new Vector2(.5f, .5f);
 
-        void Awake()
-        {
-            rigidBody = GetComponent<Rigidbody2D>();
-        }
-
         private void Start()
         {
+            rigidBody = GetComponent<Rigidbody2D>();
             EventSystems.EventManager.Instance.StartListening<JoystickDragData>(BindMoveVector);
         }
 
@@ -47,6 +43,8 @@ namespace MD.Character
         
         private void MoveCharacter(float moveX, float moveY)
         {
+            if (moveVect.Equals(Vector2.zero)) return;
+
             var movePos = new Vector2(moveX, moveY).normalized * speed;
             transform.Translate(movePos * Time.fixedDeltaTime);
             transform.position = new Vector2(Mathf.Clamp(transform.position.x, minMoveBound.x + offset.x, maxMoveBound.x - offset.x),

@@ -3,6 +3,8 @@ using Mirror;
 
 namespace MD.Character
 {
+    [RequireComponent(typeof(MoveAction))]
+    [RequireComponent(typeof(DigAction))]
     public class Player : NetworkBehaviour
     {
         [Header("Game Stats")]
@@ -21,8 +23,6 @@ namespace MD.Character
 
         // [SyncVar]
         // private bool isReady = true;
-
-        //private Vector3 startPos;
 
         private NetworkManagerLobby room;
         private NetworkManagerLobby Room
@@ -65,11 +65,8 @@ namespace MD.Character
         public override void OnStartAuthority()
         {
             ServiceLocator.Register(this);
-            //transform.position = startPos;
             indicator.color = Color.green;
         }
-
-        //public void SetStartPosition(Vector3 startPosition) => this.startPos = startPosition;
 
         [Server]
         public void SetPlayerName(string name)
@@ -82,12 +79,13 @@ namespace MD.Character
         {
             ServiceLocator.Register(mapManager.GetComponent<IMapManager>());
         }
-
+        
         [Server]
         public void IncreaseScore(int amount)
         {
             score += amount;
         }
+
         [Server]
         public void DecreaseScore(int amount)
         {
@@ -100,6 +98,7 @@ namespace MD.Character
             if (isLocalPlayer)
                 ScoreManager.UpdateScoreText(newValue);
         }
+
         public int GetCurrentScore()
         {
             return score;

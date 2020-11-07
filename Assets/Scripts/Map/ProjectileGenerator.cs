@@ -1,5 +1,6 @@
 using UnityEngine;
 using Mirror;
+
 [RequireComponent(typeof(IMapManager))]
 public class ProjectileGenerator: MonoBehaviour
 {
@@ -27,7 +28,7 @@ public class ProjectileGenerator: MonoBehaviour
     [Server]
     private void GenerateProjectiles()
     {
-        Debug.Log("generate bombs");
+        Debug.Log("Generate projectiles");
         int HalfMapWidth = mapSize.x/2 + 1;
         int HalfMapHeight = mapSize.y/2 + 1;
         Vector2Int randomIndex = Vector2Int.zero;

@@ -34,7 +34,7 @@ namespace MD.UI
         private Vector2[] relScannablePos;
         private IMapManager genManager;
         private Vector2 lastCenterPos = Vector2.zero;
-        private bool firstScan = true;
+        //private bool firstScan = true;
         private float symbolSize;
         private IObjectPool tilePool;
         private IObjectPool symbolPool;
@@ -145,11 +145,11 @@ namespace MD.UI
         #region UPDATE SCAN AREA
         private void AttemptToUpdateScanArea(MoveData moveData)
         {
-            if (firstScan)
-            {
-                firstScan = false;
-                return;
-            }
+            // if (firstScan)
+            // {
+            //     firstScan = false;
+            //     return;
+            // }
 
             float deltaX = lastCenterPos.x.DeltaInt(moveData.x);
             float deltaY = lastCenterPos.y.DeltaInt(moveData.y);
@@ -184,15 +184,10 @@ namespace MD.UI
                 
         private void UpdateScanArea(DiggableDestroyData digSuccessData)
         {
-            //TODO: check if outside of sonar range return\
-            // RemoveSymbolAtCentre(digSuccessData.posX,digSuccessData.posY);
             if (TryWorldToScannablePos(new Vector2(digSuccessData.posX,digSuccessData.posY), out Vector2 relPos))
             {
                 RemoveSymbolAt(relPos.x,relPos.y);
             }
-            // flag = true;
-
-            // InitScanArea();
         }
 
         private void UpdateScanArea(MoveData moveData)
@@ -211,7 +206,6 @@ namespace MD.UI
                 symbol.transform.position.y.IsEqual(pos.y));
             
             if (idx.Equals(Constants.INVALID)) return;
-            Debug.Log("co chay");
             symbolPool.Push(item.gameObject);
         }
         private Vector2 GetSymbolPos(float x, float y)

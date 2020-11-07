@@ -170,17 +170,19 @@ public class MapManager : NetworkBehaviour, IMapManager
     private void RemoveDiggableFromMapData(DiggableDestroyData data)
     {
         Debug.Log("Removing " + data.diggable.ToDiggable());
-        if (data.diggable == -1)
-            Debug.Log("removing bomb");
+        if (data.diggable == -1) Debug.Log("Removing bomb");
+
         Vector2Int idx = PositionToIndex(new Vector2(data.posX,data.posY));
+        
         try
         {
-        mapData[idx.x,idx.y] = 0;
+            mapData[idx.x,idx.y] = 0;
         }
-        catch{
+        catch
+        {
             Debug.Log("cant remove "+ data.diggable.ToDiggable() + " in mapdata at index " + idx);
         }
-        Debug.Log("******************************** "+ mapData[idx.x,idx.y]);
+
     }
 
     [Client]
@@ -381,7 +383,7 @@ public class MapManager : NetworkBehaviour, IMapManager
         }
 
         var diggableInstance = Instantiate(prefab, IndexToPosition(idx), Quaternion.identity, gemContainer);
-        Debug.Log("instance in tryspawnand" + diggableInstance);
+        //Debug.Log("instance in tryspawnand" + diggableInstance);
         SpawnAndRegister(diggableInstance,diggable,idx.x,idx.y);
         return true;
     }
@@ -391,8 +393,8 @@ public class MapManager : NetworkBehaviour, IMapManager
     {
         NetworkServer.Spawn(instance);
         mapData[x,y] = diggableType;
-        Debug.Log("instance in spawnandregister " + instance);
-        Debug.Log("diggables in spawnandregister " + Diggables.Length);
+        //Debug.Log("instance in spawn and register " + instance);
+        //Debug.Log("diggables in spawn and register " + Diggables.Length);
         Diggables[x,y] = instance;
     }
 

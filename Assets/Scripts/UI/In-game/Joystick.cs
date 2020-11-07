@@ -1,28 +1,40 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace MD.UI
 {
     public class Joystick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
-    {
+    {        
+        [SerializeField]
+        private float offset = 1f;
+
+        private Vector2 inputDirection;
+        private Image backgroundImage, joystickImage;
+
+        private bool firstStop = true;
+
         public Vector2 InputDirection
         {
             get => inputDirection;
             set
             {
                 inputDirection = value;
-                joystickImage.rectTransform.anchoredPosition = inputDirection;                
-                EventSystems.EventManager.Instance.TriggerEvent(new JoystickDragData(value.normalized));
+                joystickImage.rectTransform.anchoredPosition = inputDirection;   
+
+                if (!inputDirection.Equals(Vector2.zero)) 
+                {
+                    firstStop = true;
+                    EventSystems.EventManager.Instance.TriggerEvent(new JoystickDragData(value.normalized));
+                    return;
+                }
+                
+                if (!firstStop) return;
+
+                firstStop = false;
+                EventSystems.EventManager.Instance.TriggerEvent(new JoystickDragData(value.normalized));             
             }
         }
-
-        [SerializeField]
-        private float offset = 1f;
-
-        private Vector2 inputDirection;
-        private Image backgroundImage, joystickImage;
 
         void Awake()
         {

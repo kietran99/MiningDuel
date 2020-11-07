@@ -177,7 +177,6 @@ public class NetworkManagerLobby : NetworkManager
         var conn = roomPlayer.netIdentity.connectionToClient;
         NetworkServer.Destroy(conn.identity.gameObject);
         NetworkServer.ReplacePlayerForConnection(conn, player.gameObject, true);
-        //player.SetStartPosition(spawnPointPicker.NextSpawnPoint.position);
         player.TargetRegisterIMapManager(mapManager.netIdentity);
     }
 
