@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
-
+using System.Net;
+using System.Net.Sockets;
 public class NetworkRoomPlayerLobby : NetworkBehaviour
 {
     [Header("UI")]
@@ -14,6 +15,9 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
 
     [SerializeField]
     private Button startGameButton = null, readyButton = null;
+
+    [SerializeField]
+    private Text ipText = null;
     
     [SyncVar(hook = nameof(HandleDisplayNameChanged))]
     public string DisplayName = "Loading....";
@@ -42,7 +46,6 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
         {
             isHost = value;
             if (!isHost) return;
-            
             startGameButton.gameObject.SetActive(true);
             readyButton.gameObject.SetActive(false);
             isReady = true;           
@@ -53,7 +56,21 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
     {
         CmdSetDisplayName(PlayerNameInput.DisplayName);
         lobbyUI.SetActive(true);
+        if (!isHost) return;
+        ipText.text = GetLocalIPAddress();
     }
+     public string GetLocalIPAddress()
+     {
+         var host = Dns.GetHostEntry(Dns.GetHostName());
+         foreach (var ip in host.AddressList)
+         {
+             if (ip.AddressFamily == AddressFamily.InterNetwork)
+             {
+                 return ip.ToString();
+             }
+         }
+         throw new System.Exception("No network adapters with an IPv4 address in the system!");
+     }
 
     public override void OnStartClient()
     {
