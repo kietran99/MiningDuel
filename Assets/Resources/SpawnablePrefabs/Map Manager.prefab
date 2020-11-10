@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3452437996051496441}
   - component: {fileID: 7984152198331061256}
   - component: {fileID: -6368742004232275429}
+  - component: {fileID: 8245718662862826771}
   m_Layer: 0
   m_Name: Map Manager
   m_TagString: Untagged
@@ -89,6 +90,22 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!114 &8245718662862826771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3298901094621136450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9c907a8f07d49443944b1e52facb702, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  exposedBombPrefab: {fileID: 5170740038248656859, guid: 12a10bcf8aa0e404aa2b018caf4f31f0,
+    type: 3}
 --- !u!1 &3710564033371691436
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,7 +19,6 @@ namespace MD.UI
 
         public void Invoke()
         {
-            Debug.Log("dig button clicked");
             EventSystems.EventManager.Instance.TriggerEvent(new DigInvokeData());
         }
 

@@ -95,8 +95,8 @@ namespace MD.Character
 
         public void OnScoreChange(int oldValue, int newValue)
         {
-            if (isLocalPlayer)
-                ScoreManager.UpdateScoreText(newValue);
+            if (!isLocalPlayer) return;
+            ScoreManager.UpdateScoreText(newValue);
         }
 
         public int GetCurrentScore()

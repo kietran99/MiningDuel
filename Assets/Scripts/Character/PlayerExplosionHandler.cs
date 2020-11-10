@@ -4,7 +4,7 @@ using Mirror;
 namespace MD.Character
 {
     [RequireComponent(typeof(Player))]
-    public class PlayerExplosionHandler : MonoBehaviour//, IExplodable
+    public class PlayerExplosionHandler : MonoBehaviour, IExplodable
     {
         #region  SERIALIZE FIELDS
         [SerializeField]
@@ -28,10 +28,11 @@ namespace MD.Character
         public void ProcessExplosion(float gemDropPercentage, float stunTime, int bombType)
         {
             Debug.Log(transform.name + " was exploded");
-            if (!ServiceLocator.Resolve<IScoreManager>(out IScoreManager scoreManager)) return;
+            // if (!ServiceLocator.Resolve<IScoreManager>(out IScoreManager scoreManager)) return;
 
-            int numOfGem = Mathf.FloorToInt(player.GetCurrentScore() * gemDropPercentage * .01f);
-            player.DecreaseScore(numOfGem);
+            // int numOfGem = Mathf.FloorToInt(player.GetCurrentScore() * gemDropPercentage * .01f);
+            int numOfGem = 10;
+            Player.DecreaseScore(numOfGem);
 
             for (int i = 0; i < numOfGem; i++)
             {

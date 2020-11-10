@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-
 namespace Timer
 {
     public class Timer : MonoBehaviour, ITimer
@@ -62,13 +61,13 @@ namespace Timer
         public void Activate()
         {            
             state = TimerState.ON;
-            //StartCoroutine(Tick());
+            StartCoroutine(Tick());
             startTicking = true;
         }
 
         public void Stop()
         {            
-            //StopCoroutine(Tick());
+            StopCoroutine(Tick());
             startTicking = false;
             state = TimerState.OFF;
         }
