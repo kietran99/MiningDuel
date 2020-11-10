@@ -20,9 +20,9 @@ namespace MD.Diggable.Projectile
 
         private void Update()
         {
-            if (shouldLaunch) return;
+            // if (shouldLaunch) return;
 
-            rigidBody.transform.position = player.position + holdPos;
+            // rigidBody.transform.position = player.position + holdPos;
         }
         
         public void BindThrowDirection(Vector2 throwDir) => this.throwDir = throwDir;

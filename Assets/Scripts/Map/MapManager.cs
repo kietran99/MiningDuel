@@ -88,6 +88,7 @@ public class MapManager : NetworkBehaviour, IMapManager
     private float halfTileSize = .5f;
     private DiggableType[,] mapData;
     private GameObject[,] Diggables;
+    private PlayerItemSpawner itemSpawner = null;
 
     private bool canGenerateNewGem;
     #endregion
@@ -120,6 +121,10 @@ public class MapManager : NetworkBehaviour, IMapManager
         }
     }
 
+    public int GetMapDataAtPos(Vector2 pos)
+    {
+        return TryGetDiggableAt(PositionToIndex(pos));
+    }
     // [Server]
     // public void RegisterMapManager()
     // {
@@ -141,6 +146,7 @@ public class MapManager : NetworkBehaviour, IMapManager
     public override void OnStartServer()
     {
         base.OnStartServer();
+        itemSpawner = GetComponent<PlayerItemSpawner>();
         EventManager.Instance.StartListening<GemDigSuccessData>(HandleDigSuccess);
         EventManager.Instance.StartListening<ProjectileObtainData>(HandleDigSuccess);
     }
@@ -219,6 +225,13 @@ public class MapManager : NetworkBehaviour, IMapManager
         catch
         {
             Debug.Log("Failed to remove gem at index: " + index);
+            return;
+        }
+        if (gemDigSuccessData.value.ToDiggable() == DiggableType.NormalBomb)
+        {
+            if (itemSpawner == null) return;
+            Debug.Log("Spawn bomb at player ");
+            itemSpawner.SpawnBombAtPlayer(gemDigSuccessData.digger.netIdentity);
         }
     }
 

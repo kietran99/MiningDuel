@@ -11,4 +11,6 @@ public interface IMapManager
     bool TrySpawnDiggableAtIndex(Vector2Int idx, DiggableType diggable, GameObject prefab);
 
     void NotifyNewGem(Vector2 pos, DiggableType diggable);
+
+    int GetMapDataAtPos(Vector2 pos);
 }
