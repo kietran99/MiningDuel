@@ -6,7 +6,7 @@ namespace MD.Diggable.Gem
 {
     [RequireComponent (typeof(CircleCollider2D))]
     [RequireComponent(typeof(GemValue))]
-    public class GemObtain : MonoBehaviour, ICanDig
+    public class GemObtain : NetworkBehaviour, ICanDig
     {
         private DigAction currentDigger;
 
@@ -21,20 +21,22 @@ namespace MD.Diggable.Gem
                 return gemValue = GetComponent<GemValue>();
             }
         }  
-              
-        [Client]
-        void Start()
+        public override void OnStartClient()
         {
+            base.OnStartClient();
             EventSystems.EventManager.Instance.TriggerEvent(
                 new DiggableSpawnData(GemValue.Value,transform.position.x,transform.position.y));
         }
 
-        [Client]
-        void OnDestroy()
+        public override void OnStopClient()
         {
             //fire an event for sonar to update
             EventSystems.EventManager.Instance.TriggerEvent(
-                new DiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y));            
+                new DiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y));
+            //for animations and UIs
+            EventSystems.EventManager.Instance.TriggerEvent(
+                new GemDigSuccessData(GemValue.Value, transform.position.x, transform.position.y)
+            );            
         }
 
         [Server]
@@ -46,8 +48,7 @@ namespace MD.Diggable.Gem
             if (GemValue.RemainingHit > 0) return;
 
             EventSystems.EventManager.Instance.TriggerEvent(
-                new GemDigSuccessData(transform.position.x, transform.position.y, GemValue.Value, currentDigger));
-
+                new ServerDiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y, currentDigger));
             Destroy(gameObject);
         }
         

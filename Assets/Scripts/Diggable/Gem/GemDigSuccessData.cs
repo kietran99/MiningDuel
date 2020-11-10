@@ -6,14 +6,11 @@ namespace MD.Diggable
         public float posX, posY;
         public int value;
 
-        public DigAction digger;
-
-        public GemDigSuccessData(float posX, float posY, int value, DigAction digger)
+        public GemDigSuccessData(int value, float posX, float posY)
         {
             this.posX = posX;
             this.posY = posY;
             this.value = value;
-            this.digger = digger;
         }
     }
 }

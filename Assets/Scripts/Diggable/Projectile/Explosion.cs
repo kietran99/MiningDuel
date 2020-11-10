@@ -1,10 +1,11 @@
 ﻿using Timer;
 using UnityEngine;
+using Mirror;
 
 namespace MD.Diggable.Projectile
 {
     [RequireComponent(typeof(Timer.Timer))]
-    public class Explosion : MonoBehaviour, Timer.ITickListener
+    public class Explosion : NetworkBehaviour, Timer.ITickListener
     {
         #region  SERIALIZE FIELDS
         [SerializeField]
@@ -31,12 +32,14 @@ namespace MD.Diggable.Projectile
         private bool isExploded = false;
         private bool isThrown = false;
 
-        void Start()
+        public override void OnStartServer()
         {
+            base.OnStartServer();
             timer = GetComponent<ITimer>();
             timer.Activate();
         }
         
+        [ServerCallback]
         public void OnTick(float timeStamp)
         {
             if (timeStamp == 2f)
@@ -51,6 +54,7 @@ namespace MD.Diggable.Projectile
             }     
         }
 
+        [ServerCallback]
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!isThrown) return;
@@ -68,11 +72,13 @@ namespace MD.Diggable.Projectile
             }
         }
 
+        [ServerCallback]
         private void OnTriggerExit2D(Collider2D other)
         {
             if (other.CompareTag(Constants.PLAYER_TAG)) isThrown = true;
         }
 
+        [ServerCallback]
         private void Explode()
         {
             isExploded = true;
@@ -86,6 +92,7 @@ namespace MD.Diggable.Projectile
             EventSystems.EventManager.Instance.TriggerEvent(new ExplodeData());
         }
 
+        [ServerCallback]
         private void CheckForCollision()
         {
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, explosionRadius, explodeLayerMask);
@@ -97,13 +104,15 @@ namespace MD.Diggable.Projectile
                 target?.ProcessExplosion(stats.GemDropPercentage, stats.StunTime, -1);
             }
         }
-
+        
+        [ServerCallback]
         private void PlayExplosionEffect()
         {
             spriteRenderer.sprite = explodeSprite;
             Invoke(nameof(DestroyProjectile), .2f);
         }
 
+        [ServerCallback]
         private void DestroyProjectile() => Destroy(projectileObject);
     }
 }

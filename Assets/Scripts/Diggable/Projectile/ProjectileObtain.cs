@@ -5,7 +5,7 @@ using MD.Character;
 namespace MD.Diggable.Projectile
 {
     [RequireComponent(typeof(DiggableProjectile))]
-    public class ProjectileObtain : MonoBehaviour, ICanDig
+    public class ProjectileObtain : NetworkBehaviour, ICanDig
     {
         // private bool diggable = false;
         private DigAction currentDigger = null;
@@ -19,18 +19,21 @@ namespace MD.Diggable.Projectile
                 return projectile = GetComponent<DiggableProjectile>();
             }
         }  
-        [Client]
-        void Start()
+        public override void OnStartClient()
         {
             EventSystems.EventManager.Instance.TriggerEvent(
                 new DiggableSpawnData(Projectile.GetStats().DigValue,transform.position.x,transform.position.y));
         }
-        [Client]
-        void OnDestroy()
+        public override void OnStopClient()
         {
+            base.OnStopClient();
             //fire an event for sonar to update
             EventSystems.EventManager.Instance.TriggerEvent(
                 new DiggableDestroyData(Projectile.GetStats().DigValue,transform.position.x,transform.position.y));
+            //for animations and UI
+            EventSystems.EventManager.Instance.TriggerEvent(
+                new ProjectileObtainData(Projectile.GetStats(),transform.position.x,transform.position.y)
+            );
         }
 
         [Server]
@@ -38,7 +41,7 @@ namespace MD.Diggable.Projectile
         {
             currentDigger = digger;
             EventSystems.EventManager.Instance.TriggerEvent(
-                new ProjectileObtainData(Projectile.GetStats(),transform.position.x,transform.position.y));
+                new ServerDiggableDestroyData(Projectile.DiggbleType(),transform.position.x,transform.position.y, currentDigger));
             Destroy(gameObject);
         }
 

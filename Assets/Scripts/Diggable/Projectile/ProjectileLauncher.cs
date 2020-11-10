@@ -1,38 +1,44 @@
 ﻿using UnityEngine;
-
+using Mirror;
 namespace MD.Diggable.Projectile
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public class ProjectileLauncher : MonoBehaviour
+    public class ProjectileLauncher : NetworkBehaviour
     {       
-        private bool shouldLaunch = false;
-        private Rigidbody2D rigidBody;
         private Vector3 holdPos;
-        private Transform player;
-        private Vector2 throwDir;
 
-        void Start()
+        [SyncVar]
+        private NetworkIdentity owner;
+
+        public override void OnStartClient()
         {
-            player = transform;
-            rigidBody = GetComponent<Rigidbody2D>();
-            holdPos = rigidBody.transform.localPosition;
-        }
-
-        private void Update()
-        {
-            // if (shouldLaunch) return;
-
-            // rigidBody.transform.position = player.position + holdPos;
+            transform.parent = owner.gameObject.transform;
+            //set bomb holding position
+            transform.localPosition  =  new Vector3(0,1f,0);
         }
         
-        public void BindThrowDirection(Vector2 throwDir) => this.throwDir = throwDir;
 
-        public void Launch(float power)
+        [Server]
+        public void Launch(float power, float dirX, float dirY)
         {
-            shouldLaunch = true;
-            rigidBody.AddForce(throwDir.normalized * power, ForceMode2D.Impulse);
+            RpcLauch(dirX, dirY, power);
         }
 
-        public void StopOnCollide() => rigidBody.velocity = Vector2.zero;
+        [ClientRpc]
+        private void RpcLauch(float dirX, float dirY, float power)
+        {
+            Debug.Log("call rpclauch on client throwDir dirx " + dirX +" diry "+ dirY + " power" + power);
+            transform.parent = null;
+            // transform.Translate(dir);
+            GetComponent<Rigidbody2D>().AddForce(new Vector2(dirX,dirY).normalized*power,ForceMode2D.Impulse);
+        }
+        
+        [Server]
+        public void SetOwner(NetworkIdentity owner)
+        {
+            this.owner = owner;
+        }
+        [Server]
+        public void StopOnCollide() => GetComponent<Rigidbody2D>().velocity = Vector2.zero;
     }
 }

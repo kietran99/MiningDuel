@@ -147,32 +147,29 @@ public class MapManager : NetworkBehaviour, IMapManager
     {
         base.OnStartServer();
         itemSpawner = GetComponent<PlayerItemSpawner>();
-        EventManager.Instance.StartListening<GemDigSuccessData>(HandleDigSuccess);
-        EventManager.Instance.StartListening<ProjectileObtainData>(HandleDigSuccess);
+        EventManager.Instance.StartListening<ServerDiggableDestroyData>(HandleDigSuccess);
     }
 
     [Client]
-    void Start()
+    public override void OnStartClient()
     {
+        base.OnStartClient();
         mapData = new DiggableType[mapSize.x,mapSize.y];
         EventManager.Instance.StartListening<DiggableDestroyData>(RemoveDiggableFromMapData);
         EventManager.Instance.StartListening<DiggableSpawnData>(AddDiggableToMapData);
     }
-
-    void OnDestroy()
+    public override void OnStopClient()
     {
-        if (isServer)
-        {
-            EventManager.Instance.StopListening<GemDigSuccessData>(HandleDigSuccess);
-            EventManager.Instance.StopListening<ProjectileObtainData>(HandleDigSuccess);
-        }
-        else if (isClient)
-        {
-            EventManager.Instance.StopListening<DiggableDestroyData>(RemoveDiggableFromMapData);
-            EventManager.Instance.StopListening<DiggableSpawnData>(AddDiggableToMapData);
-        }
+        base.OnStopClient();
+        EventManager.Instance.StopListening<DiggableDestroyData>(RemoveDiggableFromMapData);
+        EventManager.Instance.StopListening<DiggableSpawnData>(AddDiggableToMapData);
+    }
+    public override void OnStopServer()
+    {
+        EventManager.Instance.StopListening<ServerDiggableDestroyData>(HandleDigSuccess);
     }  
 
+    [Client]
     private void RemoveDiggableFromMapData(DiggableDestroyData data)
     {
         Debug.Log("Removing " + data.diggable.ToDiggable());
@@ -212,7 +209,7 @@ public class MapManager : NetworkBehaviour, IMapManager
     }
 
     [Server]
-    private  void HandleDigSuccess(GemDigSuccessData gemDigSuccessData)
+    private  void HandleDigSuccess(ServerDiggableDestroyData gemDigSuccessData)
     {
         Vector2Int index = PositionToIndex(new Vector2(gemDigSuccessData.posX,gemDigSuccessData.posY));
 
@@ -220,36 +217,35 @@ public class MapManager : NetworkBehaviour, IMapManager
         {
             mapData[index.x,index.y] = 0;
             Diggables[index.x,index.y] = null;
-            gemDigSuccessData.digger.GetComponent<MD.Character.Player>().IncreaseScore(gemDigSuccessData.value);
+            gemDigSuccessData.digger.GetComponent<MD.Character.Player>().IncreaseScore(gemDigSuccessData.diggable);
         }
         catch
         {
             Debug.Log("Failed to remove gem at index: " + index);
             return;
         }
-        if (gemDigSuccessData.value.ToDiggable() == DiggableType.NormalBomb)
+        if (gemDigSuccessData.diggable.ToDiggable() == DiggableType.NormalBomb)
         {
             if (itemSpawner == null) return;
-            Debug.Log("Spawn bomb at player ");
             itemSpawner.SpawnBombAtPlayer(gemDigSuccessData.digger.netIdentity);
         }
     }
 
-    [Server]
-    private void HandleDigSuccess(ProjectileObtainData data)
-    {
-        Vector2Int index = PositionToIndex(new Vector2(data.posX,data.posY));
-        try
-        {
-            mapData[index.x,index.y] = 0;
-            Diggables[index.x,index.y] = null;
-            //do something here
-        }
-        catch
-        {
-            Debug.Log("failed to remove projectile at index " + index);
-        }       
-    }
+    // [Server]
+    // private void HandleDigSuccess(ProjectileObtainData data)
+    // {
+    //     Vector2Int index = PositionToIndex(new Vector2(data.posX,data.posY));
+    //     try
+    //     {
+    //         mapData[index.x,index.y] = 0;
+    //         Diggables[index.x,index.y] = null;
+    //         //do something here
+    //     }
+    //     catch
+    //     {
+    //         Debug.Log("failed to remove projectile at index " + index);
+    //     }       
+    // }
 
     [Server]
     public void GenerateMap()

@@ -104,7 +104,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  exposedBombPrefab: {fileID: 5512573233695929278, guid: 12a10bcf8aa0e404aa2b018caf4f31f0,
+  exposedBombPrefab: {fileID: 5170740038248656859, guid: 12a10bcf8aa0e404aa2b018caf4f31f0,
     type: 3}
 --- !u!1 &3710564033371691436
 GameObject:

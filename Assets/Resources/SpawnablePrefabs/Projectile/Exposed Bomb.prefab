@@ -85,6 +85,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3e0eaec5ad2f9246bed4ef503444ecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!114 &-7175667475458781375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -238,7 +240,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8492656410283331686}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0ec907c1eb158e34a88138a7be870086, type: 3}
   m_Name: 
@@ -258,6 +260,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ba0498518173194bad8aac115ed6d6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   explosionRadius: 1.5
   projectileObject: {fileID: 5512573233695929278}
   stats: {fileID: 11400000, guid: 1e2aa287b485d584991bba88ec458bf7, type: 2}
