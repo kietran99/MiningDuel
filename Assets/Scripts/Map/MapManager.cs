@@ -381,7 +381,7 @@ public class MapManager : NetworkBehaviour, IMapManager
     public Vector2Int GetMapSize() => mapSize;
 
     public Vector2Int PositionToIndex(Vector2 position) => 
-    new Vector2Int(Mathf.FloorToInt(position.x - rootX), Mathf.FloorToInt(position.y - rootY));
+    new Vector2Int(Mathf.FloorToInt(position.x - (float)rootX), Mathf.FloorToInt(position.y - rootY));
 
     [Server]
     public bool TrySpawnDiggableAtIndex(Vector2Int idx, DiggableType diggable, GameObject prefab)

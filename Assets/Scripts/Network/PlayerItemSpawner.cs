@@ -11,8 +11,8 @@ public class PlayerItemSpawner: NetworkBehaviour
     {
         var bombInstance = Instantiate(exposedBombPrefab, player.gameObject.transform);
         //set postion on server
-        transform.parent = player.transform;
-        transform.position = new Vector3(0,1f,0);
+        bombInstance.transform.parent = player.transform;
+        bombInstance.transform.position = new Vector3(0,1f,0);
         //on client
         bombInstance.SetOwner(player);
         player.GetComponent<MD.Character.ThrowAction>().SetHoldingProjectile(bombInstance);

@@ -22,14 +22,14 @@ namespace MD.Diggable.Projectile
         public override void OnStartClient()
         {
             EventSystems.EventManager.Instance.TriggerEvent(
-                new DiggableSpawnData(Projectile.GetStats().DigValue,transform.position.x,transform.position.y));
+                new DiggableSpawnData(Projectile.DiggbleType(),transform.position.x,transform.position.y));
         }
         public override void OnStopClient()
         {
             base.OnStopClient();
             //fire an event for sonar to update
             EventSystems.EventManager.Instance.TriggerEvent(
-                new DiggableDestroyData(Projectile.GetStats().DigValue,transform.position.x,transform.position.y));
+                new DiggableDestroyData(Projectile.DiggbleType(),transform.position.x,transform.position.y));
             //for animations and UI
             EventSystems.EventManager.Instance.TriggerEvent(
                 new ProjectileObtainData(Projectile.GetStats(),transform.position.x,transform.position.y)
