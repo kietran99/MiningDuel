@@ -150,7 +150,6 @@ public class MapManager : NetworkBehaviour, IMapManager
         EventManager.Instance.StartListening<ServerDiggableDestroyData>(HandleDigSuccess);
     }
 
-    [Client]
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -169,11 +168,9 @@ public class MapManager : NetworkBehaviour, IMapManager
         EventManager.Instance.StopListening<ServerDiggableDestroyData>(HandleDigSuccess);
     }  
 
-    [Client]
+    [ClientCallback]
     private void RemoveDiggableFromMapData(DiggableDestroyData data)
     {
-        Debug.Log("Removing " + data.diggable.ToDiggable());
-        if (data.diggable == -1) Debug.Log("Removing bomb");
 
         Vector2Int idx = PositionToIndex(new Vector2(data.posX,data.posY));
         
@@ -188,7 +185,7 @@ public class MapManager : NetworkBehaviour, IMapManager
 
     }
 
-    [Client]
+    [ClientCallback]
     private void AddDiggableToMapData(DiggableSpawnData data)
     {
         Vector2Int idx = PositionToIndex(new Vector2(data.posX,data.posY));
@@ -217,7 +214,8 @@ public class MapManager : NetworkBehaviour, IMapManager
         {
             mapData[index.x,index.y] = 0;
             Diggables[index.x,index.y] = null;
-            gemDigSuccessData.digger.GetComponent<MD.Character.Player>().IncreaseScore(gemDigSuccessData.diggable);
+            if (gemDigSuccessData.diggable.ToDiggable().IsGem())
+                gemDigSuccessData.digger.GetComponent<MD.Character.Player>().IncreaseScore(gemDigSuccessData.diggable);
         }
         catch
         {

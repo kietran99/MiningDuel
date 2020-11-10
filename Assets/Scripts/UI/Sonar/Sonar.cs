@@ -188,7 +188,6 @@ namespace MD.UI
             {
                 RemoveSymbolAt(relPos.x,relPos.y);
             }
-            Debug.Log("map data after dug " + genManager.GetMapDataAtPos(new Vector2(digSuccessData.posX,digSuccessData.posY)));
         }
 
         private void UpdateScanArea(MoveData moveData)

@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 4802790712231606849}
   - component: {fileID: 4802790712231606854}
   - component: {fileID: 43432079349955853}
-  - component: {fileID: -2910784348268092969}
+  - component: {fileID: 1915639183554090930}
   m_Layer: 0
   m_Name: DroppingGem
   m_TagString: Untagged
@@ -198,7 +198,7 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
---- !u!114 &-2910784348268092969
+--- !u!114 &1915639183554090930
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -212,7 +212,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  clientAuthority: 1
+  clientAuthority: 0
   localPositionSensitivity: 0.01
   localRotationSensitivity: 0.01
   localScaleSensitivity: 0.01

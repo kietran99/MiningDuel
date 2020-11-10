@@ -61,10 +61,11 @@ namespace MD.Diggable.Projectile
 
             if (other.CompareTag(Constants.PLAYER_TAG))
             {
-                ProjectileLauncher laucher =  transform.GetComponentInParent<ProjectileLauncher>();
 
+                ProjectileLauncher laucher =  transform.GetComponentInParent<ProjectileLauncher>();
                 if (laucher)
                 {
+                    if (other.gameObject == laucher.source && Time.time < laucher.sourceCollidableTime) return;
                     laucher.StopOnCollide();
                 }
 
