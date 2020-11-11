@@ -2,6 +2,7 @@
 using MD.UI;
 using UnityEngine;
 using Mirror;
+
 namespace MD.Character
 {
     public class ThrowAction : NetworkBehaviour
@@ -14,7 +15,7 @@ namespace MD.Character
         void Start()
         {
             if (!isLocalPlayer) return;
-            Debug.Log("register throw action");
+            Debug.Log("Register throw action");
             EventSystems.EventManager.Instance.StartListening<ThrowInvokeData>(ThrowProjectile);
             EventSystems.EventManager.Instance.StartListening<JoystickDragData>(BindThrowDirection);
         }
@@ -37,7 +38,7 @@ namespace MD.Character
         // public void BindProjectile(GameObject projectile) => this.projectile = projectile;
         private void ThrowProjectile(ThrowInvokeData data)
         {
-            CmdThrowProjectile(currentDir.x,currentDir.y, basePower);
+            CmdThrowProjectile(currentDir.x, currentDir.y, basePower);
         }
 
         [Command]
@@ -46,9 +47,6 @@ namespace MD.Character
             holdingProjectile.Launch(basePower,dirX, dirY);
         }
 
-        public void SetHoldingProjectile(ProjectileLauncher proj)
-        {
-            this.holdingProjectile = proj;
-        }
+        public void SetHoldingProjectile(ProjectileLauncher proj) => holdingProjectile = proj;
     }
 }

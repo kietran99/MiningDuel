@@ -5,7 +5,7 @@ using Mirror;
 namespace MD.Diggable.Projectile
 {
     [RequireComponent(typeof(Timer.Timer))]
-    public class Explosion : NetworkBehaviour, Timer.ITickListener
+    public class Explosion : NetworkBehaviour, ITickListener
     {
         #region  SERIALIZE FIELDS
         [SerializeField]
@@ -26,16 +26,15 @@ namespace MD.Diggable.Projectile
         [SerializeField]
         private LayerMask explodeLayerMask = 1;
 
+        [SerializeField]
+        private bool isThrown = false;
         #endregion
         
         private ITimer timer = null;
         private bool isExploded = false;
-        [SerializeField]
-        private bool isThrown = false;
 
         public override void OnStartServer()
         {
-            base.OnStartServer();
             timer = GetComponent<ITimer>();
             timer.Activate();
         }
@@ -51,11 +50,14 @@ namespace MD.Diggable.Projectile
             if (timeStamp == 3f)
             {
                 timer.Stop();
-                if (!isExploded){
-                    Explode();
-                    if (!isThrown)
-                        TargetNotifyBombExplodeOnHand(GetComponent<ProjectileLauncher>().GetOwner().connectionToClient);
-                }
+
+                if (isExploded) return;
+
+                Explode();
+                if (!isThrown)
+                {
+                    TargetNotifyBombExplodeOnHand(GetComponent<ProjectileLauncher>().GetOwner().connectionToClient);
+                }                
             }
         }
         
@@ -71,26 +73,27 @@ namespace MD.Diggable.Projectile
         {
             if (!isThrown) return;
 
-            if (other.CompareTag(Constants.PLAYER_TAG))
+            if (!other.CompareTag(Constants.PLAYER_TAG)) return;
+            
+            ProjectileLauncher laucher =  transform.GetComponentInParent<ProjectileLauncher>();
+            if (laucher)
             {
-
-                ProjectileLauncher laucher =  transform.GetComponentInParent<ProjectileLauncher>();
-                if (laucher)
-                {
-                    if (other.gameObject == laucher.source && Time.time < laucher.sourceCollidableTime) return;
-                    laucher.StopOnCollide();
-                }
-
-                Explode();
+                if (other.gameObject == laucher.source && Time.time < laucher.sourceCollidableTime) return;
+                laucher.StopOnCollide();
             }
+
+            Explode();          
         }
 
         [ServerCallback]
         private void OnTriggerExit2D(Collider2D other)
         {
             if (!other.CompareTag(Constants.PLAYER_TAG)) return;
+
             if (other.GetComponent<MD.Character.Player>().netIdentity == GetComponent<ProjectileLauncher>().GetOwner())
-             isThrown = true;
+            {
+                isThrown = true;
+            }
         }
 
         [ServerCallback]
@@ -111,6 +114,7 @@ namespace MD.Diggable.Projectile
         private void CheckForCollision()
         {
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, explosionRadius, explodeLayerMask);
+
             foreach (Collider2D collide in colliders)
             {
                 if (!collide.CompareTag(Constants.PLAYER_TAG)) continue;
@@ -131,14 +135,9 @@ namespace MD.Diggable.Projectile
         private void DestroyProjectile() => Destroy(projectileObject);
 
         [ClientRpc]
-        private void RpcChangeSpriteColor()
-        {
-            spriteRenderer.color = Color.red;
-        }
+        private void RpcChangeSpriteColor() => spriteRenderer.color = Color.red;
+
         [ClientRpc]
-        private void RpcPlayExplosionEffect()
-        {
-            spriteRenderer.sprite = explodeSprite;
-        }
+        private void RpcPlayExplosionEffect() => spriteRenderer.sprite = explodeSprite;
     }
 }
