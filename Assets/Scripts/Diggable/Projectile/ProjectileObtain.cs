@@ -8,8 +8,20 @@ namespace MD.Diggable.Projectile
     public class ProjectileObtain : NetworkBehaviour, ICanDig
     {
         // private bool diggable = false;
+
         private DigAction currentDigger = null;
-        
+
+        private NetworkIdentity diggerID;
+        private Player player =null;
+        private Player Player
+        {
+            get
+            {
+                if (player != null) return player;
+                ServiceLocator.Resolve<Player>(out player);
+                return player;
+            }
+        }
         private DiggableProjectile projectile = null;
         private DiggableProjectile Projectile
         {
@@ -31,19 +43,29 @@ namespace MD.Diggable.Projectile
             EventSystems.EventManager.Instance.TriggerEvent(
                 new DiggableDestroyData(Projectile.DiggbleType(),transform.position.x,transform.position.y));
             //for animations and UI
+            if (diggerID != null && diggerID == Player.netIdentity)
+            {
             EventSystems.EventManager.Instance.TriggerEvent(
                 new ProjectileObtainData(Projectile.GetStats(),transform.position.x,transform.position.y)
             );
+            }
         }
 
         [Server]
         public void Dig(DigAction digger)
         {
             currentDigger = digger;
+            RpcSetDigger(digger.netIdentity);
+            this.diggerID =digger.netIdentity;
             EventSystems.EventManager.Instance.TriggerEvent(
                 new ServerDiggableDestroyData(Projectile.DiggbleType(),transform.position.x,transform.position.y, currentDigger));
             Destroy(gameObject);
         }
 
+        [ClientRpc]
+        private void RpcSetDigger(NetworkIdentity id)
+        {
+            this.diggerID = id;
+        }
     }
 }
