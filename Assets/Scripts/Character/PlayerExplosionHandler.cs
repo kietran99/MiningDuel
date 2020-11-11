@@ -30,7 +30,7 @@ namespace MD.Character
             Debug.Log(transform.name + " was exploded");
             // if (!ServiceLocator.Resolve<IScoreManager>(out IScoreManager scoreManager)) return;
 
-            int numOfGem = Mathf.FloorToInt(player.GetCurrentScore() * gemDropPercentage * .01f);
+            int numOfGem = Mathf.FloorToInt(Player.GetCurrentScore() * gemDropPercentage * .01f);
             Player.DecreaseScore(numOfGem);
 
             for (int i = 0; i < numOfGem; i++)
