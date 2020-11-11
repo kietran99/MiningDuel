@@ -34,7 +34,6 @@ namespace MD.Character
             var moveX = Input.GetAxisRaw("Horizontal");
             var moveY = Input.GetAxisRaw("Vertical");
             EventSystems.EventManager.Instance.TriggerEvent(new JoystickDragData(new Vector2(moveX, moveY)));
-            // MoveCharacter(moveX, moveY);
 #endif
             MoveCharacter(moveVect.x, moveVect.y);
         }

@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 using Mirror;
+using MD.Diggable;
+using System;
+using MD.UI;
 
 namespace MD.Character
 {
@@ -17,6 +20,9 @@ namespace MD.Character
 
         [SyncVar]
         private string playerName;
+
+        [SerializeField]
+        private MD.VisualEffects.ThrowDirectionVisual throwDirVisual = null;
 
         // [SyncVar]
         // private bool canMove = true;
@@ -68,6 +74,11 @@ namespace MD.Character
             indicator.color = Color.green;
         }
 
+        public override void OnStartLocalPlayer()
+        {
+            throwDirVisual.BindPlayer(this);
+        }
+
         [Server]
         public void SetPlayerName(string name)
         {
@@ -90,7 +101,7 @@ namespace MD.Character
         public void DecreaseScore(int amount)
         {
             score -= amount;
-            score = score < 0? 0 : score;
+            score = score < 0 ? 0 : score;
         }
 
         public void OnScoreChange(int oldValue, int newValue)
@@ -99,10 +110,6 @@ namespace MD.Character
             ScoreManager.UpdateScoreText(newValue);
         }
 
-        public int GetCurrentScore()
-        {
-            return score;
-        }
-
+        public int GetCurrentScore() => score;
     }
 }

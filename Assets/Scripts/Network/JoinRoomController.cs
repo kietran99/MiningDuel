@@ -1,47 +1,86 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System.Collections.Generic;
+using Mirror.Discovery;
+using UnityEngine;
 
 namespace MD.UI.MainMenu
 {
     public class JoinRoomController : MonoBehaviour
     {
-        [SerializeField]
-        private InputField ipAddressInputField = null;
-
+        #region SERIALIZE FIELDS
         [SerializeField]
         private NetworkManagerLobby networkManager = null;
 
         [SerializeField]
-        private Button joinButton = null;
+        private NetworkDiscovery networkDiscovery = null;
+
+        [SerializeField]
+        private GameObject roomOrganizer = null, room = null;       
+        #endregion
         
+        private readonly Dictionary<long, ServerResponse> discoveredServers = new Dictionary<long, ServerResponse>();
+        private List<GameObject> rooms = new List<GameObject>();
+
         void OnEnable()
         {
-            NetworkManagerLobby.OnClientConnected += HandleClientConnected;
-            NetworkManagerLobby.OnClientDisconnnected += HandleClientDisconnected;
-        }
-        void OnDisable()
-        {
-            NetworkManagerLobby.OnClientConnected -= HandleClientConnected;
-            NetworkManagerLobby.OnClientDisconnnected -= HandleClientDisconnected;
-        }
-        public void JoinLobby()
-        {
-            if (ipAddressInputField.text.Length == 0) return;
-            string ipAddress = ipAddressInputField.text;
-            networkManager.networkAddress = ipAddress;
-            joinButton.interactable  = false;
-            networkManager.StartClient();
+            //NetworkManagerLobby.OnClientConnected += HandleClientConnected;
+            //NetworkManagerLobby.OnClientDisconnnected += HandleClientDisconnected;
+
+            networkDiscovery.OnServerFound.AddListener(OnDiscoveredServer);
+            discoveredServers.Clear();
+            networkDiscovery.StartDiscovery();
         }
 
-        private void HandleClientConnected()
+        public void OnDiscoveredServer(ServerResponse info)
         {
-            if (joinButton) joinButton.interactable = true;
-            // if (CreateRoomWindow) CreateRoomWindow.GetComponent<RoomController>().ShowWindow();
+            Debug.Log("Discovered a server with ID: " + info.serverId);
+
+            if (discoveredServers.ContainsKey(info.serverId)) return;
+
+            discoveredServers[info.serverId] = info;
+            InitRoom(info.EndPoint.Address.ToString());          
         }
-        private void HandleClientDisconnected()
+
+        private void InitRoom(string ipAddress)
         {
-            if (joinButton)
-            joinButton.interactable = true;
+            var newRoom = Instantiate(room, roomOrganizer.transform);
+            newRoom.GetComponent<JoinableRoom>().Init(networkManager, ipAddress);
+            rooms.Add(newRoom);
         }
+
+        void OnDisable()
+        {
+            //NetworkManagerLobby.OnClientConnected -= HandleClientConnected;
+            //NetworkManagerLobby.OnClientDisconnnected -= HandleClientDisconnected;
+            networkDiscovery.OnServerFound.RemoveListener(OnDiscoveredServer);
+            DestroyAllRooms();
+        }
+
+        private void DestroyAllRooms()
+        {
+            rooms.ForEach(Destroy); 
+            rooms.Clear();  
+        }        
+
+        // public void JoinLobby()
+        // {
+        //     if (ipAddressInputField.text.Length == 0) return;
+
+        //     string ipAddress = ipAddressInputField.text;
+        //     networkManager.networkAddress = ipAddress;
+        //     joinButton.interactable  = false;
+        //     networkManager.StartClient();
+        // }
+
+        // private void HandleClientConnected()
+        // {
+        //     if (joinButton) joinButton.interactable = true;
+        //     // if (CreateRoomWindow) CreateRoomWindow.GetComponent<RoomController>().ShowWindow();
+        // }
+
+        // private void HandleClientDisconnected()
+        // {
+        //     if (joinButton)
+        //     joinButton.interactable = true;
+        // }
     }
 }

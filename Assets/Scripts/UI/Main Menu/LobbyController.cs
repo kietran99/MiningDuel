@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Mirror.Discovery;
+using UnityEngine;
 
 namespace MD.UI.MainMenu
 {
@@ -13,10 +14,14 @@ namespace MD.UI.MainMenu
         [SerializeField]
         private NetworkManagerLobby networkManager = null;
 
+        [SerializeField]
+        private NetworkDiscovery networkDiscovery = null;
+
         public void OpenCreateRoomWindow()
         {
             // OpenRoomWindow(createRoomWindow);
             networkManager.StartHost();
+            networkDiscovery.AdvertiseServer();
         }
 
         public void OpenJoinRoomWindow()

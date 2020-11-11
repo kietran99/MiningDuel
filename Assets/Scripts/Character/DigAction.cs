@@ -1,6 +1,6 @@
-﻿using MD.Diggable.Projectile;
-using UnityEngine;
+﻿using UnityEngine;
 using Mirror;
+
 namespace MD.Character
 {
     [RequireComponent(typeof(ThrowAction))]
@@ -24,11 +24,11 @@ namespace MD.Character
 
         public override void OnStartAuthority()
         {
-            base.OnStartAuthority();
             // throwAction = GetComponent<ThrowAction>();
             // EventSystems.EventManager.Instance.StartListening<ProjectileObtainData>(BindAndHoldProjectile);
             EventSystems.EventManager.Instance.StartListening<DigInvokeData>(CmdDig);
         }
+
         private void OnDestroy()
         {
             if (!isLocalPlayer) return;

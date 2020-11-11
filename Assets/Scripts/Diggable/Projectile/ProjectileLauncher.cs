@@ -35,8 +35,8 @@ namespace MD.Diggable.Projectile
         [ClientRpc]
         private void RpcLauch(float dirX, float dirY, float power)
         {
-            Debug.Log("call rpclauch on client throwDir dirx " + dirX +" diry "+ dirY + " power" + power);
-            transform.parent =null;
+            Debug.Log("call RPClauch on client throwDir dirX: " + dirX + " dirY: "+ dirY + " power: " + power);
+            transform.parent = null;
             // transform.Translate(dir);
             GetComponent<Rigidbody2D>().AddForce(new Vector2(dirX,dirY).normalized*power,ForceMode2D.Impulse);
         }
@@ -46,10 +46,12 @@ namespace MD.Diggable.Projectile
         {
             this.owner = owner;
         }
+
         [Server]
         public void StopOnCollide(){
             RpcStopOnCollide();
         }
+        
         [ClientRpc]
         public void RpcStopOnCollide()
         {
