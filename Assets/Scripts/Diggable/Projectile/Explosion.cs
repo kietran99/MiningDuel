@@ -30,6 +30,7 @@ namespace MD.Diggable.Projectile
         
         private ITimer timer = null;
         private bool isExploded = false;
+        [SerializeField]
         private bool isThrown = false;
 
         public override void OnStartServer()
@@ -44,14 +45,25 @@ namespace MD.Diggable.Projectile
         {
             if (timeStamp == 2f)
             {
-                spriteRenderer.color = Color.red;
+                RpcChangeSpriteColor();
             }
 
             if (timeStamp == 3f)
             {
                 timer.Stop();
-                if (!isExploded) Explode();
-            }     
+                if (!isExploded){
+                    Explode();
+                    if (!isThrown)
+                        TargetNotifyBombExplodeOnHand(GetComponent<ProjectileLauncher>().GetOwner().connectionToClient);
+                }
+            }
+        }
+        
+        [TargetRpc]
+        //notify for target client to play animations
+        private void TargetNotifyBombExplodeOnHand(NetworkConnection conn)
+        {
+            EventSystems.EventManager.Instance.TriggerEvent(new ThrowInvokeData());
         }
 
         [ServerCallback]
@@ -76,7 +88,9 @@ namespace MD.Diggable.Projectile
         [ServerCallback]
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (other.CompareTag(Constants.PLAYER_TAG)) isThrown = true;
+            if (!other.CompareTag(Constants.PLAYER_TAG)) return;
+            if (other.GetComponent<MD.Character.Player>().netIdentity == GetComponent<ProjectileLauncher>().GetOwner())
+             isThrown = true;
         }
 
         [ServerCallback]
@@ -109,11 +123,22 @@ namespace MD.Diggable.Projectile
         [ServerCallback]
         private void PlayExplosionEffect()
         {
-            spriteRenderer.sprite = explodeSprite;
+            RpcPlayExplosionEffect();
             Invoke(nameof(DestroyProjectile), .2f);
         }
 
         [ServerCallback]
         private void DestroyProjectile() => Destroy(projectileObject);
+
+        [ClientRpc]
+        private void RpcChangeSpriteColor()
+        {
+            spriteRenderer.color = Color.red;
+        }
+        [ClientRpc]
+        private void RpcPlayExplosionEffect()
+        {
+            spriteRenderer.sprite = explodeSprite;
+        }
     }
 }
