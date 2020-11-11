@@ -1,8 +1,5 @@
 ﻿using UnityEngine;
 using Mirror;
-using MD.Diggable;
-using System;
-using MD.UI;
 
 namespace MD.Character
 {
@@ -20,9 +17,6 @@ namespace MD.Character
 
         [SyncVar]
         private string playerName;
-
-        [SerializeField]
-        private MD.VisualEffects.ThrowDirectionVisual throwDirVisual = null;
 
         // [SyncVar]
         // private bool canMove = true;
@@ -73,12 +67,7 @@ namespace MD.Character
             ServiceLocator.Register(this);
             indicator.color = Color.green;
         }
-
-        public override void OnStartLocalPlayer()
-        {
-            throwDirVisual.BindPlayer(this);
-        }
-
+        
         [Server]
         public void SetPlayerName(string name)
         {

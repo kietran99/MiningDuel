@@ -31,11 +31,13 @@ namespace MD.Diggable.Projectile
                 return projectile = GetComponent<DiggableProjectile>();
             }
         }  
+        
         public override void OnStartClient()
         {
             EventSystems.EventManager.Instance.TriggerEvent(
                 new DiggableSpawnData(Projectile.DiggbleType(),transform.position.x,transform.position.y));
         }
+
         public override void OnStopClient()
         {
             base.OnStopClient();
@@ -45,9 +47,8 @@ namespace MD.Diggable.Projectile
             //for animations and UI
             if (diggerID != null && diggerID == Player.netIdentity)
             {
-            EventSystems.EventManager.Instance.TriggerEvent(
-                new ProjectileObtainData(Projectile.GetStats(),transform.position.x,transform.position.y)
-            );
+                EventSystems.EventManager.Instance.TriggerEvent(
+                    new ProjectileObtainData(Projectile.GetStats(),transform.position.x,transform.position.y));
             }
         }
 

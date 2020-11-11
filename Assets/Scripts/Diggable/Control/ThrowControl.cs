@@ -1,7 +1,7 @@
 ﻿using MD.Diggable.Projectile;
-using System;
 using UnityEngine;
 using UnityEngine.UI;
+
 public class ThrowControl : MonoBehaviour
 {
     [SerializeField]
@@ -17,7 +17,7 @@ public class ThrowControl : MonoBehaviour
 
     private void Invoke()
     {
-        Debug.Log("trigger event throw button");
+        //Debug.Log("trigger event throw button");
         EventSystems.EventManager.Instance.TriggerEvent(new ThrowInvokeData());
     }
 

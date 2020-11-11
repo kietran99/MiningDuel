@@ -1,5 +1,4 @@
 ﻿using MD.Character;
-using MD.Diggable;
 using UnityEngine;
 
 namespace MD.VisualEffects
@@ -7,23 +6,19 @@ namespace MD.VisualEffects
     [RequireComponent(typeof(SpriteRenderer))]
     public class ThrowDirectionVisual : MonoBehaviour
     {
-        //[SerializeField]
+        [SerializeField]
         private Player player;
         private Renderer spriteRenderer;
         private float distanceFromPlayer;
 
         void Start()
-        {
-            //if (!ServiceLocator.Resolve(out player)) return;
-            //Debug.Log("Found player");
-
-            //if (!player.isLocalPlayer) return; 
-            //Debug.Log("Is local player");
+        {            
+            if (!player.isLocalPlayer) return; 
             
-            // spriteRenderer = GetComponent<SpriteRenderer>();
-            // distanceFromPlayer = transform.localPosition.magnitude;
+            spriteRenderer = GetComponent<SpriteRenderer>();
+            distanceFromPlayer = transform.localPosition.magnitude;
 
-            // ListenToEvents();
+            ListenToEvents();
         }
 
         void OnDestroy() 
@@ -33,28 +28,15 @@ namespace MD.VisualEffects
             if (!player.isLocalPlayer) return; 
 
             var eventManager = EventSystems.EventManager.Instance; 
-            eventManager.StopListening<Diggable.DiggableDestroyData>(Show);
+            eventManager.StopListening<Diggable.Projectile.ProjectileObtainData>(Show);
             eventManager.StopListening<UI.JoystickDragData>(Rotate);
             eventManager.StopListening<ThrowInvokeData>(Hide);
         }
-
-        public void BindPlayer(Player player) 
-        {
-            this.player = player;
-
-            if (!player.isLocalPlayer) return; 
-            Debug.Log("Is local player");
-
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            distanceFromPlayer = transform.localPosition.magnitude;
-
-            ListenToEvents();
-        } 
-
+        
         private void ListenToEvents()
         {
             var eventManager = EventSystems.EventManager.Instance; 
-            eventManager.StartListening<Diggable.DiggableDestroyData>(Show);
+            eventManager.StartListening<Diggable.Projectile.ProjectileObtainData>(Show);
             eventManager.StartListening<UI.JoystickDragData>(Rotate);
             eventManager.StartListening<ThrowInvokeData>(Hide);
         }
@@ -64,8 +46,9 @@ namespace MD.VisualEffects
             spriteRenderer.enabled = false;
         } 
 
-        public void Show(DiggableDestroyData obj)
-        {            
+        public void Show(Diggable.Projectile.ProjectileObtainData obj)
+        {       
+            Debug.Log("Picked up a projectile");     
             spriteRenderer.enabled = true;
         } 
 
