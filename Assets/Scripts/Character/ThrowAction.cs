@@ -28,7 +28,7 @@ namespace MD.Character
 
         private void BindThrowDirection(JoystickDragData dragData)
         {
-            // if (holdingProjectile == null) return;
+            if (dragData.InputDirection == Vector2.zero) return;
             currentDir = dragData.InputDirection;
             // projectile.GetComponent<ProjectileLauncher>().BindThrowDirection(
             //     new Vector2(dragData.InputDirection.x, dragData.InputDirection.y));

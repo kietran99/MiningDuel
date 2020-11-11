@@ -27,8 +27,8 @@ namespace MD.Diggable.Projectile
         {
             source = owner.gameObject;
             transform.parent =null;
-            //cant collide with Source for 1s second after lauch
-            sourceCollidableTime = Time.time + 3f;
+            //cant collide with Source for 1.5s second after lauch
+            sourceCollidableTime = Time.time + 1.5f;
             RpcLauch(dirX, dirY, power);
         }
 
@@ -57,5 +57,7 @@ namespace MD.Diggable.Projectile
         {
             GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         }
+
+        public NetworkIdentity GetOwner() => owner;
     }
 }

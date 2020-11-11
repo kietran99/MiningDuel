@@ -46,7 +46,8 @@ namespace Timer
         }
 
         private IEnumerator Tick()
-        {            
+        {
+            Debug.Log("start coroutine")   ;         
             while (state.Equals(TimerState.ON))
             {     
                 for (int i = 0; i < timeStamps.Length; i++)
@@ -59,7 +60,8 @@ namespace Timer
         }
 
         public void Activate()
-        {            
+        {    
+            Debug.Log("Activate called");        
             state = TimerState.ON;
             StartCoroutine(Tick());
             startTicking = true;
