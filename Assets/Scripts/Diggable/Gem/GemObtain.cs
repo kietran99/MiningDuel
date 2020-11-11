@@ -8,11 +8,24 @@ namespace MD.Diggable.Gem
     [RequireComponent(typeof(GemValue))]
     public class GemObtain : NetworkBehaviour, ICanDig
     {
+        [SyncVar]
+        private NetworkIdentity diggerID;
         private DigAction currentDigger;
 
         private MapManager mapMangerServer;
 
         private GemValue gemValue = null;
+
+        private Player player  =null;
+         private Player Player
+        {
+            get
+            {
+                if (player != null) return player;
+                ServiceLocator.Resolve<Player>(out player);
+                return player;
+            }
+        }
         private GemValue GemValue
         {
             get
@@ -34,6 +47,7 @@ namespace MD.Diggable.Gem
             EventSystems.EventManager.Instance.TriggerEvent(
                 new DiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y));
             //for animations and UIs
+            if (diggerID != null && diggerID == Player.netIdentity)
             EventSystems.EventManager.Instance.TriggerEvent(
                 new GemDigSuccessData(GemValue.Value, transform.position.x, transform.position.y)
             );            
@@ -46,10 +60,17 @@ namespace MD.Diggable.Gem
             GemValue.DecreaseValue(currentDigger.Power);
 
             if (GemValue.RemainingHit > 0) return;
-
+            this.diggerID = digger.netIdentity;
+            RpcSetDigger(digger.netIdentity);
             EventSystems.EventManager.Instance.TriggerEvent(
                 new ServerDiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y, currentDigger));
             Destroy(gameObject);
+        }
+
+        [ClientRpc]
+        private void RpcSetDigger(NetworkIdentity id)
+        {
+            this.diggerID = id;
         }
         
     }
