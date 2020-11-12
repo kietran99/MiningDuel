@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using Mirror.Discovery;
 using UnityEngine;
-
+using Mirror;
 namespace MD.UI.MainMenu
 {
     public class JoinRoomController : MonoBehaviour
     {
         #region SERIALIZE FIELDS
-        [SerializeField]
-        private NetworkManagerLobby networkManager = null;
+        // [SerializeField]
+        // private NetworkManagerLobby networkManager = null;
 
-        [SerializeField]
-        private NetworkDiscovery networkDiscovery = null;
+        // [SerializeField]
+        // private NetworkDiscovery networkDiscovery = null;
 
         [SerializeField]
         private GameObject roomOrganizer = null, room = null;       
@@ -19,15 +19,25 @@ namespace MD.UI.MainMenu
         
         private readonly Dictionary<long, ServerResponse> discoveredServers = new Dictionary<long, ServerResponse>();
         private List<GameObject> rooms = new List<GameObject>();
+        private NetworkManagerLobby manager;
+        private NetworkManagerLobby Manager
+        {
+            get
+            {
+                if (manager != null) return manager;
+                return manager = NetworkManager.singleton as NetworkManagerLobby;
+            }
+
+        }
 
         void OnEnable()
         {
             //NetworkManagerLobby.OnClientConnected += HandleClientConnected;
             //NetworkManagerLobby.OnClientDisconnnected += HandleClientDisconnected;
 
-            networkDiscovery.OnServerFound.AddListener(OnDiscoveredServer);
+            Manager.GetComponent<NetworkDiscovery>().OnServerFound.AddListener(OnDiscoveredServer);
             discoveredServers.Clear();
-            networkDiscovery.StartDiscovery();
+            Manager.GetComponent<NetworkDiscovery>().StartDiscovery();
         }
 
         public void OnDiscoveredServer(ServerResponse info)
@@ -43,7 +53,7 @@ namespace MD.UI.MainMenu
         private void InitRoom(string ipAddress)
         {
             var newRoom = Instantiate(room, roomOrganizer.transform);
-            newRoom.GetComponent<JoinableRoom>().Init(networkManager, ipAddress);
+            newRoom.GetComponent<JoinableRoom>().Init(Manager, ipAddress);
             rooms.Add(newRoom);
         }
 
@@ -51,7 +61,7 @@ namespace MD.UI.MainMenu
         {
             //NetworkManagerLobby.OnClientConnected -= HandleClientConnected;
             //NetworkManagerLobby.OnClientDisconnnected -= HandleClientDisconnected;
-            networkDiscovery.OnServerFound.RemoveListener(OnDiscoveredServer);
+            Manager.GetComponent<NetworkDiscovery>().OnServerFound.RemoveListener(OnDiscoveredServer);
             DestroyAllRooms();
         }
 
