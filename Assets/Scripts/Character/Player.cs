@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
-
+using MD.UI;
+using UnityEngine.SceneManagement;
 namespace MD.Character
 {
     [RequireComponent(typeof(MoveAction))]
@@ -18,8 +19,8 @@ namespace MD.Character
         [SyncVar]
         private string playerName;
 
-        // [SyncVar]
-        // private bool canMove = true;
+        [SyncVar] [SerializeField]
+        private bool canMove = false;
 
         // [SyncVar]
         // private bool isReady = true;
@@ -59,6 +60,7 @@ namespace MD.Character
 
         public override void OnStopClient()
         {
+            DontDestroyOnLoad(this);
             Room.Players.Remove(this);
         }
 
@@ -100,5 +102,29 @@ namespace MD.Character
         }
 
         public int GetCurrentScore() => score;
+
+        [Server]
+        public void SetCanMove(bool value) => canMove=value;
+
+        [TargetRpc]
+        public void TargetNotifyGameReady(float time)
+        {
+            IGameCountDown countDown;
+            if (ServiceLocator.Resolve<IGameCountDown>(out countDown)) countDown.StartCountDown(0f);
+            SceneManager.MoveGameObjectToScene(this.gameObject, SceneManager.GetActiveScene());
+        }
+
+        [TargetRpc]
+        public void TargetNotifyEndGame(bool hasWon)
+        {
+            EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(hasWon,score));
+        }
+
+        public void ExistGame()
+        {
+            room.StopHost();
+        }
+
+        public bool CanMove() => canMove;
     }
 }

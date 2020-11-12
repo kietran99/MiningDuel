@@ -7,7 +7,7 @@ using System.Linq;
 using UnityEngine;
 using Mirror;
 using MD.Character;
-
+using UnityEngine.SceneManagement;
 public static class MapDataTypeExtensions
 {
     public static bool IsGem(this DiggableType type)
@@ -248,6 +248,7 @@ public class MapManager : NetworkBehaviour, IMapManager
     [Server]
     public void GenerateMap()
     {
+        SceneManager.MoveGameObjectToScene(this.gameObject, SceneManager.GetActiveScene());
         mapData = new DiggableType[mapSize.x,mapSize.y];
         Diggables = new GameObject[mapSize.x,mapSize.y];
         GenerateGems();

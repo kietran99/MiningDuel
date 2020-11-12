@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace MD.UI
 {
     [RequireComponent(typeof(Text))]
-    public class GameCountdown : MonoBehaviour
+    public class GameCountdown : MonoBehaviour, IGameCountDown
     {       
         private Text timerText;
 
@@ -13,33 +13,50 @@ namespace MD.UI
 
         private float timeToNextSec;
 
-        private bool gameEnded = false;
+        private bool gameEnded = false, gameStarted = false;
 
         private void Awake()
         {
             timerText = GetComponent<Text>();
+            ServiceLocator.Register<IGameCountDown>(this);
         }
 
         private void Start()
         {
-            timeToNextSec = 1;
+            timeToNextSec = 1f;
             (currentMin, currentSec) = GetMinAndSec(timerText.text);
+            EventSystems.EventManager.Instance.StartListening<EndGameData>(StopCountDown);
+        }
+        private void OnDestroy()
+        {
+            EventSystems.EventManager.Instance.StopListening<EndGameData>(StopCountDown);
+        }
+
+        public void StartCountDown(float Time)
+        {
+            gameStarted = true;
+        }
+
+        private void StopCountDown(EndGameData data)
+        {
+            print("curr min: " + currentMin + " curre sec "+ currentSec);
+            UpdateRemainingTime();
         }
 
         void Update()
         {
-#if UNITY_EDITOR
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(GetCurrentScore()));
-            }
-#endif
-            if (gameEnded) return;
+// #if UNITY_EDITOR
+//             if (Input.GetKeyDown(KeyCode.Q))
+//             {
+//                 EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(GetCurrentScore()));
+//             }
+// #endif
+            if (!gameStarted || gameEnded) return;
 
             if (currentMin == 0 && currentSec == 0)
             {
                 Debug.Log("Game Over");
-                EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(GetCurrentScore()));
+                // EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(GetCurrentScore()));
                 gameEnded = true;
                 return;
             }
@@ -49,18 +66,18 @@ namespace MD.UI
                 timeToNextSec -= Time.deltaTime;
                 return;
             }
-
+            (currentMin, currentSec) = CalcNextMinAndSec(currentMin, currentSec);
             UpdateRemainingTime();
             timeToNextSec = 1f;
         }
 
-        private int GetCurrentScore()
-        {
-            Player player;
-            if(ServiceLocator.Resolve<Player>(out player))
-                return player.GetCurrentScore();
-            return -1;
-        }   
+        // private int GetCurrentScore()
+        // {
+        //     Player player;
+        //     if(ServiceLocator.Resolve<Player>(out player))
+        //         return player.GetCurrentScore();
+        //     return -1;
+        // }   
 
         private (int min, int sec) GetMinAndSec(string time)
         {
@@ -70,7 +87,6 @@ namespace MD.UI
 
         private void UpdateRemainingTime()
         {           
-            (currentMin, currentSec) = CalcNextMinAndSec(currentMin, currentSec);
             timerText.text = FormatTime(currentMin) + ":" + FormatTime(currentSec);
         }
 

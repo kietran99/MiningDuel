@@ -12,7 +12,6 @@ public class NetworkManagerLobby : NetworkManager
     [Header("Scene")]
     [Scene] [SerializeField]
     private string menuScene = string.Empty;
-
     [Scene] [SerializeField]
     private string gamePlayScene = string.Empty;
 
@@ -133,6 +132,7 @@ public class NetworkManagerLobby : NetworkManager
     public override void OnStopServer()
     {
         RoomPlayers.Clear();
+        Players.Clear();
     }
 
     public bool IsReadyToStart()
@@ -151,11 +151,9 @@ public class NetworkManagerLobby : NetworkManager
     {
         if (SceneManager.GetActiveScene().path == menuScene)
         {
-            spawnPointPicker.Reset();
+            spawnPointPicker.Reset();     
             SpawnMapManager();
-            RoomPlayers.ToArray().ForEach(SpawnNetworkPlayer);            
         }
-
         base.ServerChangeScene(sceneName);
     }
 
@@ -164,8 +162,9 @@ public class NetworkManagerLobby : NetworkManager
         Debug.Log("Spawn Map Manager");
         mapManager = Instantiate(MapManagerPrefab);
         // ServiceLocator.Register<IMapManager>(mapManager.GetComponent<IMapManager>());
-        DontDestroyOnLoad(mapManager);
         NetworkServer.Spawn(mapManager.gameObject);
+        DontDestroyOnLoad(mapManager);
+        RoomPlayers.ToArray().ForEach(SpawnNetworkPlayer);   
     }
 
     private void SpawnNetworkPlayer(NetworkRoomPlayerLobby roomPlayer)
@@ -177,16 +176,52 @@ public class NetworkManagerLobby : NetworkManager
         var conn = roomPlayer.netIdentity.connectionToClient;
         NetworkServer.Destroy(conn.identity.gameObject);
         NetworkServer.ReplacePlayerForConnection(conn, player.gameObject, true);
+        Players.Add(player);
         player.TargetRegisterIMapManager(mapManager.netIdentity);
     }
 
     public override void OnServerSceneChanged(string sceneName)
     {
-        //check ingame scene
-        mapManager.GenerateMap();
+        if (SceneManager.GetActiveScene().path == gamePlayScene)
+        {
+            mapManager.GenerateMap(); 
+            //TODO: check if all players loaded scene
+            StartGame();
+        }
     }
 
-    public void StartGame()
+    private void StartGame()
+    {
+        float matchTime = 10f;
+        foreach(Player player in Players)
+        {
+            player.SetCanMove(true);
+            player.TargetNotifyGameReady(matchTime);
+        }
+        Invoke(nameof(EndGame),matchTime);
+    }
+
+    private void EndGame()
+    {
+        //stop game in server
+        Time.timeScale = 0f;
+        Players.ForEach(player => player.SetCanMove(false));
+
+        List<Player> orderedPlayers = Players.OrderBy(player => -player.GetCurrentScore()).ToList<Player>();
+        int highestScore = orderedPlayers[0].GetCurrentScore();
+        orderedPlayers[0].TargetNotifyEndGame(true);
+        foreach (Player player in orderedPlayers.Skip(1))
+        {
+            if (player.GetCurrentScore() == highestScore)
+            {
+                //tied
+                player.TargetNotifyEndGame(true);
+                continue;
+            }
+            player.TargetNotifyEndGame(false);
+        } 
+    }
+    public void StartLobby()
     {
         //Debug.Log("here");
         if (SceneManager.GetActiveScene().path == menuScene)

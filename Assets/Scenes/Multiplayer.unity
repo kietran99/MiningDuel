@@ -4831,6 +4831,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3188552275200226120, guid: 445ad5f27f6d1d647a615c6a1ed5e078,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3520437418349879755, guid: 445ad5f27f6d1d647a615c6a1ed5e078,
         type: 3}
       propertyPath: m_IsActive
@@ -4841,6 +4846,16 @@ PrefabInstance:
       propertyPath: m_Text
       value: 02:00
       objectReference: {fileID: 0}
+    - target: {fileID: 6661207137842837825, guid: 445ad5f27f6d1d647a615c6a1ed5e078,
+        type: 3}
+      propertyPath: winText
+      value: 
+      objectReference: {fileID: 72249921311826443}
+    - target: {fileID: 6764390185772145164, guid: 445ad5f27f6d1d647a615c6a1ed5e078,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9164753891225428203, guid: 445ad5f27f6d1d647a615c6a1ed5e078,
         type: 3}
       propertyPath: m_IsActive
@@ -4848,6 +4863,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
+--- !u!114 &72249921311826443 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6552310771545366991, guid: 445ad5f27f6d1d647a615c6a1ed5e078,
+    type: 3}
+  m_PrefabInstance: {fileID: 72249921311826442}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &616086827881248783
 PrefabInstance:
   m_ObjectHideFlags: 0

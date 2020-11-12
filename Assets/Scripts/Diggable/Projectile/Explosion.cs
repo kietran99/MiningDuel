@@ -65,6 +65,7 @@ namespace MD.Diggable.Projectile
         //notify for target client to play animations
         private void TargetNotifyBombExplodeOnHand(NetworkConnection conn)
         {
+            Debug.Log("bomb expldoded on hand");
             EventSystems.EventManager.Instance.TriggerEvent(new ThrowInvokeData());
         }
 

@@ -14,7 +14,6 @@ namespace MD.UI
             button.onClick.AddListener(Invoke);
             EventSystems.EventManager.Instance.StartListening<ProjectileObtainData>(HideButton);
             EventSystems.EventManager.Instance.StartListening<ThrowInvokeData>(ShowButton);
-            EventSystems.EventManager.Instance.StartListening<ExplodeData>(ShowButton);
         }
 
         public void Invoke()
@@ -26,13 +25,12 @@ namespace MD.UI
         {
             EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(HideButton);
             EventSystems.EventManager.Instance.StopListening<ThrowInvokeData>(ShowButton);
-            EventSystems.EventManager.Instance.StopListening<ExplodeData>(ShowButton);
         }
 
-        private void ShowButton(ExplodeData obj)
-        {
-            button.gameObject.SetActive(true);
-        }
+        // private void ShowButton(ExplodeData obj)
+        // {
+        //     button.gameObject.SetActive(true);
+        // }
 
         private void ShowButton(ThrowInvokeData obj)
         {

@@ -137,8 +137,6 @@ MonoBehaviour:
   networkDiscovery: {fileID: 0}
   roomOrganizer: {fileID: 0}
   room: {fileID: 0}
-  ipAddressInputField: {fileID: 1045871138}
-  joinButton: {fileID: 1946000592922099333}
 --- !u!1 &156369291
 GameObject:
   m_ObjectHideFlags: 0
@@ -972,7 +970,7 @@ MonoBehaviour:
   showDebugMessages: 0
   serverTickRate: 30
   offlineScene: 
-  onlineScene: Assets/Scenes/Main Menu Scene.unity
+  onlineScene: 
   transport: {fileID: 1242888156}
   networkAddress: localhost
   maxConnections: 4
@@ -5648,8 +5646,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   joinRoomWindow: {fileID: 6761929905331909617}
-  networkManager: {fileID: 1242888157}
-  networkDiscovery: {fileID: 0}
 --- !u!1 &2275941263234495169
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,6 +11,8 @@ namespace MD.VisualEffects
         private Renderer spriteRenderer;
         private float distanceFromPlayer;
 
+        private Vector2 currentDir = Vector2.zero;
+
         void Start()
         {            
             if (!player.isLocalPlayer) return; 
@@ -29,7 +31,7 @@ namespace MD.VisualEffects
 
             var eventManager = EventSystems.EventManager.Instance; 
             eventManager.StopListening<Diggable.Projectile.ProjectileObtainData>(Show);
-            eventManager.StopListening<UI.JoystickDragData>(Rotate);
+            eventManager.StopListening<UI.JoystickDragData>(OnCharacterMove);
             eventManager.StopListening<ThrowInvokeData>(Hide);
         }
         
@@ -37,7 +39,7 @@ namespace MD.VisualEffects
         {
             var eventManager = EventSystems.EventManager.Instance; 
             eventManager.StartListening<Diggable.Projectile.ProjectileObtainData>(Show);
-            eventManager.StartListening<UI.JoystickDragData>(Rotate);
+            eventManager.StartListening<UI.JoystickDragData>(OnCharacterMove);
             eventManager.StartListening<ThrowInvokeData>(Hide);
         }
 
@@ -50,15 +52,22 @@ namespace MD.VisualEffects
         {       
             Debug.Log("Picked up a projectile");     
             spriteRenderer.enabled = true;
+            Rotate();
         } 
 
-        public void Rotate(UI.JoystickDragData joystickData)
+        private void OnCharacterMove(UI.JoystickDragData joystickData)
+        {
+            if (joystickData.InputDirection != Vector2.zero)
+            {
+                currentDir = joystickData.InputDirection;
+                Rotate();
+            }
+
+        }
+        public void Rotate()
         {
             if (!spriteRenderer.enabled) return;
-
-            if (joystickData.InputDirection.Equals(Vector2.zero)) return;
-
-            var angle = Mathf.Rad2Deg * Mathf.Atan2(joystickData.InputDirection.y, joystickData.InputDirection.x);
+            var angle = Mathf.Rad2Deg * Mathf.Atan2(currentDir.y, currentDir.x);
             transform.localEulerAngles = new Vector3(0f, 0f, angle);
             transform.localPosition = new Vector3(distanceFromPlayer * Mathf.Cos(Mathf.Deg2Rad * angle), 
                                                     distanceFromPlayer * Mathf.Sin(Mathf.Deg2Rad * angle), 0f);            

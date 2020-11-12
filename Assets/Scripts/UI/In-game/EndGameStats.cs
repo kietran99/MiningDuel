@@ -13,6 +13,9 @@ public class EndGameStats : MonoBehaviour
 
     [SerializeField]
     private Text scoreText = null;
+
+    [SerializeField]
+    private Text winText = null;
     #endregion
 
     private int score;
@@ -39,6 +42,7 @@ public class EndGameStats : MonoBehaviour
         mask.SetActive(true);
         endGameStatsContainer.SetActive(true);
         score = endGameData.score;
+        winText.text = endGameData.hasWon ? "Victory" : "Defeated";
         ShowScore(endGameData.score);
     }
     

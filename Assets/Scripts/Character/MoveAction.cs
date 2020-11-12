@@ -15,6 +15,16 @@ namespace MD.Character
         private Vector2 moveVect, minMoveBound, maxMoveBound;
         private Vector2 offset = new Vector2(.5f, .5f);
 
+        private Player player = null;
+        private Player Player
+        {
+            get
+            {
+                if (player != null) return player;
+                return player = GetComponent<Player>();
+            }
+        }
+
         private void Start()
         {
             rigidBody = GetComponent<Rigidbody2D>();
@@ -42,7 +52,7 @@ namespace MD.Character
         
         private void MoveCharacter(float moveX, float moveY)
         {
-            if (moveVect.Equals(Vector2.zero)) return;
+            if (moveVect.Equals(Vector2.zero) || !Player.CanMove()) return;
 
             var movePos = new Vector2(moveX, moveY).normalized * speed;
             transform.Translate(movePos * Time.fixedDeltaTime);
