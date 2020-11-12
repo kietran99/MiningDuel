@@ -289,8 +289,6 @@ MonoBehaviour:
   networkDiscovery: {fileID: 0}
   roomOrganizer: {fileID: 2878768665564906797}
   room: {fileID: 1744009322912235316, guid: c1441e353401f2b419dad8de4223a431, type: 3}
-  ipAddressInputField: {fileID: 0}
-  joinButton: {fileID: 0}
 --- !u!222 &7566802662645293886
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5265,7 +5263,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.7264151, g: 0.59278214, b: 0.59278214, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:

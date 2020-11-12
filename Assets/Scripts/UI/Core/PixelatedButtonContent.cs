@@ -10,30 +10,33 @@ namespace MD.UI
         [SerializeField]
         private PixelatedButton button = null;
 
+        private Vector3 originalPos;
         private Vector3 offsetVect;
 
-        private bool isPressed;
+        //private bool isPressed;
 
         void Start()
         {
+            originalPos = transform.localPosition;
+            if (GetComponentInParent<DigControl>() != null) Debug.Log(originalPos);
             offsetVect = new Vector3(0f, offset, 0f);
             button.OnPress += Lower;
             button.OnRelease += Raise;
-            isPressed = false;
+            //isPressed = false;
         }
 
         public void Lower()
         {
-            if (isPressed) return;
+            //if (isPressed) return;
 
-            gameObject.transform.position -= offsetVect;
-            isPressed = true;
+            transform.localPosition = originalPos - offsetVect;
+            //isPressed = true;
         }
 
         public void Raise()
         {
-            isPressed = false;
-            gameObject.transform.position += offsetVect;
+            //isPressed = false;
+            transform.localPosition = originalPos;
         }
     }
 }
