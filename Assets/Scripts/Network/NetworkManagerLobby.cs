@@ -133,7 +133,7 @@ public class NetworkManagerLobby : NetworkManager
     {
         RoomPlayers.Clear();
         Players.Clear();
-        NetworkServer.DisconnectAll();
+        // NetworkManager.Shutdown();
     }
 
     public bool IsReadyToStart()
@@ -197,7 +197,8 @@ public class NetworkManagerLobby : NetworkManager
 
     private void StartGame()
     {
-        float matchTime = 120f;
+        Time.timeScale = 1f;
+        float matchTime = 3f;
         foreach(Player player in Players)
         {
             player.SetCanMove(true);

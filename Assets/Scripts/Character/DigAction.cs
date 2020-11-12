@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using Mirror;
-
+using System.Collections;
 namespace MD.Character
 {
     [RequireComponent(typeof(Player))]
@@ -9,9 +9,8 @@ namespace MD.Character
         [SerializeField]
         private int power = 1;
 
-        private float digTime = .1f;
-        private bool isDigging = false;
-
+        private float digCooldown = .1f;
+        private float nextDigTime = 0f;
         private IMapManager mapManager = null;
         private IMapManager MapManager
         {
@@ -46,6 +45,7 @@ namespace MD.Character
         {
             if (!isLocalPlayer) return;
             // EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(BindAndHoldProjectile);
+            StopAllCoroutines();
             EventSystems.EventManager.Instance.StartListening<DigInvokeData>(Dig);
         }
 
@@ -56,14 +56,9 @@ namespace MD.Character
 
         private void Dig(DigInvokeData data)
         {
-            if (isDigging) return;
-            isDigging = true;
+            if (Time.time < nextDigTime) return;
+            nextDigTime = Time.time + digCooldown;
             CmdDig();
-            Invoke(nameof(EnableCanDig),digTime);
-        }
-        private void EnableCanDig()
-        {
-            isDigging = false;
         }
 
         [Command]
@@ -71,7 +66,7 @@ namespace MD.Character
         {
             Player.SetCanMove(false);
             MapManager.DigAtPosition(netIdentity);
-            Invoke(nameof(EnableCanMove),digTime);
+            Invoke(nameof(EnableCanMove),digCooldown);
         }
         [Server]
         public void EnableCanMove()
