@@ -39,7 +39,7 @@ namespace MD.UI
 
         private void StopCountDown(EndGameData data)
         {
-            print("curr min: " + currentMin + " curre sec "+ currentSec);
+            (currentMin,currentSec) = (0,0);
             UpdateRemainingTime();
         }
 

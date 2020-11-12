@@ -133,6 +133,7 @@ public class NetworkManagerLobby : NetworkManager
     {
         RoomPlayers.Clear();
         Players.Clear();
+        NetworkServer.DisconnectAll();
     }
 
     public bool IsReadyToStart()
@@ -188,11 +189,15 @@ public class NetworkManagerLobby : NetworkManager
             //TODO: check if all players loaded scene
             StartGame();
         }
+        if (SceneManager.GetActiveScene().path == menuScene)
+        {
+            StopServer();
+        }
     }
 
     private void StartGame()
     {
-        float matchTime = 10f;
+        float matchTime = 2f;
         foreach(Player player in Players)
         {
             player.SetCanMove(true);
@@ -219,7 +224,7 @@ public class NetworkManagerLobby : NetworkManager
                 continue;
             }
             player.TargetNotifyEndGame(false);
-        } 
+        }
     }
     public void StartLobby()
     {

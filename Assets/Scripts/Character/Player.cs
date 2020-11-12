@@ -60,7 +60,6 @@ namespace MD.Character
 
         public override void OnStopClient()
         {
-            DontDestroyOnLoad(this);
             Room.Players.Remove(this);
         }
 
@@ -123,6 +122,7 @@ namespace MD.Character
         public void ExistGame()
         {
             room.StopHost();
+            ServiceLocator.Reset();
         }
 
         public bool CanMove() => canMove;

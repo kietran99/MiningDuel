@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using Mirror;
 /// <summary>
 /// Attach this script to only 1 GameObject in every scene to load all services
 /// </summary>
@@ -8,33 +8,34 @@
 /// </remarks>
 public class Loader : MonoBehaviour
 {
-    #region SINGLETON
-    //private static Loader instance;
+    // #region SINGLETON
+    // //private static Loader instance;
 
-    //private void Awake()
-    //{
-    //    if (instance == null)
-    //    {
-    //        instance = this;
-    //    }
-    //    else if (instance != this)
-    //    {
-    //        Destroy(gameObject);
-    //    }
-    //}
-    #endregion
+    // //private void Awake()
+    // //{
+    // //    if (instance == null)
+    // //    {
+    // //        instance = this;
+    // //    }
+    // //    else if (instance != this)
+    // //    {
+    // //        Destroy(gameObject);
+    // //    }
+    // //}
+    // #endregion
 
     [SerializeField]
-    private GameObject mapManager = null;
+    private GameObject networkManager = null;
 
-    private void Start()
+    private void Awake()
     {
-        ServiceLocator.Register<IMapManager>(Instantiate(mapManager).GetComponent<IMapManager>());
+        if (NetworkManager.singleton == null)
+            Instantiate(networkManager);
     }
 
-    private void OnDestroy()
-    {
-        ServiceLocator.Reset();
-        //instance = null;
-    }
+    // private void OnDestroy()
+    // {
+    //     ServiceLocator.Reset();
+    //     //instance = null;
+    // }
 }
