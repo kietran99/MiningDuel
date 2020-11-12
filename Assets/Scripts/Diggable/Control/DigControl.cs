@@ -12,9 +12,11 @@ namespace MD.UI
         private void Start()
         {
             button.onClick.AddListener(Invoke);
-            EventSystems.EventManager.Instance.StartListening<ProjectileObtainData>(HideButton);
-            EventSystems.EventManager.Instance.StartListening<ThrowInvokeData>(ShowButton);
-            EventSystems.EventManager.Instance.StartListening<ExplodeData>(ShowButton);
+            var eventManager = EventSystems.EventManager.Instance;
+            eventManager.StartListening<ProjectileObtainData>(HideButton);
+            eventManager.StartListening<ThrowInvokeData>(ShowButton);
+            eventManager.StartListening<ExplodeData>(ShowButton);
+            //eventManager.StartListening<DigSpeedData>(SetButtonCooldown);
         }
 
         public void Invoke()
@@ -24,25 +26,19 @@ namespace MD.UI
 
         private void OnDestroy()
         {
-            EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(HideButton);
-            EventSystems.EventManager.Instance.StopListening<ThrowInvokeData>(ShowButton);
-            EventSystems.EventManager.Instance.StopListening<ExplodeData>(ShowButton);
+            var eventManager = EventSystems.EventManager.Instance;
+            eventManager.StopListening<ProjectileObtainData>(HideButton);
+            eventManager.StopListening<ThrowInvokeData>(ShowButton);
+            eventManager.StopListening<ExplodeData>(ShowButton);
+            //eventManager.StopListening<DigSpeedData>(SetButtonCooldown);
         }
 
-        private void ShowButton(ExplodeData obj)
-        {
-            button.gameObject.SetActive(true);
-        }
+        //private void SetButtonCooldown(DigSpeedData digSpeed) => button.GetComponent<PixelatedButton>().Cooldown = digSpeed.speed;
 
-        private void ShowButton(ThrowInvokeData obj)
-        {
-            button.gameObject.SetActive(true);
-        }
+        private void ShowButton(ExplodeData obj) => button.gameObject.SetActive(true);
 
+        private void ShowButton(ThrowInvokeData obj) => button.gameObject.SetActive(true);
 
-        private void HideButton(ProjectileObtainData obj)
-        {
-            button.gameObject.SetActive(false);
-        }
+        private void HideButton(ProjectileObtainData obj) => button.gameObject.SetActive(false);
     }
 }
