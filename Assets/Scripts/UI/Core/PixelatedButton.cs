@@ -38,6 +38,10 @@ namespace MD.UI
             myButton = GetComponent<Button>();
         }
 
+        void OnEnable()
+        {
+            myButton.interactable = true;
+        }
         public void OnPointerDown(PointerEventData eventData)
         {
             if (!myButton.interactable) return;
