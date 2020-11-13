@@ -198,7 +198,7 @@ public class NetworkManagerLobby : NetworkManager
     private void StartGame()
     {
         Time.timeScale = 1f;
-        float matchTime = 3f;
+        float matchTime = 120f;
         foreach(Player player in Players)
         {
             player.SetCanMove(true);

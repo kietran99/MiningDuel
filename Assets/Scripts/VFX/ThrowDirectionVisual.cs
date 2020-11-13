@@ -23,7 +23,7 @@ namespace MD.VisualEffects
             ListenToEvents();
         }
 
-        void OnDestroy() 
+        void OnDisable() 
         {
             if (player == null) return;
 

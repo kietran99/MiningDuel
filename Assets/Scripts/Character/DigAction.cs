@@ -44,6 +44,7 @@ namespace MD.Character
         private void OnDestroy()
         {
             if (!isLocalPlayer) return;
+            Debug.Log("destroy move action called");
             // EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(BindAndHoldProjectile);
             StopAllCoroutines();
             EventSystems.EventManager.Instance.StartListening<DigInvokeData>(Dig);
