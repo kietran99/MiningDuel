@@ -55,6 +55,7 @@ namespace MD.Character
         public override void OnStartClient()
         {
             DontDestroyOnLoad(this);
+            Room.DontDestroyOnLoadObjects.Add(this.gameObject);
             Room.Players.Add(this);
         }
 
@@ -110,7 +111,6 @@ namespace MD.Character
         {
             IGameCountDown countDown;
             if (ServiceLocator.Resolve<IGameCountDown>(out countDown)) countDown.StartCountDown(0f);
-            SceneManager.MoveGameObjectToScene(this.gameObject, SceneManager.GetActiveScene());
         }
 
         [TargetRpc]
@@ -121,8 +121,23 @@ namespace MD.Character
 
         public void ExistGame()
         {
-            room.StopHost();
-            ServiceLocator.Reset();
+            Debug.Log("exist game has called");
+            if (hasAuthority)
+            {
+                ServiceLocator.Reset();
+                if (isServer)
+                {
+                    NetworkManager.singleton.StopHost();
+                    // (NetworkManager.singleton as NetworkManagerLobby).CleanObjectsWhenDisconnect();
+                }
+                else
+                {
+                    NetworkManager.singleton.StopClient();
+                    (NetworkManager.singleton as NetworkManagerLobby).CleanObjectsWhenDisconnect();
+                    SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);
+                }
+            }
+
         }
 
         public bool CanMove() => canMove;

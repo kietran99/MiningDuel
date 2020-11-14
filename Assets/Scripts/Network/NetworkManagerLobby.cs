@@ -32,6 +32,8 @@ public class NetworkManagerLobby : NetworkManager
     private readonly string NAME_PLAYER_ONLINE = "Player Online";
     private readonly string MAP_MANAGER = "Map Manager";
 
+    public List<GameObject> DontDestroyOnLoadObjects = new List<GameObject>();
+
     private Player networkPlayerPrefab = null;
 
     private Player NetworkPlayerPrefab
@@ -82,8 +84,27 @@ public class NetworkManagerLobby : NetworkManager
         OnClientConnected?.Invoke();
     }
 
+    public void CleanObjectsWhenDisconnect()
+    {
+        Debug.Log("clean object when disconnect");
+        RoomPlayers.Clear();
+        Players.Clear();
+        ServiceLocator.Reset();
+        foreach (GameObject obj in DontDestroyOnLoadObjects)
+        {
+            if (obj != null) Destroy(obj);
+        }
+        Destroy(NetworkManager.singleton.gameObject);
+    }
+
     public override void OnClientDisconnect(NetworkConnection conn)
     {
+        Debug.Log("on client disconnect");
+        if (SceneManager.GetActiveScene().path == gamePlayScene)
+        {
+            CleanObjectsWhenDisconnect();
+            // SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);
+        }
         base.OnClientDisconnect(conn);
         OnClientDisconnnected?.Invoke();
     }
@@ -102,9 +123,17 @@ public class NetworkManagerLobby : NetworkManager
     {
         if (conn.identity != null)
         {
-            var player = conn.identity.GetComponent<NetworkRoomPlayerLobby>();
-            RoomPlayers.Remove(player);
-            NotifyPlayersOfReadyState();
+            if (SceneManager.GetActiveScene().path == menuScene)
+            {
+                var player = conn.identity.GetComponent<NetworkRoomPlayerLobby>();
+                RoomPlayers.Remove(player);
+                NotifyPlayersOfReadyState();
+            }
+            else if (SceneManager.GetActiveScene().path == gamePlayScene)
+            {
+                var player = conn.identity.GetComponent<Player>();
+                Players.Remove(player);
+            }
         }
         base.OnServerDisconnect(conn);
     }
@@ -131,9 +160,11 @@ public class NetworkManagerLobby : NetworkManager
 
     public override void OnStopServer()
     {
-        RoomPlayers.Clear();
-        Players.Clear();
-        // NetworkManager.Shutdown();
+        Debug.Log("on stop server");
+        Time.timeScale =1f;
+        ServerChangeScene(menuScene);
+        CleanObjectsWhenDisconnect();
+        base.OnStopServer();
     }
 
     public bool IsReadyToStart()
@@ -164,8 +195,9 @@ public class NetworkManagerLobby : NetworkManager
         mapManager = Instantiate(MapManagerPrefab);
         // ServiceLocator.Register<IMapManager>(mapManager.GetComponent<IMapManager>());
         NetworkServer.Spawn(mapManager.gameObject);
+        RoomPlayers.ToArray().ForEach(SpawnNetworkPlayer);
         DontDestroyOnLoad(mapManager);
-        RoomPlayers.ToArray().ForEach(SpawnNetworkPlayer);   
+        DontDestroyOnLoadObjects.Add(mapManager.gameObject); 
     }
 
     private void SpawnNetworkPlayer(NetworkRoomPlayerLobby roomPlayer)
@@ -189,10 +221,10 @@ public class NetworkManagerLobby : NetworkManager
             //TODO: check if all players loaded scene
             StartGame();
         }
-        if (SceneManager.GetActiveScene().path == menuScene)
-        {
-            StopServer();
-        }
+        // if (SceneManager.GetActiveScene().path == menuScene)
+        // {
+        //     StopServer();
+        // }
     }
 
     private void StartGame()
@@ -206,10 +238,17 @@ public class NetworkManagerLobby : NetworkManager
         }
         Invoke(nameof(EndGame),matchTime);
     }
-
+    #if UNITY_EDITOR
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q)) EndGame();
+        CancelInvoke();
+    }
+    #endif
     private void EndGame()
     {
         //stop game in server
+        if (Players.Count <=0) return;
         Time.timeScale = 0f;
         Players.ForEach(player => player.SetCanMove(false));
 

@@ -14,6 +14,5 @@ public class InGameExit : MonoBehaviour
     {
         MD.Character.Player player;
         if (ServiceLocator.Resolve<MD.Character.Player>(out player)) player.ExistGame();
-        SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);
     }
 }

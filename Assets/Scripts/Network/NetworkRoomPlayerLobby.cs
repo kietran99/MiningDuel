@@ -84,8 +84,17 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
         UpdateDisplay();
     }
 
-    public void HandleDisplayNameChanged(string oldValue, string newValue) => UpdateDisplay();
-    public void HandleReadyStatusChanged(bool oldValue, bool newValue) => UpdateDisplay();
+    public void HandleDisplayNameChanged(string oldValue, string newValue) 
+    {
+        name = newValue;
+        UpdateDisplay();
+    }
+    public void HandleReadyStatusChanged(bool oldValue, bool newValue)
+    {
+        isReady = newValue;
+        Debug.Log("isready "+ isReady);    
+        UpdateDisplay();
+    }
 
     private void UpdateDisplay()
     {
@@ -102,7 +111,7 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
 
             return;
         }
-
+        Debug.Log("status change");
         for (int i= 0; i< playerNameTexts.Length; i++)
         {
             playerNameTexts[i].text = "Waitting for Player...";
@@ -139,7 +148,6 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
     {
         DisplayName = displayName;
     }
-
     [Command]
     public void CmdReadyUp()
     {
