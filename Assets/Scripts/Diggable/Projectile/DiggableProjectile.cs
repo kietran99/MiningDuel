@@ -32,7 +32,7 @@ namespace MD.Diggable.Projectile
                 }
             }
         }
-        public int DiggbleType() => projectileType;
+        public int DiggableType() => projectileType;
 
         public void DecreaseValue(int power)
         {

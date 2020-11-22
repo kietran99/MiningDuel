@@ -58,10 +58,15 @@ namespace MD.Diggable.Gem
         {           
             this.currentDigger = digger;
             GemValue.DecreaseValue(currentDigger.Power);
-
-            if (GemValue.RemainingHit > 0) return;
             this.diggerID = digger.netIdentity;
             RpcSetDigger(digger.netIdentity);
+            if (diggerID != null && diggerID.Equals(Player.netIdentity)) 
+            {
+                EventSystems.EventManager.Instance.TriggerEvent(new DigProgressData(GemValue.RemainingHit, GemValue.Value));
+            }
+
+            if (GemValue.RemainingHit > 0) return;
+           
             EventSystems.EventManager.Instance.TriggerEvent(
                 new ServerDiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y, currentDigger));
             Destroy(gameObject);

@@ -1,5 +1,4 @@
-﻿using MD.Character;
-namespace MD.Diggable
+﻿namespace MD.Diggable
 {
     public struct GemDigSuccessData : EventSystems.IEventData
     {

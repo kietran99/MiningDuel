@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Mirror;
+
 namespace MD.Diggable.Gem
 {
     public class GemValue : NetworkBehaviour
@@ -14,14 +15,13 @@ namespace MD.Diggable.Gem
         private void Start()
         {
             RemainingHit = value;    
-            if (isClient)
+            if (!isClient) return;
+            
+            IMapManager mapManager;
+            if (ServiceLocator.Resolve<IMapManager>(out mapManager))
             {
-                IMapManager mapManager;
-                if (ServiceLocator.Resolve<IMapManager>(out mapManager))
-                {
-                    mapManager.NotifyNewGem(transform.position,value.ToDiggable());
-                }
-            }
+                mapManager.NotifyNewGem(transform.position,value.ToDiggable());
+            }           
         }
 
         public void DecreaseValue(int power)

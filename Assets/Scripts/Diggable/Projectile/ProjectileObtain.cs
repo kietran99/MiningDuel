@@ -12,7 +12,7 @@ namespace MD.Diggable.Projectile
         private DigAction currentDigger = null;
 
         private NetworkIdentity diggerID;
-        private Player player =null;
+        private Player player = null;
         private Player Player
         {
             get
@@ -22,6 +22,7 @@ namespace MD.Diggable.Projectile
                 return player;
             }
         }
+
         private DiggableProjectile projectile = null;
         private DiggableProjectile Projectile
         {
@@ -35,7 +36,7 @@ namespace MD.Diggable.Projectile
         public override void OnStartClient()
         {
             EventSystems.EventManager.Instance.TriggerEvent(
-                new DiggableSpawnData(Projectile.DiggbleType(),transform.position.x,transform.position.y));
+                new DiggableSpawnData(Projectile.DiggableType(), transform.position.x, transform.position.y));
         }
 
         public override void OnStopClient()
@@ -43,12 +44,12 @@ namespace MD.Diggable.Projectile
             base.OnStopClient();
             //fire an event for sonar to update
             EventSystems.EventManager.Instance.TriggerEvent(
-                new DiggableDestroyData(Projectile.DiggbleType(),transform.position.x,transform.position.y));
+                new DiggableDestroyData(Projectile.DiggableType(), transform.position.x, transform.position.y));
             //for animations and UI
             if (diggerID != null && diggerID == Player.netIdentity)
             {
                 EventSystems.EventManager.Instance.TriggerEvent(
-                    new ProjectileObtainData(Projectile.GetStats(),transform.position.x,transform.position.y));
+                    new ProjectileObtainData(Projectile.GetStats(), transform.position.x, transform.position.y));
             }
         }
 
@@ -57,9 +58,9 @@ namespace MD.Diggable.Projectile
         {
             currentDigger = digger;
             RpcSetDigger(digger.netIdentity);
-            this.diggerID =digger.netIdentity;
+            this.diggerID = digger.netIdentity;
             EventSystems.EventManager.Instance.TriggerEvent(
-                new ServerDiggableDestroyData(Projectile.DiggbleType(),transform.position.x,transform.position.y, currentDigger));
+                new ServerDiggableDestroyData(Projectile.DiggableType(), transform.position.x, transform.position.y, currentDigger));
             Destroy(gameObject);
         }
 
