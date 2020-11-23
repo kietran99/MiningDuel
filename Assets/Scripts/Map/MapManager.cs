@@ -105,21 +105,22 @@ public class MapManager : NetworkBehaviour, IMapManager
         //int res;
         foreach (var pos in posToScan)
         {
-            yield return new ScanTileData(pos, TryGetDiggableAt(pos));
+            yield return new ScanTileData(pos, TryGetDiggableAt(PositionToIndex(pos)));
         }
     }
 
-    private int TryGetDiggableAt(Vector2 pos)
+    private int TryGetDiggableAt(Vector2Int idx)
     {        
         try 
         {
-            return (int)mapData[(int)pos.x - rootX,(int) pos.y - rootY];
+            return (int)mapData[(int)idx.x,(int)idx.y];
         }
         catch
         {
             return 0;
         }
     }
+
 
     public int GetMapDataAtPos(Vector2 pos)
     {
@@ -215,7 +216,16 @@ public class MapManager : NetworkBehaviour, IMapManager
             mapData[index.x,index.y] = 0;
             Diggables[index.x,index.y] = null;
             if (gemDigSuccessData.diggable.ToDiggable().IsGem())
-                gemDigSuccessData.digger.GetComponent<MD.Character.Player>().IncreaseScore(gemDigSuccessData.diggable);
+            {
+                PlayerBot bot;
+                Player player= gemDigSuccessData.digger.GetComponent<MD.Character.Player>();
+                if (player!= null)
+                    player.IncreaseScore(gemDigSuccessData.diggable);
+                else if ( bot = gemDigSuccessData.digger.GetComponent<PlayerBot>())
+                {
+                    bot.score += gemDigSuccessData.diggable;
+                }
+            }
         }
         catch
         {

@@ -24,6 +24,8 @@ public class NetworkManagerLobby : NetworkManager
 
     [SerializeField]
     private NetworkRoomPlayerLobby roomPlayerPrefab = null;
+    [SerializeField]
+    private GameObject botPrefab = null;
 
     [SerializeField]
     private SpawnPointPicker spawnPointPicker = null;
@@ -61,6 +63,8 @@ public class NetworkManagerLobby : NetworkManager
 
     public List<NetworkRoomPlayerLobby> RoomPlayers { get; } = new List<NetworkRoomPlayerLobby>();
     public List<Player> Players { get; } = new List<Player>();
+
+    public List<PlayerBot> Bots {get;} = new List<PlayerBot>();
 
     private MapManager mapManager;
 
@@ -209,7 +213,7 @@ public class NetworkManagerLobby : NetworkManager
         var conn = roomPlayer.netIdentity.connectionToClient;
         NetworkServer.Destroy(conn.identity.gameObject);
         NetworkServer.ReplacePlayerForConnection(conn, player.gameObject, true);
-        Players.Add(player);
+        // Players.Add(player);
         player.TargetRegisterIMapManager(mapManager.netIdentity);
     }
 
@@ -236,22 +240,38 @@ public class NetworkManagerLobby : NetworkManager
             player.SetCanMove(true);
             player.TargetNotifyGameReady(matchTime);
         }
+        var bot = Instantiate(botPrefab);
+        if (Players.Count==1)
+        {
+            Bots.Add(bot.GetComponent<PlayerBot>());
+            NetworkServer.Spawn(bot, Players[0].connectionToClient);
+        }
         Invoke(nameof(EndGame),matchTime);
     }
-    #if UNITY_EDITOR
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q)) EndGame();
-        CancelInvoke();
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            CancelInvoke();
+            EndGame();
+        }
+#endif
     }
-    #endif
+
     private void EndGame()
     {
+        Debug.Log("Player count "+ Players.Count);
         //stop game in server
         if (Players.Count <=0) return;
         Time.timeScale = 0f;
+        //if play with bot
+        if (Bots.Count > 0)
+        {
+            Players[0].TargetNotifyEndGame(Players[0].GetCurrentScore() >= Bots[0].score);
+            return;
+        }
         Players.ForEach(player => player.SetCanMove(false));
-
         List<Player> orderedPlayers = Players.OrderBy(player => -player.GetCurrentScore()).ToList<Player>();
         int highestScore = orderedPlayers[0].GetCurrentScore();
         orderedPlayers[0].TargetNotifyEndGame(true);

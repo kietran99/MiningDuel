@@ -69,8 +69,11 @@ MonoBehaviour:
   minimumPlayers: 1
   roomPlayerPrefab: {fileID: 9037775071047316419, guid: c0e7ecaf0d50b5748919f41920282256,
     type: 3}
+  botPrefab: {fileID: 5063567480658151164, guid: 54a0943568201224faf9e9135bbfdd04,
+    type: 3}
   spawnPointPicker: {fileID: -5008208810592905108, guid: ef6f40e00172b8549ae0c3d7e98b2fd9,
     type: 3}
+  DontDestroyOnLoadObjects: []
 --- !u!114 &175812858257897401
 MonoBehaviour:
   m_ObjectHideFlags: 0

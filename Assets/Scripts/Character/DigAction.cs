@@ -3,7 +3,6 @@ using Mirror;
 using System.Collections;
 namespace MD.Character
 {
-    [RequireComponent(typeof(Player))]
     public class DigAction : NetworkBehaviour
     {
         [SerializeField]
@@ -64,10 +63,15 @@ namespace MD.Character
         [Command]
         public void CmdDig()
         {
-            Player.SetCanMove(false);
+            if (Player != null)
+            {
+                Player.SetCanMove(false);
+                Invoke(nameof(EnableCanMove),digCooldown);
+            }
             MapManager.DigAtPosition(netIdentity);
-            Invoke(nameof(EnableCanMove),digCooldown);
+
         }
+        
         [Server]
         public void EnableCanMove()
         {

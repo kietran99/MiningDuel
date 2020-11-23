@@ -9,6 +9,11 @@ public class CameraController : MonoBehaviour
     private Transform player;
     private Vector3 botLeftLimit, topRightLimit;
     
+    void Awake()
+    {
+        MapConstants.MAP_MIN_BOUND = map.localBounds.min;
+        MapConstants.MAP_MAX_BOUND = map.localBounds.max;
+    }
     void Start()
     {
         if (!ServiceLocator.Resolve(out MD.Character.Player player)) return; 
