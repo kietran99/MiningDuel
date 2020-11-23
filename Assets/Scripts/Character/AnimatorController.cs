@@ -79,10 +79,6 @@ namespace MD.Character
             animator.SetFloat(AnimatorConstants.LAST_Y, lastY);
         }
 
-        private void BindLastMoveStats(float lastX, float lastY)
-        {
-            this.lastX = lastX;
-            this.lastY = lastY;
-        }        
+        private void BindLastMoveStats(float lastX, float lastY) => (this.lastX, this.lastY) = (lastX, lastY);      
     }
 }

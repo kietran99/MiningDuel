@@ -7,7 +7,7 @@ namespace MD.VisualEffects
     public class ThrowDirectionVisual : MonoBehaviour
     {
         [SerializeField]
-        private Player player;
+        private Player player = null;
         private Renderer spriteRenderer;
         private float distanceFromPlayer;
 

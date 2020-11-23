@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
-using System.Collections.Generic;
 using MD.Diggable.Gem;
+using MD.UI;
 
 namespace MD.VisualEffects
 {
@@ -25,7 +25,6 @@ namespace MD.VisualEffects
         [SerializeField]
         private Transform fillArea = null;
         
-        //private Dictionary<, Action<int, int>> progressHandleDict;
         private ProgressTransform[] progressTransforms;
 
         private void Start() 
@@ -33,18 +32,30 @@ namespace MD.VisualEffects
             progressTransforms = new ProgressTransform[4]
             {
                 new ProgressTransform((int cur, int max) => cur > max, (cur, max) => Debug.LogError("Current value must be less than max value")),
-                new ProgressTransform((int cur, int max) => cur == 0, (cur, max) => gaugeContainer.SetActive(false)),
+                new ProgressTransform((int cur, int max) => cur == 0, (cur, max) => Hide()),
                 new ProgressTransform((int cur, int max) => cur < max, Fill),
                 new ProgressTransform((int cur, int max) => true, (cur, max) => Debug.LogError("Unknown dig progress transform"))
             };
 
             EventSystems.EventManager.Instance.StartListening<DigProgressData>(ResolveProgressInput);
+            EventSystems.EventManager.Instance.StartListening<JoystickDragData>(Hide);
         }
        
         private void OnDestroy() 
         {
             EventSystems.EventManager.Instance.StopListening<DigProgressData>(ResolveProgressInput);
+            EventSystems.EventManager.Instance.StartListening<JoystickDragData>(Hide);
         }
+
+        private void Hide(JoystickDragData dragData)
+        {
+            if (!dragData.InputDirection.x.IsEqual(0f) && !dragData.InputDirection.y.IsEqual(0f))
+            {
+                Hide();
+            }
+        } 
+
+        private void Hide() => gaugeContainer.SetActive(false);
 
         // For testing purpose only
         // private void Update() 
