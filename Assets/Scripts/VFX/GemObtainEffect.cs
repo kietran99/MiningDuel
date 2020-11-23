@@ -23,6 +23,11 @@ namespace MD.VisualEffects
             EventSystems.EventManager.Instance.StartListening<GemDigSuccessData>(HandleGemDigSuccess);
         }
 
+        private void OnDestroy() 
+        {
+            EventSystems.EventManager.Instance.StopListening<GemDigSuccessData>(HandleGemDigSuccess);
+        }
+
         private void HandleGemDigSuccess(GemDigSuccessData gemDigData)
         {
             var gem = DiggableTypeConverter.Convert((DiggableType) gemDigData.value);
