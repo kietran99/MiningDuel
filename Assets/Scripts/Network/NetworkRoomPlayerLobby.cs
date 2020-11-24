@@ -92,7 +92,7 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
     public void HandleReadyStatusChanged(bool oldValue, bool newValue)
     {
         isReady = newValue;
-        Debug.Log("isready "+ isReady);    
+        //Debug.Log("isready "+ isReady);    
         UpdateDisplay();
     }
 
@@ -111,7 +111,7 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
 
             return;
         }
-        Debug.Log("status change");
+        //Debug.Log("status change");
         for (int i= 0; i< playerNameTexts.Length; i++)
         {
             playerNameTexts[i].text = "Waitting for Player...";

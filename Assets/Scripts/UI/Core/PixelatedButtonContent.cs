@@ -18,7 +18,7 @@ namespace MD.UI
         void Start()
         {
             originalPos = transform.localPosition;
-            if (GetComponentInParent<DigControl>() != null) Debug.Log(originalPos);
+            
             offsetVect = new Vector3(0f, offset, 0f);
             button.OnPress += Lower;
             button.OnRelease += Raise;

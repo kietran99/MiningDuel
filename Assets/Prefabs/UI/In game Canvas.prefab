@@ -1258,6 +1258,7 @@ MonoBehaviour:
   mask: {fileID: 6764390185772145164}
   endGameStatsContainer: {fileID: 3188552275200226120}
   scoreText: {fileID: 6744125769823047293}
+  winText: {fileID: 0}
 --- !u!1 &6764390185772145164
 GameObject:
   m_ObjectHideFlags: 0

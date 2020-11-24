@@ -1,5 +1,4 @@
-﻿using MD.Diggable;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace MD.UI
@@ -25,7 +24,7 @@ namespace MD.UI
         {
             // EventSystems.EventManager.Instance.StartListening<GemDigSuccessData>(IncreaseCurrentScore);
             UpdateScoreText(0);
-            ServiceLocator.Register<IScoreManager>(gameObject.GetComponent<IScoreManager>());
+            ServiceLocator.Register<IScoreManager>(this);
         }
 
         // private void OnDestroy()

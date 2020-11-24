@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using Mirror;
-using System.Collections;
+
 namespace MD.Character
 {
     public class DigAction : NetworkBehaviour
@@ -57,6 +57,7 @@ namespace MD.Character
         private void Dig(DigInvokeData data)
         {
             if (Time.time < nextDigTime) return;
+
             nextDigTime = Time.time + digCooldown;
             CmdDig();
         }

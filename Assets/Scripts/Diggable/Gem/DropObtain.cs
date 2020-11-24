@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Mirror;
+
 public class DropObtain : NetworkBehaviour
 {
     [SerializeField]
@@ -10,11 +11,13 @@ public class DropObtain : NetworkBehaviour
 
     [SerializeField]
     private float obtainWaitTime = 3f;
+
     public override void OnStartServer()
     {
         canObtain = false;
-        Invoke("EnableObtain",obtainWaitTime);
+        Invoke("EnableObtain", obtainWaitTime);
     }
+
     [Server]
     private void EnableObtain()
     {
@@ -28,6 +31,7 @@ public class DropObtain : NetworkBehaviour
     {
         transform.GetComponentInChildren<SpriteRenderer>().color = Color.white;
     }
+
     [ServerCallback]
     void OnTriggerEnter2D(Collider2D other)
     {

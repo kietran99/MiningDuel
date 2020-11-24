@@ -15,7 +15,7 @@ namespace MD.Character
         void Start()
         {
             if (!isLocalPlayer) return;
-            Debug.Log("Register throw action");
+            //Debug.Log("Register throw action");
             EventSystems.EventManager.Instance.StartListening<ThrowInvokeData>(ThrowProjectile);
             EventSystems.EventManager.Instance.StartListening<JoystickDragData>(BindThrowDirection);
         }

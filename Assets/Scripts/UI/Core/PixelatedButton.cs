@@ -13,6 +13,8 @@ namespace MD.UI
         [SerializeField]
         private float cooldown = 0f;
 
+        private bool canBeInvoked;
+
         public float Cooldown 
         {
             get => cooldown;
@@ -42,8 +44,11 @@ namespace MD.UI
         {
             myButton.interactable = true;
         }
+
         public void OnPointerDown(PointerEventData eventData)
         {
+            //if (!canBeInvoked) return;
+
             if (!myButton.interactable) return;
 
             myButton.image.sprite = pressedSprite;
@@ -52,15 +57,19 @@ namespace MD.UI
         
         public void OnPointerUp(PointerEventData eventData)
         {
+            //if (!canBeInvoked) return;
+
             if (!myButton.interactable) return;
            
-            if (Cooldown == 0f) 
+            if (cooldown == 0f) 
             {
                 PopButtonUp();
                 return;
             }
             
             StartCoroutine(KeepPressing());
+            //canBeInvoked = false;
+            //Invoke(nameof(PopButtonUp), cooldown);
         }
 
         private System.Collections.IEnumerator KeepPressing()
@@ -76,6 +85,8 @@ namespace MD.UI
 
         private void PopButtonUp()
         {
+            //Debug.Log("Pop");
+            //canBeInvoked = true;
             myButton.image.sprite = unpressedSprite;
             OnRelease?.Invoke(); 
         }
