@@ -1,12 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using MD.Character;
+
 public class BotAnimator : MonoBehaviour
 {
     [SerializeField]
-    private Animator animator;
+    private Animator animator = null;
     private float lastX, lastY;
+
     public void RevertToIdleState()
     {
         animator.SetBool(AnimatorConstants.IS_HOLDING, false);

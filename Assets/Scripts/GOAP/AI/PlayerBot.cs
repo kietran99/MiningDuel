@@ -40,8 +40,9 @@ public class PlayerBot : NetworkBehaviour
     void Start()
     {
         if(!hasAuthority) return;
+
         ServiceLocator.Resolve<Player>(out player);
-        score =0;
+        score = 0;
         digAction = GetComponent<DigAction>();
         throwAction = GetComponent<BotThrowAction>();
         body = GetComponent<Rigidbody2D>();
@@ -51,7 +52,8 @@ public class PlayerBot : NetworkBehaviour
         ServiceLocator.Resolve<IMapManager>(out mapManager);
     }
 
-    bool digBomb = false, takeControl= false;
+    bool digBomb = false, takeControl = false;
+
     void Update()
     {
         #if UNITY_EDITOR
@@ -69,9 +71,38 @@ public class PlayerBot : NetworkBehaviour
             return;
         }
         #endif
+
         if(!hasAuthority) return;
+
         if (isMoving || isWandering || isDigging || isThrowing) return;
+
         MakeDecision();
+    }
+
+    public void MakeDecision()
+    {
+        if (CanDig())
+        {
+            StartCoroutine(Dig());
+            return;
+        }
+
+        if(CanThrow())
+        {
+            StartCoroutine(ThrowBomb());
+            return;
+        }
+
+        digBomb = CanSeePlayer(viewRange);
+        //if see player
+        if(GetClosestDiggable(out movePos))
+        {
+            MoveToPos();
+        }
+        else 
+        {
+            Wander();
+        }
     }
 
     private void Wander()
@@ -80,41 +111,51 @@ public class PlayerBot : NetworkBehaviour
         float sqrclosestDistant = Mathf.Infinity;
         float sqrDistance = 0;
         checkPointIdx = 0;
-        for (int i= 0; i< checkPoints.Count; i++)
+
+        for (int i = 0; i < checkPoints.Count; i++)
         {
             sqrDistance = Vector2.SqrMagnitude(gameObject.transform.position - checkPoints[i].transform.position);
             if (sqrDistance < sqrclosestDistant)
             {
-                sqrclosestDistant =  sqrDistance;
+                sqrclosestDistant = sqrDistance;
                 checkPointIdx = i;
             }
         }
+
         movePos = checkPoints[checkPointIdx].transform.position;
     }
 
     private bool GetClosestDiggable(out Vector2 pos)
     {
-        Vector2 sqrCenter = new Vector2(Mathf.FloorToInt(transform.position.x) +.5f, Mathf.FloorToInt(transform.position.y) +.5f);
-        if (digBomb?mapManager.GetMapDataAtPos(sqrCenter).ToDiggable().IsBomb():mapManager.GetMapDataAtPos(sqrCenter).ToDiggable().IsGem()) {
+        Vector2 sqrCenter = new Vector2(Mathf.FloorToInt(transform.position.x) + .5f, Mathf.FloorToInt(transform.position.y) + .5f);
+
+        if (digBomb ? mapManager.IsProjectileAt(sqrCenter) : mapManager.IsGemAt(sqrCenter)) 
+        {
             pos = sqrCenter;
             return true;
         } 
+
         Vector2 position = Vector2.zero;
-        for (int i=1;i<=3;i++)
+
+        for (int i = 1; i <= 3; i++)
         {
-            for (int x = -i; x <=i ; x++)
+            for (int x = -i; x <= i; x++)
             {
-                for (int y = -i; y <=i; y++)
+                for (int y = -i; y <= i; y++)
                 {
-                    if(x != i && x!= -i && y!=i && y!= -i) continue;
-                    position = sqrCenter + new Vector2((float)x,(float)y);
-                    if (digBomb?mapManager.GetMapDataAtPos(position).ToDiggable().IsBomb():mapManager.GetMapDataAtPos(position).ToDiggable().IsGem()){
+                    if (x != i && x != -i && y != i && y != -i) continue;
+
+                    position = sqrCenter + new Vector2((float)x, (float)y);
+
+                    if (digBomb ? mapManager.IsProjectileAt(position) : mapManager.IsGemAt(position))
+                    {
                         pos = position;
                         return true;
                     }
                 }
             }
         }
+
         pos = default;
         return false;
     }
@@ -124,24 +165,31 @@ public class PlayerBot : NetworkBehaviour
     {
         isMoving = true;
     }
+
     private bool CanDig()
     {
         if (throwAction.IsHodlingProjectile()) return false;
-        return digBomb?mapManager.GetMapDataAtPos(transform.position).ToDiggable().IsBomb():mapManager.GetMapDataAtPos(transform.position).ToDiggable().IsGem();
+
+        return digBomb ? mapManager.IsProjectileAt(transform.position) : mapManager.IsGemAt(transform.position);
     }
+
     private bool CanThrow() => throwAction.IsHodlingProjectile();
+
     private IEnumerator Dig()
     {
-        isDigging =true;
+        isDigging = true;
+
         while (true)
         {
-            if(!(digBomb?mapManager.GetMapDataAtPos(transform.position).ToDiggable().IsBomb():mapManager.GetMapDataAtPos(transform.position).ToDiggable().IsGem()))
+            if(!(digBomb? mapManager.IsProjectileAt(transform.position) : mapManager.IsGemAt(transform.position)))
             {
                 isDigging = false;
                 yield break;
             }
+
             isMoving = false;
             yield return new WaitForSeconds(.5f);
+
             isMoving = true;
             animator.InvokeDig();
             digAction.CmdDig();
@@ -152,6 +200,7 @@ public class PlayerBot : NetworkBehaviour
     void FixedUpdate()
     {
         if (!hasAuthority) return;
+        
         #if UNITY_EDITOR
         if(takeControl)
         {
@@ -163,18 +212,21 @@ public class PlayerBot : NetworkBehaviour
             var moveX = Input.GetAxisRaw("Horizontal");
             var moveY = Input.GetAxisRaw("Vertical");
             Vector2 moveDir = new Vector2(moveX,moveY);
-            transform.Translate(moveDir.normalized*speed*Time.fixedDeltaTime);
+            transform.Translate(moveDir.normalized * speed * Time.fixedDeltaTime);
             animator.SetMovementState(moveDir);
             return;
         }
         #endif
-        if (isMoving) {
+
+        if (isMoving) 
+        {
             if (Vector2.Distance(movePos,transform.position) < .1f)
             {
                 transform.position = movePos;
                 isMoving = false;
                 return;
             }
+
             Vector2 moveDir = movePos - (Vector2)transform.position;
             animator.SetMovementState(moveDir);
             transform.Translate(moveDir.normalized*speed*Time.fixedDeltaTime);
@@ -192,42 +244,18 @@ public class PlayerBot : NetworkBehaviour
                     isWandering = false;
                     return;
                 }
+
                 checkPointIdx++;
-                if (checkPointIdx > checkPoints.Count -1 ) checkPointIdx = 0;
+                if (checkPointIdx > checkPoints.Count -1) checkPointIdx = 0;
                 movePos = checkPoints[checkPointIdx].transform.position;
                 return;
             }
+
             Vector2 moveDir = movePos - (Vector2)transform.position;
-            transform.Translate(moveDir.normalized*speed*Time.fixedDeltaTime);
+            transform.Translate(moveDir.normalized * speed * Time.fixedDeltaTime);
             animator.SetMovementState(moveDir);
         }
-
     }
-
-    public void MakeDecision()
-    {
-        if (CanDig())
-        {
-            StartCoroutine(Dig());
-            return;
-        }
-        if(CanThrow())
-        {
-            StartCoroutine(ThrowBomb());
-            return;
-        }
-        digBomb = CanSeePlayer(viewRange);
-        //if see player
-        if(GetClosestDiggable(out movePos))
-        {
-            MoveToPos();
-        }
-        else 
-        {
-            Wander();
-        }
-    }
-
     public IEnumerator ThrowBomb()
     {
         isThrowing = true;
@@ -241,9 +269,10 @@ public class PlayerBot : NetworkBehaviour
     {        
         RaycastHit2D[] hits =  Physics2D.RaycastAll(transform.position,(player.transform.position - transform.position).normalized, range);
         Debug.DrawLine(transform.position,transform.position + (player.transform.position - transform.position).normalized*range, Color.red, 2f);
+        
         if (hits.Length > 0 )
         {
-            for (int i = 0; i< hits.Length; i++)
+            for (int i = 0; i < hits.Length; i++)
             {
                 if (hits[i].collider.CompareTag(Constants.PLAYER_TAG))
                 {
@@ -252,14 +281,15 @@ public class PlayerBot : NetworkBehaviour
                 }              
             }
         }
+
         return false;
     }
 
-
     public int GetCurrentScore() => score;
+
     public void DecreaseScore(int amount)
     {
         score -= amount;
-        score = score<0 ?0:score;
+        score = score < 0 ? 0 : score;
     }
 }

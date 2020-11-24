@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using MD.Character;
 using MD.Diggable.Projectile;
+
 public class BotThrowAction : ThrowAction
 {
     public override void SetHoldingProjectile(ProjectileLauncher proj)
@@ -10,6 +9,7 @@ public class BotThrowAction : ThrowAction
         Debug.Log("set holding projectile on bot");
         base.SetHoldingProjectile(proj);
         BotAnimator animator = GetComponent<BotAnimator>();
+
         if (animator != null) animator.SetHoldState();
     }
 
@@ -18,14 +18,17 @@ public class BotThrowAction : ThrowAction
         //find player pos;
         Player player;
         Vector2 dir = Vector2.one;
+
         if (ServiceLocator.Resolve<Player>(out player))
         {
             dir = (player.transform.position - transform.position).normalized;
         }
+
         BotAnimator animator = GetComponent<BotAnimator>();
         if (animator != null) animator.RevertToIdleState();
-        base.CmdThrowProjectile(dir.x,dir.y,basePower);
+        base.CmdThrowProjectile(dir.x, dir.y, basePower);
         holdingProjectile = null;
     }
-    public bool IsHodlingProjectile() => holdingProjectile!=null;
+
+    public bool IsHodlingProjectile() => holdingProjectile != null;
 }

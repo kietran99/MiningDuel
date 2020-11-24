@@ -22,7 +22,7 @@ public static class MapDataTypeExtensions
         }
     }
 
-    public static bool IsBomb(this DiggableType type)
+    public static bool IsProjectile(this DiggableType type)
     {
         switch(type)
         {
@@ -126,6 +126,17 @@ public class MapManager : NetworkBehaviour, IMapManager
     {
         return TryGetDiggableAt(PositionToIndex(pos));
     }
+
+    public bool IsProjectileAt(Vector2 pos)
+    {
+        return TryGetDiggableAt(PositionToIndex(pos)).ToDiggable().IsProjectile();
+    }
+
+    public bool IsGemAt(Vector2 pos)
+    {
+        return TryGetDiggableAt(PositionToIndex(pos)).ToDiggable().IsGem();
+    }
+
     // [Server]
     // public void RegisterMapManager()
     // {

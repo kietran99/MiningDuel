@@ -13,4 +13,6 @@ public interface IMapManager
     void NotifyNewGem(Vector2 pos, DiggableType diggable);
 
     int GetMapDataAtPos(Vector2 pos);
+    bool IsProjectileAt(Vector2 pos);
+    bool IsGemAt(Vector2 pos);
 }
