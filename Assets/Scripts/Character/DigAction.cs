@@ -37,7 +37,8 @@ namespace MD.Character
         {
             // throwAction = GetComponent<ThrowAction>();
             // EventSystems.EventManager.Instance.StartListening<ProjectileObtainData>(BindAndHoldProjectile);
-            EventSystems.EventManager.Instance.StartListening<DigInvokeData>(Dig);
+            if(isLocalPlayer)
+                EventSystems.EventManager.Instance.StartListening<DigInvokeData>(Dig);
         }
 
         private void OnDestroy()

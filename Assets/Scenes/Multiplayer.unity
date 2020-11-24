@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 40927603}
   - component: {fileID: 40927602}
   m_Layer: 0
-  m_Name: CheckPoint (1)
+  m_Name: CheckPoint (01)
   m_TagString: CheckPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -213,7 +213,7 @@ GameObject:
   - component: {fileID: 60816213}
   - component: {fileID: 60816212}
   m_Layer: 0
-  m_Name: CheckPoint (5)
+  m_Name: CheckPoint (05)
   m_TagString: CheckPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -338,7 +338,7 @@ GameObject:
   - component: {fileID: 117693530}
   - component: {fileID: 117693529}
   m_Layer: 0
-  m_Name: CheckPoint (3)
+  m_Name: CheckPoint (03)
   m_TagString: CheckPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -419,7 +419,7 @@ GameObject:
   - component: {fileID: 493940922}
   - component: {fileID: 493940921}
   m_Layer: 0
-  m_Name: CheckPoint (8)
+  m_Name: CheckPoint (08)
   m_TagString: CheckPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5126,7 +5126,7 @@ GameObject:
   - component: {fileID: 624997371}
   - component: {fileID: 624997370}
   m_Layer: 0
-  m_Name: CheckPoint (9)
+  m_Name: CheckPoint (09)
   m_TagString: CheckPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5288,7 +5288,7 @@ GameObject:
   - component: {fileID: 926348834}
   - component: {fileID: 926348833}
   m_Layer: 0
-  m_Name: CheckPoint (2)
+  m_Name: CheckPoint (02)
   m_TagString: CheckPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5369,7 +5369,7 @@ GameObject:
   - component: {fileID: 1332629763}
   - component: {fileID: 1332629762}
   m_Layer: 0
-  m_Name: CheckPoint (7)
+  m_Name: CheckPoint (07)
   m_TagString: CheckPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5531,7 +5531,7 @@ GameObject:
   - component: {fileID: 1584855694}
   - component: {fileID: 1584855693}
   m_Layer: 0
-  m_Name: CheckPoint (6)
+  m_Name: CheckPoint (06)
   m_TagString: CheckPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5612,7 +5612,7 @@ GameObject:
   - component: {fileID: 1736210538}
   - component: {fileID: 1736210537}
   m_Layer: 0
-  m_Name: CheckPoint (4)
+  m_Name: CheckPoint (04)
   m_TagString: CheckPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

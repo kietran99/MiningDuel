@@ -8,9 +8,9 @@ namespace MD.Character
     public class ThrowAction : NetworkBehaviour
     {
         [SerializeField]
-        private float basePower = 100f;
+        protected float basePower = 100f;
         private Vector2 currentDir = Vector2.zero;
-        private ProjectileLauncher holdingProjectile;
+        protected ProjectileLauncher holdingProjectile;
 
         void Start()
         {
@@ -42,11 +42,11 @@ namespace MD.Character
         }
 
         [Command]
-        private void CmdThrowProjectile(float dirX, float dirY, float power)
+        protected void CmdThrowProjectile(float dirX, float dirY, float power)
         {
             holdingProjectile.Launch(basePower,dirX, dirY);
         }
 
-        public void SetHoldingProjectile(ProjectileLauncher proj) => holdingProjectile = proj;
+        public virtual void SetHoldingProjectile(ProjectileLauncher proj) => holdingProjectile = proj;
     }
 }

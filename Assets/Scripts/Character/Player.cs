@@ -140,6 +140,8 @@ namespace MD.Character
 
         }
 
+        public bool IsLocalPlayer() => isLocalPlayer;
+
         public bool CanMove() => canMove;
     }
 }

@@ -56,7 +56,11 @@ namespace MD.Diggable.Projectile
                 Explode();
                 if (!isThrown)
                 {
-                    TargetNotifyBombExplodeOnHand(GetComponent<ProjectileLauncher>().GetOwner().connectionToClient);
+                    var botAnim = GetComponent<ProjectileLauncher>().GetOwner().GetComponent<BotAnimator>();
+                    if (botAnim)
+                        botAnim.RevertToIdleState();
+                    else
+                        TargetNotifyBombExplodeOnHand(GetComponent<ProjectileLauncher>().GetOwner().connectionToClient);
                 }                
             }
         }
@@ -65,7 +69,6 @@ namespace MD.Diggable.Projectile
         //notify for target client to play animations
         private void TargetNotifyBombExplodeOnHand(NetworkConnection conn)
         {
-            Debug.Log("bomb expldoded on hand");
             EventSystems.EventManager.Instance.TriggerEvent(new ThrowInvokeData());
         }
 
@@ -91,7 +94,7 @@ namespace MD.Diggable.Projectile
         {
             if (!other.CompareTag(Constants.PLAYER_TAG)) return;
 
-            if (other.GetComponent<MD.Character.Player>().netIdentity == GetComponent<ProjectileLauncher>().GetOwner())
+            if (other.GetComponent<MD.Character.ThrowAction>().netIdentity == GetComponent<ProjectileLauncher>().GetOwner())
             {
                 isThrown = true;
             }
@@ -105,7 +108,7 @@ namespace MD.Diggable.Projectile
             // var mySphere =  GameObject.CreatePrimitive(PrimitiveType.Sphere);
             // mySphere.transform.localScale = new Vector3(2f*explosionRadius,2f*explosionRadius,1f);
             // mySphere.transform.position = transform.position;
-            
+            Debug.Log("Explode");
             CheckForCollision();
             PlayExplosionEffect();
             EventSystems.EventManager.Instance.TriggerEvent(new ExplodeData());
@@ -118,8 +121,7 @@ namespace MD.Diggable.Projectile
 
             foreach (Collider2D collide in colliders)
             {
-                if (!collide.CompareTag(Constants.PLAYER_TAG)) continue;
-                    
+                if (!collide.CompareTag(Constants.PLAYER_TAG)) continue;  
                 IExplodable target = collide.transform.GetComponent<IExplodable>();
                 target?.ProcessExplosion(stats.GemDropPercentage, stats.StunTime, -1);
             }

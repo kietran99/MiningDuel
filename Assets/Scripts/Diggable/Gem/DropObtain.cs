@@ -32,7 +32,12 @@ public class DropObtain : NetworkBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag(Constants.PLAYER_TAG) || !canObtain) return;
-        other.GetComponent<MD.Character.Player>().IncreaseScore(value);
+        if (other.GetComponent<MD.Character.Player>() != null)
+            other.GetComponent<MD.Character.Player>().IncreaseScore(value);
+        else
+        {
+            other.GetComponent<PlayerBot>().score += value;
+        }
         Destroy(gameObject);
     }
 }
