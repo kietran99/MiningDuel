@@ -33,7 +33,6 @@ namespace MD.Character
         private void OnDisable()
         {
             if (!networkAnimator.isLocalPlayer) return;
-            Debug.Log("disable called");
             var eventManager = EventSystems.EventManager.Instance;
             eventManager.StopListening<JoystickDragData>(SetMovementState);
             eventManager.StopListening<DigInvokeData>(InvokeDig);

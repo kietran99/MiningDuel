@@ -44,7 +44,7 @@ namespace MD.VisualEffects
         private void OnDestroy() 
         {
             EventSystems.EventManager.Instance.StopListening<DigProgressData>(ResolveProgressInput);
-            EventSystems.EventManager.Instance.StartListening<JoystickDragData>(Hide);
+            EventSystems.EventManager.Instance.StopListening<JoystickDragData>(Hide);
         }
 
         private void Hide(JoystickDragData dragData)

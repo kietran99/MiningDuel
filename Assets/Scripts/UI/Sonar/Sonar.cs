@@ -201,14 +201,25 @@ namespace MD.UI
         private void RemoveSymbolAt(float x, float y)
         {                          
             Vector2 pos = GetSymbolPos(x,y);
-            (GameObject item, int idx) = symbolPool.LookUp(symbol => 
-                symbol.transform.position.x.IsEqual(pos.x) && 
-                symbol.transform.position.y.IsEqual(pos.y));
-            
+            // (GameObject item, int idx) = symbolPool.LookUp(symbol => 
+            //     symbol.transform.position.x.IsEqual(pos.x) && 
+            //     symbol.transform.position.y.IsEqual(pos.y));
+
+            (GameObject item, int idx) = symbolPool.LookUp(symbol => isSymbolAt(symbol,pos));
             if (idx.Equals(Constants.INVALID)) return;
             
             symbolPool.Push(item.gameObject);
         }
+
+        private bool isSymbolAt(GameObject symbol, Vector2 pos)
+        {
+
+            if (Mathf.Abs(symbol.transform.position.x- pos.x) < .1f
+             && Mathf.Abs(symbol.transform.position.y - pos.y) <.1f)
+                return true;
+            return false; 
+        }
+
         private Vector2 GetSymbolPos(float x, float y)
         {
             return symbolContainer.position + new Vector3(x * symbolSize, y * symbolSize, 0f);

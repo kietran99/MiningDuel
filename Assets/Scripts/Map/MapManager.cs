@@ -177,8 +177,9 @@ public class MapManager : NetworkBehaviour, IMapManager
     }
     public override void OnStopServer()
     {
+        base.OnStopServer();
         EventManager.Instance.StopListening<ServerDiggableDestroyData>(HandleDigSuccess);
-    }  
+    }
 
     [ClientCallback]
     private void RemoveDiggableFromMapData(DiggableDestroyData data)
@@ -220,6 +221,7 @@ public class MapManager : NetworkBehaviour, IMapManager
     [Server]
     private  void HandleDigSuccess(ServerDiggableDestroyData gemDigSuccessData)
     {
+        Debug.Log("handle dig success get called");
         Vector2Int index = PositionToIndex(new Vector2(gemDigSuccessData.posX,gemDigSuccessData.posY));
 
         try
