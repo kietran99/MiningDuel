@@ -96,19 +96,19 @@ public class NetworkManagerLobby : NetworkManager
         ServiceLocator.Reset();
         foreach (GameObject obj in DontDestroyOnLoadObjects)
         {
-            if (obj != null) Destroy(obj);
+            if (obj != null) NetworkServer.Destroy(obj);
         }
         Destroy(NetworkManager.singleton.gameObject);
     }
 
     public override void OnClientDisconnect(NetworkConnection conn)
     {
-        Debug.Log("on client disconnect");
-        if (SceneManager.GetActiveScene().path == gamePlayScene)
-        {
-            CleanObjectsWhenDisconnect();
-            // SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);
-        }
+        // Debug.Log("on client disconnect");
+        // if (SceneManager.GetActiveScene().path == gamePlayScene)
+        // {
+        //     CleanObjectsWhenDisconnect();
+        //     // SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);
+        // }
         base.OnClientDisconnect(conn);
         OnClientDisconnnected?.Invoke();
     }
@@ -240,9 +240,9 @@ public class NetworkManagerLobby : NetworkManager
             player.SetCanMove(true);
             player.TargetNotifyGameReady(matchTime);
         }
-        var bot = Instantiate(botPrefab);
         if (Players.Count==1)
         {
+            var bot = Instantiate(botPrefab);
             Bots.Add(bot.GetComponent<PlayerBot>());
             NetworkServer.Spawn(bot, Players[0].connectionToClient);
         }

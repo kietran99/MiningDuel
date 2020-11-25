@@ -85,6 +85,7 @@ namespace MD.Character
         [Server]
         public void IncreaseScore(int amount)
         {
+            Debug.Log("increase score get called");
             score += amount;
         }
 
@@ -122,17 +123,19 @@ namespace MD.Character
 
         public void ExistGame()
         {
-            Debug.Log("exist game has called");
             if (hasAuthority)
             {
                 ServiceLocator.Reset();
                 if (isServer)
                 {
+                    Debug.Log("quit match on server");
+                    NetworkServer.DisconnectAllConnections();
                     NetworkManager.singleton.StopHost();
                     // (NetworkManager.singleton as NetworkManagerLobby).CleanObjectsWhenDisconnect();
                 }
                 else
                 {
+                    Debug.Log("quit match on client");
                     NetworkManager.singleton.StopClient();
                     (NetworkManager.singleton as NetworkManagerLobby).CleanObjectsWhenDisconnect();
                     SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);
