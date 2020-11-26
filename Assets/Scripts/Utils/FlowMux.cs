@@ -13,7 +13,7 @@ namespace Utils
             flowShapes.Add(flowShape);
         }
 
-        public FlowMux(FlowShape<T>[] flowShapes)
+        public FlowMux(IEnumerable<FlowShape<T>> flowShapes)
         {
             this.flowShapes.AddRange(flowShapes);
         }
@@ -25,8 +25,12 @@ namespace Utils
 
         public void Resolve(T shape)
         {
-            var executor = flowShapes.LookUp(transform => transform.CanApply(shape)).item;
-            executor.Transform(shape);
+            var (executor, idx) = flowShapes.LookUp(transform => transform.Shape(shape));
+            
+            if (!idx.Equals(Constants.INVALID))           
+            {
+                executor.Handler(shape);
+            }
         }
     }   
 }
