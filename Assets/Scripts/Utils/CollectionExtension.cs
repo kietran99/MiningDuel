@@ -29,7 +29,7 @@ public static class CollectionExtension
         return (default(T), Constants.INVALID);
     }
 
-    public static (T item, int idx) Lookup<T>(this List<T> arr, Predicate<T> conditions)
+    public static (T item, int idx) LookUp<T>(this List<T> arr, Predicate<T> conditions)
     {
         for (int i = 0; i < arr.Count; i++)
         {

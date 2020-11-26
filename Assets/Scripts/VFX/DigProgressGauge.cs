@@ -1,46 +1,39 @@
 ﻿using UnityEngine;
-using System;
 using MD.Diggable.Gem;
 using MD.UI;
+using Utils;
 
 namespace MD.VisualEffects
 {
     public class DigProgressGauge : MonoBehaviour
     {
-        private class ProgressTransform
-        {
-            public ProgressTransform(Func<int, int, bool> canApply, Action<int, int> transform)
-            {
-                CanApply = canApply;
-                Transform = transform;
-            }
-
-            public Func<int, int, bool> CanApply { get; }
-            public Action<int, int> Transform { get; }           
-        }
-
         [SerializeField]
         private GameObject gaugeContainer = null;
 
         [SerializeField]
         private Transform fillArea = null;
         
-        private ProgressTransform[] progressTransforms;
+        private FlowMux<DigProgressData> digProgressMux = new FlowMux<DigProgressData>();
 
         private void Start() 
-        {            
-            progressTransforms = new ProgressTransform[4]
-            {
-                new ProgressTransform((int cur, int max) => cur > max, (cur, max) => Debug.LogError("Current value must be less than max value")),
-                new ProgressTransform((int cur, int max) => cur == 0, (cur, max) => Hide()),
-                new ProgressTransform((int cur, int max) => cur < max, Fill),
-                new ProgressTransform((int cur, int max) => true, (cur, max) => Debug.LogError("Unknown dig progress transform"))
-            };
-
+        {      
+            AddFlows();                  
             EventSystems.EventManager.Instance.StartListening<DigProgressData>(ResolveProgressInput);
             EventSystems.EventManager.Instance.StartListening<JoystickDragData>(Hide);
         }
        
+        private void AddFlows()
+        {
+            digProgressMux.AddShape(
+            new FlowShape<DigProgressData>(data => data.current > data.max, _ => Debug.LogError("Current value must be less than max value")));
+
+            digProgressMux.AddShape(new FlowShape<DigProgressData>(data => data.current == 0, _ => Hide()));
+
+            digProgressMux.AddShape(new FlowShape<DigProgressData>(data => data.current < data.max, data => Fill(data.current, data.max)));
+
+            digProgressMux.AddShape(new FlowShape<DigProgressData>(data => true, _ => Debug.LogError("Unknown dig progress transform")));
+        }
+
         private void OnDestroy() 
         {
             EventSystems.EventManager.Instance.StopListening<DigProgressData>(ResolveProgressInput);
@@ -57,20 +50,18 @@ namespace MD.VisualEffects
 
         private void Hide() => gaugeContainer.SetActive(false);
 
-        // For testing purpose only
-        // private void Update() 
+        // For testing purpose only        
+        // void Update()
         // {
-        //     if (Input.GetKeyDown(KeyCode.U)) ResolveProgressInput(new DigProgressData(4, 10));
-        //     else if (Input.GetKeyDown(KeyCode.J)) ResolveProgressInput(new DigProgressData(2, 10));
-        //     else if (Input.GetKeyDown(KeyCode.I)) ResolveProgressInput(new DigProgressData(10, 2));
-        //     else if (Input.GetKeyDown(KeyCode.K)) ResolveProgressInput(new DigProgressData(10, 10));
+        //     if (Input.GetKeyDown(KeyCode.U)) digProgressMux.Resolve(new DigProgressData(4, 10));
+        //     else if (Input.GetKeyDown(KeyCode.J)) digProgressMux.Resolve(new DigProgressData(2, 10));
+        //     else if (Input.GetKeyDown(KeyCode.I)) digProgressMux.Resolve(new DigProgressData(10, 2));
+        //     else if (Input.GetKeyDown(KeyCode.K)) digProgressMux.Resolve(new DigProgressData(0, 10));
         // }
 
         private void ResolveProgressInput(DigProgressData progressData)
         {
-            //progressHandleDict[(cur, max) => true].Invoke(progressData.current, progressData.max);
-            var executor = progressTransforms.LookUp(transform => transform.CanApply(progressData.current, progressData.max)).item;
-            executor.Transform(progressData.current, progressData.max);
+            digProgressMux.Resolve(progressData);
         }
 
         private void Fill(int cur, int max)
