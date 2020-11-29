@@ -16,8 +16,8 @@ public class PB_FindPlayer : FMSState
     {
         Debug.Log("finding player");
         base.Enter();
-        bot.movePos = bot.lastSeenPlayer;
-        bot.isMoving = true;
+        bot.SetMovePosition(bot.lastSeenPlayer);
+        bot.StartMoving();
     }
     public override void Update()
     {
@@ -43,7 +43,7 @@ public class PB_FindPlayer : FMSState
             stage = EVENT.EXIT;
             nextState = new PB_ThrowBombAway(bot);
         }
-        if (bot.isMoving == false)
+        if (!bot.IsMoving())
         {
             if (!lastSeenPlayerArrived)
             {
@@ -54,8 +54,8 @@ public class PB_FindPlayer : FMSState
                  currentIndex++;
                 if (currentIndex > bot.checkPoints.Count -1) currentIndex = 0;
             }
-            bot.movePos = bot.checkPoints[currentIndex].transform.position;
-            bot.isMoving = true;
+            bot.SetMovePosition(bot.checkPoints[currentIndex].transform.position);
+            bot.StartMoving();
         }
         elapsedTime += Time.deltaTime;
     }

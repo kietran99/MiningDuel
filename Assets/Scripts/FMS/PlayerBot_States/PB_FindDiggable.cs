@@ -16,8 +16,13 @@ public class PB_FindDiggable : FMSState
     {
         Debug.Log("find " + (forBomb?"bomb":"gem"));
         base.Enter();
-        foundLocation =  bot.GetClosestDiggable(out bot.movePos, forBomb);
-        bot.isMoving = true;
+        Vector2 movePos = Vector2.zero;
+        foundLocation =  bot.GetClosestDiggable(out movePos, forBomb);
+        if(foundLocation)
+        {
+            bot.SetMovePosition(movePos);
+            bot.StartMoving();
+        }
     }
     public override void Update()
     {
@@ -29,7 +34,7 @@ public class PB_FindDiggable : FMSState
             nextState = new PB_Wander(bot, forBomb);
             return;
         }
-        if (bot.isMoving == false)
+        if (!bot.IsMoving())
         {
             Debug.Log("found " + (forBomb?"bomb":"gem") + " in sonar range");
             stage = EVENT.EXIT;

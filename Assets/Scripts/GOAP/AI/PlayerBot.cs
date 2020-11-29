@@ -8,17 +8,12 @@ public class PlayerBot : NetworkBehaviour
 {
     [SerializeField]
     private string currentState = null;
-    public float speed = 3f;
     public float holdBombTime = 4f;
     private Vector2 minMoveBound,maxMoveBound;
     private Vector2 offset = new Vector2(.5f, .5f);
     [SerializeField]
     public int score;
-    [SerializeField]
-    private float viewRange = 6f;
-    public Vector2 movePos = Vector2.zero;
-    [SerializeField]
-    public bool isMoving = false;
+
     [SerializeField]
     public bool isDigging = false;
 
@@ -40,7 +35,7 @@ public class PlayerBot : NetworkBehaviour
     public Vector2 lastSeenPlayer = Vector2.zero;
     [SerializeField]
     public List<GameObject> checkPoints = new List<GameObject>();
-
+    private BotMoveAction moveAction;
     private FMSState FMS;
     // public int checkPointIdx = 0;
     // Start is called before the first frame update
@@ -59,6 +54,8 @@ public class PlayerBot : NetworkBehaviour
         throwAction = GetComponent<BotThrowAction>();
         body = GetComponent<Rigidbody2D>();
         animator = GetComponent<BotAnimator>();
+        moveAction = GetComponent<BotMoveAction>();
+        moveAction.SetAnimator(animator);
         minMoveBound = MapConstants.MAP_MIN_BOUND;
         maxMoveBound = MapConstants.MAP_MAX_BOUND;
         ServiceLocator.Resolve<IMapManager>(out mapManager);
@@ -71,6 +68,13 @@ public class PlayerBot : NetworkBehaviour
         currentState = FMS.name.ToString();
         FMS = FMS.Process();
     }
+
+    public bool IsMoving() => moveAction.IsMoving();
+    public void StartMoving() => moveAction.startMoving();
+
+    public void SetMovePosition(Vector2 movePos) => moveAction.SetMovePos(movePos);
+
+
 
     // bool digBomb = false, takeControl = false;
 
@@ -250,22 +254,23 @@ public class PlayerBot : NetworkBehaviour
         isDigging = false;
     }
     
-    void FixedUpdate()
-    {
-        if (!hasAuthority) return;
-        if (isMoving) 
-        {
-            if (Vector2.Distance(movePos,transform.position) < .1f)
-            {
-                transform.position = movePos;
-                isMoving = false;
-                return;
-            }
 
-            Vector2 moveDir = movePos - (Vector2)transform.position;
-            animator.SetMovementState(moveDir);
-            transform.Translate(moveDir.normalized*speed*Time.fixedDeltaTime);
-        }
+    // void FixedUpdate()
+    // {
+    //     if (!hasAuthority) return;
+    //     if (isMoving) 
+    //     {
+    //         if (Vector2.Distance(movePos,transform.position) < .1f)
+    //         {
+    //             transform.position = movePos;
+    //             isMoving = false;
+    //             return;
+    //         }
+
+    //         Vector2 moveDir = movePos - (Vector2)transform.position;
+    //         animator.SetMovementState(moveDir);
+    //         transform.Translate(moveDir.normalized*speed*Time.fixedDeltaTime);
+    //     }
         // else if (isWandering)
         // {
         //     if (Vector2.Distance(movePos,transform.position) < .1f)
@@ -290,7 +295,8 @@ public class PlayerBot : NetworkBehaviour
         //     transform.Translate(moveDir.normalized * speed * Time.fixedDeltaTime);
         //     animator.SetMovementState(moveDir);
         // }
-    }
+    // }
+
     public void ThrowBomb()
     {
         if (throwAction.IsHodlingProjectile())       

@@ -18,13 +18,13 @@ public class PB_Wander : FMSState
         Debug.Log("wander");
         base.Enter();
         currentIndex =  bot.GetClosestWayPointIndex();
-        bot.movePos = bot.checkPoints[currentIndex].transform.position;
-        bot.isMoving = true;
+        bot.SetMovePosition(bot.checkPoints[currentIndex].transform.position);
+        bot.StartMoving();
     }
     public override void Update()
     {
         base.Update();
-        if (bot.isMoving == false)
+        if (!bot.IsMoving())
         {
             if (bot.GetClosestDiggable(out _,forBomb))
             {
@@ -36,8 +36,8 @@ public class PB_Wander : FMSState
             {
                 currentIndex++;
                 if (currentIndex > bot.checkPoints.Count -1) currentIndex = 0;
-                bot.movePos = bot.checkPoints[currentIndex].transform.position;
-                bot.isMoving = true;
+                bot.SetMovePosition(bot.checkPoints[currentIndex].transform.position);
+                bot.StartMoving();
             }
         }
     }

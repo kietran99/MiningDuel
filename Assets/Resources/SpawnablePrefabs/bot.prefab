@@ -119,6 +119,7 @@ GameObject:
   - component: {fileID: 6503962878334934626}
   - component: {fileID: 6958029120804089697}
   - component: {fileID: 4095583940505003281}
+  - component: {fileID: 5339483725538874892}
   m_Layer: 0
   m_Name: bot
   m_TagString: Player
@@ -187,13 +188,10 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   currentState: 
-  speed: 5
   holdBombTime: 4
   score: 0
-  viewRange: 7
-  movePos: {x: 0, y: 0}
-  isMoving: 0
   isDigging: 0
+  canSeePlayer: 0
   player: {fileID: 0}
   lastSeenPlayer: {x: 0, y: 0}
   checkPoints: []
@@ -277,3 +275,18 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   basePower: 100
+--- !u!114 &5339483725538874892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5063567480658151164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b64b27fd879393548a2d0b907c91e9d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  speed: 3
