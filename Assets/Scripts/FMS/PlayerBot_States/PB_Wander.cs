@@ -28,14 +28,7 @@ public class PB_Wander : FMSState
             if (bot.GetClosestDiggable(out _,forBomb))
             {
                 stage = EVENT.EXIT;
-                if (forBomb)
-                {
-                    nextState = new PB_Dig(bot, true);
-                }
-                else
-                {
-                    nextState = new PB_Dig(bot, false);
-                }
+                nextState = new PB_Dig(bot, forBomb);
             }
             else
             {

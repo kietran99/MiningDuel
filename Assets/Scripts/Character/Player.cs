@@ -85,7 +85,6 @@ namespace MD.Character
         [Server]
         public void IncreaseScore(int amount)
         {
-            Debug.Log("increase score get called");
             score += amount;
         }
 
@@ -142,6 +141,13 @@ namespace MD.Character
                 }
             }
 
+        }
+
+        void Update()
+        {
+            #if UNITY_EDITOR
+            if (Input.GetKeyDown(KeyCode.F)) IncreaseScore(10);
+            #endif
         }
 
         public bool IsLocalPlayer() => isLocalPlayer;

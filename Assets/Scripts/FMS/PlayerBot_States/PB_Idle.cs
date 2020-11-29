@@ -1,4 +1,4 @@
-
+using UnityEngine;
 public class PB_Idle : FMSState
 {
     public PB_Idle(PlayerBot bot) : base(bot)
@@ -16,7 +16,7 @@ public class PB_Idle : FMSState
         stage = EVENT.EXIT;
         if (bot.GetCurrentScore() < bot.player.GetCurrentScore() && bot.GetCurrentScore() >= 20)
         {
-            nextState = new PB_FindDiggable(bot, true);
+            nextState = new PB_FindPlayer(bot);
         }
         else
         {

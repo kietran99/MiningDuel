@@ -186,12 +186,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  currentState: 
   speed: 5
+  holdBombTime: 4
   score: 0
-  viewRange: 6
+  viewRange: 7
+  movePos: {x: 0, y: 0}
   isMoving: 0
   isDigging: 0
-  isThrowing: 0
+  player: {fileID: 0}
+  lastSeenPlayer: {x: 0, y: 0}
   checkPoints: []
 --- !u!114 &102619972807231682
 MonoBehaviour:

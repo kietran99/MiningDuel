@@ -15,7 +15,7 @@ public class PB_FindDiggable : FMSState
     public override void Enter()
     {
         base.Enter();
-        foundLocation =  bot.GetClosestDiggable(out bot.movePos, false);
+        foundLocation =  bot.GetClosestDiggable(out bot.movePos, forBomb);
         bot.isMoving = true;
     }
     public override void Update()
@@ -24,13 +24,13 @@ public class PB_FindDiggable : FMSState
         if (!foundLocation)
         {
             stage = EVENT.EXIT;
-            nextState = new PB_Wander(bot, false);
+            nextState = new PB_Wander(bot, forBomb);
             return;
         }
         if (bot.isMoving == false)
         {
             stage = EVENT.EXIT;
-            nextState = new PB_Dig(bot, false);
+            nextState = new PB_Dig(bot, forBomb);
         }
     }
 }

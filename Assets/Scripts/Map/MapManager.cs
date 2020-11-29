@@ -221,7 +221,6 @@ public class MapManager : NetworkBehaviour, IMapManager
     [Server]
     private  void HandleDigSuccess(ServerDiggableDestroyData gemDigSuccessData)
     {
-        Debug.Log("handle dig success get called");
         Vector2Int index = PositionToIndex(new Vector2(gemDigSuccessData.posX,gemDigSuccessData.posY));
 
         try

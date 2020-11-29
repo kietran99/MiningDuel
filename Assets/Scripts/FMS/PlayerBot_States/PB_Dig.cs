@@ -27,9 +27,13 @@ public class PB_Dig : FMSState
         if (bot.isDigging) return;
         if (!bot.CanDig(forBomb))
         {
+            if (forBomb)
+            Debug.Log("dig done");
             stage = EVENT.EXIT;
             if (bot.CanThrow())
             {
+                if (forBomb)
+                Debug.Log("can throw");
                if (bot.CanSeePlayer())
                {
                    nextState = new PB_ThrowBomb(bot);
@@ -38,11 +42,16 @@ public class PB_Dig : FMSState
                {
                    nextState = new PB_FindPlayer(bot);
                }
+               return;
             }
+            if (forBomb)
+                Debug.Log("cant throw");
             nextState = new PB_Idle(bot);
             return;
         }
         bot.Dig();
+        if (forBomb)
+        Debug.Log("bot digging");
     }
 
 }

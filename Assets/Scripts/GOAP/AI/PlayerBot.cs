@@ -6,8 +6,10 @@ using MD.Character;
 using System.Linq;
 public class PlayerBot : NetworkBehaviour
 {
+    [SerializeField]
+    private string currentState = null;
     public float speed = 3f;
-    public float holdBombTime = 2f;
+    public float holdBombTime = 4f;
     private Vector2 minMoveBound,maxMoveBound;
     private Vector2 offset = new Vector2(.5f, .5f);
     [SerializeField]
@@ -19,18 +21,27 @@ public class PlayerBot : NetworkBehaviour
     public bool isMoving = false;
     [SerializeField]
     public bool isDigging = false;
+
+    [SerializeField]
+    private bool canSeePlayer = false;
+
+    private Camera mainCam = null;
     // [SerializeField]
     // private bool isThrowing = false;
     // private bool isWandering = false;
-    public IMapManager mapManager = null;
-    public Rigidbody2D body;
-    public BotAnimator animator;
+    private IMapManager mapManager = null;
+    private Rigidbody2D body;
+    private BotAnimator animator;
 
-    public DigAction digAction;
-    public BotThrowAction throwAction;
+    private DigAction digAction;
+    private BotThrowAction throwAction;
     public Player player;
+
+    public Vector2 lastSeenPlayer = Vector2.zero;
     [SerializeField]
     public List<GameObject> checkPoints = new List<GameObject>();
+
+    private FMSState FMS;
     // public int checkPointIdx = 0;
     // Start is called before the first frame update
     void Awake()
@@ -41,7 +52,7 @@ public class PlayerBot : NetworkBehaviour
     void Start()
     {
         if(!hasAuthority) return;
-
+        mainCam = Camera.main;
         ServiceLocator.Resolve<Player>(out player);
         score = 0;
         digAction = GetComponent<DigAction>();
@@ -51,6 +62,14 @@ public class PlayerBot : NetworkBehaviour
         minMoveBound = MapConstants.MAP_MIN_BOUND;
         maxMoveBound = MapConstants.MAP_MAX_BOUND;
         ServiceLocator.Resolve<IMapManager>(out mapManager);
+        FMS = new PB_Idle(this);
+    }
+
+    void  Update()
+    {
+        CheckCanSeePlayer();
+        currentState = FMS.name.ToString();
+        FMS = FMS.Process();
     }
 
     // bool digBomb = false, takeControl = false;
@@ -234,7 +253,6 @@ public class PlayerBot : NetworkBehaviour
     void FixedUpdate()
     {
         if (!hasAuthority) return;
-
         if (isMoving) 
         {
             if (Vector2.Distance(movePos,transform.position) < .1f)
@@ -279,25 +297,39 @@ public class PlayerBot : NetworkBehaviour
             throwAction.ThrowProjectile();
     }
 
-
+    private void CheckCanSeePlayer()
+    {
+        // RaycastHit2D[] hits =  Physics2D.RaycastAll(transform.position,(player.transform.position - transform.position).normalized, viewRange);
+        // Debug.DrawLine(transform.position,transform.position + (player.transform.position - transform.position).normalized*viewRange, Color.red, 2f);
+        
+        // if (hits.Length > 0 )
+        // {
+        //     for (int i = 0; i < hits.Length; i++)
+        //     {
+        //         if (hits[i].collider.CompareTag(Constants.PLAYER_TAG))
+        //         {
+        //             canSeePlayer = true;
+        //             Debug.Log("found player");
+        //             lastSeenPlayer = hits[i].transform.position;
+        //             return;
+        //         }              
+        //     }
+        // }
+        Vector2 position = Vector2.zero;
+        position = mainCam.WorldToViewportPoint(transform.position);       
+        if (position.x <=1 && position.y <= 1)
+        {
+            canSeePlayer = true;
+            lastSeenPlayer= player.transform.position;
+            Debug.Log("seen player");
+            return;
+        }
+        canSeePlayer = false;
+    }
 
     public bool CanSeePlayer()
     {        
-        RaycastHit2D[] hits =  Physics2D.RaycastAll(transform.position,(player.transform.position - transform.position).normalized, viewRange);
-        Debug.DrawLine(transform.position,transform.position + (player.transform.position - transform.position).normalized*viewRange, Color.red, 2f);
-        
-        if (hits.Length > 0 )
-        {
-            for (int i = 0; i < hits.Length; i++)
-            {
-                if (hits[i].collider.CompareTag(Constants.PLAYER_TAG))
-                {
-                    Debug.Log("found Player");
-                    return true;
-                }              
-            }
-        }
-        return false;
+        return canSeePlayer;
     }
 
     public int GetCurrentScore() => score;
