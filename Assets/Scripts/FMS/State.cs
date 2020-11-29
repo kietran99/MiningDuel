@@ -4,16 +4,19 @@ using UnityEngine;
 
 public class FMSState
 {
-    public enum STATE {FINDPLAYER, RUN, THROWBOMB, DIGBOMB, DIGGEM, FINDGEM, FINDBOMB, WANDER}
+    public enum STATE {FINDPLAYER,IDLE,THROWBOMBAWAY, RUN, THROWBOMB, DIG, FINDDIGGABLE, WANDER}
     public enum EVENT {ENTER, UPDATE, EXIT}
 
     public STATE name;
     public EVENT stage;
     public FMSState nextState;
+    public PlayerBot bot;
 
-    public FMSState()
+    public FMSState(PlayerBot bot)
     {
+        this.bot = bot;
         stage = EVENT.ENTER;
+        nextState = null;
     }
     public virtual void Enter() {stage = EVENT.UPDATE;}
     public virtual void Update() {}
