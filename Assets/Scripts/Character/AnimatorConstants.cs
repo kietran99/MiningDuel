@@ -8,6 +8,7 @@
         public const string LAST_X = "LastX";
         public const string LAST_Y = "LastY";
         public const string INVOKE_DIG = "InvokeDig";
+        public const string IS_DIGGING = "IsDigging";
         public const string IS_HOLDING = "IsHolding";
     }
 }

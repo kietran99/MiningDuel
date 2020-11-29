@@ -30,5 +30,5 @@ public class BotThrowAction : ThrowAction
         holdingProjectile = null;
     }
 
-    public bool IsHodlingProjectile() => holdingProjectile != null;
+    public bool IsHoldingProjectile() => holdingProjectile != null;
 }

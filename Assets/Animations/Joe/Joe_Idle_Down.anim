@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Player_Idle_Hold_Down
+  m_Name: Joe_Idle_Down
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -20,10 +20,10 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 3707559091833008108, guid: 12661c177052e954bbd2f01ce38b8df0,
+      value: {fileID: -522798739330844983, guid: dfc39f382af3df54c865c31cedf22169,
         type: 3}
     - time: 0.083333336
-      value: {fileID: -9011632577059310953, guid: 12661c177052e954bbd2f01ce38b8df0,
+      value: {fileID: -8796766557916666567, guid: dfc39f382af3df54c865c31cedf22169,
         type: 3}
     attribute: m_Sprite
     path: 
@@ -44,8 +44,8 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 3707559091833008108, guid: 12661c177052e954bbd2f01ce38b8df0, type: 3}
-    - {fileID: -9011632577059310953, guid: 12661c177052e954bbd2f01ce38b8df0, type: 3}
+    - {fileID: -522798739330844983, guid: dfc39f382af3df54c865c31cedf22169, type: 3}
+    - {fileID: -8796766557916666567, guid: dfc39f382af3df54c865c31cedf22169, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}

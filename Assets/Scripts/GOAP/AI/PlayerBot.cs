@@ -168,12 +168,12 @@ public class PlayerBot : NetworkBehaviour
 
     private bool CanDig()
     {
-        if (throwAction.IsHodlingProjectile()) return false;
+        if (throwAction.IsHoldingProjectile()) return false;
 
         return digBomb ? mapManager.IsProjectileAt(transform.position) : mapManager.IsGemAt(transform.position);
     }
 
-    private bool CanThrow() => throwAction.IsHodlingProjectile();
+    private bool CanThrow() => throwAction.IsHoldingProjectile();
 
     private IEnumerator Dig()
     {
@@ -260,7 +260,7 @@ public class PlayerBot : NetworkBehaviour
     {
         isThrowing = true;
         yield return new WaitForSeconds(Random.Range(0f,2f));
-        if (throwAction.IsHodlingProjectile())       
+        if (throwAction.IsHoldingProjectile())       
             throwAction.ThrowProjectile();
         isThrowing = false;
     }
