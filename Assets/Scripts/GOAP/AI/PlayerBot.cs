@@ -4,6 +4,7 @@ using UnityEngine;
 using Mirror;
 using MD.Character;
 using System.Linq;
+
 public class PlayerBot : NetworkBehaviour
 {
     public float speed = 3f;
@@ -191,8 +192,9 @@ public class PlayerBot : NetworkBehaviour
             yield return new WaitForSeconds(.5f);
 
             isMoving = true;
-            animator.InvokeDig();
-            digAction.CmdDig();
+            //animator.InvokeDig();
+            //digAction.CmdDig();
+            EventSystems.EventManager.Instance.TriggerEvent(new BotDigInvokeData());
         }
 
     }
@@ -206,8 +208,9 @@ public class PlayerBot : NetworkBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                digAction.CmdDig();
-                animator.InvokeDig();
+                //digAction.CmdDig();
+                //animator.InvokeDig();
+                EventSystems.EventManager.Instance.TriggerEvent(new BotDigInvokeData());
             }
             var moveX = Input.GetAxisRaw("Horizontal");
             var moveY = Input.GetAxisRaw("Vertical");

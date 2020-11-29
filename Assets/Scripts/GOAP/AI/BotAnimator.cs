@@ -7,6 +7,23 @@ public class BotAnimator : MonoBehaviour
     private Animator animator = null;
     private float lastX, lastY;
 
+    private void Start() 
+    {
+        var eventManager = EventSystems.EventManager.Instance;
+        eventManager.StartListening<BotDigInvokeData>(HandleDigEvent);
+    }
+
+    private void OnDestroy() 
+    {
+        var eventManager = EventSystems.EventManager.Instance;
+        eventManager.StopListening<BotDigInvokeData>(HandleDigEvent);
+    }
+
+    private void HandleDigEvent(BotDigInvokeData obj)
+    {
+        InvokeDig();
+    }
+
     public void RevertToIdleState()
     {
         animator.SetBool(AnimatorConstants.IS_HOLDING, false);

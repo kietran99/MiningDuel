@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Mirror;
+using MD.Character.Animation;
 
 namespace MD.Character
 {
@@ -37,16 +38,21 @@ namespace MD.Character
         {
             // throwAction = GetComponent<ThrowAction>();
             // EventSystems.EventManager.Instance.StartListening<ProjectileObtainData>(BindAndHoldProjectile);
-            if(isLocalPlayer)
-                EventSystems.EventManager.Instance.StartListening<DigInvokeData>(Dig);
+            // if (isLocalPlayer)
+            // {
+            //     //EventSystems.EventManager.Instance.StartListening<DigInvokeData>(Dig);
+            //     StartListeningToEvents();
+            // }
+            StartListeningToEvents();
         }
 
         private void OnDestroy()
         {
-            if (!isLocalPlayer) return;
+            StopListeningToEvents();
+            //if (!isLocalPlayer) return;
             // EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(BindAndHoldProjectile);
-            StopAllCoroutines();
-            EventSystems.EventManager.Instance.StopListening<DigInvokeData>(Dig);
+            //EventSystems.EventManager.Instance.StopListening<DigInvokeData>(Dig);
+            //StopListeningToEvents();
         }
 
         // public void BindAndHoldProjectile(ProjectileObtainData data)
@@ -54,7 +60,27 @@ namespace MD.Character
         //     throwAction.BindProjectile(Instantiate(bombPrefab, gameObject.transform));
         // }
 
+        protected virtual void StartListeningToEvents()
+        {
+            EventSystems.EventManager.Instance.StartListening<DigAnimEndData>(Dig);
+        }
+
+        protected virtual void StopListeningToEvents()
+        {
+            EventSystems.EventManager.Instance.StopListening<DigAnimEndData>(Dig);
+        }
+
+        protected void Dig(DigAnimEndData data)
+        {
+            Dig();
+        }
+
         private void Dig(DigInvokeData data)
+        {
+            Dig();
+        }
+
+        protected void Dig()
         {
             if (Time.time < nextDigTime) return;
 
@@ -68,10 +94,10 @@ namespace MD.Character
             if (Player != null)
             {
                 Player.SetCanMove(false);
-                Invoke(nameof(EnableCanMove),digCooldown);
+                Invoke(nameof(EnableCanMove), digCooldown);
             }
-            MapManager.DigAtPosition(netIdentity);
 
+            MapManager.DigAtPosition(netIdentity);
         }
         
         [Server]

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8561699107032354977}
   - component: {fileID: 4782119594220669090}
   - component: {fileID: 6541206941868605103}
+  - component: {fileID: 8117629526294904074}
   m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
@@ -102,6 +103,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &8117629526294904074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4844660683178531978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95960653db271c04ca3666df8f48a5c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5063567480658151164
 GameObject:
   m_ObjectHideFlags: 0
@@ -115,10 +128,10 @@ GameObject:
   - component: {fileID: 6958029120804089697}
   - component: {fileID: 1336424594404950585}
   - component: {fileID: 3704824660759751096}
-  - component: {fileID: 5577941559213854197}
   - component: {fileID: 102619972807231682}
   - component: {fileID: 6503962878334934626}
   - component: {fileID: 4095583940505003281}
+  - component: {fileID: 4329237521939165442}
   m_Layer: 0
   m_Name: bot
   m_TagString: Player
@@ -215,21 +228,6 @@ MonoBehaviour:
   isDigging: 0
   isThrowing: 0
   checkPoints: []
---- !u!114 &5577941559213854197
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5063567480658151164}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dfe82874902bbf446868e84f86140329, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  power: 1
 --- !u!114 &102619972807231682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,3 +271,18 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   basePower: 100
+--- !u!114 &4329237521939165442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5063567480658151164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fe6f203cd10a8540b6559417a73c7c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  power: 1
