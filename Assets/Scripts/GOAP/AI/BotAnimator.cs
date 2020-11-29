@@ -19,7 +19,7 @@ public class BotAnimator : MonoBehaviour
 
     public void InvokeDig()
     {
-        animator.SetTrigger(AnimatorConstants.INVOKE_DIG);
+        animator.SetBool(AnimatorConstants.IS_DIGGING, true);
     }
 
     public void SetMovementState(Vector2 move)

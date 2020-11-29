@@ -63,7 +63,7 @@ namespace MD.Character
             var speed = dragData.InputDirection.sqrMagnitude;
             animator.SetFloat(AnimatorConstants.HORIZONTAL, dragData.InputDirection.x);
             animator.SetFloat(AnimatorConstants.VERTICAL, dragData.InputDirection.y);
-            animator.SetFloat(AnimatorConstants.SPEED, speed);
+            animator.SetFloat(AnimatorConstants.SPEED, speed);           
 
             if (speed.IsEqual(0f))
             {
