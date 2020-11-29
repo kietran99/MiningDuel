@@ -14,9 +14,8 @@ public class PB_FindPlayer : FMSState
 
     public override void Enter()
     {
+        Debug.Log("finding player");
         base.Enter();
-        // currentIndex =  bot.GetClosestWayPointIndex();
-        // bot.movePos = bot.checkPoints[currentIndex].transform.position;
         bot.movePos = bot.lastSeenPlayer;
         bot.isMoving = true;
     }
@@ -27,15 +26,20 @@ public class PB_FindPlayer : FMSState
         {
             stage = EVENT.EXIT;
             if (bot.CanThrow())
+            {
+                Debug.Log("found Player and has bomb");
                 nextState = new PB_ThrowBomb(bot);
+            }
             else
             {
+                Debug.Log("found Player and doesnt have bomb");
                 nextState = new PB_FindDiggable(bot, true);
             }
             return;
         }
         if (bot.CanThrow() && elapsedTime >= bot.holdBombTime)
         {
+            Debug.Log("has bomb and out of time");
             stage = EVENT.EXIT;
             nextState = new PB_ThrowBombAway(bot);
         }

@@ -317,11 +317,10 @@ public class PlayerBot : NetworkBehaviour
         // }
         Vector2 position = Vector2.zero;
         position = mainCam.WorldToViewportPoint(transform.position);       
-        if (position.x <=1 && position.y <= 1)
+        if (position.x >= 0.1 && position.x <= .9 && position.y >= .1 && position.y <=.9)
         {
             canSeePlayer = true;
             lastSeenPlayer= player.transform.position;
-            Debug.Log("seen player");
             return;
         }
         canSeePlayer = false;

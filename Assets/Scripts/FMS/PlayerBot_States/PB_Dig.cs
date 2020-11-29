@@ -13,6 +13,7 @@ public class PB_Dig : FMSState
 
     public override void Enter()
     {
+        Debug.Log("dig");
         base.Enter();
         if (!bot.CanDig(forBomb))
         {
@@ -27,31 +28,26 @@ public class PB_Dig : FMSState
         if (bot.isDigging) return;
         if (!bot.CanDig(forBomb))
         {
-            if (forBomb)
-            Debug.Log("dig done");
             stage = EVENT.EXIT;
             if (bot.CanThrow())
             {
-                if (forBomb)
-                Debug.Log("can throw");
                if (bot.CanSeePlayer())
                {
+                   Debug.Log("dig complete, has bomb and can see player");
                    nextState = new PB_ThrowBomb(bot);
                }
                else
                {
+                   Debug.Log("dig complete, has bomb and cant see player");
                    nextState = new PB_FindPlayer(bot);
                }
                return;
             }
-            if (forBomb)
-                Debug.Log("cant throw");
+            Debug.Log("dig complete, doesnt have bomb");
             nextState = new PB_Idle(bot);
             return;
         }
         bot.Dig();
-        if (forBomb)
-        Debug.Log("bot digging");
     }
 
 }

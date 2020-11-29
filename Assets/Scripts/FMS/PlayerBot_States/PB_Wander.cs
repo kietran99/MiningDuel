@@ -15,6 +15,7 @@ public class PB_Wander : FMSState
 
     public override void Enter()
     {
+        Debug.Log("wander");
         base.Enter();
         currentIndex =  bot.GetClosestWayPointIndex();
         bot.movePos = bot.checkPoints[currentIndex].transform.position;
@@ -27,8 +28,9 @@ public class PB_Wander : FMSState
         {
             if (bot.GetClosestDiggable(out _,forBomb))
             {
+                Debug.Log("found " + (forBomb?"bomb":"gem"));
                 stage = EVENT.EXIT;
-                nextState = new PB_Dig(bot, forBomb);
+                nextState = new PB_FindDiggable(bot, forBomb);
             }
             else
             {
