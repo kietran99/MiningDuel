@@ -1,79 +1,66 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
-namespace MD.Diggable.Core
+namespace MD.Map.Core
 {
     public class Map : IMap
-    {
-        //private Tile[] tiles;
-
-        private TileData[,] tileData;
-        private NullTileData nullTile;
-
-        //public Map(Tile[] tiles)
-        //{
-        //    this.tiles = tiles;
-        //    nullTile = new NullTileData();
-        //}
-
-        public Map(TileData[,] tileData)
+    {               
+        private Dictionary<Vector2, TileData> tiles = new Dictionary<Vector2, TileData>();
+       
+        public Map((Vector2 pos, TileData data)[] tiles)
         {
-            this.tileData = tileData;
-            nullTile = new NullTileData();
+            tiles.ForEach(tile => this.tiles.Add(tile.pos, tile.data));
         }
 
-        public bool TryGet(int x, int y, out TileData data)
+        public bool TryGetAt(int x, int y, out TileData data)
         {
-            try
-            {
-                data = tileData[x, y];
-                return true;
-            }
-            catch
-            {
-                data = nullTile;
-                return false;
-            }
+            return tiles.TryGetValue(new Vector2(x, y), out data);
         }
 
-        public bool TrySet(int x, int y, in TileData data)
+        public bool TrySetAt(int x, int y, in TileData data)
         {
-            try
+            var inputData = data;
+            return TryApplyActionAt(x, y, foundData => foundData = inputData);
+        }
+
+        public bool TryReduceAt(int x, int y, int reduceVal)
+        {
+            return TryApplyActionAt(x, y, data => data.Reduce(reduceVal));
+        }
+
+        public bool IsEmptyAt(int x, int y)
+        {
+            var pos = new Vector2(x, y);
+            if (tiles.ContainsKey(pos))
             {
-                tileData[x, y] = data;
+                return tiles[pos].IsEmpty();
+            }
+
+            return false;
+        }
+
+        private bool TryApplyActionAt(int x, int y, System.Action<TileData> action)
+        {
+            var pos = new Vector2(x, y);
+            if (tiles.ContainsKey(pos))
+            {
+                action(tiles[pos]);
                 return true;
             }
-            catch
-            {
-                return false;
-            }
+
+            return false;
         }
 
         public void Log()
         {
-            foreach(var data in tileData)
+            Debug.Log("------------------------------------------");
+
+            foreach (var tile in tiles)
             {
-                Debug.Log(data);
+                Debug.Log(tile.Key + " " + tile.Value);
             }
+            
+            Debug.Log("------------------------------------------");
         }
-
-        //public bool TryGet(int x, int y, out TileData data)
-        //{
-        //    (Tile tile, int idx) = tiles.LookUp(_ => _.X.Equals(x) && _.Y.Equals(y));
-        //    data = tile?.Data;
-        //    return !idx.Equals(Constants.INVALID);
-        //}
-
-        //public bool TrySet(int x, int y, in TileData data)
-        //{
-        //    (Tile tile, int idx) = tiles.LookUp(_ => _.X.Equals(x) && _.Y.Equals(y));
-        //    if (tile != null) tile.Data = data;
-        //    return !idx.Equals(Constants.INVALID);
-        //}
-
-        //public void Log()
-        //{
-        //    tiles.ForEach(tile => Debug.Log(tile));
-        //    Debug.Log("------------------------------------------");
-        //}
     }
 }

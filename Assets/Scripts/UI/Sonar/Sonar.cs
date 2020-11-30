@@ -1,5 +1,6 @@
 ﻿using MD.Character;
 using MD.Diggable;
+using MD.Map.Core;
 using MD.Diggable.Core;
 using System.Collections.Generic;
 using System.Linq;
