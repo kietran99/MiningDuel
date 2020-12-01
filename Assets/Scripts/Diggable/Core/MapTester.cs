@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using MD.Map.Core;
+using UnityEngine;
 
 namespace MD.Diggable.Core
 {
@@ -24,6 +25,17 @@ namespace MD.Diggable.Core
             //{
             //    Debug.Log(data);
             //}
+
+            IMap map = new DefaultMap();
+            try
+            {
+                map.SetAt(0, 0, null);
+                
+            }
+            catch
+            {
+                Debug.Log("Catch");
+            }
         }
     }
 }

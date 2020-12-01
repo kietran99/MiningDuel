@@ -2,12 +2,10 @@
 
 namespace MD.Map.Core
 {
-    public class TileData
+    public class TileData : ITileData
     {
         public static TileData Empty { get => empty; }
         private static TileData empty = new TileData(DiggableType.Empty);
-
-        public TileData() { }
 
         public TileData(DiggableType type)
         {
