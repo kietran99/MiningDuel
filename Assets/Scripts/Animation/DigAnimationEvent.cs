@@ -18,17 +18,17 @@ namespace MD.Character.Animation
 
         // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
         override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-        {
+        {                        
             animator.SetBool(MD.Character.AnimatorConstants.IS_DIGGING, false);
             bool isBot = animator.GetComponent<BotTag>();
             if (isBot)
             {
-                Debug.Log("BOT DIG");
+                //Debug.Log("BOT DIG");
                 EventSystems.EventManager.Instance.TriggerEvent(new BotDigAnimEndData());
             }
             else 
             {
-                Debug.Log("PLAYER DIG");
+                //Debug.Log("PLAYER DIG");                
                 EventSystems.EventManager.Instance.TriggerEvent(new DigAnimEndData());
             }
         }

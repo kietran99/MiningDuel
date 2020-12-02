@@ -74,12 +74,7 @@ namespace MD.Character
         {
             Dig();
         }
-
-        private void Dig(DigInvokeData data)
-        {
-            Dig();
-        }
-
+       
         protected void Dig()
         {
             if (Time.time < nextDigTime) return;
