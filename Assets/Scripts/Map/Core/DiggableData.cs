@@ -3,20 +3,18 @@ using System.Collections.Generic;
 
 namespace MD.Map.Core
 {
-    public class DefaultMap : IMap
-    {               
-        private Dictionary<Vector2, ITileData> tiles = new Dictionary<Vector2, ITileData>();
-       
-        public DefaultMap() {}
+    public class DiggableData : MonoBehaviour, IDiggableData
+    {             
+        private Dictionary<Vector2Int, ITileData> tiles = new Dictionary<Vector2Int, ITileData>();
 
-        public DefaultMap((Vector2 pos, ITileData data)[] tiles)
+        public void Populate((Vector2Int pos, ITileData data)[] tiles)
         {
             tiles.ForEach(tile => this.tiles.Add(tile.pos, tile.data));
         }
 
         public bool TryGetAt(int x, int y, out ITileData data)
         {
-            return tiles.TryGetValue(new Vector2(x, y), out data);
+            return tiles.TryGetValue(new Vector2Int(x, y), out data);
         }
 
         public bool TrySetAt(int x, int y, ITileData data)
@@ -51,7 +49,7 @@ namespace MD.Map.Core
         
         private bool TryApplyActionAt(int x, int y, System.Action<ITileData> action)
         {
-            var pos = new Vector2(x, y);
+            var pos = new Vector2Int(x, y);
             if (tiles.ContainsKey(pos))
             {
                 action(tiles[pos]);
@@ -63,7 +61,7 @@ namespace MD.Map.Core
 
         private void ApplyActionAt(int x, int y, System.Action<ITileData> action)
         {
-            var pos = new Vector2(x, y);
+            var pos = new Vector2Int(x, y);
             if (!tiles.ContainsKey(pos))
             {
                 throw new InvalidTileException();               
