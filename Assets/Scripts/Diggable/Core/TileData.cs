@@ -1,7 +1,12 @@
-﻿namespace MD.Diggable.Core
+﻿using MD.Diggable.Core;
+
+namespace MD.Map.Core
 {
     public class TileData
     {
+        public static TileData Empty { get => empty; }
+        private static TileData empty = new TileData(DiggableType.Empty);
+
         public TileData() { }
 
         public TileData(DiggableType type)
@@ -14,6 +19,14 @@
 
         public DiggableType Type { get; protected set; }
         
+        public void Reduce(int reduceVal)
+        {
+            DigsLeft -= reduceVal;
+            DigsLeft = DigsLeft > 0 ? DigsLeft : 0;
+        }
+
+        public bool IsEmpty() => DigsLeft == 0;
+
         public override string ToString() => Type.ToString() + " Digs left: " + DigsLeft;
     }
 }
