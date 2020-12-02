@@ -4,6 +4,7 @@ using UnityEngine;
 using Mirror;
 using MD.Character;
 using System.Linq;
+
 public class PlayerBot : NetworkBehaviour
 {
     [SerializeField]
@@ -209,12 +210,12 @@ public class PlayerBot : NetworkBehaviour
 
     public bool CanDig(bool digBomb)
     {
-        if (throwAction.IsHodlingProjectile()) return false;
+        if (throwAction.IsHoldingProjectile()) return false;
 
         return digBomb ? mapManager.IsProjectileAt(transform.position) : mapManager.IsGemAt(transform.position);
     }
 
-    public bool CanThrow() => throwAction.IsHodlingProjectile();
+    public bool CanThrow() => throwAction.IsHoldingProjectile();
 
     // private IEnumerator Dig(bool digBomb)
     // {
@@ -238,16 +239,17 @@ public class PlayerBot : NetworkBehaviour
     public void Dig()
     {
         isDigging = true;
-        StartCoroutine(CoroutineDig());
+        // StartCoroutine(CoroutineDig());
+        EventSystems.EventManager.Instance.TriggerEvent(new BotDigInvokeData());
     }
-    private IEnumerator CoroutineDig()
-    {
-        isDigging = true;
-        yield return new WaitForSeconds(.5f);
-        animator.InvokeDig();
-        digAction.CmdDig();
-        isDigging = false;
-    }
+    // private IEnumerator CoroutineDig()
+    // {
+    //     isDigging = true;
+    //     yield return new WaitForSeconds(.5f);
+    //     animator.InvokeDig();
+    //     digAction.CmdDig();
+    //     isDigging = false;
+    // }
 
     public void NotifyDigComplete()
     {
@@ -299,7 +301,7 @@ public class PlayerBot : NetworkBehaviour
 
     public void ThrowBomb()
     {
-        if (throwAction.IsHodlingProjectile())       
+        if (throwAction.IsHoldingProjectile())       
             throwAction.ThrowProjectile();
     }
 

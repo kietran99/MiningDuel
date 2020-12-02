@@ -23,6 +23,7 @@ namespace MD.Character
         void Start()
         {
             if (!networkAnimator.isLocalPlayer) return;
+
             var eventManager = EventSystems.EventManager.Instance;
             eventManager.StartListening<JoystickDragData>(SetMovementState);
             eventManager.StartListening<DigInvokeData>(InvokeDig);
@@ -33,6 +34,7 @@ namespace MD.Character
         private void OnDisable()
         {
             if (!networkAnimator.isLocalPlayer) return;
+
             var eventManager = EventSystems.EventManager.Instance;
             eventManager.StopListening<JoystickDragData>(SetMovementState);
             eventManager.StopListening<DigInvokeData>(InvokeDig);
@@ -52,8 +54,8 @@ namespace MD.Character
 
         private void InvokeDig(DigInvokeData obj)
         {
-            //animator.SetTrigger(AnimatorConstants.INVOKE_DIG);
-            networkAnimator.SetTrigger(AnimatorConstants.INVOKE_DIG);
+            animator.SetBool(AnimatorConstants.IS_DIGGING, true); 
+            //networkAnimator.SetTrigger(AnimatorConstants.INVOKE_DIG);
         }
 
         private void SetMovementState(JoystickDragData dragData)
@@ -61,7 +63,7 @@ namespace MD.Character
             var speed = dragData.InputDirection.sqrMagnitude;
             animator.SetFloat(AnimatorConstants.HORIZONTAL, dragData.InputDirection.x);
             animator.SetFloat(AnimatorConstants.VERTICAL, dragData.InputDirection.y);
-            animator.SetFloat(AnimatorConstants.SPEED, speed);
+            animator.SetFloat(AnimatorConstants.SPEED, speed);           
 
             if (speed.IsEqual(0f))
             {
@@ -70,6 +72,7 @@ namespace MD.Character
             }
 
             BindLastMoveStats(dragData.InputDirection.x, dragData.InputDirection.y);
+            CancelDigAction();
         }
 
         private void PlayIdle()
@@ -78,6 +81,8 @@ namespace MD.Character
             animator.SetFloat(AnimatorConstants.LAST_Y, lastY);
         }
 
-        private void BindLastMoveStats(float lastX, float lastY) => (this.lastX, this.lastY) = (lastX, lastY);      
+        private void BindLastMoveStats(float lastX, float lastY) => (this.lastX, this.lastY) = (lastX, lastY);    
+
+        public void CancelDigAction() => animator.SetBool(AnimatorConstants.IS_DIGGING, false);  
     }
 }
