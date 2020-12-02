@@ -9,7 +9,7 @@ namespace MD.Character
         [SerializeField]
         private int power = 1;
 
-        private float digCooldown = .1f;
+        private float digCooldown = .5f;
         private float nextDigTime = 0f;
         private IMapManager mapManager = null;
         private IMapManager MapManager
@@ -84,29 +84,29 @@ namespace MD.Character
 
         protected void Dig()
         {
-            // if (Time.time < nextDigTime) return;
+            if (Time.time < nextDigTime) return;
 
-            // nextDigTime = Time.time + digCooldown;
+            nextDigTime = Time.time + digCooldown;
             CmdDig();
         }
 
         [Command]
         public void CmdDig()
         {
-            if (Player != null)
-            {
-                Player.SetCanMove(false);
-                Invoke(nameof(EnableCanMove), digCooldown);
-            }
+            // if (Player != null)
+            // {
+            //     Player.SetCanMove(false);
+            //     Invoke(nameof(EnableCanMove), digCooldown);
+            // }
 
             MapManager.DigAtPosition(netIdentity);
         }
         
-        [Server]
-        public void EnableCanMove()
-        {
-            Player.SetCanMove(true);
-        }
+        // [Server]
+        // public void EnableCanMove()
+        // {
+        //     Player.SetCanMove(true);
+        // }
 
     }
 }

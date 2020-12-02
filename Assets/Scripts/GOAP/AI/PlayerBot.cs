@@ -10,6 +10,7 @@ public class PlayerBot : NetworkBehaviour
     [SerializeField]
     private string currentState = null;
     public float holdBombTime = 4f;
+    public float digCoolDown = .5f;
     private Vector2 minMoveBound,maxMoveBound;
     private Vector2 offset = new Vector2(.5f, .5f);
     [SerializeField]
@@ -37,6 +38,8 @@ public class PlayerBot : NetworkBehaviour
     [SerializeField]
     public List<GameObject> checkPoints = new List<GameObject>();
     private BotMoveAction moveAction;
+
+    private float nextDigTime = 0f;
     private FMSState FMS;
     // public int checkPointIdx = 0;
     // Start is called before the first frame update
@@ -238,8 +241,10 @@ public class PlayerBot : NetworkBehaviour
     // }
     public void Dig()
     {
-        isDigging = true;
         // StartCoroutine(CoroutineDig());
+        if (Time.time < nextDigTime) return;
+        isDigging = true;
+        nextDigTime = Time.time + digCoolDown;
         EventSystems.EventManager.Instance.TriggerEvent(new BotDigInvokeData());
     }
     // private IEnumerator CoroutineDig()

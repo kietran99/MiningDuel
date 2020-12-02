@@ -23,7 +23,7 @@ public class BotDigAction : MD.Character.DigAction
         if (bot != null)
         {
             bot.isDigging = false;
-            Dig();
+            CmdDig();
         }
     }
 }

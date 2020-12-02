@@ -11,7 +11,7 @@ namespace MD.UI
         [SerializeField] Sprite unpressedSprite = null, pressedSprite = null;
 
         [SerializeField]
-        private float cooldown = 0f;
+        private float cooldown = 0.5f;
 
         private bool canBeInvoked;
 
