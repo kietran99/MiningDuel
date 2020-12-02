@@ -251,12 +251,6 @@ public class PlayerBot : NetworkBehaviour
     //     isDigging = false;
     // }
 
-    public void NotifyDigComplete()
-    {
-        isDigging = false;
-    }
-    
-
     // void FixedUpdate()
     // {
     //     if (!hasAuthority) return;

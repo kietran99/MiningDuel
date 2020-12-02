@@ -77,16 +77,16 @@ namespace MD.Character
             Dig();
         }
 
-        private void Dig(DigInvokeData data)
-        {
-            Dig();
-        }
+        // private void Dig(DigInvokeData data)
+        // {
+        //     Dig();
+        // }
 
         protected void Dig()
         {
-            if (Time.time < nextDigTime) return;
+            // if (Time.time < nextDigTime) return;
 
-            nextDigTime = Time.time + digCooldown;
+            // nextDigTime = Time.time + digCooldown;
             CmdDig();
         }
 

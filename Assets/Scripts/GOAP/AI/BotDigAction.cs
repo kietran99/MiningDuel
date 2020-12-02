@@ -1,5 +1,7 @@
-﻿public class BotDigAction : MD.Character.DigAction
+﻿using UnityEngine;
+public class BotDigAction : MD.Character.DigAction
 {   
+    [SerializeField]
     PlayerBot bot;
     protected override void Start()
     {
@@ -18,6 +20,10 @@
 
     private void NotifyEndDig(BotDigAnimEndData data)
     {
-        if (bot) bot.NotifyDigComplete();
+        if (bot != null)
+        {
+            bot.isDigging = false;
+            Dig();
+        }
     }
 }
