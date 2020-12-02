@@ -25,6 +25,6 @@ namespace MD.Map.Core
 
         public bool IsEmpty() => DigsLeft == 0;
 
-        public override string ToString() => Type.ToString() + " Digs left: " + DigsLeft;
+        public override string ToString() => "   |   " + Type.ToString() + "    |     Digs left: " + DigsLeft;
     }
 }

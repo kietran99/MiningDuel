@@ -36,29 +36,13 @@ namespace MD.Character
 
         public override void OnStartAuthority()
         {
-            // throwAction = GetComponent<ThrowAction>();
-            // EventSystems.EventManager.Instance.StartListening<ProjectileObtainData>(BindAndHoldProjectile);
-            // if (isLocalPlayer)
-            // {
-            //     //EventSystems.EventManager.Instance.StartListening<DigInvokeData>(Dig);
-            //     StartListeningToEvents();
-            // }
             StartListeningToEvents();
         }
 
         private void OnDestroy()
         {
             StopListeningToEvents();
-            //if (!isLocalPlayer) return;
-            // EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(BindAndHoldProjectile);
-            //EventSystems.EventManager.Instance.StopListening<DigInvokeData>(Dig);
-            //StopListeningToEvents();
         }
-
-        // public void BindAndHoldProjectile(ProjectileObtainData data)
-        // {
-        //     throwAction.BindProjectile(Instantiate(bombPrefab, gameObject.transform));
-        // }
 
         protected virtual void StartListeningToEvents()
         {
@@ -70,10 +54,7 @@ namespace MD.Character
             EventSystems.EventManager.Instance.StopListening<DigAnimEndData>(Dig);
         }
 
-        protected void Dig(DigAnimEndData data)
-        {
-            Dig();
-        }
+        protected void Dig(DigAnimEndData data) => Dig();
        
         protected void Dig()
         {

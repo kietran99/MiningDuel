@@ -17,24 +17,14 @@ namespace MD.Map.Core
             return tiles.TryGetValue(new Vector2Int(x, y), out data);
         }
 
-        public bool TrySetAt(int x, int y, ITileData data)
-        {
-            return TryApplyActionAt(x, y, foundData => foundData = data);
-        }
-
-        public bool TryReduceAt(int x, int y, int reduceVal)
-        {
-            return TryApplyActionAt(x, y, data => data.Reduce(reduceVal));
-        }
-
         public void SetAt(int x, int y, ITileData data)
         {
-            ApplyActionAt(x, y, foundData => foundData = data);
+            tiles[GetPosition(x, y)] = data;
         }
 
         public void ReduceAt(int x, int y, int reduceVal)
         {
-            ApplyActionAt(x, y, data => data.Reduce(reduceVal));
+            tiles[GetPosition(x, y)].Reduce(reduceVal);
         }
 
         public bool IsEmptyAt(int x, int y)
@@ -46,20 +36,8 @@ namespace MD.Map.Core
 
             return tile.IsEmpty();
         }
-        
-        private bool TryApplyActionAt(int x, int y, System.Action<ITileData> action)
-        {
-            var pos = new Vector2Int(x, y);
-            if (tiles.ContainsKey(pos))
-            {
-                action(tiles[pos]);
-                return true;
-            }
-
-            return false;
-        }
-
-        private void ApplyActionAt(int x, int y, System.Action<ITileData> action)
+               
+        private Vector2Int GetPosition(int x, int y)
         {
             var pos = new Vector2Int(x, y);
             if (!tiles.ContainsKey(pos))
@@ -67,19 +45,25 @@ namespace MD.Map.Core
                 throw new InvalidTileException();               
             }
 
-            action(tiles[pos]);
+            return pos;
         }
 
         public void Log()
         {
-            Debug.Log("------------------------------------------");
+            Debug.Log("<----------------DIGGABLE DATA---------------->");
 
             foreach (var tile in tiles)
             {
+                if (tile.Value.Type.Equals(DiggableType.Empty))
+                {
+                    Debug.Log(tile.Key + " " + tile.Value.Type);
+                    continue;
+                }
+
                 Debug.Log(tile.Key + " " + tile.Value);
             }
             
-            Debug.Log("------------------------------------------");
+            Debug.Log("<--------------------------------------------->");
         }       
     }
 }

@@ -20,8 +20,6 @@
         /// <param name="data">Output tile data</param>
         /// <returns>Whether a tile at ( <paramref name="x"/>, <paramref name="y"/>) is valid</returns>
         bool TryGetAt(int x, int y, out ITileData data);
-        bool TrySetAt(int x, int y, ITileData data);
-        bool TryReduceAt(int x, int y, int reduceVal);
 
 
 

@@ -11,8 +11,9 @@ namespace MD.Map.Core
         {
             diggableData = GetComponent<IDiggableData>();
             Populate();
-            TestSetValid();
-            TestSetInvalid();
+            TestFormat("TEST VALID SET TILE DATA", TestSetValid);
+            //TestFormat("TEST INVALID SET TILE DATA", TestSetInvalid);
+            TestFormat("TEST VALID REDUCE TILE DATA", TestReduceValid);
         }
 
         private void Populate()
@@ -32,12 +33,28 @@ namespace MD.Map.Core
 
         private void TestSetValid()
         {
-            Debug.Log("---------TEST VALID SET TILE DATA--------------");
+            diggableData.SetAt(0, 0, new TileData(DiggableType.UncommonGem));
+            diggableData.SetAt(-8, 9, new TileData(DiggableType.RareGem));
+        }
 
+        private void TestSetInvalid()
+        {
+            diggableData.SetAt(0, 1, new TileData(DiggableType.RareGem));            
+        }
+
+        private void TestReduceValid()
+        {
+            diggableData.ReduceAt(-2, 2, 5);
+            diggableData.ReduceAt(-8, 9, 4);
+        }
+
+        private void TestFormat(string testName, System.Action testAction)
+        {
+            Debug.Log(">--------" + testName + "--------<");
+            
             try
             {
-                diggableData.SetAt(0, 0, new TileData(DiggableType.UncommonGem));
-                diggableData.SetAt(5, 6, new TileData(DiggableType.CommonGem));
+                testAction();
                 diggableData.Log();
             }
             catch (InvalidTileException)
@@ -46,25 +63,7 @@ namespace MD.Map.Core
             }
             finally
             {
-                Debug.Log("------------------------------------------");
-            }
-        }
-
-        private void TestSetInvalid()
-        {
-            Debug.Log("---------TEST INVALID SET TILE DATA--------------");
-
-            try
-            {
-                diggableData.SetAt(0, 1, new TileData(DiggableType.RareGem));
-            }
-            catch (InvalidTileException)
-            {
-                Debug.LogError("Invalid tile");
-            }
-            finally
-            {
-                Debug.Log("------------------------------------------");
+                Debug.Log(">---------------------------------------------<");
             }
         }
     }
