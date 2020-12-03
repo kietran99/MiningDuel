@@ -9,9 +9,14 @@ namespace MD.Character
         [SerializeField]
         private int power = 1;
 
+        #region FIELDS
         private float digCooldown = .1f;
         private float nextDigTime = 0f;
         private IMapManager mapManager = null;
+        private Player player = null;
+        #endregion
+
+        #region  PROPERTIES
         private IMapManager MapManager
         {
             get
@@ -22,7 +27,6 @@ namespace MD.Character
             }
         }
 
-        private Player player = null;
         private Player Player
         {
             get
@@ -33,6 +37,7 @@ namespace MD.Character
         }
 
         public int Power { get => power; }
+        #endregion
 
         public override void OnStartAuthority()
         {
@@ -81,6 +86,5 @@ namespace MD.Character
         {
             Player.SetCanMove(true);
         }
-
     }
 }

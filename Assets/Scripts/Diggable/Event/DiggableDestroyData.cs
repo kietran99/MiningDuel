@@ -6,9 +6,9 @@ namespace MD.Diggable
         public float posX;
         public float posY;
         public int diggable;
-        public DiggableDestroyData(int diggable,float posX, float posY)
+        public DiggableDestroyData(int diggable, float posX, float posY)
         {
-            this.diggable= diggable;
+            this.diggable = diggable;
             this.posX = posX;
             this.posY = posY;
         }

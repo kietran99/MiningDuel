@@ -10,10 +10,10 @@ namespace MD.Map.Core
         void Start()
         {
             diggableData = GetComponent<IDiggableData>();
-            Populate();
-            TestFormat("TEST VALID SET TILE DATA", TestSetValid);
+            //Populate();
+            //TestFormat("TEST VALID SET TILE DATA", TestSetValid);
             //TestFormat("TEST INVALID SET TILE DATA", TestSetInvalid);
-            TestFormat("TEST VALID REDUCE TILE DATA", TestReduceValid);
+            //TestFormat("TEST VALID REDUCE TILE DATA", TestReduceValid);
         }
 
         private void Populate()
@@ -46,6 +46,7 @@ namespace MD.Map.Core
         {
             diggableData.ReduceAt(-2, 2, 5);
             diggableData.ReduceAt(-8, 9, 4);
+            diggableData.ReduceAt(0, 3, 4);
         }
 
         private void TestFormat(string testName, System.Action testAction)

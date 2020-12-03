@@ -7,20 +7,37 @@ namespace MD.Map.Core
         public static TileData Empty { get => empty; }
         private static TileData empty = new TileData(DiggableType.Empty);
 
+        private int digsLeft;
+
         public TileData(DiggableType type)
         {
             Type = type;
             DigsLeft = type.Equals(DiggableType.Empty) ? 0 : DiggableTypeConverter.Convert(type).DigValue;
         }
 
-        public int DigsLeft { get; protected set; }
+        public int DigsLeft 
+        { 
+            get => digsLeft; 
+            private set
+            {
+                if (value > 0)
+                {
+                    digsLeft = value;
+                    return;
+                }
+
+                digsLeft = 0;
+                Type = DiggableType.Empty;
+            } 
+        }
 
         public DiggableType Type { get; protected set; }
         
-        public void Reduce(int reduceVal)
+        public bool Reduce(int reduceVal)
         {
             DigsLeft -= reduceVal;
             DigsLeft = DigsLeft > 0 ? DigsLeft : 0;
+            return IsEmpty();
         }
 
         public bool IsEmpty() => DigsLeft == 0;

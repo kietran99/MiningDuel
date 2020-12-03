@@ -1,10 +1,14 @@
-﻿namespace MD.Map.Core
+﻿using UnityEngine;
+
+namespace MD.Map.Core
 {
     /// <summary>
     /// Manages in-game map and tile data
     /// </summary>
     public interface IDiggableData
     {
+        System.Collections.Generic.List<Vector2Int> FreeTiles { get; }
+
         /// <summary>
         /// Populate with tile data
         /// </summary>

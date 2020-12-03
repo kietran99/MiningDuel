@@ -1,6 +1,5 @@
 ﻿using EventSystems;
 using MD.Diggable;
-using MD.Diggable.Projectile;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +7,7 @@ using UnityEngine;
 using Mirror;
 using MD.Character;
 using UnityEngine.SceneManagement;
+
 public static class MapDataTypeExtensions
 {
     public static bool IsGem(this DiggableType type)
@@ -55,7 +55,7 @@ public class MapManager : NetworkBehaviour, IMapManager
     private Transform gemContainer = null;
 
     [SerializeField]
-    private int generateZoneSideLength = 4;
+    private int genZoneSideLength = 4;
 
     [SerializeField]
     private int minAmountPerZone = 2;
@@ -94,15 +94,11 @@ public class MapManager : NetworkBehaviour, IMapManager
     #endregion
 
     public ScanAreaData GetScanAreaData(Vector2[] posToScan) {
-        // Debug.Log("se" + mapData.Length);
-        // Debug.Log("Input positions to scan: ");
-        // foreach (var i in posToScan) Debug.Log(i);
         return new ScanAreaData(GenTileData(posToScan).ToArray());    
     }
     
     private IEnumerable<ScanTileData> GenTileData(Vector2[] posToScan)
     {
-        //int res;
         foreach (var pos in posToScan)
         {
             yield return new ScanTileData(pos, TryGetDiggableAt(PositionToIndex(pos)));
@@ -120,13 +116,7 @@ public class MapManager : NetworkBehaviour, IMapManager
             return 0;
         }
     }
-
-
-    public int GetMapDataAtPos(Vector2 pos)
-    {
-        return TryGetDiggableAt(PositionToIndex(pos));
-    }
-
+    
     public bool IsProjectileAt(Vector2 pos)
     {
         return TryGetDiggableAt(PositionToIndex(pos)).ToDiggable().IsProjectile();
@@ -165,16 +155,18 @@ public class MapManager : NetworkBehaviour, IMapManager
     public override void OnStartClient()
     {
         base.OnStartClient();
-        mapData = new DiggableType[mapSize.x,mapSize.y];
+        mapData = new DiggableType[mapSize.x, mapSize.y];
         EventManager.Instance.StartListening<DiggableDestroyData>(RemoveDiggableFromMapData);
         EventManager.Instance.StartListening<DiggableSpawnData>(AddDiggableToMapData);
     }
+
     public override void OnStopClient()
     {
         base.OnStopClient();
         EventManager.Instance.StopListening<DiggableDestroyData>(RemoveDiggableFromMapData);
         EventManager.Instance.StopListening<DiggableSpawnData>(AddDiggableToMapData);
     }
+
     public override void OnStopServer()
     {
         base.OnStopServer();
@@ -184,16 +176,15 @@ public class MapManager : NetworkBehaviour, IMapManager
     [ClientCallback]
     private void RemoveDiggableFromMapData(DiggableDestroyData data)
     {
-
-        Vector2Int idx = PositionToIndex(new Vector2(data.posX,data.posY));
+        Vector2Int idx = PositionToIndex(new Vector2(data.posX, data.posY));
         
         try
         {
-            mapData[idx.x,idx.y] = 0;
+            mapData[idx.x, idx.y] = 0;
         }
         catch
         {
-            Debug.Log("cant remove "+ data.diggable.ToDiggable() + " in mapdata at index " + idx);
+            Debug.Log("cant remove " + data.diggable.ToDiggable() + " in mapdata at index " + idx);
         }
 
     }
@@ -204,7 +195,7 @@ public class MapManager : NetworkBehaviour, IMapManager
         Vector2Int idx = PositionToIndex(new Vector2(data.posX,data.posY));
         try
         {
-            mapData[idx.x,idx.y] = data.diggable.ToDiggable();
+            mapData[idx.x, idx.y] = data.diggable.ToDiggable();
         }
         catch{
             Debug.Log("cant add  "+ data.diggable.ToDiggable() + " in mapdata at index " + idx);
@@ -215,14 +206,14 @@ public class MapManager : NetworkBehaviour, IMapManager
     public void NotifyNewGem(Vector2 pos, DiggableType diggable)
     {
         Vector2Int idx = PositionToIndex(pos);
-        mapData[idx.x,idx.y] = diggable;
+        mapData[idx.x, idx.y] = diggable;
     }
 
     [Server]
-    private  void HandleDigSuccess(ServerDiggableDestroyData gemDigSuccessData)
+    private void HandleDigSuccess(ServerDiggableDestroyData gemDigSuccessData)
     {
-        Debug.Log("handle dig success get called");
-        Vector2Int index = PositionToIndex(new Vector2(gemDigSuccessData.posX,gemDigSuccessData.posY));
+        //Debug.Log("handle dig success get called");
+        Vector2Int index = PositionToIndex(new Vector2(gemDigSuccessData.posX, gemDigSuccessData.posY));
 
         try
         {
@@ -231,10 +222,10 @@ public class MapManager : NetworkBehaviour, IMapManager
             if (gemDigSuccessData.diggable.ToDiggable().IsGem())
             {
                 PlayerBot bot;
-                Player player= gemDigSuccessData.digger.GetComponent<MD.Character.Player>();
+                Player player = gemDigSuccessData.digger.GetComponent<MD.Character.Player>();
                 if (player!= null)
                     player.IncreaseScore(gemDigSuccessData.diggable);
-                else if ( bot = gemDigSuccessData.digger.GetComponent<PlayerBot>())
+                else if (bot = gemDigSuccessData.digger.GetComponent<PlayerBot>())
                 {
                     bot.score += gemDigSuccessData.diggable;
                 }
@@ -245,6 +236,7 @@ public class MapManager : NetworkBehaviour, IMapManager
             Debug.Log("Failed to remove gem at index: " + index);
             return;
         }
+
         if (gemDigSuccessData.diggable.ToDiggable() == DiggableType.NormalBomb)
         {
             if (itemSpawner == null) return;
@@ -271,7 +263,7 @@ public class MapManager : NetworkBehaviour, IMapManager
     [Server]
     public void GenerateMap()
     {
-        SceneManager.MoveGameObjectToScene(this.gameObject, SceneManager.GetActiveScene());
+        SceneManager.MoveGameObjectToScene(gameObject, SceneManager.GetActiveScene());
         mapData = new DiggableType[mapSize.x,mapSize.y];
         Diggables = new GameObject[mapSize.x,mapSize.y];
         GenerateGems();
@@ -281,7 +273,7 @@ public class MapManager : NetworkBehaviour, IMapManager
         projGen = GetComponent<ProjectileGenerator>();
         if (projGen)
         {
-            projGen.StartGenerate(this.GetComponent<IMapManager>());
+            projGen.StartGenerate(GetComponent<IMapManager>());
         }
         // StartCoroutine(GenerateNewGems());
     }
@@ -289,14 +281,14 @@ public class MapManager : NetworkBehaviour, IMapManager
     [Server]
     private void GenerateGems()
     {
-        int areaWidth = mapSize.x / generateZoneSideLength;
-        int areaHeight = mapSize.y / generateZoneSideLength;
+        int areaWidth = mapSize.x / genZoneSideLength;
+        int areaHeight = mapSize.y / genZoneSideLength;
         int amtPerZone, nGeneratedGems;
         (GameObject prefab, DiggableType value) randomGem; 
         Vector2Int randomPos = Vector2Int.zero;
-        for (int y = 0; y < generateZoneSideLength; y++)
+        for (int y = 0; y < genZoneSideLength; y++)
         {
-            for (int x = 0; x < generateZoneSideLength; x++)
+            for (int x = 0; x < genZoneSideLength; x++)
             {
                 amtPerZone = Random.Range(minAmountPerZone, maxAmountPerZone + 1);
                 nGeneratedGems = 0;
