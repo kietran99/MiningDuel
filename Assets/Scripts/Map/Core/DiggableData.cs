@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using Functional.Type;
 
 namespace MD.Map.Core
 {
@@ -24,41 +25,49 @@ namespace MD.Map.Core
             }
         }
 
-        public bool TryGetAt(int x, int y, out ITileData data)
+        public Option<InvalidTileException> SetAt(int x, int y, ITileData data)
         {
-            return occupiedTiles.TryGetValue(new Vector2Int(x, y), out data);
-        }
+            //occupiedTiles[GetPosition(x, y)] = data;
+            Either<Vector2Int, InvalidTileException> pos = GetPosition(x, y);
+            Option<InvalidTileException> isTileValid = new Option<InvalidTileException>();
+            pos.Match(
+                validPos => occupiedTiles[validPos] = data,
+                invalidTileException => isTileValid = new InvalidTileException()
+            );
 
-        public void SetAt(int x, int y, ITileData data)
-        {
-            occupiedTiles[GetPosition(x, y)] = data;
+            return isTileValid;
         }
 
         public void ReduceAt(int x, int y, int reduceVal)
         {
             var pos = GetPosition(x, y);
-            if (occupiedTiles[pos].Reduce(reduceVal)) 
-            {
-                freeTiles.Add(pos);  
-            }                  
+            //occupiedTiles[pos].Reduce(reduceVal, out bool isEmpty)); 
+            //if (isEmpty) { freeTiles.Add(pos); }                  
         }
 
-        public bool IsEmptyAt(int x, int y)
-        {            
+        public Either<bool, InvalidTileException> IsEmptyAt(int x, int y)
+        {     
             if (!TryGetAt(x, y, out ITileData tile)) 
             { 
-                throw new InvalidTileException();
+                //throw new InvalidTileException();
+                return new InvalidTileException();
             }
 
             return tile.IsEmpty();
         }
-               
-        private Vector2Int GetPosition(int x, int y)
+
+        public bool TryGetAt(int x, int y, out ITileData data)
+        {
+            return occupiedTiles.TryGetValue(new Vector2Int(x, y), out data);
+        }
+
+        private Either<Vector2Int, InvalidTileException> GetPosition(int x, int y)
         {
             var pos = new Vector2Int(x, y);
             if (!occupiedTiles.ContainsKey(pos))
             {
-                throw new InvalidTileException();               
+                //throw new InvalidTileException();   
+                return new InvalidTileException();            
             }
 
             return pos;

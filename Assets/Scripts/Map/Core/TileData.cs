@@ -33,11 +33,11 @@ namespace MD.Map.Core
 
         public DiggableType Type { get; protected set; }
         
-        public bool Reduce(int reduceVal)
+        public void Reduce(int reduceVal, out bool isEmpty)
         {
             DigsLeft -= reduceVal;
             DigsLeft = DigsLeft > 0 ? DigsLeft : 0;
-            return IsEmpty();
+            isEmpty = IsEmpty();
         }
 
         public bool IsEmpty() => DigsLeft == 0;

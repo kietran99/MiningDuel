@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Functional.Type;
 
 namespace MD.Map.Core
 {
@@ -53,19 +54,19 @@ namespace MD.Map.Core
         {
             Debug.Log(">--------" + testName + "--------<");
             
-            try
-            {
-                testAction();
-                diggableData.Log();
-            }
-            catch (InvalidTileException)
-            {
-                Debug.LogError("Invalid tile");
-            }
-            finally
-            {
-                Debug.Log(">---------------------------------------------<");
-            }
+            // try
+            // {
+            //     testAction();
+            //     diggableData.Log();
+            // }
+            // catch (InvalidTileException)
+            // {
+            //     Debug.LogError("Invalid tile");
+            // }
+            // finally
+            // {
+            //     Debug.Log(">---------------------------------------------<");
+            // }
         }
     }
 }

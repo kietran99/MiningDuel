@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Functional.Type;
 
 namespace MD.Map.Core
 {
@@ -36,6 +37,6 @@ namespace MD.Map.Core
             var randType = (DiggableType) UnityEngine.Random.Range(0, diggableTypes.Length);
             
             return new TileData(randType);
-        }
+        }       
     }
 }

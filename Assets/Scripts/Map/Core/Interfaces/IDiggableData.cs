@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Functional.Type;
 
 namespace MD.Map.Core
 {
@@ -34,7 +35,7 @@ namespace MD.Map.Core
         /// <param name="y">Y coordinate</param>
         /// <param name="data">Input tile data</param>
         /// <exception cref="MD.Map.Core.InvalidTileException"></exception>
-        void SetAt(int x, int y, ITileData data);
+        Option<InvalidTileException> SetAt(int x, int y, ITileData data);
 
 
 
@@ -55,7 +56,7 @@ namespace MD.Map.Core
         /// <param name="x">X coordinate</param>
         /// <param name="y">Y coordinate</param>
         /// <exception cref="MD.Map.Core.InvalidTileException"></exception>
-        bool IsEmptyAt(int x, int y); 
+        Either<bool, InvalidTileException> IsEmptyAt(int x, int y); 
 
 
   

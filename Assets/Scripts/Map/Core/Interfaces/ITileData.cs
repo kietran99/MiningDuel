@@ -6,10 +6,10 @@
         DiggableType Type { get; }
 
 
-        /// <returns>
-        /// Whether this tile is empty 
-        /// </returns>
-        bool Reduce(int reduceVal);
+        /// <summary>
+        /// Reduce remaning digs count by <param name="reduceVal">reduceVal</param> 
+        /// </summary>
+        void Reduce(int reduceVal, out bool isEmpty);
         bool IsEmpty();
     }
 }
