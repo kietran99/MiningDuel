@@ -34,20 +34,20 @@ namespace MD.Map.Core
 
         private void TestSetValid()
         {
-            diggableData.SetAt(0, 0, new TileData(DiggableType.UncommonGem));
-            diggableData.SetAt(-8, 9, new TileData(DiggableType.RareGem));
+            //diggableData.SetData(0, 0, new TileData(DiggableType.UncommonGem));
+            //diggableData.SetAt(-8, 9, new TileData(DiggableType.RareGem));
         }
 
         private void TestSetInvalid()
         {
-            diggableData.SetAt(0, 1, new TileData(DiggableType.RareGem));            
+            //diggableData.SetAt(0, 1, new TileData(DiggableType.RareGem));            
         }
 
         private void TestReduceValid()
         {
-            diggableData.ReduceAt(-2, 2, 5);
-            diggableData.ReduceAt(-8, 9, 4);
-            diggableData.ReduceAt(0, 3, 4);
+            // diggableData.ReduceAt(-2, 2, 5);
+            // diggableData.ReduceAt(-8, 9, 4);
+            // diggableData.ReduceAt(0, 3, 4);
         }
 
         private void TestFormat(string testName, System.Action testAction)

@@ -4,7 +4,7 @@
 
     public class Option<T>
     {
-        public static Option<Nothing> nonValue = new Option<Nothing>();
+        public static Option<T> None = new Option<T>();
         private T value;
         private bool isPresent;
         

@@ -1,41 +1,41 @@
 ﻿namespace Functional.Type
 {
-    public class Either<TL, TR>
+    public class Either<TError, TSuccess>
     {
-        private readonly TL left;
-        private readonly TR right;
-        private bool isLeft;
+        private readonly TError error;
+        private readonly TSuccess success;
+        private bool isError;
 
-        public static implicit operator Either<TL, TR>(TL left) => new Either<TL, TR>(left);
-        public static implicit operator Either<TL, TR>(TR right) => new Either<TL, TR>(right);
+        public static implicit operator Either<TError, TSuccess>(TError left) => new Either<TError, TSuccess>(left);
+        public static implicit operator Either<TError, TSuccess>(TSuccess right) => new Either<TError, TSuccess>(right);
 
-        public Either(TL left)
+        public Either(TError error)
         {
-            this.left = left;
-            isLeft = true;
+            this.error = error;
+            isError = true;
         }
 
-        public Either(TR right)
+        public Either(TSuccess success)
         {
-            this.right = right;
-            isLeft = false;
+            this.success = success;
+            isError = false;
         }
 
-        public void Match(System.Action<TL> leftHandler, System.Action<TR> rightHandler)
+        public void Match(System.Action<TError> errorHandler, System.Action<TSuccess> successHandler)
         {
-            if (isLeft)
+            if (isError)
             {
-                leftHandler(left);
+                errorHandler(error);
             }
             else
             {
-                rightHandler(right);
+                successHandler(success);
             }
         }
 
-        public T Match<T>(System.Func<TL, T> leftHandler, System.Func<TR, T> rightHandler)
+        public T Match<T>(System.Func<TError, T> errorHandler, System.Func<TSuccess, T> successHandler)
         {
-            return isLeft ? leftHandler(left) : rightHandler(right);
+            return isError ? errorHandler(error) : successHandler(success);
         }
     }
 }

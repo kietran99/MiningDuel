@@ -25,40 +25,49 @@ namespace MD.Map.Core
             }
         }
 
-        public Option<InvalidTileException> SetAt(int x, int y, ITileData data)
+        public Either<InvalidTileException, IDiggableAccess> GetAccessAt(int x, int y)
         {
-            //occupiedTiles[GetPosition(x, y)] = data;
-            Either<Vector2Int, InvalidTileException> pos = GetPosition(x, y);
-            Option<InvalidTileException> isTileValid = new Option<InvalidTileException>();
-            pos.Match(
-                validPos => occupiedTiles[validPos] = data,
-                invalidTileException => isTileValid = new InvalidTileException()
-            );
-
-            return isTileValid;
-        }
-
-        public void ReduceAt(int x, int y, int reduceVal)
-        {
-            var pos = GetPosition(x, y);
-            //occupiedTiles[pos].Reduce(reduceVal, out bool isEmpty)); 
-            //if (isEmpty) { freeTiles.Add(pos); }                  
-        }
-
-        public Either<bool, InvalidTileException> IsEmptyAt(int x, int y)
-        {     
-            if (!TryGetAt(x, y, out ITileData tile)) 
-            { 
-                //throw new InvalidTileException();
-                return new InvalidTileException();
+            if (occupiedTiles.ContainsKey(new Vector2Int(x, y)))
+            {
+                //return DiggableAccess.Create(this);
+                return new DiggableAccess(x, y);
             }
 
-            return tile.IsEmpty();
+            return new InvalidTileException();
         }
 
-        public bool TryGetAt(int x, int y, out ITileData data)
+        public void SetData(IDiggableAccess access, ITileData data)
         {
-            return occupiedTiles.TryGetValue(new Vector2Int(x, y), out data);
+            // occupiedTiles[GetPosition(access.X, access.Y)] = data;
+            occupiedTiles[new Vector2Int(access.X, access.Y)] = data;
+        }
+
+        public void Reduce(IDiggableAccess access, int reduceVal)
+        {
+            //var pos = GetPosition(x, y);
+            var pos = new Vector2Int(access.X, access.Y);
+            occupiedTiles[pos].Reduce(reduceVal, out bool isEmpty);
+            if (isEmpty) { freeTiles.Add(pos); }  
+        }
+
+        public Either<InvalidTileException, bool> IsEmptyAt(int x, int y)
+        {   
+            if (occupiedTiles.TryGetValue(new Vector2Int(x, y), out ITileData data))
+            {
+                return data.IsEmpty();
+            }
+
+            return new InvalidTileException();            
+        }
+
+        public Either<InvalidTileException, ITileData> TryGetAt(int x, int y)
+        {
+            if (occupiedTiles.TryGetValue(new Vector2Int(x, y), out ITileData data))
+            {
+                return (Either<InvalidTileException, ITileData>) data;
+            }
+
+            return new InvalidTileException();
         }
 
         private Either<Vector2Int, InvalidTileException> GetPosition(int x, int y)
@@ -66,7 +75,6 @@ namespace MD.Map.Core
             var pos = new Vector2Int(x, y);
             if (!occupiedTiles.ContainsKey(pos))
             {
-                //throw new InvalidTileException();   
                 return new InvalidTileException();            
             }
 
