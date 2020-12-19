@@ -1613,7 +1613,7 @@ PrefabInstance:
     - target: {fileID: 3992485229113918468, guid: 8d69c45f3f7777941bb2bf6ae9b4392a,
         type: 3}
       propertyPath: m_Text
-      value: 01:00
+      value: 02:00
       objectReference: {fileID: 0}
     - target: {fileID: 3992485229113918468, guid: 8d69c45f3f7777941bb2bf6ae9b4392a,
         type: 3}
