@@ -3,9 +3,8 @@ public class BotDigAction : MD.Character.DigAction
 {   
     [SerializeField]
     PlayerBot bot;
-    protected override void Start()
+    void Start()
     {
-        base.Start();
         bot = GetComponent<PlayerBot>();
     }
     protected override void StartListeningToEvents()

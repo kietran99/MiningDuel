@@ -679,6 +679,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unpressedSprite: {fileID: 21300000, guid: bfb189f932802f444bb8a4b6deaf2d3b, type: 3}
   pressedSprite: {fileID: 21300000, guid: f5f1db0c50d827544a641d7e93eb370b, type: 3}
+  cooldown: 0
 --- !u!1 &3214439548678180983
 GameObject:
   m_ObjectHideFlags: 0
@@ -918,6 +919,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unpressedSprite: {fileID: 21300000, guid: bfb189f932802f444bb8a4b6deaf2d3b, type: 3}
   pressedSprite: {fileID: 21300000, guid: f5f1db0c50d827544a641d7e93eb370b, type: 3}
+  cooldown: 0
 --- !u!1 &3822379286412035410
 GameObject:
   m_ObjectHideFlags: 0
@@ -1325,6 +1327,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unpressedSprite: {fileID: 21300000, guid: bfb189f932802f444bb8a4b6deaf2d3b, type: 3}
   pressedSprite: {fileID: 21300000, guid: f5f1db0c50d827544a641d7e93eb370b, type: 3}
+  cooldown: 0
 --- !u!1 &5143735395697453947
 GameObject:
   m_ObjectHideFlags: 0

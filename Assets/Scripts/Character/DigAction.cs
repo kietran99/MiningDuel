@@ -9,9 +9,14 @@ namespace MD.Character
         [SerializeField]
         private int power = 1;
 
-        private float digCooldown = .5f;
+        #region FIELDS
+        private float digCooldown = .1f;
         private float nextDigTime = 0f;
         private IMapManager mapManager = null;
+        private Player player = null;
+        #endregion
+
+        #region  PROPERTIES
         private IMapManager MapManager
         {
             get
@@ -22,7 +27,6 @@ namespace MD.Character
             }
         }
 
-        private Player player = null;
         private Player Player
         {
             get
@@ -33,34 +37,17 @@ namespace MD.Character
         }
 
         public int Power { get => power; }
-
-        protected virtual void Start() {}
+        #endregion
 
         public override void OnStartAuthority()
         {
-            // throwAction = GetComponent<ThrowAction>();
-            // EventSystems.EventManager.Instance.StartListening<ProjectileObtainData>(BindAndHoldProjectile);
-            // if (isLocalPlayer)
-            // {
-            //     //EventSystems.EventManager.Instance.StartListening<DigInvokeData>(Dig);
-            //     StartListeningToEvents();
-            // }
             StartListeningToEvents();
         }
 
         private void OnDestroy()
         {
             StopListeningToEvents();
-            //if (!isLocalPlayer) return;
-            // EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(BindAndHoldProjectile);
-            //EventSystems.EventManager.Instance.StopListening<DigInvokeData>(Dig);
-            //StopListeningToEvents();
         }
-
-        // public void BindAndHoldProjectile(ProjectileObtainData data)
-        // {
-        //     throwAction.BindProjectile(Instantiate(bombPrefab, gameObject.transform));
-        // }
 
         protected virtual void StartListeningToEvents()
         {
@@ -72,16 +59,8 @@ namespace MD.Character
             EventSystems.EventManager.Instance.StopListening<DigAnimEndData>(Dig);
         }
 
-        protected void Dig(DigAnimEndData data)
-        {
-            Dig();
-        }
-
-        // private void Dig(DigInvokeData data)
-        // {
-        //     Dig();
-        // }
-
+        protected void Dig(DigAnimEndData data) => Dig();
+       
         protected void Dig()
         {
             if (Time.time < nextDigTime) return;
@@ -93,20 +72,19 @@ namespace MD.Character
         [Command]
         public void CmdDig()
         {
-            // if (Player != null)
-            // {
-            //     Player.SetCanMove(false);
-            //     Invoke(nameof(EnableCanMove), digCooldown);
-            // }
+            if (Player != null)
+            {
+                Player.SetCanMove(false);
+                Invoke(nameof(EnableCanMove), digCooldown);
+            }
 
             MapManager.DigAtPosition(netIdentity);
         }
         
-        // [Server]
-        // public void EnableCanMove()
-        // {
-        //     Player.SetCanMove(true);
-        // }
-
+        [Server]
+        public void EnableCanMove()
+        {
+            Player.SetCanMove(true);
+        }
     }
 }
