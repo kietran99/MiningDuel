@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 public static class CollectionExtension
 {
+    public static T Random<T>(this ReadOnlyCollection<T> lst)
+    {
+        return lst[UnityEngine.Random.Range(0, lst.Count)];
+    }
+
     public static (T item, int idx) LookUp<T>(this T[] arr, Predicate<T> condition)
     {
         for (int i = 0; i < arr.Length; i++)

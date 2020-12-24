@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Functional.Type;
+using System.Collections.ObjectModel;
 
 namespace MD.Map.Core
 {
@@ -8,7 +9,7 @@ namespace MD.Map.Core
     /// </summary>
     public interface IDiggableData
     {
-        System.Collections.Generic.List<Vector2Int> FreeTiles { get; }
+        ReadOnlyCollection<Vector2Int> FreeTiles { get; }
 
         /// <summary>
         /// Populate with tile data
@@ -24,7 +25,7 @@ namespace MD.Map.Core
         /// <param name="y">Y coordinate</param>
         /// <param name="data">Output tile data</param>
         /// <returns>Whether a tile at ( <paramref name="x"/>, <paramref name="y"/>) is valid</returns>
-        Either<InvalidTileException, ITileData> TryGetAt(int x, int y);
+        Either<InvalidTileException, ITileData> GetDataAt(int x, int y);
 
 
 
@@ -41,6 +42,9 @@ namespace MD.Map.Core
 
         Either<InvalidTileException, IDiggableAccess> GetAccessAt(int x, int y);
 
+
+
+        void Spawn(IDiggableAccess access, DiggableType type);
 
 
 

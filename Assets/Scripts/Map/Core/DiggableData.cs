@@ -1,16 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using Functional.Type;
+using System.Collections.ObjectModel;
 
 namespace MD.Map.Core
 {
-    public class DiggableData : MonoBehaviour, IDiggableData
-    {             
+    public class DiggableData : IDiggableData
+    {                     
         private Dictionary<Vector2Int, ITileData> occupiedTiles = new Dictionary<Vector2Int, ITileData>();
         private List<Vector2Int> freeTiles = new List<Vector2Int>();
+        private HashSet<IDiggableAccess> accesses = new HashSet<IDiggableAccess>();
 
-        public List<Vector2Int> FreeTiles { get => freeTiles; }
+        public ReadOnlyCollection<Vector2Int> FreeTiles { get => freeTiles.AsReadOnly(); }
        
+        public DiggableData((Vector2Int pos, ITileData data)[] tiles)
+        {
+            Populate(tiles);
+        }
+
         public void Populate((Vector2Int pos, ITileData data)[] tiles)
         {
             tiles.ForEach(AddToOccupiedAndOrFreeList);
@@ -29,22 +36,33 @@ namespace MD.Map.Core
         {
             if (occupiedTiles.ContainsKey(new Vector2Int(x, y)))
             {
-                //return DiggableAccess.Create(this);
-                return new DiggableAccess(x, y);
+                var access = new DiggableAccess(x, y);
+                accesses.Add(access); 
+                return access; 
             }
-
+            
             return new InvalidTileException();
         }
 
         public void SetData(IDiggableAccess access, ITileData data)
         {
-            // occupiedTiles[GetPosition(access.X, access.Y)] = data;
             occupiedTiles[new Vector2Int(access.X, access.Y)] = data;
+        }
+
+        //TODO Check if tile is empty
+        public void Spawn(IDiggableAccess access, DiggableType type)
+        {
+            if (!ValidateAccess(access)) return;
+
+            var pos = new Vector2Int(access.X, access.Y);
+            freeTiles.Remove(pos);
+            occupiedTiles[pos] = new TileData(type);
         }
 
         public void Reduce(IDiggableAccess access, int reduceVal)
         {
-            //var pos = GetPosition(x, y);
+            if (!ValidateAccess(access)) return;
+
             var pos = new Vector2Int(access.X, access.Y);
             occupiedTiles[pos].Reduce(reduceVal, out bool isEmpty);
             if (isEmpty) { freeTiles.Add(pos); }  
@@ -60,7 +78,7 @@ namespace MD.Map.Core
             return new InvalidTileException();            
         }
 
-        public Either<InvalidTileException, ITileData> TryGetAt(int x, int y)
+        public Either<InvalidTileException, ITileData> GetDataAt(int x, int y)
         {
             if (occupiedTiles.TryGetValue(new Vector2Int(x, y), out ITileData data))
             {
@@ -70,15 +88,16 @@ namespace MD.Map.Core
             return new InvalidTileException();
         }
 
-        private Either<Vector2Int, InvalidTileException> GetPosition(int x, int y)
+        private bool ValidateAccess(IDiggableAccess access)
         {
-            var pos = new Vector2Int(x, y);
-            if (!occupiedTiles.ContainsKey(pos))
+            bool valid = accesses.Contains(access);
+
+            if (!valid)
             {
-                return new InvalidTileException();            
+                Debug.LogError("Illegal Diggable Access");
             }
 
-            return pos;
+            return valid;
         }
 
         public void Log()
