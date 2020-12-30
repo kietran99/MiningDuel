@@ -59,12 +59,8 @@ namespace MD.Character
             transform.position = new Vector2(Mathf.Clamp(transform.position.x, minMoveBound.x + offset.x, maxMoveBound.x - offset.x),
                                 Mathf.Clamp(transform.position.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));
             // rigidBody.MovePosition(movePos*Time.fixedDeltaTime);
-        } 
-        private void LateUpdate()
-        {
-            if (moveVect.Equals(Vector2.zero) || !Player.CanMove()) return;
             EventSystems.EventManager.Instance.TriggerEvent(new MoveData(rigidBody.position.x, rigidBody.position.y));
-        }
+        } 
         
         public void SetBounds(Vector2 minMoveBound, Vector2 maxMoveBound)
         {
