@@ -9,6 +9,9 @@ namespace MD.Map.Core
     {
         #region SERIALIZE FIELDS
         [SerializeField]
+        private GameObject GemPrefab = null;
+
+        [SerializeField]
         private float generateInterval = 2f;
 
         [SerializeField]
@@ -24,7 +27,8 @@ namespace MD.Map.Core
         void Start()
         {
             //TestPopulate();
-            var tilePositions = GenTestTilePositions();
+            //var tilePositions = GenTestTilePositions();
+            var tilePositions = GenSquareMap();
             tileGraph = new TileGraph(tilePositions);
             diggableData = new DiggableData(MakeEmptyTiles(tilePositions));
             diggableData.Log();
@@ -41,6 +45,23 @@ namespace MD.Map.Core
             };           
         }
 
+        private Vector2Int[] GenSquareMap()
+        {
+            var map = new Vector2Int[400];
+            int cnt = 0;
+
+            for (int i = -10; i < 10; i++)
+            {
+                for (int j = -10; j < 10; j++)
+                {
+                    map[cnt] = new Vector2Int(i, j);
+                    cnt++;
+                }
+            }
+
+            return map;
+        }
+
         private IEnumerator RandomSpawn()
         {
             shouldSpawn = true;
@@ -55,6 +76,7 @@ namespace MD.Map.Core
                 //Debug.Log("RANDOM RESULT: " + randEmptyPos + " " + randDiggable);
                 tileGraph.OnDiggableSpawn(randEmptyPos);
                 SpawnAt(randEmptyPos, randDiggable);
+                Instantiate(GemPrefab, new Vector3(randEmptyPos.x, randEmptyPos.y, 0f), Quaternion.identity);
                 
                 diggableData.Log();
                 tileGraph.Log();
