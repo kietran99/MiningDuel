@@ -39,12 +39,12 @@ namespace MD.Character
         void FixedUpdate()
         {
             if (!isLocalPlayer) return;
-            
 #if UNITY_EDITOR
             var moveX = Input.GetAxisRaw("Horizontal");
             var moveY = Input.GetAxisRaw("Vertical");
             EventSystems.EventManager.Instance.TriggerEvent(new JoystickDragData(new Vector2(moveX, moveY)));
 #endif
+            if (moveVect.Equals(Vector2.zero) || !Player.CanMove()) return;
             MoveCharacter(moveVect.x, moveVect.y);
         }
 
@@ -52,15 +52,19 @@ namespace MD.Character
         
         private void MoveCharacter(float moveX, float moveY)
         {
-            if (moveVect.Equals(Vector2.zero) || !Player.CanMove()) return;
-
             var movePos = new Vector2(moveX, moveY).normalized * speed;
             transform.Translate(movePos * Time.fixedDeltaTime);
             transform.position = new Vector2(Mathf.Clamp(transform.position.x, minMoveBound.x + offset.x, maxMoveBound.x - offset.x),
                                 Mathf.Clamp(transform.position.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));
             // rigidBody.MovePosition(movePos*Time.fixedDeltaTime);
-            EventSystems.EventManager.Instance.TriggerEvent(new MoveData(rigidBody.position.x, rigidBody.position.y));
         } 
+
+        private void LateUpdate()
+        {
+            if (!isLocalPlayer) return;
+            if (moveVect.Equals(Vector2.zero) || !Player.CanMove()) return;
+            EventSystems.EventManager.Instance.TriggerEvent(new MoveData(rigidBody.position.x, rigidBody.position.y));
+        }
         
         public void SetBounds(Vector2 minMoveBound, Vector2 maxMoveBound)
         {

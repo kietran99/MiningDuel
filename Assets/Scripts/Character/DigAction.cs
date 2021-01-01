@@ -51,14 +51,12 @@ namespace MD.Character
 
         protected virtual void StartListeningToEvents()
         {
-            if(isLocalPlayer)
-                EventSystems.EventManager.Instance.StartListening<DigAnimEndData>(Dig);
+            EventSystems.EventManager.Instance.StartListening<DigAnimEndData>(Dig);
         }
 
         protected virtual void StopListeningToEvents()
         {
-            if (isLocalPlayer)
-                EventSystems.EventManager.Instance.StopListening<DigAnimEndData>(Dig);
+            EventSystems.EventManager.Instance.StopListening<DigAnimEndData>(Dig);
         }
 
         protected void Dig(DigAnimEndData data) => Dig();
