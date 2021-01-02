@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace MD.Diggable.Gem
+﻿namespace MD.Diggable.Gem
 {
     public struct DigProgressData : EventSystems.IEventData
     {

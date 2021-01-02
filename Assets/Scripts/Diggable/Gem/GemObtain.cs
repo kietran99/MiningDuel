@@ -1,6 +1,7 @@
 ﻿using MD.Character;
 using UnityEngine;
 using Mirror;
+using EventSystems;
 
 namespace MD.Diggable.Gem
 {
@@ -16,8 +17,8 @@ namespace MD.Diggable.Gem
 
         private GemValue gemValue = null;
 
-        private Player player  =null;
-         private Player Player
+        private Player player = null;
+        private Player Player
         {
             get
             {
@@ -37,39 +38,56 @@ namespace MD.Diggable.Gem
         public override void OnStartClient()
         {
             base.OnStartClient();
-            EventSystems.EventManager.Instance.TriggerEvent(
-                new DiggableSpawnData(GemValue.Value,transform.position.x,transform.position.y));
+            EventManager.Instance.TriggerEvent(new DiggableSpawnData(GemValue.Value, transform.position.x, transform.position.y));
         }
 
         public override void OnStopClient()
         {
             //fire an event for sonar to update
-            EventSystems.EventManager.Instance.TriggerEvent(
-                new DiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y));
+            EventManager.Instance.TriggerEvent(new DiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y));
+
             //for animations and UIs
-            if (diggerID != null && diggerID == Player.netIdentity)
-            EventSystems.EventManager.Instance.TriggerEvent(
-                new GemDigSuccessData(GemValue.Value, transform.position.x, transform.position.y)
-            );            
+            // if (diggerID != null && diggerID == Player.netIdentity)
+            // {
+            //     EventManager.Instance.TriggerEvent(new GemDigSuccessData(GemValue.Value, transform.position.x, transform.position.y));
+            // }                           
         }
 
         [Server]
         public void Dig(DigAction digger)
         {           
-            this.currentDigger = digger;
-            GemValue.DecreaseValue(currentDigger.Power);
-            this.diggerID = digger.netIdentity;
+            currentDigger = digger;
+            GemValue.DecreaseValue(digger.Power);
             RpcSetDigger(digger.netIdentity);
-            if (diggerID != null && diggerID.Equals(Player.netIdentity)) 
-            {
-                EventSystems.EventManager.Instance.TriggerEvent(new DigProgressData(GemValue.RemainingHit, GemValue.Value));
-            }
+            diggerID = digger.netIdentity;            
+
+            // if (diggerID != null && diggerID == Player.netIdentity) 
+            // {
+            //     EventManager.Instance.TriggerEvent(new DigProgressData(GemValue.RemainingHit, GemValue.Value));
+            // }
+
+            TargetTriggerDigProgressData(digger.connectionToClient, GemValue.RemainingHit, GemValue.Value);
 
             if (GemValue.RemainingHit > 0) return;
            
-            EventSystems.EventManager.Instance.TriggerEvent(
+            TargetTriggerGemDigSuccessData(digger.connectionToClient, GemValue.Value, transform.position.x, transform.position.y); 
+
+            EventManager.Instance.TriggerEvent(
                 new ServerDiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y, currentDigger));
+                
             Destroy(gameObject);
+        }
+
+        [TargetRpc]
+        private void TargetTriggerDigProgressData(NetworkConnection target, int remainingHit, int initialValue)
+        {
+            EventManager.Instance.TriggerEvent(new DigProgressData(remainingHit, initialValue));
+        }
+
+        [TargetRpc]
+        private void TargetTriggerGemDigSuccessData(NetworkConnection target, int gemVal, float x, float y)
+        {
+            EventManager.Instance.TriggerEvent(new GemDigSuccessData(gemVal, x, y));
         }
 
         [ClientRpc]

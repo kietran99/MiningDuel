@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
 using MD.Character;
+using EventSystems;
 
 namespace MD.Diggable.Projectile
 {
@@ -35,21 +36,18 @@ namespace MD.Diggable.Projectile
         
         public override void OnStartClient()
         {
-            EventSystems.EventManager.Instance.TriggerEvent(
-                new DiggableSpawnData(Projectile.DiggableType(), transform.position.x, transform.position.y));
+            EventManager.Instance.TriggerEvent(new DiggableSpawnData(Projectile.DiggableType(), transform.position.x, transform.position.y));
         }
 
         public override void OnStopClient()
         {
             base.OnStopClient();
             //fire an event for sonar to update
-            EventSystems.EventManager.Instance.TriggerEvent(
-                new DiggableDestroyData(Projectile.DiggableType(), transform.position.x, transform.position.y));
+            EventManager.Instance.TriggerEvent(new DiggableDestroyData(Projectile.DiggableType(), transform.position.x, transform.position.y));
             //for animations and UI
             if (diggerID != null && diggerID == Player.netIdentity)
             {
-                EventSystems.EventManager.Instance.TriggerEvent(
-                    new ProjectileObtainData(Projectile.GetStats(), transform.position.x, transform.position.y));
+                EventManager.Instance.TriggerEvent(new ProjectileObtainData(Projectile.GetStats(), transform.position.x, transform.position.y));
             }
         }
 
@@ -58,9 +56,8 @@ namespace MD.Diggable.Projectile
         {
             currentDigger = digger;
             RpcSetDigger(digger.netIdentity);
-            this.diggerID = digger.netIdentity;
-            EventSystems.EventManager.Instance.TriggerEvent(
-                new ServerDiggableDestroyData(Projectile.DiggableType(), transform.position.x, transform.position.y, currentDigger));
+            diggerID = digger.netIdentity;
+            EventManager.Instance.TriggerEvent(new ServerDiggableDestroyData(Projectile.DiggableType(), transform.position.x, transform.position.y, currentDigger));
             Destroy(gameObject);
         }
 

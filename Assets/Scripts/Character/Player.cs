@@ -62,6 +62,7 @@ namespace MD.Character
         public override void OnStopClient()
         {
             Room.Players.Remove(this);
+            
         }
 
         public override void OnStartAuthority()
@@ -149,8 +150,6 @@ namespace MD.Character
             if (Input.GetKeyDown(KeyCode.F)) IncreaseScore(10);
             #endif
         }
-
-        public bool IsLocalPlayer() => isLocalPlayer;
 
         public bool CanMove() => canMove;
     }

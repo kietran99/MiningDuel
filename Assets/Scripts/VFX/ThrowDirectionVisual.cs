@@ -24,9 +24,7 @@ namespace MD.VisualEffects
         }
 
         void OnDisable() 
-        {
-            if (player == null) return;
-
+        {           
             if (!player.isLocalPlayer) return; 
 
             var eventManager = EventSystems.EventManager.Instance; 
@@ -50,7 +48,7 @@ namespace MD.VisualEffects
 
         public void Show(Diggable.Projectile.ProjectileObtainData obj)
         {       
-            Debug.Log("Picked up a projectile");     
+            //Debug.Log("Picked up a projectile");     
             spriteRenderer.enabled = true;
             Rotate();
         } 

@@ -8,34 +8,44 @@ namespace MD.VisualEffects
     public class DigProgressGauge : MonoBehaviour
     {
         [SerializeField]
+        private MD.Character.Player player = null;
+
+        [SerializeField]
         private GameObject gaugeContainer = null;
 
         [SerializeField]
         private Transform fillArea = null;
         
-        private FlowMux<DigProgressData> digProgressMux = new FlowMux<DigProgressData>();
+        private FlowMux<DigProgressData> digProgressMux;
 
         private void Start() 
         {      
-            AddFlows();                  
+            if (!player.isLocalPlayer) return;
+
+            if (digProgressMux == null) AddFlows();  
+
             EventSystems.EventManager.Instance.StartListening<DigProgressData>(ResolveProgressInput);
             EventSystems.EventManager.Instance.StartListening<JoystickDragData>(Hide);
         }
        
         private void AddFlows()
         {
+            digProgressMux = new FlowMux<DigProgressData>();
+
             digProgressMux.AddShape(
-            new FlowShape<DigProgressData>(data => data.current > data.max, _ => Debug.LogError("Current value must be less than max value")));
+            new FlowShape<DigProgressData>(data => data.current >= data.max, _ => Debug.LogError("Current value must be less than max value")));
 
             digProgressMux.AddShape(new FlowShape<DigProgressData>(data => data.current == 0, _ => Hide()));
 
             digProgressMux.AddShape(new FlowShape<DigProgressData>(data => data.current < data.max, data => Fill(data.current, data.max)));
 
-            digProgressMux.AddShape(new FlowShape<DigProgressData>(data => true, _ => Debug.LogError("Unknown dig progress transform")));
+            digProgressMux.AddShape(new FlowShape<DigProgressData>(data => true, _ => Debug.LogError("Unknown dig progress transform: ")));
         }
 
-        private void OnDestroy() 
+        private void OnDisable() 
         {
+            if (!player.isLocalPlayer) return;
+
             EventSystems.EventManager.Instance.StopListening<DigProgressData>(ResolveProgressInput);
             EventSystems.EventManager.Instance.StopListening<JoystickDragData>(Hide);
         }
@@ -58,9 +68,9 @@ namespace MD.VisualEffects
         //     else if (Input.GetKeyDown(KeyCode.I)) digProgressMux.Resolve(new DigProgressData(10, 2));
         //     else if (Input.GetKeyDown(KeyCode.K)) digProgressMux.Resolve(new DigProgressData(0, 10));
         // }
-
+        
         private void ResolveProgressInput(DigProgressData progressData)
-        {
+        {           
             digProgressMux.Resolve(progressData);
         }
 

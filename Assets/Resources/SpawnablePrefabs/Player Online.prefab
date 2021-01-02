@@ -334,6 +334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f6572efa134a0a43a9a3e2a9a730593, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: -7965588256565871280}
   gaugeContainer: {fileID: 2603845590960771799}
   fillArea: {fileID: 1058543765605345261}
 --- !u!1 &4633133068353059589
@@ -599,6 +600,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 441da213cc0ba2d4db37746f42ee8e20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: -7965588256565871280}
 --- !u!1 &7091697347460261900
 GameObject:
   m_ObjectHideFlags: 0
