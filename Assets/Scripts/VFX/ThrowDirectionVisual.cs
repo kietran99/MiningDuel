@@ -6,8 +6,6 @@ namespace MD.VisualEffects
     [RequireComponent(typeof(SpriteRenderer))]
     public class ThrowDirectionVisual : MonoBehaviour
     {
-        [SerializeField]
-        private Player player = null;
         private Renderer spriteRenderer;
         private float distanceFromPlayer;
 
@@ -15,8 +13,6 @@ namespace MD.VisualEffects
 
         void Start()
         {            
-            if (!player.isLocalPlayer) return; 
-            
             spriteRenderer = GetComponent<SpriteRenderer>();
             distanceFromPlayer = transform.localPosition.magnitude;
 
@@ -25,8 +21,6 @@ namespace MD.VisualEffects
 
         void OnDisable() 
         {           
-            if (!player.isLocalPlayer) return; 
-
             var eventManager = EventSystems.EventManager.Instance; 
             eventManager.StopListening<Diggable.Projectile.ProjectileObtainData>(Show);
             eventManager.StopListening<UI.JoystickDragData>(OnCharacterMove);

@@ -8,9 +8,6 @@ namespace MD.VisualEffects
     [RequireComponent(typeof(Animator))]
     public class GemObtainEffect : MonoBehaviour
     {
-        [SerializeField]
-        private MD.Character.Player player = null;
-
         private SpriteRenderer spriteRenderer;
         private Animator animator;
 
@@ -19,15 +16,11 @@ namespace MD.VisualEffects
             spriteRenderer = GetComponent<SpriteRenderer>();  
             animator = GetComponent<Animator>(); 
 
-            if (!player.isLocalPlayer) return; 
-
             EventSystems.EventManager.Instance.StartListening<GemDigSuccessData>(HandleGemDigSuccess);
         }
 
         private void OnDisable() 
         {
-            if (!player.isLocalPlayer) return;
-
             EventSystems.EventManager.Instance.StopListening<GemDigSuccessData>(HandleGemDigSuccess);
         }
 

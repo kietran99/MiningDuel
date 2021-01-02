@@ -8,9 +8,6 @@ namespace MD.VisualEffects
     public class DigProgressGauge : MonoBehaviour
     {
         [SerializeField]
-        private MD.Character.Player player = null;
-
-        [SerializeField]
         private GameObject gaugeContainer = null;
 
         [SerializeField]
@@ -19,9 +16,7 @@ namespace MD.VisualEffects
         private FlowMux<DigProgressData> digProgressMux;
 
         private void Start() 
-        {      
-            if (!player.isLocalPlayer) return;
-
+        {                  
             if (digProgressMux == null) AddFlows();  
 
             EventSystems.EventManager.Instance.StartListening<DigProgressData>(ResolveProgressInput);
@@ -43,9 +38,7 @@ namespace MD.VisualEffects
         }
 
         private void OnDisable() 
-        {
-            if (!player.isLocalPlayer) return;
-
+        {            
             EventSystems.EventManager.Instance.StopListening<DigProgressData>(ResolveProgressInput);
             EventSystems.EventManager.Instance.StopListening<JoystickDragData>(Hide);
         }
