@@ -219,3 +219,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 784dfe04ae3ca5d40b77d4b912d97991, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeStartCompleteEvent: {fileID: 11400000, guid: d370e0bcd750c53438ff2914187c99ea,
+    type: 2}

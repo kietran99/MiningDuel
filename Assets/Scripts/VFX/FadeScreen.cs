@@ -4,42 +4,32 @@ namespace MD.VisualEffects
 {
     [RequireComponent(typeof(Animator))]
     public class FadeScreen : MonoBehaviour
-    {
+    {        
         private Animator theAnimator;
-        private Animator TheAnimator
-        {
-            get
-            {
-                if (!theAnimator.enabled) theAnimator.enabled = true;
-                return theAnimator;
-            }
-        }
+        private event System.Action fadeStartCompleteHandler;
 
         void Start()
         {
+            ServiceLocator.Register<FadeScreen>(this);
             theAnimator = GetComponent<Animator>();
             DontDestroyOnLoad(gameObject);
         }
 
-        public void StartFading()
-        {
-            theAnimator.enabled = true;
-        }
-
-        public void SetAnimatorTrigger(string name)
-        {
-            TheAnimator.SetTrigger(name);
-        }
+        public void StartFading(System.Action fadeStartCompleteHandler = null)
+        {     
+            this.fadeStartCompleteHandler = fadeStartCompleteHandler;           
+            theAnimator.SetTrigger("Start");
+        }       
 
         public void HandleFadeEndComplete()
         {
-            Destroy(gameObject);
+            
         }
 
         public void HandleFadeStartComplete()
-        {                      
-            EventSystems.EventManager.Instance.TriggerEvent(new FadeStartCompleteData());
-            theAnimator.SetTrigger("Start");
+        {    
+            fadeStartCompleteHandler?.Invoke();    
+            theAnimator.SetTrigger("End");
         }
     }
 }

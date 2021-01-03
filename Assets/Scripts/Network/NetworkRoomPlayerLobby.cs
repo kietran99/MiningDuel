@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Mirror;
 using System.Net;
 using System.Net.Sockets;
+
 public class NetworkRoomPlayerLobby : NetworkBehaviour
 {
     [Header("UI")]
@@ -158,9 +159,15 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
     [Command]
     public void CmdStartGame()
     {
-        if (Room.RoomPlayers[0].connectionToClient != connectionToClient) return;
+        if (Room.RoomPlayers[0].connectionToClient != connectionToClient) 
+        {
+            return;
+        }
+
         if (Room.IsReadyToStart())
+        {
             room.StartLobby();
+        }
     }
 
     [Command]

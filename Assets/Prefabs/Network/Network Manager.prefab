@@ -73,6 +73,8 @@ MonoBehaviour:
     type: 3}
   spawnPointPicker: {fileID: -5008208810592905108, guid: ef6f40e00172b8549ae0c3d7e98b2fd9,
     type: 3}
+  fadeStartCompleteEvent: {fileID: 11400000, guid: d370e0bcd750c53438ff2914187c99ea,
+    type: 2}
   DontDestroyOnLoadObjects: []
 --- !u!114 &175812858257897401
 MonoBehaviour:

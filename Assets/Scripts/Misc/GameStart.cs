@@ -8,27 +8,15 @@ public class GameStart : MonoBehaviour
     private string nextSceneName = string.Empty;
 
     [SerializeField]
-    private FadeScreen fadeScreenAnimator = null;
-
-    private void Start()
-    {
-        EventSystems.EventManager.Instance.StartListening<FadeStartCompleteData>(HandleFadeStartComplete);
-    }
-
-    private void OnDestroy()
-    {
-        EventSystems.EventManager.Instance.StopListening<FadeStartCompleteData>(HandleFadeStartComplete);
-    }
-
+    private FadeScreen fadeScreen = null;   
+    
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            fadeScreenAnimator.StartFading();
+            fadeScreen.StartFading(() => SceneManager.LoadScene(nextSceneName));
         }
     }
-
-    private void HandleFadeStartComplete(FadeStartCompleteData data) => LoadMainMenu();
 
     private void LoadMainMenu()
     {

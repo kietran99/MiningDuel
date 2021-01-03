@@ -28,7 +28,7 @@ public class NetworkManagerLobby : NetworkManager
     private GameObject botPrefab = null;
 
     [SerializeField]
-    private SpawnPointPicker spawnPointPicker = null;
+    private SpawnPointPicker spawnPointPicker = null;    
     #endregion
 
     private readonly string NAME_PLAYER_ONLINE = "Player Online";
@@ -80,12 +80,15 @@ public class NetworkManagerLobby : NetworkManager
         {
             ClientScene.RegisterPrefab(prefab);
         }
+
+        //fadeStartCompleteEvent.OnEventRaise += LoadGameScene;
     }
 
     public override void OnClientConnect(NetworkConnection conn)
     {
         base.OnClientConnect(conn);
         OnClientConnected?.Invoke();
+        
     }
 
     public void CleanObjectsWhenDisconnect()
@@ -110,6 +113,7 @@ public class NetworkManagerLobby : NetworkManager
         //     // SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);
         // }
         base.OnClientDisconnect(conn);
+        //fadeStartCompleteEvent.OnEventRaise -= LoadGameScene;
         OnClientDisconnnected?.Invoke();
     }
 
@@ -164,8 +168,8 @@ public class NetworkManagerLobby : NetworkManager
 
     public override void OnStopServer()
     {
-        Debug.Log("on stop server");
-        Time.timeScale =1f;
+        //Debug.Log("on stop server");
+        Time.timeScale = 1f;
         ServerChangeScene(menuScene);
         CleanObjectsWhenDisconnect();
         base.OnStopServer();
@@ -185,17 +189,18 @@ public class NetworkManagerLobby : NetworkManager
 
     public override void ServerChangeScene(string sceneName)
     {
-        if (SceneManager.GetActiveScene().path == menuScene)
+        if (SceneManager.GetActiveScene().path.Equals(menuScene))
         {
             spawnPointPicker.Reset();     
             SpawnMapManager();
         }
+
         base.ServerChangeScene(sceneName);
     }
 
     private void SpawnMapManager()
     {        
-        Debug.Log("Spawn Map Manager");
+        //Debug.Log("Spawn Map Manager");
         mapManager = Instantiate(MapManagerPrefab);
         // ServiceLocator.Register<IMapManager>(mapManager.GetComponent<IMapManager>());
         NetworkServer.Spawn(mapManager.gameObject);
@@ -206,7 +211,7 @@ public class NetworkManagerLobby : NetworkManager
 
     private void SpawnNetworkPlayer(NetworkRoomPlayerLobby roomPlayer)
     {
-        Debug.Log("Spawn a player");          
+        //Debug.Log("Spawn a player");          
         //var player = Instantiate(NetworkPlayerPrefab);     
         var player = Instantiate(NetworkPlayerPrefab, spawnPointPicker.NextSpawnPoint.position, Quaternion.identity);
         player.SetPlayerName(roomPlayer.DisplayName);
@@ -222,7 +227,7 @@ public class NetworkManagerLobby : NetworkManager
         if (SceneManager.GetActiveScene().path == gamePlayScene)
         {
             mapManager.GenerateMap(); 
-            //TODO: check if all players loaded scene
+            //TODO check if all players loaded scene
             StartGame();
         }
         // if (SceneManager.GetActiveScene().path == menuScene)
@@ -240,13 +245,15 @@ public class NetworkManagerLobby : NetworkManager
             player.SetCanMove(true);
             player.TargetNotifyGameReady(matchTime);
         }
-        if (Players.Count==1)
+
+        if (Players.Count == 1)
         {
             var bot = Instantiate(botPrefab);
             Bots.Add(bot.GetComponent<PlayerBot>());
             NetworkServer.Spawn(bot, Players[0].connectionToClient);
         }
-        Invoke(nameof(EndGame),matchTime);
+
+        Invoke(nameof(EndGame), matchTime);
     }
     void Update()
     {
@@ -288,15 +295,12 @@ public class NetworkManagerLobby : NetworkManager
     }
     public void StartLobby()
     {
-        //Debug.Log("here");
-        if (SceneManager.GetActiveScene().path == menuScene)
-        {
-            //Debug.Log("here2");
-            if (IsReadyToStart())
+        if (SceneManager.GetActiveScene().path == menuScene && IsReadyToStart())
+        {           
+            if (ServiceLocator.Resolve<MD.VisualEffects.FadeScreen>(out MD.VisualEffects.FadeScreen fadeScreen))
             {
-                //Debug.Log("here3");
-                ServerChangeScene(gamePlayScene);
+                fadeScreen.StartFading(() => ServerChangeScene(gamePlayScene));
             }
         }
-    }
+    }    
 }

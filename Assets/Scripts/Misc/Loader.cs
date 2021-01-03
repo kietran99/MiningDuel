@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Mirror;
+
 /// <summary>
 /// Attach this script to only 1 GameObject in every scene to load all services
 /// </summary>
@@ -30,7 +31,9 @@ public class Loader : MonoBehaviour
     private void Awake()
     {
         if (NetworkManager.singleton == null)
+        {
             Instantiate(networkManager);
+        }
     }
 
     // private void OnDestroy()
