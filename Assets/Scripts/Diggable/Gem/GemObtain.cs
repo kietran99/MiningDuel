@@ -44,13 +44,7 @@ namespace MD.Diggable.Gem
         public override void OnStopClient()
         {
             //fire an event for sonar to update
-            EventManager.Instance.TriggerEvent(new DiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y));
-
-            //for animations and UIs
-            // if (diggerID != null && diggerID == Player.netIdentity)
-            // {
-            //     EventManager.Instance.TriggerEvent(new GemDigSuccessData(GemValue.Value, transform.position.x, transform.position.y));
-            // }                           
+            EventManager.Instance.TriggerEvent(new DiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y));                   
         }
 
         [Server]
@@ -59,18 +53,21 @@ namespace MD.Diggable.Gem
             currentDigger = digger;
             GemValue.DecreaseValue(digger.Power);
             RpcSetDigger(digger.netIdentity);
-            diggerID = digger.netIdentity;            
+            diggerID = digger.netIdentity; 
 
-            // if (diggerID != null && diggerID == Player.netIdentity) 
-            // {
-            //     EventManager.Instance.TriggerEvent(new DigProgressData(GemValue.RemainingHit, GemValue.Value));
-            // }
-
-            TargetTriggerDigProgressData(digger.connectionToClient, GemValue.RemainingHit, GemValue.Value);
+            bool isBot = digger.GetType().Equals(typeof(BotDigAction));          
+            
+            if (!isBot)
+            {
+                TargetTriggerDigProgressData(digger.connectionToClient, GemValue.RemainingHit, GemValue.Value);
+            }
 
             if (GemValue.RemainingHit > 0) return;
            
-            TargetTriggerGemDigSuccessData(digger.connectionToClient, GemValue.Value, transform.position.x, transform.position.y); 
+            if (!isBot)
+            {
+                TargetTriggerGemDigSuccessData(digger.connectionToClient, GemValue.Value, transform.position.x, transform.position.y); 
+            }
 
             EventManager.Instance.TriggerEvent(
                 new ServerDiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y, currentDigger));
