@@ -1,41 +1,24 @@
-﻿using UnityEngine;
+﻿using MD.Character;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace MD.UI
 {
-    public class ScoreManager : MonoBehaviour, IScoreManager
+    public class ScoreManager : MonoBehaviour
     {
         [SerializeField]
         private Text scoreText = null;
 
-        // private int currentScore;
-
-        // public int CurrentScore
-        // {
-        //     get => currentScore;
-        //     set
-        //     {
-        //         currentScore = value;
-        //         scoreText.text = currentScore.ToString();
-        //     }
-        // }
-
         void Start()
         {
-            // EventSystems.EventManager.Instance.StartListening<GemDigSuccessData>(IncreaseCurrentScore);
             UpdateScoreText(0);
-            ServiceLocator.Register<IScoreManager>(this);
+            EventSystems.EventManager.Instance.StartListening<ScoreChangeData>(HandleScoreChange);
         }
 
-        // private void OnDestroy()
-        // {
-        //     EventSystems.EventManager.Instance.StopListening<GemDigSuccessData>(IncreaseCurrentScore);
-        // }
-
-        // private void IncreaseCurrentScore(GemDigSuccessData data)
-        // {
-        //     CurrentScore += data.value;
-        // }
+        private void OnDestroy()
+        {
+            EventSystems.EventManager.Instance.StopListening<ScoreChangeData>(HandleScoreChange);
+        }
 
 // #if UNITY_EDITOR
 //         private void Update()
@@ -44,21 +27,7 @@ namespace MD.UI
 //         }
 // #endif
 
-        // public int GetCurrentScore()
-        // {
-        //     return currentScore;
-        // }
-        // public void DecreaseScore(int score)
-        // {
-        //     currentScore -= score;
-        //     currentScore = currentScore<0 ? 0 : currentScore;
-        //     UpdateScoreText();
-        // }
-        // public void IncreaseScore(int score)
-        // {
-        //     currentScore += score;
-        //     UpdateScoreText();
-        // }
+        private void HandleScoreChange(ScoreChangeData data) => UpdateScoreText(data.newScore);
 
         public void UpdateScoreText(int score)
         {

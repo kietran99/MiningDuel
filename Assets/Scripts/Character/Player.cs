@@ -2,6 +2,7 @@
 using Mirror;
 using MD.UI;
 using UnityEngine.SceneManagement;
+
 namespace MD.Character
 {
     [RequireComponent(typeof(MoveAction))]
@@ -19,7 +20,8 @@ namespace MD.Character
         [SyncVar]
         private string playerName;
 
-        [SyncVar] [SerializeField]
+        [SyncVar] 
+        [SerializeField]
         private bool canMove = false;
 
         private NetworkManagerLobby room;
@@ -32,18 +34,10 @@ namespace MD.Character
             }
 
         }
-        private IScoreManager scoreManager = null;
-        private IScoreManager ScoreManager
-        {
-            get
-            {
-                if (scoreManager != null) return scoreManager;
-                ServiceLocator.Resolve(out scoreManager);
-                return scoreManager;
-            }
-        }
-        
+    
         public string PlayerName { get => playerName; }
+
+        public bool CanMove { get => canMove; }
 
         public override void OnStartServer()
         {
@@ -98,19 +92,18 @@ namespace MD.Character
         {
             if (!isLocalPlayer) return;
             
-            ScoreManager.UpdateScoreText(newValue);
+            EventSystems.EventManager.Instance.TriggerEvent(new ScoreChangeData(newValue));
         }
 
         public int GetCurrentScore() => score;
 
         [Server]
-        public void SetCanMove(bool value) => canMove=value;
+        public void SetCanMove(bool value) => canMove = value;
 
         [TargetRpc]
         public void TargetNotifyGameReady(float time)
         {
-            IGameCountDown countDown;
-            if (ServiceLocator.Resolve<IGameCountDown>(out countDown)) countDown.StartCountDown(0f);
+            if (ServiceLocator.Resolve<IGameCountDown>(out IGameCountDown countDown)) countDown.StartCountDown(0f);
         }
 
         [TargetRpc]
@@ -145,7 +138,5 @@ namespace MD.Character
             if (Input.GetKeyDown(KeyCode.F)) IncreaseScore(10);
             #endif
         }
-
-        public bool CanMove() => canMove;
     }
 }
