@@ -556,8 +556,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nextSceneName: Main Menu Scene
   fadeScreen: {fileID: 591958318}
-  fadeStartCompleteEvent: {fileID: 11400000, guid: d370e0bcd750c53438ff2914187c99ea,
-    type: 2}
 --- !u!114 &749029768
 MonoBehaviour:
   m_ObjectHideFlags: 0

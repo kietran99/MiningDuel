@@ -20,7 +20,7 @@ namespace MD.VisualEffects
             if (digProgressMux == null) AddFlows();  
 
             EventSystems.EventManager.Instance.StartListening<DigProgressData>(ResolveProgressInput);
-            EventSystems.EventManager.Instance.StartListening<JoystickDragData>(Hide);
+            EventSystems.EventManager.Instance.StartListening<JoystickDragData>(HandleJoystickDrag);
         }
        
         private void AddFlows()
@@ -40,10 +40,10 @@ namespace MD.VisualEffects
         private void OnDisable() 
         {            
             EventSystems.EventManager.Instance.StopListening<DigProgressData>(ResolveProgressInput);
-            EventSystems.EventManager.Instance.StopListening<JoystickDragData>(Hide);
+            EventSystems.EventManager.Instance.StopListening<JoystickDragData>(HandleJoystickDrag);
         }
 
-        private void Hide(JoystickDragData dragData)
+        private void HandleJoystickDrag(JoystickDragData dragData)
         {
             if (!dragData.InputDirection.x.IsEqual(0f) && !dragData.InputDirection.y.IsEqual(0f))
             {

@@ -7,13 +7,13 @@ public class BotMoveAction : NetworkBehaviour
 {
     public float speed = 3f;
     private RaycastHit2D[] rayArr = new RaycastHit2D[10];
-    private int resCount = 0;
-    private bool collideLeft = false;
-    private float collideLeftDistance = 0f;
-    private bool collideRigth = false;
+    // private int resCount = 0;
+    // private bool collideLeft = false;
+    // private float collideLeftDistance = 0f;
+    // private bool collideRigth = false;
 
-    private float collideRightDistance = 0f;
-    private bool collideAhead = false;
+    // private float collideRightDistance = 0f;
+    // private bool collideAhead = false;
     private Vector2 movePos = Vector2.zero;
 
     private bool isMoving = false;

@@ -13,20 +13,20 @@ namespace EventSystems
         {
             if (eventDictionary.TryGetValue(typeof(T), out IBaseEvent publisher))
             {
-                (publisher as GameEvent<T>).Add(listener);
+                (publisher as PackagedEvent<T>).Add(listener);
                 return;
             }
             
-            publisher = new GameEvent<T>();
+            publisher = new PackagedEvent<T>();
             eventDictionary.Add(typeof(T), publisher);
-            (publisher as GameEvent<T>).Add(listener);
+            (publisher as PackagedEvent<T>).Add(listener);
         }
 
         public void StopListening<T>(Action<T> listener) where T : IEventData
         {
             if (eventDictionary.TryGetValue(typeof(T), out IBaseEvent publisher))
             {
-                (publisher as GameEvent<T>).Remove(listener);
+                (publisher as PackagedEvent<T>).Remove(listener);
             }
         }
 
@@ -34,7 +34,7 @@ namespace EventSystems
         {
             if (eventDictionary.TryGetValue(typeof(T), out IBaseEvent publisher))
             {
-                (publisher as GameEvent<T>).Invoke(eventData);
+                (publisher as PackagedEvent<T>).Invoke(eventData);
             }
         }
     }
