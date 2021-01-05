@@ -22,9 +22,6 @@ namespace MD.Character
         [SyncVar] [SerializeField]
         private bool canMove = false;
 
-        // [SyncVar]
-        // private bool isReady = true;
-
         private NetworkManagerLobby room;
         private NetworkManagerLobby Room
         {
@@ -46,6 +43,8 @@ namespace MD.Character
             }
         }
         
+        public string PlayerName { get => playerName; }
+
         public override void OnStartServer()
         {
             base.OnStartServer();
@@ -61,8 +60,7 @@ namespace MD.Character
 
         public override void OnStopClient()
         {
-            Room.Players.Remove(this);
-            
+            Room.Players.Remove(this);           
         }
 
         public override void OnStartAuthority()
@@ -121,27 +119,24 @@ namespace MD.Character
             EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(hasWon,score));
         }
 
-        public void ExistGame()
+        public void ExitGame()
         {
-            if (hasAuthority)
+            if (!hasAuthority) return;
+           
+            ServiceLocator.Reset();
+            if (isServer)
             {
-                ServiceLocator.Reset();
-                if (isServer)
-                {
-                    Debug.Log("quit match on server");
-                    NetworkServer.DisconnectAllConnections();
-                    NetworkManager.singleton.StopHost();
-                    // (NetworkManager.singleton as NetworkManagerLobby).CleanObjectsWhenDisconnect();
-                }
-                else
-                {
-                    Debug.Log("quit match on client");
-                    NetworkManager.singleton.StopClient();
-                    (NetworkManager.singleton as NetworkManagerLobby).CleanObjectsWhenDisconnect();
-                    SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);
-                }
+                Debug.Log("Quit match on server");
+                NetworkServer.DisconnectAllConnections();
+                NetworkManager.singleton.StopHost();
+                // (NetworkManager.singleton as NetworkManagerLobby).CleanObjectsWhenDisconnect();
+                return;
             }
-
+            
+            Debug.Log("Quit match on client");
+            NetworkManager.singleton.StopClient();
+            (NetworkManager.singleton as NetworkManagerLobby).CleanObjectsWhenDisconnect();
+            SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);            
         }
 
         void Update()

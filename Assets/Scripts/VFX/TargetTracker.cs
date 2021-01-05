@@ -1,30 +1,30 @@
 ﻿using UnityEngine;
 using MD.Character;
 
-namespace MD.VisualEffects
+public class TargetTracker : MonoBehaviour
 {
-    public class TargetTracker : MonoBehaviour
+    protected Transform playerTransform;
+
+    protected virtual void Start()
     {
-        private Transform playerTransform;
-
-        void Start()
+        if (!ServiceLocator.Resolve<Player>(out Player player))
         {
-            if (!ServiceLocator.Resolve<Player>(out Player player))
-            {
-                return;
-            }
-
-            playerTransform = player.transform;
+            return;
         }
 
-        void Update()
-        {
-            if (playerTransform == null)
-            {
-                return;
-            }
-            
-            transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y, transform.position.z);
-        }
+        playerTransform = player.transform;
     }
+
+    private void FixedUpdate()
+    {
+        if (playerTransform == null)
+        {
+            return;
+        }
+        
+        transform.position = GetFollowOffset(playerTransform.position);
+    }
+
+    protected virtual Vector3 GetFollowOffset(Vector3 playerPos) => new Vector3(playerPos.x, playerPos.y, transform.position.z);
 }
+
