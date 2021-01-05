@@ -51,7 +51,7 @@ namespace MD.Diggable.Gem
         public void Dig(DigAction digger)
         {           
             currentDigger = digger;
-            GemValue.DecreaseValue(digger.Power);
+            GemValue.DecreaseValue(digger.Power, out bool obtainable);
             RpcSetDigger(digger.netIdentity);
             diggerID = digger.netIdentity; 
 
@@ -62,7 +62,7 @@ namespace MD.Diggable.Gem
                 TargetTriggerDigProgressData(digger.connectionToClient, GemValue.RemainingHit, GemValue.Value);
             }
 
-            if (GemValue.RemainingHit > 0) return;
+            if (!obtainable) return;
            
             if (!isBot)
             {

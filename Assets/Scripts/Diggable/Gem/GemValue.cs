@@ -14,20 +14,21 @@ namespace MD.Diggable.Gem
 
         private void Start()
         {
-            RemainingHit = value;    
+            RemainingHit = value;   
+             
             if (!isClient) return;
             
-            IMapManager mapManager;
-            if (ServiceLocator.Resolve<IMapManager>(out mapManager))
+            if (ServiceLocator.Resolve<IMapManager>(out IMapManager mapManager))
             {
                 mapManager.NotifyNewGem(transform.position,value.ToDiggable());
             }           
         }
 
-        public void DecreaseValue(int power)
+        public void DecreaseValue(int power, out bool obtainable)
         {
             var decAmt = RemainingHit - power;
             RemainingHit = decAmt > 0 ? decAmt : 0;
+            obtainable = RemainingHit == 0;
         }
     }
 }
