@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace MD.UI
 {
-    public class ScoreManager : MonoBehaviour
+    public class ScoreView : MonoBehaviour
     {
         [SerializeField]
         private Text scoreText = null;
