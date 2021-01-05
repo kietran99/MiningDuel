@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace MD.UI
 {
     [RequireComponent(typeof(Text))]
-    public class GameCountdown : MonoBehaviour, IGameCountDown
+    public class GameCountdown : MonoBehaviour
     {       
         private Text timerText;
 
@@ -18,7 +18,7 @@ namespace MD.UI
         private void Awake()
         {
             timerText = GetComponent<Text>();
-            ServiceLocator.Register<IGameCountDown>(this);
+            EventSystems.EventManager.Instance.StartListening<StartGameData>(HandleGameStart);
         }
 
         private void Start()
@@ -27,30 +27,28 @@ namespace MD.UI
             (currentMin, currentSec) = GetMinAndSec(timerText.text);
             EventSystems.EventManager.Instance.StartListening<EndGameData>(StopCountDown);
         }
+
         private void OnDestroy()
         {
             EventSystems.EventManager.Instance.StopListening<EndGameData>(StopCountDown);
+            EventSystems.EventManager.Instance.StopListening<StartGameData>(HandleGameStart);
         }
 
-        public void StartCountDown(float Time)
+        private void HandleGameStart(StartGameData data) => StartCountDown();
+
+        public void StartCountDown()
         {
             gameStarted = true;
         }
 
         private void StopCountDown(EndGameData data)
         {
-            (currentMin,currentSec) = (0,0);
+            (currentMin, currentSec) = (0, 0);
             UpdateRemainingTime();
         }
 
         void Update()
         {
-// #if UNITY_EDITOR
-//             if (Input.GetKeyDown(KeyCode.Q))
-//             {
-//                 EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(GetCurrentScore()));
-//             }
-// #endif
             if (!gameStarted || gameEnded) return;
 
             if (currentMin == 0 && currentSec == 0)

@@ -1,6 +1,6 @@
 ﻿namespace MD.Character
 {
-    public class ScoreChangeData : EventSystems.IEventData
+    public struct ScoreChangeData : EventSystems.IEventData
     {
         public int newScore;
 

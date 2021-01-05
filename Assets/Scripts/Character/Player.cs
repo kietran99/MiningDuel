@@ -103,7 +103,7 @@ namespace MD.Character
         [TargetRpc]
         public void TargetNotifyGameReady(float time)
         {
-            if (ServiceLocator.Resolve<IGameCountDown>(out IGameCountDown countDown)) countDown.StartCountDown(0f);
+            EventSystems.EventManager.Instance.TriggerEvent(new StartGameData());
         }
 
         [TargetRpc]
