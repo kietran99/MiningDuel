@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using Mirror;
-using MD.Character;
+
 namespace MD.Diggable.Projectile
 {
     [RequireComponent(typeof(Rigidbody2D))]
@@ -35,9 +35,7 @@ namespace MD.Diggable.Projectile
         [ClientRpc]
         private void RpcLauch(float dirX, float dirY, float power)
         {
-            Debug.Log("call RPClauch on client throwDir dirX: " + dirX + " dirY: "+ dirY + " power: " + power);
             transform.parent = null;
-            // transform.Translate(dir);
             GetComponent<Rigidbody2D>().AddForce(new Vector2(dirX,dirY).normalized*power,ForceMode2D.Impulse);
         }
         

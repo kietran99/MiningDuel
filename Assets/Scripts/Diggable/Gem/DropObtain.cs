@@ -7,21 +7,21 @@ public class DropObtain : NetworkBehaviour
     private int value = 1;
 
     [SerializeField]
-    private bool canObtain;
+    private bool obtainable;
 
     [SerializeField]
     private float obtainWaitTime = 3f;
 
     public override void OnStartServer()
     {
-        canObtain = false;
+        obtainable = false;
         Invoke("EnableObtain", obtainWaitTime);
     }
 
     [Server]
     private void EnableObtain()
     {
-        canObtain = true;
+        obtainable = true;
         transform.GetComponentInChildren<SpriteRenderer>().color = Color.white;
         RpcChangeColor();
     }
@@ -35,13 +35,17 @@ public class DropObtain : NetworkBehaviour
     [ServerCallback]
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.CompareTag(Constants.PLAYER_TAG) || !canObtain) return;
-        if (other.GetComponent<MD.Character.Player>() != null)
-            other.GetComponent<MD.Character.Player>().IncreaseScore(value);
+        if (!other.CompareTag(Constants.PLAYER_TAG) || !obtainable) return;
+
+        if (other.GetComponent<MD.Character.ScoreManager>() != null)
+        {
+            //EventSystems.EventManager.Instance.TriggerEvent(new Gem)
+        }
         else
         {
             other.GetComponent<PlayerBot>().score += value;
         }
+
         Destroy(gameObject);
     }
 }

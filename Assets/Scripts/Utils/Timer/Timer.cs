@@ -20,7 +20,6 @@ namespace Timer
        
         private IEnumerator Tick()
         {
-            Debug.Log("Start coroutine");    
 
             while (state.Equals(TimerState.ON))
             {     
@@ -34,8 +33,7 @@ namespace Timer
         }
 
         public void Activate()
-        {    
-            Debug.Log("Activate timer");        
+        {       
             state = TimerState.ON;
             StartCoroutine(Tick());
         }

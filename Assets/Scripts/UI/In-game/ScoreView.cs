@@ -27,7 +27,11 @@ namespace MD.UI
 //         }
 // #endif
 
-        private void HandleScoreChange(ScoreChangeData data) => UpdateScoreText(data.newScore);
+        private void HandleScoreChange(ScoreChangeData data) //=> UpdateScoreText(data.newScore);
+        {
+            Debug.Log("Score View: " + data.newScore);
+            UpdateScoreText(data.newScore);
+        }
 
         public void UpdateScoreText(int score)
         {

@@ -104,11 +104,6 @@ namespace MD.Diggable.Projectile
         private void Explode()
         {
             isExploded = true;
-            // Debug.Log("Explode");
-            // var mySphere =  GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            // mySphere.transform.localScale = new Vector3(2f*explosionRadius,2f*explosionRadius,1f);
-            // mySphere.transform.position = transform.position;
-            Debug.Log("Explode");
             CheckForCollision();
             PlayExplosionEffect();
             EventSystems.EventManager.Instance.TriggerEvent(new ExplodeData());
@@ -123,7 +118,7 @@ namespace MD.Diggable.Projectile
             {
                 if (!collide.CompareTag(Constants.PLAYER_TAG)) continue;  
                 IExplodable target = collide.transform.GetComponent<IExplodable>();
-                target?.ProcessExplosion(stats.GemDropPercentage, stats.StunTime, -1);
+                target?.HandleExplosion(stats.GemDropPercentage, -1);
             }
         }
         

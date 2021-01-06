@@ -275,16 +275,16 @@ public class NetworkManagerLobby : NetworkManager
         //if play with bot
         if (Bots.Count > 0)
         {
-            Players[0].TargetNotifyEndGame(Players[0].GetCurrentScore() >= Bots[0].score);
+            Players[0].TargetNotifyEndGame(Players[0].CurrentScore >= Bots[0].score);
             return;
         }
         Players.ForEach(player => player.SetCanMove(false));
-        List<Player> orderedPlayers = Players.OrderBy(player => -player.GetCurrentScore()).ToList<Player>();
-        int highestScore = orderedPlayers[0].GetCurrentScore();
+        List<Player> orderedPlayers = Players.OrderBy(player => -player.CurrentScore).ToList<Player>();
+        int highestScore = orderedPlayers[0].CurrentScore;
         orderedPlayers[0].TargetNotifyEndGame(true);
         foreach (Player player in orderedPlayers.Skip(1))
         {
-            if (player.GetCurrentScore() == highestScore)
+            if (player.CurrentScore == highestScore)
             {
                 //tied
                 player.TargetNotifyEndGame(true);

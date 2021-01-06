@@ -14,14 +14,7 @@ namespace MD.Diggable.Gem
 
         private void Start()
         {
-            RemainingHit = value;   
-             
-            if (!isClient) return;
-            
-            if (ServiceLocator.Resolve<IMapManager>(out IMapManager mapManager))
-            {
-                mapManager.NotifyNewGem(transform.position,value.ToDiggable());
-            }           
+            RemainingHit = value;       
         }
 
         public void DecreaseValue(int power, out bool obtainable)

@@ -2033,7 +2033,7 @@ PrefabInstance:
     - target: {fileID: 2900253976682946693, guid: f7e3093fe5cf872478fd3778c89b2cff,
         type: 3}
       propertyPath: cooldown
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2900253976682946697, guid: f7e3093fe5cf872478fd3778c89b2cff,
         type: 3}
@@ -2383,6 +2383,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1602271756252407940}
     m_Modifications:
+    - target: {fileID: 2900253976682946693, guid: f7e3093fe5cf872478fd3778c89b2cff,
+        type: 3}
+      propertyPath: cooldown
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2900253976682946697, guid: f7e3093fe5cf872478fd3778c89b2cff,
         type: 3}
       propertyPath: m_LocalPosition.x

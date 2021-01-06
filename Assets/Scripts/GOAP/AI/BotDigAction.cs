@@ -7,7 +7,7 @@ public class BotDigAction : MD.Character.DigAction
     {
         bot = GetComponent<PlayerBot>();
     }
-    protected override void StartListeningToEvents()
+    protected override void ListenToEvents()
     {
         EventSystems.EventManager.Instance.StartListening<BotDigAnimEndData>(NotifyEndDig);
     }

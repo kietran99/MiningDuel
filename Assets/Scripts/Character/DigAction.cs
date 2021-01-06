@@ -41,7 +41,7 @@ namespace MD.Character
 
         public override void OnStartAuthority()
         {
-            StartListeningToEvents();
+            ListenToEvents();
         }
 
         private void OnDestroy()
@@ -49,7 +49,7 @@ namespace MD.Character
             StopListeningToEvents();
         }
 
-        protected virtual void StartListeningToEvents()
+        protected virtual void ListenToEvents()
         {
             EventSystems.EventManager.Instance.StartListening<DigAnimEndData>(HandleDigAnimEnd);
         }
@@ -78,7 +78,7 @@ namespace MD.Character
                 Invoke(nameof(EnableCanMove), digCooldown);
             }
 
-            MapManager.DigAtPosition(netIdentity);
+            MapManager.DigAt(netIdentity, transform.position);
         }
         
         [Server]

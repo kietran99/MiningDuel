@@ -1,27 +1,27 @@
 ﻿using UnityEngine;
 using Mirror;
-using MD.UI;
 using UnityEngine.SceneManagement;
 
 namespace MD.Character
 {
     [RequireComponent(typeof(MoveAction))]
     [RequireComponent(typeof(DigAction))]
+    [RequireComponent(typeof(NetworkIdentity))]
+    [RequireComponent(typeof(PlayerExplosionHandler))]
+    [RequireComponent(typeof(ScoreManager))]
     public class Player : NetworkBehaviour
     {
         [Header("Game Stats")]
-        [SyncVar(hook = nameof(OnScoreChange))]
-        [SerializeField]
-        private int score;
-
         [SerializeField]
         private SpriteRenderer indicator = null;
+
+        [SerializeField]
+        private ScoreManager scoreManager = null;
 
         [SyncVar]
         private string playerName;
 
         [SyncVar] 
-        [SerializeField]
         private bool canMove = false;
 
         private NetworkManagerLobby room;
@@ -39,11 +39,7 @@ namespace MD.Character
 
         public bool CanMove { get => canMove; }
 
-        public override void OnStartServer()
-        {
-            base.OnStartServer();
-            score = 0;
-        }
+        public int CurrentScore { get => scoreManager.CurrentScore; }
 
         public override void OnStartClient()
         {
@@ -74,28 +70,6 @@ namespace MD.Character
         {
             ServiceLocator.Register(mapManager.GetComponent<IMapManager>());
         }
-        
-        [Server]
-        public void IncreaseScore(int amount)
-        {
-            score += amount;
-        }
-
-        [Server]
-        public void DecreaseScore(int amount)
-        {
-            score -= amount;
-            score = score < 0 ? 0 : score;
-        }
-
-        public void OnScoreChange(int oldValue, int newValue)
-        {
-            if (!isLocalPlayer) return;
-            
-            EventSystems.EventManager.Instance.TriggerEvent(new ScoreChangeData(newValue));
-        }
-
-        public int GetCurrentScore() => score;
 
         [Server]
         public void SetCanMove(bool value) => canMove = value;
@@ -109,7 +83,7 @@ namespace MD.Character
         [TargetRpc]
         public void TargetNotifyEndGame(bool hasWon)
         {
-            EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(hasWon,score));
+            EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(hasWon, scoreManager.CurrentScore));
         }
 
         public void ExitGame()
@@ -132,11 +106,6 @@ namespace MD.Character
             SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);            
         }
 
-        void Update()
-        {
-            #if UNITY_EDITOR
-            if (Input.GetKeyDown(KeyCode.F)) IncreaseScore(10);
-            #endif
-        }
+        
     }
 }

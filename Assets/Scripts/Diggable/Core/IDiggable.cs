@@ -1,6 +1,6 @@
 using MD.Character;
 
-public interface ICanDig
+public interface IDiggable
 {
     void Dig(DigAction digger);
 }

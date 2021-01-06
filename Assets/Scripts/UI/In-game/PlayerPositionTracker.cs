@@ -12,7 +12,6 @@ public class PlayerPositionTracker : TargetTracker
         base.Start();
         GetComponent<Text>().text = playerTransform.GetComponent<MD.Character.Player>().PlayerName;
         mainCamera = Camera.main;
-        Debug.Log(baseOffset);
     }
 
     protected override Vector3 GetFollowOffset(Vector3 playerPos)

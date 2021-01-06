@@ -10,26 +10,6 @@ namespace MD.UI
     {
         [SerializeField] Sprite unpressedSprite = null, pressedSprite = null;
 
-        [SerializeField]
-        private float cooldown = 0.5f;
-
-        private bool canBeInvoked;
-
-        public float Cooldown 
-        {
-            get => cooldown;
-            set
-            {
-                if (value < 0f)
-                {
-                    Debug.LogError("Cooldown value must be non-negative");
-                    return;
-                }
-
-                cooldown = value;
-            }
-        }
-
         public Action OnPress { get; set; }
         public Action OnRelease { get; set; }
 
@@ -40,15 +20,8 @@ namespace MD.UI
             myButton = GetComponent<Button>();
         }
 
-        void OnEnable()
-        {
-            myButton.interactable = true;
-        }
-
         public void OnPointerDown(PointerEventData eventData)
-        {
-            //if (!canBeInvoked) return;
-
+        {           
             if (!myButton.interactable) return;
 
             myButton.image.sprite = pressedSprite;
@@ -56,37 +29,9 @@ namespace MD.UI
         }
         
         public void OnPointerUp(PointerEventData eventData)
-        {
-            //if (!canBeInvoked) return;
-
+        {   
             if (!myButton.interactable) return;
-           
-            if (cooldown == 0f) 
-            {
-                PopButtonUp();
-                return;
-            }
-            
-            StartCoroutine(KeepPressing());
-            //canBeInvoked = false;
-            //Invoke(nameof(PopButtonUp), cooldown);
-        }
 
-        private System.Collections.IEnumerator KeepPressing()
-        {
-            // Execute on the next frame after OnClick method on Button has executed
-            yield return null;
-            myButton.interactable = false;
-
-            yield return new WaitForSecondsRealtime(cooldown);
-            myButton.interactable = true;
-            PopButtonUp();
-        }
-
-        private void PopButtonUp()
-        {
-            //Debug.Log("Pop");
-            //canBeInvoked = true;
             myButton.image.sprite = unpressedSprite;
             OnRelease?.Invoke(); 
         }

@@ -343,6 +343,7 @@ MonoBehaviour:
   syncInterval: 0.1
   score: 0
   indicator: {fileID: 7091697347460261906}
+  scoreManager: {fileID: 546028043007059227}
   canMove: 0
 --- !u!114 &7091697348273341027
 MonoBehaviour:
@@ -416,3 +417,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a08ec2a4613c46488878b76866013ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  currentScore: 0

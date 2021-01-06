@@ -15,7 +15,7 @@ public class PB_Idle : FMSState
     {
         base.Update();
         stage = EVENT.EXIT;
-        if (bot.GetCurrentScore() < bot.player.GetCurrentScore() && bot.GetCurrentScore() >= 20)
+        if (bot.GetCurrentScore() < bot.player.CurrentScore && bot.GetCurrentScore() >= 20)
         {
             Debug.Log("<player score and >= 20 score");
             nextState = new PB_FindPlayer(bot);

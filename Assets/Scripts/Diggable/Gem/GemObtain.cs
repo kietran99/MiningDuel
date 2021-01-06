@@ -7,51 +7,29 @@ namespace MD.Diggable.Gem
 {
     [RequireComponent (typeof(CircleCollider2D))]
     [RequireComponent(typeof(GemValue))]
-    public class GemObtain : NetworkBehaviour, ICanDig
+    public class GemObtain : NetworkBehaviour, IDiggable
     {
         [SyncVar]
         private NetworkIdentity diggerID;
         private DigAction currentDigger;
-
-        private MapManager mapMangerServer;
-
-        private GemValue gemValue = null;
-
-        private Player player = null;
-        private Player Player
-        {
-            get
-            {
-                if (player != null) return player;
-                ServiceLocator.Resolve<Player>(out player);
-                return player;
-            }
-        }
-        private GemValue GemValue
-        {
-            get
-            {
-                if (gemValue != null) return gemValue;
-                return gemValue = GetComponent<GemValue>();
-            }
-        }  
+        private GemValue gemValue;
+        
         public override void OnStartClient()
         {
-            base.OnStartClient();
-            EventManager.Instance.TriggerEvent(new DiggableSpawnData(GemValue.Value, transform.position.x, transform.position.y));
+            gemValue = GetComponent<GemValue>();
+            EventManager.Instance.TriggerEvent(new DiggableSpawnData(gemValue.Value, transform.position.x, transform.position.y));
         }
 
         public override void OnStopClient()
         {
-            //fire an event for sonar to update
-            EventManager.Instance.TriggerEvent(new DiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y));                   
+            EventManager.Instance.TriggerEvent(new DiggableDestroyData(gemValue.Value, transform.position.x, transform.position.y));                   
         }
 
         [Server]
         public void Dig(DigAction digger)
         {           
             currentDigger = digger;
-            GemValue.DecreaseValue(digger.Power, out bool obtainable);
+            gemValue.DecreaseValue(digger.Power, out bool obtainable);
             RpcSetDigger(digger.netIdentity);
             diggerID = digger.netIdentity; 
 
@@ -59,18 +37,25 @@ namespace MD.Diggable.Gem
             
             if (!isBot)
             {
-                TargetTriggerDigProgressData(digger.connectionToClient, GemValue.RemainingHit, GemValue.Value);
+                TargetTriggerDigProgressData(digger.connectionToClient, gemValue.RemainingHit, gemValue.Value);
             }
 
-            if (!obtainable) return;
-           
+            if (obtainable) 
+            {
+                Obtain(isBot);
+            }
+        }
+
+        [Server]
+        private void Obtain(bool isBot)
+        {
             if (!isBot)
             {
-                TargetTriggerGemDigSuccessData(digger.connectionToClient, GemValue.Value, transform.position.x, transform.position.y); 
+                TargetTriggerGemDigSuccessData(currentDigger.connectionToClient, gemValue.Value, transform.position.x, transform.position.y); 
             }
 
             EventManager.Instance.TriggerEvent(
-                new ServerDiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y, currentDigger));
+                new ServerDiggableDestroyData(gemValue.Value, transform.position.x, transform.position.y, currentDigger));
                 
             Destroy(gameObject);
         }
@@ -84,14 +69,13 @@ namespace MD.Diggable.Gem
         [TargetRpc]
         private void TargetTriggerGemDigSuccessData(NetworkConnection target, int gemVal, float x, float y)
         {
-            EventManager.Instance.TriggerEvent(new GemDigSuccessData(gemVal, x, y));
+            EventManager.Instance.TriggerEvent(new GemDigSuccessData(diggerID.netId, x, y, gemVal));
         }
 
         [ClientRpc]
         private void RpcSetDigger(NetworkIdentity id)
         {
             this.diggerID = id;
-        }
-        
+        }      
     }
 }
