@@ -24,7 +24,7 @@ namespace MD.Character
             playerId = GetComponent<NetworkIdentity>().netId;
         }
 
-        public void HandleExplosion(uint throwerID, float gemDropPercentage, int bombType)
+        public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage, int bombType)
         {
             int dropAmount = Mathf.FloorToInt(scoreManager.CurrentScore * gemDropPercentage * .01f);
             EventSystems.EventManager.Instance.TriggerEvent(new ExplodedData(playerId, dropAmount));
@@ -34,16 +34,17 @@ namespace MD.Character
                 GameObject droppingGem = Instantiate(droppingGemPrefab, transform.position, Quaternion.identity);
                 NetworkServer.Spawn(droppingGem);
                 droppingGem.GetComponent<Diggable.Gem.DropObtain>().ThrowerID = throwerID;
-                droppingGem.GetComponent<Rigidbody2D>().AddForce(GetExplosionForce() * GetExplosionDirection());
+                droppingGem.GetComponent<Diggable.Gem.DropDriver>().ThrowerTransform = throwerTransform;
+                droppingGem.GetComponent<Rigidbody2D>().AddForce(RandomExplosionForce() * RandomExplosionDirection());
             }
         }
 
-        private float GetExplosionForce()
+        private float RandomExplosionForce()
         {
             return Random.Range(100f, maxExplosionForce);
         }
 
-        private Vector2 GetExplosionDirection()
+        private Vector2 RandomExplosionDirection()
         {
             Vector2 randomDir = Vector2.zero;
             randomDir.x = Random.Range(-1f, 1f);

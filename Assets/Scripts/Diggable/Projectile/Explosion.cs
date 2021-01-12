@@ -120,7 +120,8 @@ namespace MD.Diggable.Projectile
                 if (!collide.CompareTag(Constants.PLAYER_TAG)) continue;  
 
                 IExplodable target = collide.transform.GetComponent<IExplodable>();
-                target?.HandleExplosion(GetComponent<ProjectileLauncher>().Thrower.netId, stats.GemDropPercentage, -1);
+                var thrower = GetComponent<ProjectileLauncher>().Thrower;
+                target?.HandleExplosion(thrower.transform, thrower.netId, stats.GemDropPercentage, -1);
             }
         }
         

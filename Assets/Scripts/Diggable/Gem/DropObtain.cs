@@ -9,6 +9,8 @@ namespace MD.Diggable.Gem
         [SerializeField]
         private int value = 1;
 
+        private Transform throwerTransform;
+
         public uint ThrowerID { get; set; }
 
         [ServerCallback]
