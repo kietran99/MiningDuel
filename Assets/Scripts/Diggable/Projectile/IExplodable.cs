@@ -2,6 +2,6 @@ namespace MD.Diggable.Projectile
 {
     public interface IExplodable
     {
-        void HandleExplosion(float gemDropPercentage, int bombType);
+        void HandleExplosion(uint throwerID, float gemDropPercentage, int bombType);
     }
 }

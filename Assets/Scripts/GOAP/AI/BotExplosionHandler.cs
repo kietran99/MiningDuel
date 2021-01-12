@@ -25,7 +25,7 @@ namespace MD.Character
         }
 
         [Server]
-        public void HandleExplosion(float gemDropPercentage, int bombType)
+        public void HandleExplosion(uint throwerID, float gemDropPercentage, int bombType)
         {
             Debug.Log(transform.name + " was exploded");
             // if (!ServiceLocator.Resolve<IScoreManager>(out IScoreManager scoreManager)) return;

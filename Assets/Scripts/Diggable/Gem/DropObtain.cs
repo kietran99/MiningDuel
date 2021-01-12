@@ -9,28 +9,14 @@ namespace MD.Diggable.Gem
         [SerializeField]
         private int value = 1;
 
-        [SerializeField]
-        private bool obtainable;
-
-        [SerializeField]
-        private float obtainWaitTime = 3f;
-
-        public override void OnStartServer()
-        {
-            obtainable = false;
-            Invoke("EnableObtain", obtainWaitTime);
-        }
-
-        [Server]
-        private void EnableObtain()
-        {
-            obtainable = true;
-        }
+        public uint ThrowerID { get; set; }
 
         [ServerCallback]
         void OnTriggerEnter2D(Collider2D other)
         {
-            if (!other.CompareTag(Constants.PLAYER_TAG) || !obtainable) return;
+            if (!ThrowerID.Equals(other.GetComponent<NetworkIdentity>().netId)) return;
+
+            if (!other.CompareTag(Constants.PLAYER_TAG)) return;
 
             if (other.GetComponent<MD.Character.ScoreManager>() != null)
             {

@@ -28,7 +28,7 @@ public class ThrowControl : MonoBehaviour
         // EventSystems.EventManager.Instance.StopListening<ExplodeData>(HideButton);
     }
 
-    private void HideButton(ExplodeData obj)
+    private void HideButton(ProjectileCollisionData obj)
     {
         button.gameObject.SetActive(false);
     }

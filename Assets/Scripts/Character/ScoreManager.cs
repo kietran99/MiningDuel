@@ -79,6 +79,7 @@ namespace MD.Character
         {
             currentScore = newValue;
             if (!hasAuthority) return;
+            
             EventSystems.EventManager.Instance.TriggerEvent(new ScoreChangeData(newValue));
         }
 

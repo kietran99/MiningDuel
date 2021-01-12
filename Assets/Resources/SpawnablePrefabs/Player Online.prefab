@@ -341,10 +341,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  score: 0
   indicator: {fileID: 7091697347460261906}
   scoreManager: {fileID: 546028043007059227}
-  canMove: 0
 --- !u!114 &7091697348273341027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -389,7 +387,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  basePower: 100
+  basePower: 150
 --- !u!114 &1499878171468811934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -419,4 +417,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  currentScore: 0
