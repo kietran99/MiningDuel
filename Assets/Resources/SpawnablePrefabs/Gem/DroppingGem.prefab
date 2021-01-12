@@ -72,7 +72,7 @@ SpriteRenderer:
   m_SortingOrder: 3
   m_Sprite: {fileID: -6822941647383629172, guid: 0bc4ed27aef38a44bb72e80f9beb5326,
     type: 3}
-  m_Color: {r: 0.59134924, g: 0.5747152, b: 0.990566, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -92,8 +92,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4802790712231606848}
   - component: {fileID: 4802790712231606851}
-  - component: {fileID: 4802790712231606849}
   - component: {fileID: 4802790712231606854}
+  - component: {fileID: 4802790712231606849}
   - component: {fileID: 43432079349955853}
   - component: {fileID: 1915639183554090930}
   m_Layer: 0
@@ -144,23 +144,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &4802790712231606849
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4802790712231606850}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0223164cc41ed3e418a2736ddcb5f82d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  value: 1
-  canObtain: 0
-  obtainWaitTime: 3
 --- !u!50 &4802790712231606854
 Rigidbody2D:
   serializedVersion: 4
@@ -182,6 +165,21 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &4802790712231606849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4802790712231606850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0223164cc41ed3e418a2736ddcb5f82d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  value: 1
 --- !u!114 &43432079349955853
 MonoBehaviour:
   m_ObjectHideFlags: 0

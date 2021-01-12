@@ -282,11 +282,7 @@ public class MapManager : NetworkBehaviour, IMapManager
 
                     randomGem = GetRandomGem();
 
-                    GameObject instance = Instantiate(randomGem.prefab, IndexToPosition(randomPos), 
-                        Quaternion.identity, gemContainer);
-                    // mapData[randomPos.x,randomPos.y] = randomGem.value;
-                    // NetworkServer.Spawn(Gem);
-                    // Diggables[randomPos.x,randomPos.y] = Gem;
+                    GameObject instance = Instantiate(randomGem.prefab, IndexToPosition(randomPos), Quaternion.identity, gemContainer);
                     SpawnDiggable(instance,randomGem.value, randomPos.x, randomPos.y);
                     nGeneratedGems++;
                 }

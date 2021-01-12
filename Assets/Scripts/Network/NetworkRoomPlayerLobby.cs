@@ -16,9 +16,6 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
 
     [SerializeField]
     private Button startGameButton = null, readyButton = null;
-
-    [SerializeField]
-    private Text ipText = null;
     
     [SyncVar(hook = nameof(HandleDisplayNameChanged))]
     public string DisplayName = "Loading....";
@@ -36,8 +33,7 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
         {
             room = room ?? NetworkManager.singleton as NetworkManagerLobby;
             return room;
-        }
-    
+        }   
     }
 
     private bool isHost;
@@ -58,7 +54,6 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
         CmdSetDisplayName(PlayerNameInput.DisplayName);
         lobbyUI.SetActive(true);
         if (!isHost) return;
-        ipText.text = GetLocalIPAddress();
     }
      public string GetLocalIPAddress()
      {
@@ -149,6 +144,7 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour
     {
         DisplayName = displayName;
     }
+
     [Command]
     public void CmdReadyUp()
     {

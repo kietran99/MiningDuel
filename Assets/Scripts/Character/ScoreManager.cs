@@ -1,4 +1,5 @@
 ﻿using MD.Diggable;
+using MD.Diggable.Gem;
 using Mirror;
 using UnityEngine;
 
@@ -19,57 +20,73 @@ namespace MD.Character
         public override void OnStartClient()
         {
             EventSystems.EventManager.Instance.StartListening<GemDigSuccessData>(HandleGemDigSuccess);
+            EventSystems.EventManager.Instance.StartListening<DropObtainData>(HandleDropObtain);
             EventSystems.EventManager.Instance.StartListening<ExplodedData>(HandleExplosion);
         }
 
         public override void OnStopClient()
         {
             EventSystems.EventManager.Instance.StopListening<GemDigSuccessData>(HandleGemDigSuccess);
+            EventSystems.EventManager.Instance.StopListening<DropObtainData>(HandleDropObtain);
             EventSystems.EventManager.Instance.StopListening<ExplodedData>(HandleExplosion);
         }
 
         private void HandleGemDigSuccess(GemDigSuccessData gemDigSuccessData)
         {
-            if (!gemDigSuccessData.diggerID.Equals(netId)) return;
-
-            CmdIncreaseScore(gemDigSuccessData.value);
+            HandleScoreChangeEvent(gemDigSuccessData.diggerID, CmdIncreaseScore, gemDigSuccessData.value);
         }
 
         private void HandleExplosion(ExplodedData explodedData)
         {
-            if (!explodedData.explodedPlayerId.Equals(netId)) return;
+            HandleScoreChangeEvent(explodedData.explodedTargetID, DecreaseScore, explodedData.dropAmount);
+        }
 
-            TargetDecreaseScore(explodedData.dropAmount);
+        private void HandleDropObtain(DropObtainData dropObtainData)
+        {            
+            HandleScoreChangeEvent(dropObtainData.pickerID, IncreaseScore, dropObtainData.value);
+        }
+
+        private void HandleScoreChangeEvent(uint targetID, System.Action<int> handler, int changeValue)
+        {
+            if (!IsLocalTarget(targetID)) return;
+
+            handler(changeValue);
+        }
+
+        private bool IsLocalTarget(uint targetID) => targetID.Equals(netId);
+
+        [Server]
+        private void IncreaseScore(int amount)
+        {                     
+            SyncScore(currentScore, currentScore + amount);        
         }
 
         [Command]
         private void CmdIncreaseScore(int amount)
-        {
-            currentScore += amount;
+        {                     
+            SyncScore(currentScore, currentScore + amount);        
         }
 
-        [TargetRpc]
-        private void TargetDecreaseScore(int amount)
+        [Server]
+        private void DecreaseScore(int amount)
         {
-            var oldScore = currentScore;
-            currentScore -= amount;
-            currentScore = currentScore < 0 ? 0 : currentScore;
-            SyncScore(oldScore, currentScore);
+            var newScore = currentScore - amount;
+            newScore = newScore < 0 ? 0 : newScore;
+            SyncScore(currentScore, newScore);
         }
 
         private void SyncScore(int oldValue, int newValue)
         {
             currentScore = newValue;
-
             if (!hasAuthority) return;
-
             EventSystems.EventManager.Instance.TriggerEvent(new ScoreChangeData(newValue));
         }
 
         void Update()
         {
             #if UNITY_EDITOR
-            if (Input.GetKeyDown(KeyCode.F)) CmdIncreaseScore(10);
+            if (Input.GetKeyDown(KeyCode.I)) CmdIncreaseScore(10);
+            else if (Input.GetKeyDown(KeyCode.J)) DecreaseScore(4);
             #endif
         }
     }

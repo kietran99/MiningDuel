@@ -300,7 +300,10 @@ public class NetworkManagerLobby : NetworkManager
             if (ServiceLocator.Resolve<MD.VisualEffects.FadeScreen>(out MD.VisualEffects.FadeScreen fadeScreen))
             {
                 fadeScreen.StartFading(() => ServerChangeScene(gamePlayScene));
+                return;
             }
+
+            ServerChangeScene(gamePlayScene);
         }
     }    
 }

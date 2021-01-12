@@ -2,12 +2,12 @@
 {
     public struct ExplodedData : EventSystems.IEventData
     {
-        public uint explodedPlayerId;
+        public uint explodedTargetID;
         public int dropAmount;
 
         public ExplodedData(uint explodedPlayerId, int dropAmount)
         {
-            this.explodedPlayerId = explodedPlayerId;
+            this.explodedTargetID = explodedPlayerId;
             this.dropAmount = dropAmount;
         }
     }
