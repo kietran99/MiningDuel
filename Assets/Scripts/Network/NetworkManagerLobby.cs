@@ -137,7 +137,7 @@ namespace MD.UI
                 {
                     var player = conn.identity.GetComponent<NetworkRoomPlayerLobby>();
                     RoomPlayers.Remove(player);
-                    NotifyPlayersOfReadyState();
+                    NotifyReadyState();
                 }
                 else if (SceneManager.GetActiveScene().path == gamePlayScene)
                 {
@@ -160,7 +160,7 @@ namespace MD.UI
 
         }
 
-        public void NotifyPlayersOfReadyState()
+        public void NotifyReadyState()
         {
             foreach (var player in RoomPlayers)
             {
@@ -181,7 +181,7 @@ namespace MD.UI
         {
             if (numPlayers < minimumPlayers) return false;
 
-            foreach(var player in RoomPlayers)
+            foreach (var player in RoomPlayers)
             {
                 if (!player.isReady) return false;
             }
@@ -202,9 +202,7 @@ namespace MD.UI
 
         private void SpawnMapManager()
         {        
-            //Debug.Log("Spawn Map Manager");
             mapManager = Instantiate(MapManagerPrefab);
-            // ServiceLocator.Register<IMapManager>(mapManager.GetComponent<IMapManager>());
             NetworkServer.Spawn(mapManager.gameObject);
             RoomPlayers.ToArray().ForEach(SpawnNetworkPlayer);
             DontDestroyOnLoad(mapManager);
@@ -213,14 +211,11 @@ namespace MD.UI
 
         private void SpawnNetworkPlayer(NetworkRoomPlayerLobby roomPlayer)
         {
-            //Debug.Log("Spawn a player");          
-            //var player = Instantiate(NetworkPlayerPrefab);     
             var player = Instantiate(NetworkPlayerPrefab, spawnPointPicker.NextSpawnPoint.position, Quaternion.identity);
             player.SetPlayerName(roomPlayer.DisplayName);
             var conn = roomPlayer.netIdentity.connectionToClient;
             NetworkServer.Destroy(conn.identity.gameObject);
             NetworkServer.ReplacePlayerForConnection(conn, player.gameObject, true);
-            // Players.Add(player);
             player.TargetRegisterIMapManager(mapManager.netIdentity);
         }
 
@@ -232,10 +227,6 @@ namespace MD.UI
                 //TODO check if all players loaded scene
                 StartGame();
             }
-            // if (SceneManager.GetActiveScene().path == menuScene)
-            // {
-            //     StopServer();
-            // }
         }
 
         private void StartGame()
@@ -270,9 +261,9 @@ namespace MD.UI
 
         private void EndGame()
         {
-            Debug.Log("Player count "+ Players.Count);
+            Debug.Log("Player count: " + Players.Count);
             //stop game in server
-            if (Players.Count <=0) return;
+            if (Players.Count <= 0) return;
             Time.timeScale = 0f;
             //if play with bot
             if (Bots.Count > 0)
@@ -280,6 +271,7 @@ namespace MD.UI
                 Players[0].TargetNotifyEndGame(Players[0].CurrentScore >= Bots[0].score);
                 return;
             }
+            
             Players.ForEach(player => player.SetCanMove(false));
             List<Player> orderedPlayers = Players.OrderBy(player => -player.CurrentScore).ToList<Player>();
             int highestScore = orderedPlayers[0].CurrentScore;

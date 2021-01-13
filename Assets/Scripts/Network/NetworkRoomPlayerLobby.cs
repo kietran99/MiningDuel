@@ -22,6 +22,12 @@ namespace MD.UI
 
         [SerializeField]
         private Button startGameButton = null, readyButton = null;
+
+        [SerializeField]
+        private Color readyColor = Color.green, standbyColor = Color.red;
+
+        [SerializeField]
+        private Text readyButtonText = null;
         
         [SyncVar(hook = nameof(SyncDisplayName))]
         public string DisplayName = "Loading....";
@@ -49,6 +55,7 @@ namespace MD.UI
             {
                 isHost = value;
                 if (!isHost) return;
+
                 startGameButton.gameObject.SetActive(true);
                 readyButton.gameObject.SetActive(false);
                 isReady = true;           
@@ -126,7 +133,7 @@ namespace MD.UI
             for (int i = 0; i < Room.RoomPlayers.Count; i++)
             {
                 playerNameTexts[i].text = Room.RoomPlayers[i].DisplayName;
-                playerReadyStatusTexts[i].text = Room.RoomPlayers[i].isReady ? "Ready" : "";
+                playerReadyStatusTexts[i].text = Room.RoomPlayers[i].isReady ? "Ready" : "Standby";
                 playerPanels[i].alpha = 1f;
             }
         }
@@ -134,6 +141,7 @@ namespace MD.UI
         public void HandleReadyToStart(bool readyToStart)
         {
             if (!isHost) return;
+
             startGameButton.interactable = readyToStart;
         }
 
@@ -158,8 +166,14 @@ namespace MD.UI
         [Command]
         public void CmdReadyUp()
         {
-            isReady = !isReady;
-            Room.NotifyPlayersOfReadyState();
+            isReady = !isReady;                  
+            Room.NotifyReadyState();
+        }
+
+        public void ToggleReadyButtonState()
+        {
+            readyButton.GetComponent<Image>().color = isReady ? standbyColor : readyColor;
+            readyButtonText.text = isReady ? "Standby" : "Ready";
         }
 
         [Command]
