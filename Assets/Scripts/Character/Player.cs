@@ -23,15 +23,14 @@ namespace MD.Character
         [SyncVar] 
         private bool canMove = false;
 
-        private NetworkManagerLobby room;
-        private NetworkManagerLobby Room
+        private UI.NetworkManagerLobby room;
+        private UI.NetworkManagerLobby Room
         {
             get
             {
                 if (room != null) return room;
-                return room = NetworkManager.singleton as NetworkManagerLobby;
+                return room = NetworkManager.singleton as UI.NetworkManagerLobby;
             }
-
         }
     
         public string PlayerName { get => playerName; }
@@ -101,7 +100,7 @@ namespace MD.Character
             
             Debug.Log("Quit match on client");
             NetworkManager.singleton.StopClient();
-            (NetworkManager.singleton as NetworkManagerLobby).CleanObjectsWhenDisconnect();
+            (NetworkManager.singleton as UI.NetworkManagerLobby).CleanObjectsWhenDisconnect();
             SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);            
         }
 
