@@ -11,7 +11,6 @@ namespace MD.Character
     [RequireComponent(typeof(ScoreManager))]
     public class Player : NetworkBehaviour
     {
-        [Header("Game Stats")]
         [SerializeField]
         private SpriteRenderer indicator = null;
 
