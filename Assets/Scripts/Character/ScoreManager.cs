@@ -7,14 +7,34 @@ namespace MD.Character
 {
     public class ScoreManager : NetworkBehaviour
     {
-        [SyncVar(hook = nameof(SyncScore))]
+        [System.Serializable]
+        public struct MultiplierThreshold
+        {
+            public int score;
+            public float multiplier;
+
+            public MultiplierThreshold(int score, float multiplier)
+            {
+                this.score = score;
+                this.multiplier = multiplier;
+            }
+        }
+
+        [SerializeField]
+        private MultiplierThreshold[] multiplierThresholds = null;
+
+        [SyncVar(hook=nameof(SyncScore))]
         private int currentScore;
+
+        [SyncVar(hook=nameof(SyncMultiplier))]
+        private float currentMultiplier;
 
         public int CurrentScore { get => currentScore; }
 
         public override void OnStartServer()
         {
             currentScore = 0;
+            currentMultiplier = 1f;
         }
 
         public override void OnStartClient()
@@ -56,16 +76,10 @@ namespace MD.Character
         private bool IsLocalTarget(uint targetID) => targetID.Equals(netId);
 
         [Server]
-        private void IncreaseScore(int amount)
-        {                     
-            SyncScore(currentScore, currentScore + amount);        
-        }
+        private void IncreaseScore(int amount) => SyncScore(currentScore, currentScore + Mathf.FloorToInt(amount * currentMultiplier));       
 
         [Command]
-        private void CmdIncreaseScore(int amount)
-        {                     
-            SyncScore(currentScore, currentScore + amount);        
-        }
+        private void CmdIncreaseScore(int amount) => SyncScore(currentScore, currentScore + Mathf.FloorToInt(amount * currentMultiplier));        
 
         [Server]
         private void DecreaseScore(int amount)
@@ -78,16 +92,41 @@ namespace MD.Character
         private void SyncScore(int oldValue, int newValue)
         {
             currentScore = newValue;
+            UpdateMultiplier(currentScore);
             if (!hasAuthority) return;
             
             EventSystems.EventManager.Instance.TriggerEvent(new ScoreChangeData(newValue));
         }
 
+        private void UpdateMultiplier(int currentScore)
+        {
+            if (currentMultiplier >= multiplierThresholds[multiplierThresholds.Length - 1].multiplier) return;
+
+            var maxMultIdx = multiplierThresholds.LookUp(threshold => threshold.score > currentScore).idx;
+            maxMultIdx = maxMultIdx == -1 ? multiplierThresholds.Length : maxMultIdx;
+            SyncMultiplier(currentMultiplier, multiplierThresholds[maxMultIdx - 1].multiplier);
+        }
+
+        private void SyncMultiplier(float oldMult, float newMult)
+        {
+            currentMultiplier = newMult;
+            if (!hasAuthority) return;
+
+            EventSystems.EventManager.Instance.TriggerEvent(new MultiplierChangeData(newMult));            
+        }
+
+        // Cheat codes
         void Update()
         {
             #if UNITY_EDITOR
+            if (!hasAuthority) return;
             if (Input.GetKeyDown(KeyCode.I)) CmdIncreaseScore(10);
             else if (Input.GetKeyDown(KeyCode.J)) DecreaseScore(4);
+            else if (Input.GetKeyDown(KeyCode.Alpha6)) 
+            {
+                Debug.Log("[Cheat] Increase Multiplier");
+                EventSystems.EventManager.Instance.TriggerEvent(new MultiplierChangeData(UnityEngine.Random.Range(1, 100)));
+            }
             #endif
         }
     }

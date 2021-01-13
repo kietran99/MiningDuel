@@ -20,18 +20,8 @@ namespace MD.UI
             EventSystems.EventManager.Instance.StopListening<ScoreChangeData>(HandleScoreChange);
         }
 
-// #if UNITY_EDITOR
-//         private void Update()
-//         {
-//             if (Input.GetKeyDown(KeyCode.Alpha1)) CurrentScore += 100;
-//         }
-// #endif
-
         private void HandleScoreChange(ScoreChangeData data) => UpdateScoreText(data.newScore);
 
-        public void UpdateScoreText(int score)
-        {
-            scoreText.text = score.ToString();
-        }
+        public void UpdateScoreText(int score) => scoreText.text = score.ToString();
     }
 }

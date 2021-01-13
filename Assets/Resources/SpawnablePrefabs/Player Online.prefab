@@ -417,3 +417,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  multiplierThresholds:
+  - score: 0
+    multiplier: 1
+  - score: 5
+    multiplier: 1.5
+  - score: 10
+    multiplier: 2

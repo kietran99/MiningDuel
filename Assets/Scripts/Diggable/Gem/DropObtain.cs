@@ -16,6 +16,12 @@ namespace MD.Diggable.Gem
         [ServerCallback]
         void OnTriggerEnter2D(Collider2D other)
         {
+            if (ThrowerID == default(uint))
+            {
+                Debug.LogError("ThrowerID is null");
+                return;
+            }
+
             if (!ThrowerID.Equals(other.GetComponent<NetworkIdentity>().netId)) return;
 
             if (!other.CompareTag(Constants.PLAYER_TAG)) return;

@@ -19,6 +19,12 @@ namespace MD.Diggable.Gem
         [ServerCallback]
         private void Update()
         {
+            if (ThrowerTransform == null)
+            {
+                Debug.LogError("ThrowerTransform is null");
+                return;
+            }
+
             DriveTowardsThrower();
         }
 
