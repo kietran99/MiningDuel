@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-
 namespace MD.UI.MainMenu
 {
     public class RoomController : MonoBehaviour
@@ -8,19 +7,16 @@ namespace MD.UI.MainMenu
         [SerializeField]
         private GameObject container = null;
 
-
-
         public void ShowWindow()
         {
-            container.SetActive(true);
+            if (container != null) container.SetActive(true);
             EventSystems.EventManager.Instance.TriggerEvent(new RoomWindowToggleData(true));
         }
 
         public void Exit()
         {
-            container.SetActive(false);
+            if (container != null) container.SetActive(false);
             EventSystems.EventManager.Instance.TriggerEvent(new RoomWindowToggleData(false));
         }
-
     }
 }

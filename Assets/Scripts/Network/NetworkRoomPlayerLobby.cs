@@ -15,10 +15,7 @@ namespace MD.UI
         GameObject lobbyUI = null;
 
         [SerializeField]
-        private Text[] playerNameTexts = new Text[4], playerReadyStatusTexts = new Text[4];
-
-        [SerializeField]
-        private CanvasGroup[] playerPanels = null;
+        private ParticipantSlot[] participantSlots = null;
 
         [SerializeField]
         private Button startGameButton = null, readyButton = null;
@@ -103,7 +100,8 @@ namespace MD.UI
 
         private void SyncPlayerStatus(bool oldValue, bool newValue)
         {
-            isReady = newValue;   
+            isReady = newValue;
+            ToggleReadyButtonState();   
             UpdateDisplay();
         }
 
@@ -123,18 +121,11 @@ namespace MD.UI
                 return;
             }
             
-            for (int i = 0; i < playerNameTexts.Length; i++)
-            {
-                playerNameTexts[i].text = "Waitting for Player...";
-                playerReadyStatusTexts[i].text = string.Empty;
-                playerPanels[i].alpha = .5f;
-            }
+            participantSlots.ForEach(slot => slot.ToggleEmptyState());
 
             for (int i = 0; i < Room.RoomPlayers.Count; i++)
             {
-                playerNameTexts[i].text = Room.RoomPlayers[i].DisplayName;
-                playerReadyStatusTexts[i].text = Room.RoomPlayers[i].isReady ? "Ready" : "Standby";
-                playerPanels[i].alpha = 1f;
+                participantSlots[i].ToggleOccupiedState(Room.RoomPlayers[i].DisplayName, Room.RoomPlayers[i].isReady);
             }
         }
 

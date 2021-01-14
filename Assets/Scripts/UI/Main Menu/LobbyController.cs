@@ -1,6 +1,7 @@
 ﻿using Mirror.Discovery;
 using UnityEngine;
 using Mirror;
+
 namespace MD.UI.MainMenu
 {
     public class LobbyController : MonoBehaviour
@@ -11,11 +12,6 @@ namespace MD.UI.MainMenu
         [SerializeField]
         private RoomController joinRoomWindow = null;
 
-        // [SerializeField]
-        // private NetworkManagerLobby networkManager = null;
-
-        // [SerializeField]
-        // private NetworkDiscovery networkDiscovery = null;
         private NetworkManagerLobby room;
         private NetworkManagerLobby Room
         {
