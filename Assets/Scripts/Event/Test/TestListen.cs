@@ -1,27 +1,23 @@
 ﻿using UnityEngine;
 using EventSystems;
+using System;
 
 public class TestListen : MonoBehaviour
 {
     void Start()
     {
-        EventManager.Instance.StartListening<TestVoidEvent>(HandleVoidEvent);
-        EventManager.Instance.StartListening<TestArgEvent, int>(HandleArgEvent);
+        var eventConsumer = GetComponent<EventConsumer>();
+        eventConsumer.StartListening<TestArgEvent>(HandleEvent);
+        eventConsumer.StartListening<NewTestEvent>(HandleNewTestEvent);
     }
 
-    void OnDestroy()
+    private void HandleNewTestEvent(NewTestEvent obj)
     {
-        EventManager.Instance.StopListening<TestVoidEvent>(HandleVoidEvent);
-        EventManager.Instance.StopListening<TestArgEvent, int>(HandleArgEvent);
+        Debug.Log(name + ": " + obj.x);
     }
 
-    void HandleVoidEvent()
+    void HandleEvent(TestArgEvent data)
     {
-        Debug.Log(gameObject.name);
-    }
-
-    void HandleArgEvent(int val)
-    {
-        Debug.Log(gameObject.name + ": " + val);
+        Debug.Log(name);
     }
 }

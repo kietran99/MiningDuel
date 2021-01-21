@@ -1,2 +1,4 @@
-﻿public struct TestArgEvent : EventSystems.IArgEventData
-{}
+﻿public struct TestArgEvent : EventSystems.IEventData
+{
+    
+}
