@@ -82,20 +82,17 @@ namespace MD.UI
             {
                 ClientScene.RegisterPrefab(prefab);
             }
-
-            //fadeStartCompleteEvent.OnEventRaise += LoadGameScene;
         }
 
         public override void OnClientConnect(NetworkConnection conn)
         {
             base.OnClientConnect(conn);
-            OnClientConnected?.Invoke();
-            
+            OnClientConnected?.Invoke();           
         }
 
-        public void CleanObjectsWhenDisconnect()
+        public void CleanObjectsOnDisconnect()
         {
-            Debug.Log("clean object when disconnect");
+            Debug.Log("Clean object on disconnect");
             RoomPlayers.Clear();
             Players.Clear();
             ServiceLocator.Reset();
@@ -115,7 +112,6 @@ namespace MD.UI
             //     // SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);
             // }
             base.OnClientDisconnect(conn);
-            //fadeStartCompleteEvent.OnEventRaise -= LoadGameScene;
             OnClientDisconnnected?.Invoke();
         }
 
@@ -173,7 +169,7 @@ namespace MD.UI
             //Debug.Log("on stop server");
             Time.timeScale = 1f;
             ServerChangeScene(menuScene);
-            CleanObjectsWhenDisconnect();
+            CleanObjectsOnDisconnect();
             base.OnStopServer();
         }
 

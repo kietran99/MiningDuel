@@ -6,7 +6,7 @@ namespace MD.UI
     public class JoinableRoom : MonoBehaviour
     {
         [SerializeField]
-        private InputField ipAddressInputField = null;
+        private Text hostNameText = null;
 
         [SerializeField]
         private Button joinButton = null;
@@ -14,11 +14,11 @@ namespace MD.UI
         private string ipAddress;
         private NetworkManagerLobby networkManager;
 
-        public void Init(NetworkManagerLobby networkManager, string ipAddress)
+        public void Init(NetworkManagerLobby networkManager, string ipAddress, string hostName)
         {
             this.networkManager = networkManager;
             this.ipAddress = ipAddress;
-            ipAddressInputField.text = ipAddress;
+            hostNameText.text = hostName;
             NetworkManagerLobby.OnClientConnected += HandleClientConnected;
             NetworkManagerLobby.OnClientDisconnnected += HandleClientDisconnected;
             gameObject.SetActive(true);
@@ -32,9 +32,8 @@ namespace MD.UI
 
         public void JoinLobby()
         {
-            if (ipAddressInputField.text.Length == 0) return;
+            if (hostNameText.text.Length == 0) return;
 
-            //string ipAddress = ipAddressInputField.text;
             networkManager.networkAddress = ipAddress;
             joinButton.interactable  = false;
             networkManager.StartClient();
@@ -43,13 +42,11 @@ namespace MD.UI
         private void HandleClientConnected()
         {
             if (joinButton) joinButton.interactable = true;
-            // if (CreateRoomWindow) CreateRoomWindow.GetComponent<RoomController>().ShowWindow();
         }
 
         private void HandleClientDisconnected()
         {
-            if (joinButton)
-            joinButton.interactable = true;
+            if (joinButton) joinButton.interactable = true;
         }     
     }
 }

@@ -100,7 +100,7 @@ namespace MD.Character
             
             Debug.Log("Quit match on client");
             NetworkManager.singleton.StopClient();
-            (NetworkManager.singleton as UI.NetworkManagerLobby).CleanObjectsWhenDisconnect();
+            (NetworkManager.singleton as UI.NetworkManagerLobby).CleanObjectsOnDisconnect();
             SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);            
         }
 

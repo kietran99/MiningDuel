@@ -20,14 +20,13 @@ namespace MD.UI.MainMenu
                 if (room != null) return room;
                 return room = NetworkManager.singleton as NetworkManagerLobby;
             }
-
         }
 
         public void OpenCreateRoomWindow()
         {
             // OpenRoomWindow(createRoomWindow);
             Room.StartHost();
-            Room.GetComponent<NetworkDiscovery>().AdvertiseServer();
+            Room.GetComponent<CustomNetworkDiscovery>().AdvertiseServer(PlayerPrefs.GetString(PlayerNameInput.PLAYER_PREF_NAME_KEY));
         }
 
         public void OpenJoinRoomWindow()
@@ -37,8 +36,7 @@ namespace MD.UI.MainMenu
 
         private void OpenRoomWindow(RoomController window)
         {
-            window.ShowWindow();
-            
+            window.ShowWindow();            
         }
     }
 }

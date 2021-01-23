@@ -64,7 +64,6 @@ namespace MD.UI
         {
             CmdSetDisplayName(PlayerNameInput.DisplayName);
             lobbyUI.SetActive(true);
-            if (!isHost) return;
         }
 
         public string GetLocalIPAddress()
