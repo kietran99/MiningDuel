@@ -2465,7 +2465,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3980843558125072875}
   - component: {fileID: 5781391588063115971}
-  - component: {fileID: 1895430924995863818}
+  - component: {fileID: 5830143049165010553}
   m_Layer: 5
   m_Name: Room Organizer
   m_TagString: Untagged
@@ -2489,8 +2489,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 40.7, y: -2.5}
-  m_SizeDelta: {x: 665.01587, y: 445}
+  m_AnchoredPosition: {x: 40.7, y: 1.6897}
+  m_SizeDelta: {x: 665.01587, y: 399.37927}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5781391588063115971
 CanvasRenderer:
@@ -2500,7 +2500,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2878768665564906797}
   m_CullTransparentMesh: 0
---- !u!114 &1895430924995863818
+--- !u!114 &5830143049165010553
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2509,21 +2509,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 2878768665564906797}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 20
-    m_Bottom: 20
-  m_ChildAlignment: 0
-  m_StartCorner: 0
-  m_StartAxis: 0
-  m_CellSize: {x: 320, y: 140}
-  m_Spacing: {x: 20, y: 10}
-  m_Constraint: 0
-  m_ConstraintCount: 2
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 1
+  m_Spacing: 10
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
 --- !u!1 &3218063783981134057
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,12 +12,10 @@ public class ThrowControl : MonoBehaviour
         button.onClick.AddListener(Invoke);
         EventSystems.EventManager.Instance.StartListening<ProjectileObtainData>(ShowButton);
         EventSystems.EventManager.Instance.StartListening<ThrowInvokeData>(HideButton);
-        // EventSystems.EventManager.Instance.StartListening<ExplodeData>(HideButton);
     }
 
     private void Invoke()
     {
-        //Debug.Log("trigger event throw button");
         EventSystems.EventManager.Instance.TriggerEvent(new ThrowInvokeData());
     }
 
@@ -25,7 +23,6 @@ public class ThrowControl : MonoBehaviour
     {
         EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(ShowButton);
         EventSystems.EventManager.Instance.StopListening<ThrowInvokeData>(HideButton);
-        // EventSystems.EventManager.Instance.StopListening<ExplodeData>(HideButton);
     }
 
     private void HideButton(ProjectileCollisionData obj)

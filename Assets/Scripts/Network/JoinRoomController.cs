@@ -51,9 +51,9 @@ namespace MD.UI.MainMenu
 
         void OnDisable()
         {
-            var networkDiscovery = Manager.GetComponent<CustomNetworkDiscovery>();
-            networkDiscovery.OnServerFound.RemoveListener(OnServerDiscovered);
             DestroyAllRooms();
+            var networkDiscovery = Manager.GetComponent<CustomNetworkDiscovery>();
+            networkDiscovery.OnServerFound.RemoveListener(OnServerDiscovered);            
         }
 
         private void DestroyAllRooms()

@@ -139,6 +139,7 @@ namespace MD.UI
         {
             if (netIdentity == room.RoomPlayers[0].netIdentity)
             {
+                EventSystems.EventManager.Instance.TriggerEvent(new RoomWindowToggleData(false));
                 room.StopHost();
             }
             else

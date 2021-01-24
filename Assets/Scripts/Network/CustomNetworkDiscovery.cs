@@ -35,7 +35,31 @@ public class CustomNetworkDiscovery : NetworkDiscoveryBase<ServerRequest, Custom
     public void AdvertiseServer(string hostName)
     {
         this.hostName = hostName;
+        EventSystems.EventManager.Instance.StartListening<RoomWindowToggleData>(Handle);
         AdvertiseServer();
+    }
+
+    private void Handle(RoomWindowToggleData data)
+    {
+        Debug.Log("HANDLE");
+        StopAdvertisingServer();
+        EventSystems.EventManager.Instance.StopListening<RoomWindowToggleData>(Handle);
+    }
+
+    public void StopAdvertisingServer()
+    {
+        if (serverUdpClient == null) return;
+            
+        try
+        {
+            serverUdpClient.Close();
+        }
+        catch (Exception)
+        {
+            // it is just close, swallow the error
+        }
+
+        serverUdpClient = null;           
     }
 
     protected override CustomServerResponse ProcessRequest(ServerRequest request, IPEndPoint endpoint)

@@ -43,7 +43,14 @@ namespace MD.Diggable.Projectile
             RpcSetDigger(digger.netIdentity);
             diggerID = digger.netIdentity;
             EventManager.Instance.TriggerEvent(new ServerDiggableDestroyData(projectile.DiggableType(), transform.position.x, transform.position.y, currentDigger));
-            TargetTriggerProjectileObtain(currentDigger.connectionToClient);
+            
+            bool isBot = digger.GetType().Equals(typeof(BotDigAction));          
+            
+            if (!isBot)
+            {
+                TargetTriggerProjectileObtain(currentDigger.connectionToClient);
+            }
+            
             Destroy(gameObject);
         }
 
