@@ -2465,7 +2465,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3980843558125072875}
   - component: {fileID: 5781391588063115971}
-  - component: {fileID: 5830143049165010553}
+  - component: {fileID: 3161300908774600336}
   m_Layer: 5
   m_Name: Room Organizer
   m_TagString: Untagged
@@ -2500,7 +2500,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2878768665564906797}
   m_CullTransparentMesh: 0
---- !u!114 &5830143049165010553
+--- !u!114 &3161300908774600336
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2509,7 +2509,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2878768665564906797}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
@@ -2517,10 +2517,10 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 1
+  m_ChildAlignment: 3
   m_Spacing: 10
-  m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
