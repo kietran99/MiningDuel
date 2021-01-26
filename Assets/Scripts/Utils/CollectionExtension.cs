@@ -98,7 +98,7 @@ public static class CollectionExtension
             function(iter[i], i);
         }
     }
-
+    
     public static T2[] Map<T1, T2>(this T1[] iter, Func<T1, T2> function)
     {
         var result = new List<T2>();
@@ -109,21 +109,5 @@ public static class CollectionExtension
         }
 
         return result.ToArray();
-    }
-
-    public static void ForEach<T>(this List<T> iter, Action<T> function)
-    {
-        for (int i = 0; i < iter.Count; i++)
-        {
-            function(iter[i]);
-        }
-    }
-
-    public static void ForEach<T>(this HashSet<T> iter, Action<T> function)
-    {
-        foreach (var ele in iter)
-        {
-            function(ele);
-        }
     }
 }

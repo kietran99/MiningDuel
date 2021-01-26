@@ -31,6 +31,8 @@ namespace MD.Character
 
         public int CurrentScore { get => currentScore; }
 
+        public float CurrentMultiplier { get => currentMultiplier; }
+
         public override void OnStartServer()
         {
             currentScore = 0;

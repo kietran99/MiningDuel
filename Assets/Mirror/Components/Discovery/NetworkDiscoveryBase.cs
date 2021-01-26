@@ -141,7 +141,7 @@ namespace Mirror.Discovery
                 catch (ObjectDisposedException)
                 {
                     // socket has been closed
-                    Debug.Log("CLOSE");
+                    Debug.Log("Server stopped listening for connections");
                     break;
                 }
                 catch (Exception)

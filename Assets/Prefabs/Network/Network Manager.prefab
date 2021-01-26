@@ -66,7 +66,7 @@ MonoBehaviour:
   menuScene: Assets/Scenes/Main Menu Scene.unity
   gamePlayScene: Assets/Scenes/Multiplayer.unity
   maximumPlayers: 4
-  minimumPlayers: 1
+  minimumPlayers: 2
   roomPlayerPrefab: {fileID: 9037775071047316419, guid: c0e7ecaf0d50b5748919f41920282256,
     type: 3}
   botPrefab: {fileID: 5063567480658151164, guid: 54a0943568201224faf9e9135bbfdd04,

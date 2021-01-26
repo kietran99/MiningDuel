@@ -42,7 +42,7 @@ namespace MD.Character
         public override void OnStartClient()
         {
             DontDestroyOnLoad(this);
-            Room.DontDestroyOnLoadObjects.Add(this.gameObject);
+            Room.DontDestroyOnLoadObjects.Add(gameObject);
             Room.Players.Add(this);
         }
 
@@ -64,10 +64,16 @@ namespace MD.Character
         }
 
         [TargetRpc]
-        public void TargetRegisterIMapManager(NetworkIdentity mapManager)
+        public void TargetRegisterMapManager(NetworkIdentity mapManager)
         {
             ServiceLocator.Register(mapManager.GetComponent<IMapManager>());
         }
+
+        // [TargetRpc]
+        // public void TargetRegisterMapManager(IMapManager mapManager)
+        // {
+        //     ServiceLocator.Register(mapManager);
+        // }
 
         [Server]
         public void SetCanMove(bool value) => canMove = value;
@@ -102,8 +108,6 @@ namespace MD.Character
             NetworkManager.singleton.StopClient();
             (NetworkManager.singleton as UI.NetworkManagerLobby).CleanObjectsOnDisconnect();
             SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);            
-        }
-
-        
+        }       
     }
 }

@@ -177,7 +177,7 @@ namespace MD.UI
 
             if (Room.IsReadyToStart())
             {
-                room.StartLobby();
+                room.StartGame();
             }
         }
 
