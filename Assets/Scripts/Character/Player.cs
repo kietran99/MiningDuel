@@ -1,67 +1,54 @@
 ﻿using UnityEngine;
 using Mirror;
-using MD.UI;
 using UnityEngine.SceneManagement;
+
 namespace MD.Character
 {
     [RequireComponent(typeof(MoveAction))]
     [RequireComponent(typeof(DigAction))]
+    [RequireComponent(typeof(NetworkIdentity))]
+    [RequireComponent(typeof(PlayerExplosionHandler))]
+    [RequireComponent(typeof(ScoreManager))]
     public class Player : NetworkBehaviour
     {
-        [Header("Game Stats")]
-        [SyncVar(hook = nameof(OnScoreChange))]
-        [SerializeField]
-        private int score;
-
         [SerializeField]
         private SpriteRenderer indicator = null;
+
+        [SerializeField]
+        private ScoreManager scoreManager = null;
 
         [SyncVar]
         private string playerName;
 
-        [SyncVar] [SerializeField]
+        [SyncVar] 
         private bool canMove = false;
 
-        // [SyncVar]
-        // private bool isReady = true;
-
-        private NetworkManagerLobby room;
-        private NetworkManagerLobby Room
+        private UI.NetworkManagerLobby room;
+        private UI.NetworkManagerLobby Room
         {
             get
             {
                 if (room != null) return room;
-                return room = NetworkManager.singleton as NetworkManagerLobby;
+                return room = NetworkManager.singleton as UI.NetworkManagerLobby;
             }
+        }
+    
+        public string PlayerName { get => playerName; }
 
-        }
-        private IScoreManager scoreManager = null;
-        private IScoreManager ScoreManager
-        {
-            get
-            {
-                if (scoreManager != null) return scoreManager;
-                ServiceLocator.Resolve(out scoreManager);
-                return scoreManager;
-            }
-        }
-        
-        public override void OnStartServer()
-        {
-            base.OnStartServer();
-            score = 0;
-        }
+        public bool CanMove { get => canMove; }
+
+        public int CurrentScore { get => scoreManager.CurrentScore; }
 
         public override void OnStartClient()
         {
             DontDestroyOnLoad(this);
-            Room.DontDestroyOnLoadObjects.Add(this.gameObject);
+            Room.DontDestroyOnLoadObjects.Add(gameObject);
             Room.Players.Add(this);
         }
 
         public override void OnStopClient()
         {
-            Room.Players.Remove(this);
+            Room.Players.Remove(this);           
         }
 
         public override void OnStartAuthority()
@@ -77,75 +64,50 @@ namespace MD.Character
         }
 
         [TargetRpc]
-        public void TargetRegisterIMapManager(NetworkIdentity mapManager)
+        public void TargetRegisterMapManager(NetworkIdentity mapManager)
         {
             ServiceLocator.Register(mapManager.GetComponent<IMapManager>());
         }
-        
-        [Server]
-        public void IncreaseScore(int amount)
-        {
-            Debug.Log("increase score get called");
-            score += amount;
-        }
+
+        // [TargetRpc]
+        // public void TargetRegisterMapManager(IMapManager mapManager)
+        // {
+        //     ServiceLocator.Register(mapManager);
+        // }
 
         [Server]
-        public void DecreaseScore(int amount)
-        {
-            score -= amount;
-            score = score < 0 ? 0 : score;
-        }
-
-        public void OnScoreChange(int oldValue, int newValue)
-        {
-            if (!isLocalPlayer) return;
-            
-            ScoreManager.UpdateScoreText(newValue);
-        }
-
-        public int GetCurrentScore() => score;
-
-        [Server]
-        public void SetCanMove(bool value) => canMove=value;
+        public void SetCanMove(bool value) => canMove = value;
 
         [TargetRpc]
         public void TargetNotifyGameReady(float time)
         {
-            IGameCountDown countDown;
-            if (ServiceLocator.Resolve<IGameCountDown>(out countDown)) countDown.StartCountDown(0f);
+            EventSystems.EventManager.Instance.TriggerEvent(new StartGameData());
         }
 
         [TargetRpc]
         public void TargetNotifyEndGame(bool hasWon)
         {
-            EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(hasWon,score));
+            EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(hasWon, scoreManager.CurrentScore));
         }
 
-        public void ExistGame()
+        public void ExitGame()
         {
-            if (hasAuthority)
+            if (!hasAuthority) return;
+           
+            ServiceLocator.Reset();
+            if (isServer)
             {
-                ServiceLocator.Reset();
-                if (isServer)
-                {
-                    Debug.Log("quit match on server");
-                    NetworkServer.DisconnectAllConnections();
-                    NetworkManager.singleton.StopHost();
-                    // (NetworkManager.singleton as NetworkManagerLobby).CleanObjectsWhenDisconnect();
-                }
-                else
-                {
-                    Debug.Log("quit match on client");
-                    NetworkManager.singleton.StopClient();
-                    (NetworkManager.singleton as NetworkManagerLobby).CleanObjectsWhenDisconnect();
-                    SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);
-                }
+                Debug.Log("Quit match on server");
+                NetworkServer.DisconnectAllConnections();
+                NetworkManager.singleton.StopHost();
+                // (NetworkManager.singleton as NetworkManagerLobby).CleanObjectsWhenDisconnect();
+                return;
             }
-
-        }
-
-        public bool IsLocalPlayer() => isLocalPlayer;
-
-        public bool CanMove() => canMove;
+            
+            Debug.Log("Quit match on client");
+            NetworkManager.singleton.StopClient();
+            (NetworkManager.singleton as UI.NetworkManagerLobby).CleanObjectsOnDisconnect();
+            SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);            
+        }       
     }
 }

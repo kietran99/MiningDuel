@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 9060201054313328707}
   - component: {fileID: 8224449205885954025}
   - component: {fileID: 7761167060982452570}
-  - component: {fileID: 5170740038248656859}
   - component: {fileID: -7175667475458781375}
+  - component: {fileID: 5170740038248656859}
   - component: {fileID: 8568335030828681219}
   - component: {fileID: 2751093491532856240}
   m_Layer: 0
@@ -74,22 +74,6 @@ CircleCollider2D:
   m_Offset: {x: -0.02, y: -0.17}
   serializedVersion: 2
   m_Radius: 0.45
---- !u!114 &5170740038248656859
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5512573233695929278}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3e0eaec5ad2f9246bed4ef503444ecd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  source: {fileID: 0}
-  sourceCollidableTime: 0
 --- !u!114 &-7175667475458781375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -106,6 +90,22 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!114 &5170740038248656859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5512573233695929278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3e0eaec5ad2f9246bed4ef503444ecd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  source: {fileID: 0}
+  sourceCollidableTime: 0
 --- !u!114 &8568335030828681219
 MonoBehaviour:
   m_ObjectHideFlags: 0

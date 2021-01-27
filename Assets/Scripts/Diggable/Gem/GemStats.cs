@@ -4,7 +4,7 @@ using UnityEngine;
 namespace MD.Diggable.Gem
 {
     [CreateAssetMenu(fileName = "Gem Stats", menuName = "Generator/Diggable/Gem/Stats")]
-    public class GemStats : ScriptableObject, IDiggable
+    public class GemStats : ScriptableObject, IDiggableStats
     {
         [SerializeField]
         private Sprite gemSprite = null;

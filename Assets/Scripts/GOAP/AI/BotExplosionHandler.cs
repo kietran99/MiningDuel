@@ -25,7 +25,7 @@ namespace MD.Character
         }
 
         [Server]
-        public void ProcessExplosion(float gemDropPercentage, float stunTime, int bombType)
+        public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage, int bombType)
         {
             Debug.Log(transform.name + " was exploded");
             // if (!ServiceLocator.Resolve<IScoreManager>(out IScoreManager scoreManager)) return;
@@ -37,6 +37,8 @@ namespace MD.Character
             {
                 GameObject droppingGem = Instantiate(droppingGemPrefab, transform.position, Quaternion.identity);
                 NetworkServer.Spawn(droppingGem);
+                droppingGem.GetComponent<Diggable.Gem.DropObtain>().ThrowerID = throwerID;
+                droppingGem.GetComponent<Diggable.Gem.DropDriver>().ThrowerTransform = throwerTransform;
                 droppingGem.GetComponent<Rigidbody2D>().AddForce(GetExplosionForce() * GetExplosionDirection());
             }
         }

@@ -56,11 +56,11 @@ namespace MD.Diggable.Projectile
                 Explode();
                 if (!isThrown)
                 {
-                    var botAnim = GetComponent<ProjectileLauncher>().GetOwner().GetComponent<BotAnimator>();
+                    var botAnim = GetComponent<ProjectileLauncher>().Thrower.GetComponent<BotAnimator>();
                     if (botAnim)
                         botAnim.RevertToIdleState();
                     else
-                        TargetNotifyBombExplodeOnHand(GetComponent<ProjectileLauncher>().GetOwner().connectionToClient);
+                        TargetNotifyBombExplodeOnHand(GetComponent<ProjectileLauncher>().Thrower.connectionToClient);
                 }                
             }
         }
@@ -79,11 +79,12 @@ namespace MD.Diggable.Projectile
 
             if (!other.CompareTag(Constants.PLAYER_TAG)) return;
             
-            ProjectileLauncher laucher =  transform.GetComponentInParent<ProjectileLauncher>();
-            if (laucher)
+            var launcher = GetComponent<ProjectileLauncher>();
+            if (launcher)
             {
-                if (other.gameObject == laucher.source && Time.time < laucher.sourceCollidableTime) return;
-                laucher.StopOnCollide();
+                if (other.gameObject == launcher.Thrower && Time.time < launcher.SourceCollidableTime) return;
+
+                launcher.StopOnCollide();
             }
 
             Explode();          
@@ -94,7 +95,7 @@ namespace MD.Diggable.Projectile
         {
             if (!other.CompareTag(Constants.PLAYER_TAG)) return;
 
-            if (other.GetComponent<MD.Character.ThrowAction>().netIdentity == GetComponent<ProjectileLauncher>().GetOwner())
+            if (other.GetComponent<MD.Character.ThrowAction>().netIdentity == GetComponent<ProjectileLauncher>().Thrower)
             {
                 isThrown = true;
             }
@@ -104,14 +105,9 @@ namespace MD.Diggable.Projectile
         private void Explode()
         {
             isExploded = true;
-            // Debug.Log("Explode");
-            // var mySphere =  GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            // mySphere.transform.localScale = new Vector3(2f*explosionRadius,2f*explosionRadius,1f);
-            // mySphere.transform.position = transform.position;
-            Debug.Log("Explode");
             CheckForCollision();
-            PlayExplosionEffect();
-            EventSystems.EventManager.Instance.TriggerEvent(new ExplodeData());
+            PlayExplodingEffect();
+            EventSystems.EventManager.Instance.TriggerEvent(new ProjectileCollisionData());
         }
 
         [ServerCallback]
@@ -122,13 +118,15 @@ namespace MD.Diggable.Projectile
             foreach (Collider2D collide in colliders)
             {
                 if (!collide.CompareTag(Constants.PLAYER_TAG)) continue;  
+
                 IExplodable target = collide.transform.GetComponent<IExplodable>();
-                target?.ProcessExplosion(stats.GemDropPercentage, stats.StunTime, -1);
+                var thrower = GetComponent<ProjectileLauncher>().Thrower;
+                target?.HandleExplosion(thrower.transform, thrower.netId, stats.GemDropPercentage, -1);
             }
         }
         
         [ServerCallback]
-        private void PlayExplosionEffect()
+        private void PlayExplodingEffect()
         {
             RpcPlayExplosionEffect();
             Invoke(nameof(DestroyProjectile), .2f);

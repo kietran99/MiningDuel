@@ -6,8 +6,6 @@ namespace MD.VisualEffects
     [RequireComponent(typeof(SpriteRenderer))]
     public class ThrowDirectionVisual : MonoBehaviour
     {
-        [SerializeField]
-        private Player player = null;
         private Renderer spriteRenderer;
         private float distanceFromPlayer;
 
@@ -15,8 +13,6 @@ namespace MD.VisualEffects
 
         void Start()
         {            
-            if (!player.isLocalPlayer) return; 
-            
             spriteRenderer = GetComponent<SpriteRenderer>();
             distanceFromPlayer = transform.localPosition.magnitude;
 
@@ -24,11 +20,7 @@ namespace MD.VisualEffects
         }
 
         void OnDisable() 
-        {
-            if (player == null) return;
-
-            if (!player.isLocalPlayer) return; 
-
+        {           
             var eventManager = EventSystems.EventManager.Instance; 
             eventManager.StopListening<Diggable.Projectile.ProjectileObtainData>(Show);
             eventManager.StopListening<UI.JoystickDragData>(OnCharacterMove);
@@ -50,7 +42,7 @@ namespace MD.VisualEffects
 
         public void Show(Diggable.Projectile.ProjectileObtainData obj)
         {       
-            Debug.Log("Picked up a projectile");     
+            //Debug.Log("Picked up a projectile");     
             spriteRenderer.enabled = true;
             Rotate();
         } 

@@ -1,47 +1,41 @@
 ﻿using UnityEngine;
 using Mirror;
+using MD.Character;
 
-public class DropObtain : NetworkBehaviour
+namespace MD.Diggable.Gem
 {
-    [SerializeField]
-    private int value = 1;
-
-    [SerializeField]
-    private bool canObtain;
-
-    [SerializeField]
-    private float obtainWaitTime = 3f;
-
-    public override void OnStartServer()
+    public class DropObtain : NetworkBehaviour
     {
-        canObtain = false;
-        Invoke("EnableObtain", obtainWaitTime);
-    }
+        [SerializeField]
+        private int value = 1;
 
-    [Server]
-    private void EnableObtain()
-    {
-        canObtain = true;
-        transform.GetComponentInChildren<SpriteRenderer>().color = Color.white;
-        RpcChangeColor();
-    }
-    
-    [ClientRpc]
-    private void RpcChangeColor()
-    {
-        transform.GetComponentInChildren<SpriteRenderer>().color = Color.white;
-    }
+        private Transform throwerTransform;
 
-    [ServerCallback]
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (!other.CompareTag(Constants.PLAYER_TAG) || !canObtain) return;
-        if (other.GetComponent<MD.Character.Player>() != null)
-            other.GetComponent<MD.Character.Player>().IncreaseScore(value);
-        else
+        public uint ThrowerID { get; set; }
+
+        [ServerCallback]
+        void OnTriggerEnter2D(Collider2D other)
         {
-            other.GetComponent<PlayerBot>().score += value;
+            if (ThrowerID == default(uint))
+            {
+                Debug.LogError("ThrowerID is null");
+                return;
+            }
+
+            if (!ThrowerID.Equals(other.GetComponent<NetworkIdentity>().netId)) return;
+
+            if (!other.CompareTag(Constants.PLAYER_TAG)) return;
+
+            if (other.GetComponent<MD.Character.ScoreManager>() != null)
+            {
+                EventSystems.EventManager.Instance.TriggerEvent(new DropObtainData(other.GetComponent<Player>().netId, value));
+            }
+            else
+            {
+                other.GetComponent<PlayerBot>().score += value;
+            }
+
+            Destroy(gameObject);
         }
-        Destroy(gameObject);
     }
 }

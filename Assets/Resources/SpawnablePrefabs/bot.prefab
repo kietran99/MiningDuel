@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8561699107032354977}
   - component: {fileID: 4782119594220669090}
   - component: {fileID: 6541206941868605103}
-  - component: {fileID: 8117629526294904074}
+  - component: {fileID: 6551515679009645056}
   m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
@@ -103,7 +103,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &8117629526294904074
+--- !u!114 &6551515679009645056
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -131,7 +131,8 @@ GameObject:
   - component: {fileID: 102619972807231682}
   - component: {fileID: 6503962878334934626}
   - component: {fileID: 4095583940505003281}
-  - component: {fileID: 4329237521939165442}
+  - component: {fileID: 5339483725538874892}
+  - component: {fileID: 2659648287536106052}
   m_Layer: 0
   m_Name: bot
   m_TagString: Player
@@ -174,7 +175,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 7
+  m_Constraints: 4
 --- !u!70 &6958029120804089697
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -221,12 +222,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  speed: 5
+  currentState: 
+  holdBombTime: 4
+  digCoolDown: 0.5
   score: 0
-  viewRange: 6
-  isMoving: 0
   isDigging: 0
-  isThrowing: 0
+  canSeePlayer: 0
+  player: {fileID: 0}
+  lastSeenPlayer: {x: 0, y: 0}
   checkPoints: []
 --- !u!114 &102619972807231682
 MonoBehaviour:
@@ -271,7 +274,22 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   basePower: 100
---- !u!114 &4329237521939165442
+--- !u!114 &5339483725538874892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5063567480658151164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b64b27fd879393548a2d0b907c91e9d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  speed: 3
+--- !u!114 &2659648287536106052
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -286,3 +304,4 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   power: 1
+  bot: {fileID: 0}

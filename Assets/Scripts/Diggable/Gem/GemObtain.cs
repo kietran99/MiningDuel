@@ -1,82 +1,81 @@
 ﻿using MD.Character;
 using UnityEngine;
 using Mirror;
+using EventSystems;
 
 namespace MD.Diggable.Gem
 {
     [RequireComponent (typeof(CircleCollider2D))]
     [RequireComponent(typeof(GemValue))]
-    public class GemObtain : NetworkBehaviour, ICanDig
+    public class GemObtain : NetworkBehaviour, IDiggable
     {
         [SyncVar]
         private NetworkIdentity diggerID;
         private DigAction currentDigger;
-
-        private MapManager mapMangerServer;
-
-        private GemValue gemValue = null;
-
-        private Player player  =null;
-         private Player Player
-        {
-            get
-            {
-                if (player != null) return player;
-                ServiceLocator.Resolve<Player>(out player);
-                return player;
-            }
-        }
-        private GemValue GemValue
-        {
-            get
-            {
-                if (gemValue != null) return gemValue;
-                return gemValue = GetComponent<GemValue>();
-            }
-        }  
+        private GemValue gemValue;
+        
         public override void OnStartClient()
         {
-            base.OnStartClient();
-            EventSystems.EventManager.Instance.TriggerEvent(
-                new DiggableSpawnData(GemValue.Value,transform.position.x,transform.position.y));
+            gemValue = GetComponent<GemValue>();
+            EventManager.Instance.TriggerEvent(new DiggableSpawnData(gemValue.Value, transform.position.x, transform.position.y));
         }
 
         public override void OnStopClient()
         {
-            //fire an event for sonar to update
-            EventSystems.EventManager.Instance.TriggerEvent(
-                new DiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y));
-            //for animations and UIs
-            if (diggerID != null && diggerID == Player.netIdentity)
-            EventSystems.EventManager.Instance.TriggerEvent(
-                new GemDigSuccessData(GemValue.Value, transform.position.x, transform.position.y)
-            );            
+            EventManager.Instance.TriggerEvent(new DiggableDestroyData(gemValue.Value, transform.position.x, transform.position.y));                   
         }
 
         [Server]
         public void Dig(DigAction digger)
         {           
-            this.currentDigger = digger;
-            GemValue.DecreaseValue(currentDigger.Power);
-            this.diggerID = digger.netIdentity;
+            currentDigger = digger;
+            gemValue.DecreaseValue(digger.Power, out bool obtainable);
             RpcSetDigger(digger.netIdentity);
-            if (diggerID != null && diggerID.Equals(Player.netIdentity)) 
+            diggerID = digger.netIdentity; 
+
+            bool isBot = digger.GetType().Equals(typeof(BotDigAction));          
+            
+            if (!isBot)
             {
-                EventSystems.EventManager.Instance.TriggerEvent(new DigProgressData(GemValue.RemainingHit, GemValue.Value));
+                TargetTriggerDigProgressData(digger.connectionToClient, gemValue.RemainingHit, gemValue.Value);
             }
 
-            if (GemValue.RemainingHit > 0) return;
-           
-            EventSystems.EventManager.Instance.TriggerEvent(
-                new ServerDiggableDestroyData(GemValue.Value, transform.position.x, transform.position.y, currentDigger));
+            if (obtainable) 
+            {
+                Obtain(isBot);
+            }
+        }
+
+        [Server]
+        private void Obtain(bool isBot)
+        {
+            if (!isBot)
+            {
+                TargetTriggerGemDigSuccessData(currentDigger.connectionToClient, gemValue.Value, transform.position.x, transform.position.y); 
+            }
+
+            EventManager.Instance.TriggerEvent(
+                new ServerDiggableDestroyData(gemValue.Value, transform.position.x, transform.position.y, currentDigger));
+                
             Destroy(gameObject);
+        }
+
+        [TargetRpc]
+        private void TargetTriggerDigProgressData(NetworkConnection target, int remainingHit, int initialValue)
+        {
+            EventManager.Instance.TriggerEvent(new DigProgressData(remainingHit, initialValue));
+        }
+
+        [TargetRpc]
+        private void TargetTriggerGemDigSuccessData(NetworkConnection target, int gemVal, float x, float y)
+        {
+            EventManager.Instance.TriggerEvent(new GemDigSuccessData(diggerID.netId, x, y, gemVal));
         }
 
         [ClientRpc]
         private void RpcSetDigger(NetworkIdentity id)
         {
             this.diggerID = id;
-        }
-        
+        }      
     }
 }

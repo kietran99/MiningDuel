@@ -1,14 +1,28 @@
-﻿public class BotDigAction : MD.Character.DigAction
+﻿using UnityEngine;
+public class BotDigAction : MD.Character.DigAction
 {   
-    protected override void StartListeningToEvents()
+    [SerializeField]
+    PlayerBot bot;
+    void Start()
     {
-        EventSystems.EventManager.Instance.StartListening<BotDigAnimEndData>(Dig);
+        bot = GetComponent<PlayerBot>();
+    }
+    protected override void ListenToEvents()
+    {
+        EventSystems.EventManager.Instance.StartListening<BotDigAnimEndData>(NotifyEndDig);
     }
 
     protected override void StopListeningToEvents()
     {
-        EventSystems.EventManager.Instance.StopListening<BotDigAnimEndData>(Dig);
+        EventSystems.EventManager.Instance.StopListening<BotDigAnimEndData>(NotifyEndDig);
     }
 
-    private void Dig(BotDigAnimEndData data) => Dig();
+    private void NotifyEndDig(BotDigAnimEndData data)
+    {
+        if (bot != null)
+        {
+            bot.isDigging = false;
+            CmdDig();
+        }
+    }
 }

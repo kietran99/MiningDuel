@@ -1,4 +1,5 @@
 using MD.Character;
+
 namespace MD.Diggable
 {
     //data for sonar and map on client to update
@@ -8,9 +9,9 @@ namespace MD.Diggable
         public float posY;
         public int diggable;
         public DigAction digger;
-        public ServerDiggableDestroyData(int diggable,float posX, float posY, DigAction digger)
+        public ServerDiggableDestroyData(int diggable, float posX, float posY, DigAction digger)
         {
-            this.diggable= diggable;
+            this.diggable = diggable;
             this.posX = posX;
             this.posY = posY;
             this.digger = digger;

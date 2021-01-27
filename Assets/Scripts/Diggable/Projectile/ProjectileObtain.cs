@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
 using Mirror;
 using MD.Character;
+using EventSystems;
 
 namespace MD.Diggable.Projectile
 {
     [RequireComponent(typeof(DiggableProjectile))]
-    public class ProjectileObtain : NetworkBehaviour, ICanDig
-    {
-        // private bool diggable = false;
-
+    public class ProjectileObtain : NetworkBehaviour, IDiggable
+    {        
         private DigAction currentDigger = null;
 
         private NetworkIdentity diggerID;
@@ -23,34 +22,18 @@ namespace MD.Diggable.Projectile
             }
         }
 
-        private DiggableProjectile projectile = null;
-        private DiggableProjectile Projectile
-        {
-            get
-            {
-                if (projectile != null) return projectile;
-                return projectile = GetComponent<DiggableProjectile>();
-            }
-        }  
+        private DiggableProjectile projectile;
         
         public override void OnStartClient()
         {
-            EventSystems.EventManager.Instance.TriggerEvent(
-                new DiggableSpawnData(Projectile.DiggableType(), transform.position.x, transform.position.y));
+            projectile = GetComponent<DiggableProjectile>();
+            EventManager.Instance.TriggerEvent(new DiggableSpawnData(projectile.DiggableType(), transform.position.x, transform.position.y));
         }
 
         public override void OnStopClient()
         {
-            base.OnStopClient();
             //fire an event for sonar to update
-            EventSystems.EventManager.Instance.TriggerEvent(
-                new DiggableDestroyData(Projectile.DiggableType(), transform.position.x, transform.position.y));
-            //for animations and UI
-            if (diggerID != null && diggerID == Player.netIdentity)
-            {
-                EventSystems.EventManager.Instance.TriggerEvent(
-                    new ProjectileObtainData(Projectile.GetStats(), transform.position.x, transform.position.y));
-            }
+            EventManager.Instance.TriggerEvent(new DiggableDestroyData(projectile.DiggableType(), transform.position.x, transform.position.y));
         }
 
         [Server]
@@ -58,16 +41,29 @@ namespace MD.Diggable.Projectile
         {
             currentDigger = digger;
             RpcSetDigger(digger.netIdentity);
-            this.diggerID = digger.netIdentity;
-            EventSystems.EventManager.Instance.TriggerEvent(
-                new ServerDiggableDestroyData(Projectile.DiggableType(), transform.position.x, transform.position.y, currentDigger));
+            diggerID = digger.netIdentity;
+            EventManager.Instance.TriggerEvent(new ServerDiggableDestroyData(projectile.DiggableType(), transform.position.x, transform.position.y, currentDigger));
+            
+            bool isBot = digger.GetType().Equals(typeof(BotDigAction));          
+            
+            if (!isBot)
+            {
+                TargetTriggerProjectileObtain(currentDigger.connectionToClient);
+            }
+            
             Destroy(gameObject);
+        }
+
+        [TargetRpc]
+        private void TargetTriggerProjectileObtain(NetworkConnection target)
+        {
+            EventManager.Instance.TriggerEvent(new ProjectileObtainData(projectile.GetStats(), transform.position.x, transform.position.y));
         }
 
         [ClientRpc]
         private void RpcSetDigger(NetworkIdentity id)
         {
-            this.diggerID = id;
+            diggerID = id;
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace MD.Diggable.Core
 {
-    public interface IDiggable
+    public interface IDiggableStats
     {
         int DigValue { get; }
         Sprite WorldSprite { get; }

@@ -1,6 +1,7 @@
 ﻿using MD.Diggable.Projectile;
 using UnityEngine;
 using Mirror;
+
 namespace MD.Character
 {
     [RequireComponent(typeof(Player))]
@@ -14,39 +15,36 @@ namespace MD.Character
         private float maxExplosionForce = 250f;
         #endregion
 
-        private Player player = null;
-        private Player Player
+        private ScoreManager scoreManager;
+        private uint playerId;
+
+        void Start()
         {
-            get
-            {
-                if (player != null) return player;
-                return player = GetComponent<Player>();
-            }
+            scoreManager = GetComponent<ScoreManager>();
+            playerId = GetComponent<NetworkIdentity>().netId;
         }
 
-        [Server]
-        public void ProcessExplosion(float gemDropPercentage, float stunTime, int bombType)
+        public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage, int bombType)
         {
-            Debug.Log(transform.name + " was exploded");
-            // if (!ServiceLocator.Resolve<IScoreManager>(out IScoreManager scoreManager)) return;
+            int dropAmount = Mathf.FloorToInt(scoreManager.CurrentMultiplier * scoreManager.CurrentScore * gemDropPercentage * .01f);
+            EventSystems.EventManager.Instance.TriggerEvent(new ExplodedData(playerId, dropAmount));
 
-            int numOfGem = Mathf.FloorToInt(Player.GetCurrentScore() * gemDropPercentage * .01f);
-            Player.DecreaseScore(numOfGem);
-
-            for (int i = 0; i < numOfGem; i++)
+            for (int i = 0; i < dropAmount; i++)
             {
                 GameObject droppingGem = Instantiate(droppingGemPrefab, transform.position, Quaternion.identity);
                 NetworkServer.Spawn(droppingGem);
-                droppingGem.GetComponent<Rigidbody2D>().AddForce(GetExplosionForce() * GetExplosionDirection());
+                droppingGem.GetComponent<Diggable.Gem.DropObtain>().ThrowerID = throwerID;
+                droppingGem.GetComponent<Diggable.Gem.DropDriver>().ThrowerTransform = throwerTransform;
+                droppingGem.GetComponent<Rigidbody2D>().AddForce(RandomExplosionForce() * RandomExplosionDirection());
             }
         }
 
-        private float GetExplosionForce()
+        private float RandomExplosionForce()
         {
             return Random.Range(100f, maxExplosionForce);
         }
 
-        private Vector2 GetExplosionDirection()
+        private Vector2 RandomExplosionDirection()
         {
             Vector2 randomDir = Vector2.zero;
             randomDir.x = Random.Range(-1f, 1f);

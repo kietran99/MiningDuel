@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5261725988800386849}
   m_Layer: 0
   m_Name: Underground Bomb
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -85,6 +85,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0792f76ef91a0c143bb570065f9c7559, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!114 &-8689622941057072668
 MonoBehaviour:
   m_ObjectHideFlags: 0

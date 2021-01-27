@@ -5,298 +5,330 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Mirror;
 using MD.Character;
+using MD.Network.GameMode;
 
-public class NetworkManagerLobby : NetworkManager
+namespace MD.UI
 {
-    #region SERIALIZE FIELDS
-    [Header("Scene")]
-    [Scene] [SerializeField]
-    private string menuScene = string.Empty;
-    [Scene] [SerializeField]
-    private string gamePlayScene = string.Empty;
-
-    [Header("Room")]
-    [SerializeField]
-    private int maximumPlayers = 4;
-
-    [SerializeField]
-    private int minimumPlayers = 2;
-
-    [SerializeField]
-    private NetworkRoomPlayerLobby roomPlayerPrefab = null;
-    [SerializeField]
-    private GameObject botPrefab = null;
-
-    [SerializeField]
-    private SpawnPointPicker spawnPointPicker = null;
-    #endregion
-
-    private readonly string NAME_PLAYER_ONLINE = "Player Online";
-    private readonly string MAP_MANAGER = "Map Manager";
-
-    public List<GameObject> DontDestroyOnLoadObjects = new List<GameObject>();
-
-    private Player networkPlayerPrefab = null;
-
-    private Player NetworkPlayerPrefab
+    public class NetworkManagerLobby : NetworkManager
     {
-        set => networkPlayerPrefab = value;
-        get
+        #region SERIALIZE FIELDS
+        [Header("Scene")]
+        [Scene] [SerializeField]
+        private string menuScene = string.Empty;
+
+        [Scene] [SerializeField]
+        private string gamePlayScene = string.Empty;
+
+        [Header("Room")]
+        [SerializeField]
+        private int maximumPlayers = 4;
+
+        [SerializeField]
+        private int minimumPlayers = 2;
+
+        [SerializeField]
+        private NetworkRoomPlayerLobby roomPlayerPrefab = null;
+
+        [SerializeField]
+        private GameObject botPrefab = null;
+
+        [SerializeField]
+        private SpawnPointPicker spawnPointPicker = null;    
+        #endregion
+
+        #region FIELDS
+        private readonly string NAME_PLAYER_ONLINE = "Player Online";
+        private readonly string MAP_MANAGER = "Map Manager";
+
+        public List<GameObject> DontDestroyOnLoadObjects = new List<GameObject>();
+
+        private Player networkPlayerPrefab = null;
+        private Player NetworkPlayerPrefab
         {
-            if (networkPlayerPrefab != null) return networkPlayerPrefab;
-            networkPlayerPrefab = spawnPrefabs.Find(prefab => prefab.name.Equals(NAME_PLAYER_ONLINE)).GetComponent<Player>();
-            return networkPlayerPrefab;
-        }
-    }
-
-    private MapManager mapManagerPrefab = null;
-    private MapManager MapManagerPrefab
-    {
-        set => mapManagerPrefab = value;
-        get
-        {
-            if (mapManagerPrefab != null) return mapManagerPrefab;
-            mapManagerPrefab = spawnPrefabs.Find(prefab => prefab.name.Equals(MAP_MANAGER)).GetComponent<MapManager>();
-            return mapManagerPrefab;
-        }
-    }
-
-    public List<NetworkRoomPlayerLobby> RoomPlayers { get; } = new List<NetworkRoomPlayerLobby>();
-    public List<Player> Players { get; } = new List<Player>();
-
-    public List<PlayerBot> Bots {get;} = new List<PlayerBot>();
-
-    private MapManager mapManager;
-
-    public static event Action OnClientConnected;
-    public static event Action OnClientDisconnnected;
-
-    public override void OnStartServer() => spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList();
-
-    public override void OnStartClient()
-    {
-        var spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs");
-        foreach (var prefab in spawnPrefabs)
-        {
-            ClientScene.RegisterPrefab(prefab);
-        }
-    }
-
-    public override void OnClientConnect(NetworkConnection conn)
-    {
-        base.OnClientConnect(conn);
-        OnClientConnected?.Invoke();
-    }
-
-    public void CleanObjectsWhenDisconnect()
-    {
-        Debug.Log("clean object when disconnect");
-        RoomPlayers.Clear();
-        Players.Clear();
-        ServiceLocator.Reset();
-        foreach (GameObject obj in DontDestroyOnLoadObjects)
-        {
-            if (obj != null) NetworkServer.Destroy(obj);
-        }
-        Destroy(NetworkManager.singleton.gameObject);
-    }
-
-    public override void OnClientDisconnect(NetworkConnection conn)
-    {
-        // Debug.Log("on client disconnect");
-        // if (SceneManager.GetActiveScene().path == gamePlayScene)
-        // {
-        //     CleanObjectsWhenDisconnect();
-        //     // SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);
-        // }
-        base.OnClientDisconnect(conn);
-        OnClientDisconnnected?.Invoke();
-    }
-
-    public override void OnServerConnect(NetworkConnection conn)
-    {
-        Debug.Log("Num players: " + numPlayers);
-        if (numPlayers == maximumPlayers || SceneManager.GetActiveScene().path != menuScene)
-        {
-            conn.Disconnect();
-            return;
-        }
-    }
-
-    public override void OnServerDisconnect(NetworkConnection conn)
-    {
-        if (conn.identity != null)
-        {
-            if (SceneManager.GetActiveScene().path == menuScene)
+            set => networkPlayerPrefab = value;
+            get
             {
-                var player = conn.identity.GetComponent<NetworkRoomPlayerLobby>();
-                RoomPlayers.Remove(player);
-                NotifyPlayersOfReadyState();
-            }
-            else if (SceneManager.GetActiveScene().path == gamePlayScene)
-            {
-                var player = conn.identity.GetComponent<Player>();
-                Players.Remove(player);
+                if (networkPlayerPrefab != null) return networkPlayerPrefab;
+                networkPlayerPrefab = spawnPrefabs.Find(prefab => prefab.name.Equals(NAME_PLAYER_ONLINE)).GetComponent<Player>();
+                return networkPlayerPrefab;
             }
         }
-        base.OnServerDisconnect(conn);
-    }
 
-    public override void OnServerAddPlayer(NetworkConnection conn)
-    {        
-        if (SceneManager.GetActiveScene().path == menuScene)
+        private MapManager mapManagerPrefab = null;
+        private MapManager MapManagerPrefab
         {
-            bool isHost = RoomPlayers.Count == 0;
-            NetworkRoomPlayerLobby roomPlayer = Instantiate(roomPlayerPrefab);
+            set => mapManagerPrefab = value;
+            get
+            {
+                if (mapManagerPrefab != null) return mapManagerPrefab;
+                mapManagerPrefab = spawnPrefabs.Find(prefab => prefab.name.Equals(MAP_MANAGER)).GetComponent<MapManager>();
+                return mapManagerPrefab;
+            }
+        }
+
+        public List<NetworkRoomPlayerLobby> RoomPlayers { get; } = new List<NetworkRoomPlayerLobby>();
+        public List<Player> Players { get; } = new List<Player>();
+        public List<PlayerBot> Bots { get; } = new List<PlayerBot>();
+        private MapManager mapManager;
+        public bool isBotTraining;
+        private IGameModeManager gameModeManager;
+        #endregion
+
+        public int MinNumPlayers { get => minimumPlayers; }
+
+        public static event Action OnClientConnected;
+        public static event Action OnClientDisconnnected;
+
+        public override void OnStartServer() 
+        {
+            spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs").ToList();
+        }
+
+        public override void OnStartClient()
+        {
+            var spawnPrefabs = Resources.LoadAll<GameObject>("SpawnablePrefabs");
+            foreach (var prefab in spawnPrefabs)
+            {
+                ClientScene.RegisterPrefab(prefab);
+            }
+        }
+
+        public override void OnClientConnect(NetworkConnection conn)
+        {
+            base.OnClientConnect(conn);
+            OnClientConnected?.Invoke();           
+        }
+
+        public void CleanObjectsOnDisconnect()
+        {
+            Debug.Log("Cleanup on disconnect");
+
+            RoomPlayers.Clear();
+            Players.Clear();
+            ServiceLocator.Reset();
+
+            foreach (GameObject obj in DontDestroyOnLoadObjects)
+            {
+                if (obj != null) NetworkServer.Destroy(obj);
+            }
+
+            Destroy(NetworkManager.singleton.gameObject);
+        }
+
+        public override void OnClientDisconnect(NetworkConnection conn)
+        {
+            // Debug.Log("on client disconnect");
+            // if (SceneManager.GetActiveScene().path == gamePlayScene)
+            // {
+            //     CleanObjectsWhenDisconnect();
+            //     // SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);
+            // }
+            base.OnClientDisconnect(conn);
+            OnClientDisconnnected?.Invoke();
+        }
+
+        public override void OnServerConnect(NetworkConnection conn)
+        {
+            Debug.Log("Number of players: " + numPlayers);
+
+            if (numPlayers == maximumPlayers || SceneManager.GetActiveScene().path != menuScene)
+            {
+                conn.Disconnect();
+                return;
+            }
+        }
+
+        public override void OnServerDisconnect(NetworkConnection conn)
+        {
+            if (conn.identity != null)
+            {
+                if (SceneManager.GetActiveScene().path == menuScene)
+                {
+                    var player = conn.identity.GetComponent<NetworkRoomPlayerLobby>();
+                    RoomPlayers.Remove(player);
+                    NotifyReadyState();
+                }
+                else if (SceneManager.GetActiveScene().path == gamePlayScene)
+                {
+                    var player = conn.identity.GetComponent<Player>();
+                    Players.Remove(player);
+                }
+            }
+
+            base.OnServerDisconnect(conn);
+        }
+
+        public void RegisterGameModeManager(IGameModeManager gameModeManager) => this.gameModeManager = gameModeManager;
+
+        public override void OnServerAddPlayer(NetworkConnection conn)
+        {        
+            if (!SceneManager.GetActiveScene().path.Equals(menuScene)) 
+            {
+                return;
+            }
+            
+            gameModeManager.HandleOnServerAddPlayer(conn);      
+        }
+
+        public Player SpawnNetworkPlayer(NetworkConnection conn)
+        {
+            var player = Instantiate(NetworkPlayerPrefab, spawnPointPicker.NextSpawnPoint.position, Quaternion.identity);
+            player.SetPlayerName(PlayerPrefs.GetString(PlayerNameInput.PLAYER_PREF_NAME_KEY));
+            NetworkServer.AddPlayerForConnection(conn, player.gameObject); 
+            return player;        
+        }
+
+        public void SpawnRoomPlayer(NetworkConnection conn)
+        {
+            var isHost = RoomPlayers.Count == 0;
+            var roomPlayer = Instantiate(roomPlayerPrefab);
             roomPlayer.IsHost = isHost;
             NetworkServer.AddPlayerForConnection(conn, roomPlayer.gameObject);
         }
 
-    }
-
-    public void NotifyPlayersOfReadyState()
-    {
-        foreach (var player in RoomPlayers)
+        public void NotifyReadyState()
         {
-            player.HandleReadyToStart(IsReadyToStart());
-        }
-    }
-
-    public override void OnStopServer()
-    {
-        Debug.Log("on stop server");
-        Time.timeScale =1f;
-        ServerChangeScene(menuScene);
-        CleanObjectsWhenDisconnect();
-        base.OnStopServer();
-    }
-
-    public bool IsReadyToStart()
-    {
-        if (numPlayers < minimumPlayers) return false;
-
-        foreach(var player in RoomPlayers)
-        {
-            if (!player.isReady) return false;
+            RoomPlayers.ForEach(roomPlayer => roomPlayer.HandleReadyToStart(IsReadyToStart()));
         }
 
-        return true;
-    }
+        public override void OnStopServer()
+        {
+            //Debug.Log("on stop server");
+            Time.timeScale = 1f;
+            ServerChangeScene(menuScene);
+            CleanObjectsOnDisconnect();
+            base.OnStopServer();
+        }
 
-    public override void ServerChangeScene(string sceneName)
-    {
-        if (SceneManager.GetActiveScene().path == menuScene)
+        public override void ServerChangeScene(string sceneName)
+        {
+            HandleServerChangeScene();
+            base.ServerChangeScene(sceneName);
+        }
+
+        private void HandleServerChangeScene()
+        {
+            if (!SceneManager.GetActiveScene().path.Equals(menuScene))
+            {
+                return;
+            }
+
+            InitEnv();
+            gameModeManager.HandleServerChangeScene(mapManager.netIdentity);
+        }
+
+        private void InitEnv()
         {
             spawnPointPicker.Reset();     
             SpawnMapManager();
         }
-        base.ServerChangeScene(sceneName);
-    }
 
-    private void SpawnMapManager()
-    {        
-        Debug.Log("Spawn Map Manager");
-        mapManager = Instantiate(MapManagerPrefab);
-        // ServiceLocator.Register<IMapManager>(mapManager.GetComponent<IMapManager>());
-        NetworkServer.Spawn(mapManager.gameObject);
-        RoomPlayers.ToArray().ForEach(SpawnNetworkPlayer);
-        DontDestroyOnLoad(mapManager);
-        DontDestroyOnLoadObjects.Add(mapManager.gameObject); 
-    }
+        private void SpawnMapManager()
+        {        
+            mapManager = Instantiate(MapManagerPrefab);
+            NetworkServer.Spawn(mapManager.gameObject);
+            
+            DontDestroyOnLoad(mapManager);
+            DontDestroyOnLoadObjects.Add(mapManager.gameObject); 
+        }
 
-    private void SpawnNetworkPlayer(NetworkRoomPlayerLobby roomPlayer)
-    {
-        Debug.Log("Spawn a player");          
-        //var player = Instantiate(NetworkPlayerPrefab);     
-        var player = Instantiate(NetworkPlayerPrefab, spawnPointPicker.NextSpawnPoint.position, Quaternion.identity);
-        player.SetPlayerName(roomPlayer.DisplayName);
-        var conn = roomPlayer.netIdentity.connectionToClient;
-        NetworkServer.Destroy(conn.identity.gameObject);
-        NetworkServer.ReplacePlayerForConnection(conn, player.gameObject, true);
-        // Players.Add(player);
-        player.TargetRegisterIMapManager(mapManager.netIdentity);
-    }
-
-    public override void OnServerSceneChanged(string sceneName)
-    {
-        if (SceneManager.GetActiveScene().path == gamePlayScene)
+        public void SpawnPvPPlayers()
         {
-            mapManager.GenerateMap(); 
-            //TODO: check if all players loaded scene
-            StartGame();
-        }
-        // if (SceneManager.GetActiveScene().path == menuScene)
-        // {
-        //     StopServer();
-        // }
-    }
-
-    private void StartGame()
-    {
-        Time.timeScale = 1f;
-        float matchTime = 120f;
-        foreach(Player player in Players)
-        {
-            player.SetCanMove(true);
-            player.TargetNotifyGameReady(matchTime);
-        }
-        if (Players.Count==1)
-        {
-            var bot = Instantiate(botPrefab);
-            Bots.Add(bot.GetComponent<PlayerBot>());
-            NetworkServer.Spawn(bot, Players[0].connectionToClient);
-        }
-        Invoke(nameof(EndGame),matchTime);
-    }
-    void Update()
-    {
-#if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            CancelInvoke();
-            EndGame();
-        }
-#endif
-    }
-
-    private void EndGame()
-    {
-        Debug.Log("Player count "+ Players.Count);
-        //stop game in server
-        if (Players.Count <=0) return;
-        Time.timeScale = 0f;
-        //if play with bot
-        if (Bots.Count > 0)
-        {
-            Players[0].TargetNotifyEndGame(Players[0].GetCurrentScore() >= Bots[0].score);
-            return;
-        }
-        Players.ForEach(player => player.SetCanMove(false));
-        List<Player> orderedPlayers = Players.OrderBy(player => -player.GetCurrentScore()).ToList<Player>();
-        int highestScore = orderedPlayers[0].GetCurrentScore();
-        orderedPlayers[0].TargetNotifyEndGame(true);
-        foreach (Player player in orderedPlayers.Skip(1))
-        {
-            if (player.GetCurrentScore() == highestScore)
+            RoomPlayers.ToArray().ForEach(roomPlayer =>
             {
-                //tied
-                player.TargetNotifyEndGame(true);
-                continue;
+                var player = Instantiate(NetworkPlayerPrefab, spawnPointPicker.NextSpawnPoint.position, Quaternion.identity);
+                player.SetPlayerName(roomPlayer.DisplayName);
+                var conn = roomPlayer.netIdentity.connectionToClient;
+                NetworkServer.Destroy(conn.identity.gameObject);
+                NetworkServer.ReplacePlayerForConnection(conn, player.gameObject, true);
+                player.TargetRegisterMapManager(mapManager.netIdentity);
+            });          
+        }
+
+        public override void OnServerSceneChanged(string sceneName)
+        {
+            if (SceneManager.GetActiveScene().path == gamePlayScene)
+            {
+                mapManager.GenerateMap(); 
+                //TODO check if all players loaded scene
+                SetupGame();
             }
-            player.TargetNotifyEndGame(false);
         }
-    }
-    public void StartLobby()
-    {
-        //Debug.Log("here");
-        if (SceneManager.GetActiveScene().path == menuScene)
+
+        private void SetupGame()
         {
-            //Debug.Log("here2");
-            if (IsReadyToStart())
+            Time.timeScale = 1f;
+            float matchTime = 120f;
+            foreach (Player player in Players)
             {
-                //Debug.Log("here3");
+                player.SetCanMove(true);
+                player.TargetNotifyGameReady(matchTime);
+            }
+
+            if (Players.Count == 1)
+            {
+                var bot = Instantiate(botPrefab);
+                Bots.Add(bot.GetComponent<PlayerBot>());
+                NetworkServer.Spawn(bot, Players[0].connectionToClient);
+            }
+
+            Invoke(nameof(EndGame), matchTime);
+        }
+
+        public void StartGame()
+        {
+            if (SceneManager.GetActiveScene().path == menuScene && IsReadyToStart())
+            {           
+                if (ServiceLocator.Resolve<MD.VisualEffects.FadeScreen>(out MD.VisualEffects.FadeScreen fadeScreen))
+                {
+                    fadeScreen.StartFading(() => ServerChangeScene(gamePlayScene));
+                    return;
+                }
+
                 ServerChangeScene(gamePlayScene);
             }
+        } 
+
+        public bool IsReadyToStart() => gameModeManager.IsReadyToStart();
+
+        private void EndGame()
+        {
+            Debug.Log("Player count: " + Players.Count);
+            //stop game on server
+            if (Players.Count <= 0) return;
+            Time.timeScale = 0f;
+            //if play with bot
+            if (Bots.Count > 0)
+            {
+                Players[0].TargetNotifyEndGame(Players[0].CurrentScore >= Bots[0].score);
+                return;
+            }
+            
+            Players.ForEach(player => player.SetCanMove(false));
+            List<Player> orderedPlayers = Players.OrderBy(player => -player.CurrentScore).ToList<Player>();
+            int highestScore = orderedPlayers[0].CurrentScore;
+            orderedPlayers[0].TargetNotifyEndGame(true);
+            foreach (Player player in orderedPlayers.Skip(1))
+            {
+                if (player.CurrentScore == highestScore)
+                {
+                    //tied
+                    player.TargetNotifyEndGame(true);
+                    continue;
+                }
+                player.TargetNotifyEndGame(false);
+            }
         }
+
+        void Update()
+        {
+    #if UNITY_EDITOR
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                CancelInvoke();
+                EndGame();
+            }
+    #endif
+        }   
     }
-}
+}    

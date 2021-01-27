@@ -11,19 +11,15 @@ namespace MD.VisualEffects
         private SpriteRenderer spriteRenderer;
         private Animator animator;
 
-        private void Update() 
-        {
-            if (Input.GetKeyDown(KeyCode.T)) Play(null);
-        }
-
         private void Start() 
         {
             spriteRenderer = GetComponent<SpriteRenderer>();  
-            animator = GetComponent<Animator>();  
+            animator = GetComponent<Animator>(); 
+
             EventSystems.EventManager.Instance.StartListening<GemDigSuccessData>(HandleGemDigSuccess);
         }
 
-        private void OnDestroy() 
+        private void OnDisable() 
         {
             EventSystems.EventManager.Instance.StopListening<GemDigSuccessData>(HandleGemDigSuccess);
         }

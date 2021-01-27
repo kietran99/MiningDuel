@@ -1,5 +1,6 @@
 using UnityEngine;
 using Mirror;
+
 namespace MD.Diggable.Projectile
 {
     public class DiggableProjectile : NetworkBehaviour
@@ -9,6 +10,7 @@ namespace MD.Diggable.Projectile
         
         [SerializeField]
         private int value = 1;
+        
         [SerializeField]
         private ProjectileStats stats = null;
 
@@ -20,17 +22,10 @@ namespace MD.Diggable.Projectile
         {
             return stats;
         }
+        
         private void Start()
         {
-            RemainingHit = value;    
-            if (isClient)
-            {
-                IMapManager mapManager;
-                if (ServiceLocator.Resolve<IMapManager>(out mapManager))
-                {
-                    mapManager.NotifyNewGem(transform.position,projectileType.ToDiggable());
-                }
-            }
+            RemainingHit = value;               
         }
         public int DiggableType() => projectileType;
 

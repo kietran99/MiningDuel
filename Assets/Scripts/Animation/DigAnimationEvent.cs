@@ -28,8 +28,10 @@ namespace MD.Character.Animation
             }
             else 
             {
-                //Debug.Log("PLAYER DIG");                
-                EventSystems.EventManager.Instance.TriggerEvent(new DigAnimEndData());
+                //WARNING cheating here
+                if (animator.transform.parent.GetComponent<Player>().hasAuthority)             
+                //
+                    EventSystems.EventManager.Instance.TriggerEvent(new DigAnimEndData());
             }
         }
        

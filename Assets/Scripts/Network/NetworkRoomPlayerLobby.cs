@@ -3,170 +3,189 @@ using UnityEngine.UI;
 using Mirror;
 using System.Net;
 using System.Net.Sockets;
-public class NetworkRoomPlayerLobby : NetworkBehaviour
+
+namespace MD.UI
 {
-    [Header("UI")]
-
-    [SerializeField]
-    GameObject lobbyUI = null;
-
-    [SerializeField]
-    private Text[] playerNameTexts = new Text[4], playerReadyStatusTexts = new Text[4];
-
-    [SerializeField]
-    private Button startGameButton = null, readyButton = null;
-
-    [SerializeField]
-    private Text ipText = null;
-    
-    [SyncVar(hook = nameof(HandleDisplayNameChanged))]
-    public string DisplayName = "Loading....";
-
-    [SyncVar(hook = nameof(HandleReadyStatusChanged))]
-    public bool isReady = true;
-
-    [SyncVar]
-    public int charaterIndex = 0;
-
-    private NetworkManagerLobby room;
-    private NetworkManagerLobby Room
+    public class NetworkRoomPlayerLobby : NetworkBehaviour
     {
-        get
+        #region FIELDS
+        [Header("UI")]
+
+        [SerializeField]
+        GameObject lobbyUI = null;
+
+        [SerializeField]
+        private ParticipantSlot[] participantSlots = null;
+
+        [SerializeField]
+        private Button startGameButton = null, readyButton = null;
+
+        [SerializeField]
+        private Color readyColor = Color.green, standbyColor = Color.red;
+
+        [SerializeField]
+        private Text readyButtonText = null;
+        
+        [SyncVar(hook = nameof(SyncDisplayName))]
+        public string DisplayName = "Loading....";
+
+        [SyncVar(hook = nameof(SyncPlayerStatus))]
+        public bool isReady = true;
+
+        [SyncVar]
+        public int charaterIndex = 0;
+
+        private NetworkManagerLobby room;
+        private NetworkManagerLobby Room
         {
-            room = room ?? NetworkManager.singleton as NetworkManagerLobby;
-            return room;
-        }
-    
-    }
-
-    private bool isHost;
-    public bool IsHost
-    {
-        set
-        {
-            isHost = value;
-            if (!isHost) return;
-            startGameButton.gameObject.SetActive(true);
-            readyButton.gameObject.SetActive(false);
-            isReady = true;           
-        }
-    }
-
-    public override void OnStartAuthority()
-    {
-        CmdSetDisplayName(PlayerNameInput.DisplayName);
-        lobbyUI.SetActive(true);
-        if (!isHost) return;
-        ipText.text = GetLocalIPAddress();
-    }
-     public string GetLocalIPAddress()
-     {
-         var host = Dns.GetHostEntry(Dns.GetHostName());
-         foreach (var ip in host.AddressList)
-         {
-             if (ip.AddressFamily == AddressFamily.InterNetwork)
-             {
-                 return ip.ToString();
-             }
-         }
-         throw new System.Exception("No network adapters with an IPv4 address in the system!");
-     }
-
-    public override void OnStartClient()
-    {
-        Room.RoomPlayers.Add(this);
-        UpdateDisplay();
-    }
-
-    public override void OnStopClient()
-    {
-        Room.RoomPlayers.Remove(this);
-        UpdateDisplay();
-    }
-
-    public void HandleDisplayNameChanged(string oldValue, string newValue) 
-    {
-        name = newValue;
-        UpdateDisplay();
-    }
-    public void HandleReadyStatusChanged(bool oldValue, bool newValue)
-    {
-        isReady = newValue;
-        //Debug.Log("isready "+ isReady);    
-        UpdateDisplay();
-    }
-
-    private void UpdateDisplay()
-    {
-        if (!hasAuthority)
-        {
-            foreach(var player in Room.RoomPlayers)
+            get
             {
-                if (player.hasAuthority)
+                room = room ?? NetworkManager.singleton as NetworkManagerLobby;
+                return room;
+            }   
+        }
+
+        private bool isHost;
+        public bool IsHost
+        {
+            set
+            {
+                isHost = value;
+                if (!isHost) return;
+
+                startGameButton.gameObject.SetActive(true);
+                readyButton.gameObject.SetActive(false);
+                isReady = true;           
+            }
+        }
+        #endregion
+
+        public override void OnStartAuthority()
+        {
+            CmdSetDisplayName(PlayerNameInput.DisplayName);
+            lobbyUI.SetActive(true);
+        }
+
+        public string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
-                    player.UpdateDisplay();
-                    break;
+                    return ip.ToString();
                 }
             }
-
-            return;
+            throw new System.Exception("No network adapters with an IPv4 address in the system!");
         }
-        //Debug.Log("status change");
-        for (int i= 0; i< playerNameTexts.Length; i++)
+
+        public override void OnStartClient()
         {
-            playerNameTexts[i].text = "Waitting for Player...";
-            playerReadyStatusTexts[i].text = string.Empty;
+            Room.RoomPlayers.Add(this);
+            UpdateDisplay();
         }
 
-        for (int i=0; i< Room.RoomPlayers.Count; i++)
+        public override void OnStopClient()
         {
-            playerNameTexts[i].text = Room.RoomPlayers[i].DisplayName;
-            playerReadyStatusTexts[i].text = Room.RoomPlayers[i].isReady? "Ready":"";
+            Room.RoomPlayers.Remove(this);
+            UpdateDisplay();
         }
-    }
 
-    public void HandleReadyToStart(bool readyToStart)
-    {
-        if (!isHost) return;
-        startGameButton.interactable = readyToStart;
-    }
-
-    public void ExitLobby()
-    {
-        if (netIdentity == room.RoomPlayers[0].netIdentity)
+        private void SyncDisplayName(string oldValue, string newValue) 
         {
-            room.StopHost();
+            name = newValue;
+            UpdateDisplay();
         }
-        else
+
+        private void SyncPlayerStatus(bool oldValue, bool newValue)
         {
-            room.StopClient();
+            isReady = newValue;
+            ToggleReadyButtonState();   
+            UpdateDisplay();
         }
-    }
 
-    [Command]
-    public void CmdSetDisplayName(string displayName)
-    {
-        DisplayName = displayName;
-    }
-    [Command]
-    public void CmdReadyUp()
-    {
-        isReady = !isReady;
-        Room.NotifyPlayersOfReadyState();
-    }
+        private void UpdateDisplay()
+        {
+            if (!hasAuthority)
+            {
+                foreach (var player in Room.RoomPlayers)
+                {
+                    if (player.hasAuthority)
+                    {
+                        player.UpdateDisplay();
+                        break;
+                    }
+                }
 
-    [Command]
-    public void CmdStartGame()
-    {
-        if (Room.RoomPlayers[0].connectionToClient != connectionToClient) return;
-        if (Room.IsReadyToStart())
-            room.StartLobby();
-    }
+                return;
+            }
+            
+            participantSlots.ForEach(slot => slot.ToggleEmptyState());
 
-    [Command]
-    public void ChangeCharacter(int index)
-    {
-        //validate
-        charaterIndex = index;
+            for (int i = 0; i < Room.RoomPlayers.Count; i++)
+            {
+                participantSlots[i].ToggleOccupiedState(Room.RoomPlayers[i].DisplayName, Room.RoomPlayers[i].isReady);
+            }
+        }
+
+        public void HandleReadyToStart(bool readyToStart)
+        {
+            if (!isHost) return;
+
+            startGameButton.interactable = readyToStart;
+        }
+
+        public void ExitLobby()
+        {
+            if (netIdentity == room.RoomPlayers[0].netIdentity)
+            {
+                EventSystems.EventManager.Instance.TriggerEvent(new RoomWindowToggleData(false));
+                room.StopHost();
+            }
+            else
+            {
+                room.StopClient();
+            }
+        }
+
+        [Command]
+        public void CmdSetDisplayName(string displayName)
+        {
+            DisplayName = displayName;
+        }
+
+        [Command]
+        public void CmdReadyUp()
+        {
+            isReady = !isReady;                  
+            Room.NotifyReadyState();
+        }
+
+        public void ToggleReadyButtonState()
+        {
+            readyButton.GetComponent<Image>().color = isReady ? standbyColor : readyColor;
+            readyButtonText.text = isReady ? "Standby" : "Ready";
+        }
+
+        [Command]
+        public void CmdStartGame()
+        {
+            if (!Room.RoomPlayers[0].connectionToClient.Equals(connectionToClient)) 
+            {
+                return;
+            }
+
+            if (Room.IsReadyToStart())
+            {
+                room.StartGame();
+            }
+        }
+
+        [Command]
+        public void ChangeCharacter(int index)
+        {
+            //validate
+            charaterIndex = index;
+        }
     }
 }

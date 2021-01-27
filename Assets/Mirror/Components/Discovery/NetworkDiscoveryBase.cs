@@ -116,7 +116,7 @@ namespace Mirror.Discovery
         {
             if (!SupportedOnThisPlatform)
                 throw new PlatformNotSupportedException("Network discovery not supported in this platform");
-
+            
             StopDiscovery();
 
             // Setup port -- may throw exception
@@ -136,11 +136,12 @@ namespace Mirror.Discovery
             {
                 try
                 {
-                    await ReceiveRequestAsync(serverUdpClient);
+                    await ReceiveRequestAsync(serverUdpClient);                   
                 }
                 catch (ObjectDisposedException)
                 {
                     // socket has been closed
+                    Debug.Log("Server stopped listening for connections");
                     break;
                 }
                 catch (Exception)
