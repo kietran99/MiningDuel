@@ -33,5 +33,11 @@ namespace MD.Network.GameMode
         {
             return networkManager.numPlayers == 1;
         }
+
+        public override void SetupGame()
+        {
+            base.SetupGame();
+            networkManager.SetupBotState();
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
 using MD.Character.Animation;
+using MD.Map.Core;
 
 namespace MD.Character
 {
@@ -10,13 +11,10 @@ namespace MD.Character
         private int power = 1;
 
         #region FIELDS
-        private float digCooldown = .1f;
-        private float nextDigTime = 0f;
         private IMapManager mapManager = null;
         private Player player = null;
         #endregion
 
-        #region  PROPERTIES
         private IMapManager MapManager
         {
             get
@@ -37,11 +35,10 @@ namespace MD.Character
         }
 
         public int Power { get => power; }
-        #endregion
 
         public override void OnStartAuthority()
         {
-            ListenToEvents();
+            StartListeningToEvents();
         }
 
         private void OnDestroy()
@@ -49,7 +46,7 @@ namespace MD.Character
             StopListeningToEvents();
         }
 
-        protected virtual void ListenToEvents()
+        protected virtual void StartListeningToEvents()
         {
             EventSystems.EventManager.Instance.StartListening<DigAnimEndData>(HandleDigAnimEnd);
         }
@@ -59,32 +56,34 @@ namespace MD.Character
             EventSystems.EventManager.Instance.StopListening<DigAnimEndData>(HandleDigAnimEnd);
         }
 
-        protected void HandleDigAnimEnd(DigAnimEndData data) => Dig();
-       
-        protected void Dig()
-        {
-            if (Time.time < nextDigTime) return;
-
-            nextDigTime = Time.time + digCooldown;
-            CmdDig();
-        }
+        protected void HandleDigAnimEnd(DigAnimEndData data) => CmdDig();
 
         [Command]
         public void CmdDig()
         {
             if (Player != null)
             {
-                Player.SetCanMove(false);
-                Invoke(nameof(EnableCanMove), digCooldown);
+                Player.Movable(false);
+                EnableMovement();
             }
-
-            MapManager.DigAt(netIdentity, transform.position);
+       
+            ServiceLocator
+                .Resolve<IDiggableGenerator>()
+                .Match(
+                    unavailService => Debug.LogError(UnavailableServiceError.MESSAGE),
+                    digGen => digGen.DigAt(
+                                Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y),
+                                power, netId)
+                );  
+            MapManager.DigAt(netIdentity, transform.position);         
+            // EventSystems.EventManager.Instance.TriggerEvent(
+            //     new DigRequestData(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y), power));
         }
         
         [Server]
-        public void EnableCanMove()
+        public void EnableMovement()
         {
-            Player.SetCanMove(true);
+            Player.Movable(true);
         }
     }
 }

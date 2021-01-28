@@ -1929,11 +1929,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dee1183576bce614aa1c496278f42dcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shouldShowDebugTiles: 0
   scanRange: 3
   symbolContainer: {fileID: 7423720443794862423}
   symbolPoolObject: {fileID: 8043784178281137202}
   tilePoolObject: {fileID: 6970863643623541622}
+  sonarProxyPrefab: {fileID: 400790612934727122, guid: 0d6d6f8aa866afd4cbe7b35c09ca7600,
+    type: 3}
 --- !u!1001 &72249922493982752
 PrefabInstance:
   m_ObjectHideFlags: 0

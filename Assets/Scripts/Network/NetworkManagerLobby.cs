@@ -39,6 +39,7 @@ namespace MD.UI
         #region FIELDS
         private readonly string NAME_PLAYER_ONLINE = "Player Online";
         private readonly string MAP_MANAGER = "Map Manager";
+        private readonly string DIGGABLE_GENERATOR = "Diggable Generator";
 
         public List<GameObject> DontDestroyOnLoadObjects = new List<GameObject>();
 
@@ -167,7 +168,7 @@ namespace MD.UI
                 return;
             }
             
-            gameModeManager.HandleOnServerAddPlayer(conn);      
+            gameModeManager.HandleOnServerAddPlayer(conn);    
         }
 
         public Player SpawnNetworkPlayer(NetworkConnection conn)
@@ -219,8 +220,17 @@ namespace MD.UI
 
         private void InitEnv()
         {
-            spawnPointPicker.Reset();     
-            SpawnMapManager();
+            spawnPointPicker.Reset();  
+            SpawnDiggableGenerator();   
+            SpawnMapManager();           
+        }
+
+        private void SpawnDiggableGenerator()
+        {
+            var diggableGenerator = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(DIGGABLE_GENERATOR)));
+            NetworkServer.Spawn(diggableGenerator);
+            DontDestroyOnLoad(diggableGenerator);
+            DontDestroyOnLoadObjects.Add(diggableGenerator);
         }
 
         private void SpawnMapManager()
@@ -247,32 +257,45 @@ namespace MD.UI
 
         public override void OnServerSceneChanged(string sceneName)
         {
-            if (SceneManager.GetActiveScene().path == gamePlayScene)
+            if (!SceneManager.GetActiveScene().path.Equals(gamePlayScene))
             {
-                mapManager.GenerateMap(); 
-                //TODO check if all players loaded scene
-                SetupGame();
+                return;
             }
+
+            Players.ForEach(player => GenSonarProxy(player.connectionToClient));            
+            mapManager.GenerateMap(); 
+            //TODO check if all players loaded scene
+            SetupGame();           
+        }
+
+        private void GenSonarProxy(NetworkConnection conn)
+        {
+            var sonarProxy = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals("Sonar Proxy")));
+            NetworkServer.Spawn(sonarProxy, conn);
         }
 
         private void SetupGame()
         {
-            Time.timeScale = 1f;
             float matchTime = 120f;
+            Time.timeScale = 1f;   
+            gameModeManager.SetupGame();      
+            Invoke(nameof(EndGame), matchTime);
+        }
+
+        public void SetupPlayerState(float matchTime)
+        {
             foreach (Player player in Players)
             {
-                player.SetCanMove(true);
+                player.Movable(true);
                 player.TargetNotifyGameReady(matchTime);
             }
+        }
 
-            if (Players.Count == 1)
-            {
-                var bot = Instantiate(botPrefab);
-                Bots.Add(bot.GetComponent<PlayerBot>());
-                NetworkServer.Spawn(bot, Players[0].connectionToClient);
-            }
-
-            Invoke(nameof(EndGame), matchTime);
+        public void SetupBotState()
+        {
+            var bot = Instantiate(botPrefab);
+            Bots.Add(bot.GetComponent<PlayerBot>());
+            NetworkServer.Spawn(bot, Players[0].connectionToClient);
         }
 
         public void StartGame()
@@ -304,7 +327,7 @@ namespace MD.UI
                 return;
             }
             
-            Players.ForEach(player => player.SetCanMove(false));
+            Players.ForEach(player => player.Movable(false));
             List<Player> orderedPlayers = Players.OrderBy(player => -player.CurrentScore).ToList<Player>();
             int highestScore = orderedPlayers[0].CurrentScore;
             orderedPlayers[0].TargetNotifyEndGame(true);

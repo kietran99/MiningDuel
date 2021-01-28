@@ -3,6 +3,7 @@
 public class TileNode : WeightedNode<Vector2Int>
 {
     private const int MAX_SUCCESSORS = 8;
+    private const int BASE_WEIGHT = 8;
 
     private bool hasDiggable;
 
@@ -29,7 +30,7 @@ public class TileNode : WeightedNode<Vector2Int>
         }
     }
 
-    public TileNode(Vector2Int value, int weight = MAX_SUCCESSORS, bool hasDiggable = false) : base(value, weight)
+    public TileNode(Vector2Int value, int weight = BASE_WEIGHT, bool hasDiggable = false) : base(value, weight)
     {
         this.hasDiggable = hasDiggable;
     }
@@ -43,6 +44,7 @@ public class TileNode : WeightedNode<Vector2Int>
     public void OnDiggableDug()
     {
         HasDiggable = false;
+        Weight = BASE_WEIGHT - Neighbors.Filter(node => ((TileNode) node).HasDiggable).Count;
         Neighbors.ForEach(successor => ((TileNode) successor).OnNeighborDiggableDug());
     }
 
@@ -67,14 +69,14 @@ public class TileNode : WeightedNode<Vector2Int>
     }
 
     public void Log()
+    {
+        string neighborPositions = string.Empty;
+        foreach (var pos in Neighbors)
         {
-            string neighborPositions = string.Empty;
-            foreach (var pos in Neighbors)
-            {
-                neighborPositions += pos.Value + ", ";
-            }
-            string res = "Position = " + Value + " Weight = " + Weight;
-            res = neighborPositions.Equals(string.Empty) ? res : res + " Neighbors = " + neighborPositions;
-            Debug.Log(res);          
+            neighborPositions += pos.Value + ", ";
         }
+        string res = "Position = " + Value + " Weight = " + Weight;
+        res = neighborPositions.Equals(string.Empty) ? res : res + " Neighbors = " + neighborPositions;
+        Debug.Log(res);          
+    }
 }

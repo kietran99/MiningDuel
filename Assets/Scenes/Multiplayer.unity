@@ -12292,6 +12292,11 @@ PrefabInstance:
       propertyPath: shouldShowDebugTiles
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2017428497, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
+      propertyPath: sonarProxyPrefab
+      value: 
+      objectReference: {fileID: 400790612934727122, guid: 0d6d6f8aa866afd4cbe7b35c09ca7600,
+        type: 3}
     - target: {fileID: 72249920767011506, guid: 445ad5f27f6d1d647a615c6a1ed5e078,
         type: 3}
       propertyPath: cooldown

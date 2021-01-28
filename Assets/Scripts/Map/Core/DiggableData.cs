@@ -32,7 +32,7 @@ namespace MD.Map.Core
             }
         }
 
-        public Either<InvalidTileException, IDiggableAccess> GetAccessAt(int x, int y)
+        public Either<InvalidTileError, IDiggableAccess> GetAccessAt(int x, int y)
         {
             if (occupiedTiles.ContainsKey(new Vector2Int(x, y)))
             {
@@ -41,7 +41,7 @@ namespace MD.Map.Core
                 return access; 
             }
             
-            return new InvalidTileException();
+            return new InvalidTileError();
         }
 
         public void SetData(IDiggableAccess access, ITileData data)
@@ -49,7 +49,6 @@ namespace MD.Map.Core
             occupiedTiles[new Vector2Int(access.X, access.Y)] = data;
         }
 
-        //TODO Check if tile is empty
         public void Spawn(IDiggableAccess access, DiggableType type)
         {
             if (!ValidateAccess(access)) return;
@@ -59,33 +58,38 @@ namespace MD.Map.Core
             occupiedTiles[pos] = new TileData(type);
         }
 
-        public void Reduce(IDiggableAccess access, int reduceVal)
+        public ReducedData Reduce(IDiggableAccess access, int reduceVal)
         {
-            if (!ValidateAccess(access)) return;
+            if (!ValidateAccess(access)) 
+            {
+                Debug.LogError("Invalid Access");
+                return default;
+            }
 
             var pos = new Vector2Int(access.X, access.Y);
-            occupiedTiles[pos].Reduce(reduceVal, out bool isEmpty);
-            if (isEmpty) { freeTiles.Add(pos); }  
+            var reducedData = occupiedTiles[pos].Reduce(reduceVal);
+            if (reducedData.isEmpty) { freeTiles.Add(pos); }  
+            return reducedData;
         }
 
-        public Either<InvalidTileException, bool> IsEmptyAt(int x, int y)
+        public Either<InvalidTileError, bool> IsEmptyAt(int x, int y)
         {   
             if (occupiedTiles.TryGetValue(new Vector2Int(x, y), out ITileData data))
             {
-                return data.IsEmpty();
+                return data.IsEmpty;
             }
 
-            return new InvalidTileException();            
+            return new InvalidTileError();            
         }
 
-        public Either<InvalidTileException, ITileData> GetDataAt(int x, int y)
+        public Either<InvalidTileError, ITileData> GetDataAt(int x, int y)
         {
             if (occupiedTiles.TryGetValue(new Vector2Int(x, y), out ITileData data))
             {
-                return (Either<InvalidTileException, ITileData>) data;
+                return (TileData) data;
             }
 
-            return new InvalidTileException();
+            return new InvalidTileError();
         }
 
         private bool ValidateAccess(IDiggableAccess access)

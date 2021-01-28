@@ -8,6 +8,6 @@ namespace MD.Network.GameMode
         void HandleOnServerAddPlayer(NetworkConnection conn);
         void HandleServerChangeScene(NetworkIdentity mapManagerID);
         bool IsReadyToStart();
-        //void SetupGame();
+        void SetupGame();
     }
 }

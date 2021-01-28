@@ -4369,26 +4369,13 @@ GameObject:
   m_Component:
   - component: {fileID: 848093007}
   - component: {fileID: 848093009}
-  - component: {fileID: 848093006}
   m_Layer: 0
-  m_Name: Map Tester
+  m_Name: Diggable Generator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &848093006
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 848093005}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ba9f21c4b0921d42b3d9215082a69a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &848093007
 Transform:
   m_ObjectHideFlags: 0
@@ -4415,7 +4402,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c9f2397ae874884f96e1840eb1fc0b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GemPrefab: {fileID: 6985109899069511437, guid: 2fc49e579ae10a341965149dc02feabe,
+  gemPrefab: {fileID: 6985109899069511437, guid: 2fc49e579ae10a341965149dc02feabe,
     type: 3}
-  generateInterval: 0.1
+  generateInterval: 1
   generateAreaLength: 4

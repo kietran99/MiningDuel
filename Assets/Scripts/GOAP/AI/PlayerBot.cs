@@ -66,7 +66,7 @@ public class PlayerBot : NetworkBehaviour
         FMS = new PB_Idle(this);
     }
 
-    void  Update()
+    void Update()
     {
         CheckCanSeePlayer();
         currentState = FMS.name.ToString();

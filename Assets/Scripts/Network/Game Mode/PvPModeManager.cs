@@ -5,8 +5,7 @@ namespace MD.Network.GameMode
     public class PvPModeManager : DefaultGameModeManager
     {
         public PvPModeManager() : base()
-        {
-        }
+        {}
 
         public override void HandleOnServerAddPlayer(NetworkConnection conn)
         {

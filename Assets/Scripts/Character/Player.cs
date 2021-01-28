@@ -69,14 +69,8 @@ namespace MD.Character
             ServiceLocator.Register(mapManager.GetComponent<IMapManager>());
         }
 
-        // [TargetRpc]
-        // public void TargetRegisterMapManager(IMapManager mapManager)
-        // {
-        //     ServiceLocator.Register(mapManager);
-        // }
-
         [Server]
-        public void SetCanMove(bool value) => canMove = value;
+        public void Movable(bool value) => canMove = value;
 
         [TargetRpc]
         public void TargetNotifyGameReady(float time)
@@ -109,5 +103,11 @@ namespace MD.Character
             (NetworkManager.singleton as UI.NetworkManagerLobby).CleanObjectsOnDisconnect();
             SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);            
         }       
+    
+        [Command]
+        public void CmdAssignAuthority(NetworkIdentity id)
+        {
+            id.AssignClientAuthority(connectionToClient);
+        }
     }
 }

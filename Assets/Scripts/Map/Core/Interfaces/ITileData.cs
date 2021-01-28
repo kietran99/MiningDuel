@@ -4,12 +4,11 @@
     {
         int DigsLeft { get; }
         DiggableType Type { get; }
-
+        bool IsEmpty { get; }
 
         /// <summary>
         /// Reduce remaning digs count by <param name="reduceVal">reduceVal</param> 
         /// </summary>
-        void Reduce(int reduceVal, out bool isEmpty);
-        bool IsEmpty();
+        ReducedData Reduce(int reduceVal);
     }
 }

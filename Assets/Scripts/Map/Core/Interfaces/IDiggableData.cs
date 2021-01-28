@@ -25,7 +25,7 @@ namespace MD.Map.Core
         /// <param name="y">Y coordinate</param>
         /// <param name="data">Output tile data</param>
         /// <returns>Whether a tile at ( <paramref name="x"/>, <paramref name="y"/>) is valid</returns>
-        Either<InvalidTileException, ITileData> GetDataAt(int x, int y);
+        Either<InvalidTileError, ITileData> GetDataAt(int x, int y);
 
 
 
@@ -35,12 +35,12 @@ namespace MD.Map.Core
         /// <param name="x">X coordinate</param>
         /// <param name="y">Y coordinate</param>
         /// <param name="data">Input tile data</param>
-        /// <exception cref="MD.Map.Core.InvalidTileException"></exception>
+        /// <exception cref="MD.Map.Core.InvalidTileError"></exception>
         void SetData(IDiggableAccess access, ITileData data);
 
 
 
-        Either<InvalidTileException, IDiggableAccess> GetAccessAt(int x, int y);
+        Either<InvalidTileError, IDiggableAccess> GetAccessAt(int x, int y);
 
 
 
@@ -54,8 +54,8 @@ namespace MD.Map.Core
         /// <param name="x">X coordinate</param>
         /// <param name="y">Y coordinate</param>
         /// <param name="reduceVal">Reduce value</param>
-        /// <exception cref="MD.Map.Core.InvalidTileException"></exception>
-        void Reduce(IDiggableAccess access, int reduceVal);
+        /// <exception cref="MD.Map.Core.InvalidTileError"></exception>
+        ReducedData Reduce(IDiggableAccess access, int reduceVal);
 
 
 
@@ -64,8 +64,8 @@ namespace MD.Map.Core
         /// </summary>
         /// <param name="x">X coordinate</param>
         /// <param name="y">Y coordinate</param>
-        /// <exception cref="MD.Map.Core.InvalidTileException"></exception>
-        Either<InvalidTileException, bool> IsEmptyAt(int x, int y); 
+        /// <exception cref="MD.Map.Core.InvalidTileError"></exception>
+        Either<InvalidTileError, bool> IsEmptyAt(int x, int y); 
 
 
   
