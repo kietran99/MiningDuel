@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Functional.Type;
 
 namespace MD.Map.Core
 {
@@ -6,7 +7,7 @@ namespace MD.Map.Core
     {
         void SetTile(Vector2Int pos, DiggableType type);
         void Populate(Vector2Int[] tilePositions);
-        void DigAt(int x, int y, int power, uint diggerID);
+        Either<InvalidTileError, Either<InvalidAccessError, ReducedData>> DigAt(int x, int y, int power);
         DiggableType[] GetDiggableArea(Vector2Int[] positions);
     }
 }

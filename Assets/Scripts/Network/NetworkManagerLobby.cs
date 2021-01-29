@@ -261,11 +261,17 @@ namespace MD.UI
             {
                 return;
             }
-
+            
+            GenDigGenProxy();
             Players.ForEach(player => GenSonarProxy(player.connectionToClient));            
             mapManager.GenerateMap(); 
             //TODO check if all players loaded scene
             SetupGame();           
+        }
+
+        private void GenDigGenProxy()
+        {
+            NetworkServer.Spawn(Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals("Dig Gen Proxy"))));
         }
 
         private void GenSonarProxy(NetworkConnection conn)

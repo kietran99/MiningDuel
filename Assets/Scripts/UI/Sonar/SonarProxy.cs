@@ -6,7 +6,7 @@ namespace MD.UI
 {
     public struct ScanData : IEventData { public DiggableType[] diggableArea; }
 
-    public class SonarProxy : NetworkBehaviour
+    public class  SonarProxy : NetworkBehaviour
     {
         public override void OnStartAuthority()
         {
@@ -19,7 +19,7 @@ namespace MD.UI
             ServiceLocator
                 .Resolve<Map.Core.IDiggableGenerator>()
                 .Match(
-                    unavailErr => Debug.LogError(UnavailableServiceError.MESSAGE),
+                    unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
                     digGen => TargetBroadcastScanData(digGen.GetDiggableArea(positions))
                 );
         }

@@ -1,5 +1,4 @@
 ﻿using MD.Diggable.Core;
-using System.Collections.Generic;
 
 namespace MD.Map.Core
 {
@@ -46,20 +45,5 @@ namespace MD.Map.Core
         }
 
         public override string ToString() => "   |   " + Type.ToString() + "    |     Digs left: " + DigsLeft;
-    }
-
-    public struct ReducedData
-    {
-        public int current, max;
-        public DiggableType type;
-
-        public bool isEmpty { get => current <= 0; }
-
-        public ReducedData(DiggableType type, int current, int max)
-        {
-            this.type = type;
-            this.current = current;
-            this.max = max;
-        }
     }
 }

@@ -5,6 +5,16 @@ using System.Collections.ObjectModel;
 
 namespace MD.Map.Core
 {
+    public struct InvalidTileError : Functional.IError
+    {
+        public string Message { get => "Invalid Tile"; }
+    }
+
+    public struct InvalidAccessError : Functional.IError
+    {
+        public string Message { get => "Invalid Access"; } 
+    }
+
     public class DiggableData : IDiggableData
     {                     
         private Dictionary<Vector2Int, ITileData> occupiedTiles = new Dictionary<Vector2Int, ITileData>();
@@ -58,12 +68,11 @@ namespace MD.Map.Core
             occupiedTiles[pos] = new TileData(type);
         }
 
-        public ReducedData Reduce(IDiggableAccess access, int reduceVal)
+        public Either<InvalidAccessError, ReducedData> Reduce(IDiggableAccess access, int reduceVal)
         {
             if (!ValidateAccess(access)) 
             {
-                Debug.LogError("Invalid Access");
-                return default;
+                return new InvalidAccessError();
             }
 
             var pos = new Vector2Int(access.X, access.Y);

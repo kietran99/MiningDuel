@@ -2,6 +2,8 @@
 using Mirror;
 using MD.Character.Animation;
 using MD.Map.Core;
+using System.Collections.Generic;
+using EventSystems;
 
 namespace MD.Character
 {
@@ -10,31 +12,7 @@ namespace MD.Character
         [SerializeField]
         private int power = 1;
 
-        #region FIELDS
-        private IMapManager mapManager = null;
-        private Player player = null;
-        #endregion
-
-        private IMapManager MapManager
-        {
-            get
-            {
-                if (mapManager != null) return mapManager;
-                ServiceLocator.Resolve<IMapManager>(out mapManager);
-                return mapManager;
-            }
-        }
-
-        private Player Player
-        {
-            get
-            {
-                if (player != null) return player;
-                return player = GetComponent<Player>();
-            }
-        }
-
-        public int Power { get => power; }
+        public int Power => power;
 
         public override void OnStartAuthority()
         {
@@ -61,29 +39,55 @@ namespace MD.Character
         [Command]
         public void CmdDig()
         {
-            if (Player != null)
-            {
-                Player.Movable(false);
-                EnableMovement();
-            }
-       
             ServiceLocator
                 .Resolve<IDiggableGenerator>()
                 .Match(
-                    unavailService => Debug.LogError(UnavailableServiceError.MESSAGE),
-                    digGen => digGen.DigAt(
-                                Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y),
-                                power, netId)
-                );  
-            MapManager.DigAt(netIdentity, transform.position);         
-            // EventSystems.EventManager.Instance.TriggerEvent(
-            //     new DigRequestData(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y), power));
+                    unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
+                    RequestDig                   
+                );       
         }
-        
+
         [Server]
-        public void EnableMovement()
+        private void RequestDig(IDiggableGenerator diggableGenerator)
         {
-            Player.Movable(true);
+            diggableGenerator
+                .DigAt(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y), power)
+                .Match(
+                    invalidTileErr => Debug.LogError(invalidTileErr.Message),
+                    TryBroadcastingDiggableEvent
+                );
+        }
+
+        [Server]
+        private void TryBroadcastingDiggableEvent(Functional.Type.Either<InvalidAccessError, ReducedData> maybeReducedData)
+        {
+            maybeReducedData
+                .Match(                               
+                    invalidAccessError => Debug.LogError(invalidAccessError.Message),
+                    reducedData => 
+                    {
+                        TargetBroadcastDiggableDugEvent(reducedData);
+                        if (reducedData.isEmpty) 
+                        {
+                            RpcTargetBroadcastDiggableDestroyEvent();
+                        }
+                    }
+                );
+        }
+
+        [TargetRpc]    
+        private void TargetBroadcastDiggableDugEvent(ReducedData reducedData)
+        {
+            DiggableEventBroadcast.TriggerDiggableDugEvent(netIdentity, reducedData);
+        }
+
+        [ClientRpc]
+        private void RpcTargetBroadcastDiggableDestroyEvent()
+        {
+            DiggableEventBroadcast.TriggerDiggableDestroyEvent(
+                Mathf.FloorToInt(transform.position.x), 
+                Mathf.FloorToInt(transform.position.y)
+            );
         }
     }
 }

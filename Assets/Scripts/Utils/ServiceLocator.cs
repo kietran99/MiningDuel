@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Functional.Type;
 using UnityEngine;
 
-public struct UnavailableServiceError 
+public struct UnavailableServiceError : Functional.IError
 {
-    public static readonly string MESSAGE = "Unvailable Service";
+    public string Message => "Unavailable Service";
 }
 
 public static class ServiceLocator
@@ -30,7 +30,7 @@ public static class ServiceLocator
         return true;
     }
 
-    public static Either<UnavailableServiceError, T> Resolve<T>()
+    public static Either<UnavailableServiceError, T> Resolve<T>() 
     {
         if (!services.TryGetValue(typeof(T), out object service))
         {

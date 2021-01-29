@@ -55,7 +55,7 @@ namespace MD.Map.Core
         /// <param name="y">Y coordinate</param>
         /// <param name="reduceVal">Reduce value</param>
         /// <exception cref="MD.Map.Core.InvalidTileError"></exception>
-        ReducedData Reduce(IDiggableAccess access, int reduceVal);
+        Either<InvalidAccessError, ReducedData> Reduce(IDiggableAccess access, int reduceVal);
 
 
 

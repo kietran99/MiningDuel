@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using EventSystems;
 using Mirror;
-using MD.Diggable.Gem;
+using Functional.Type;
+using Functional;
 
 namespace MD.Map.Core
 {
-    //[RequireComponent(typeof(EventConsumer))]
     public class DiggableGenerator : NetworkBehaviour, IDiggableGenerator
     {
         #region SERIALIZE FIELDS
@@ -34,15 +34,8 @@ namespace MD.Map.Core
             System.Linq.Enumerable.Range(0, startSpawnAmount).ForEach(_ => SetupRandomDiggable());
             // diggableData.Log();
             // tileGraph.Log();
-            // ListenToEvents();
             // StartCoroutine(RandomSpawn());
         }
-
-        // private void ListenToEvents()
-        // {
-        //     eventConsumer = GetComponent<EventConsumer>();
-        //     eventConsumer.StartListening<DigRequestData>(HandleDigRequest);
-        // }
 
         public void SetTile(Vector2Int pos, DiggableType type)
         {      
@@ -51,7 +44,7 @@ namespace MD.Map.Core
             diggableData
                 .GetAccessAt(pos.x, pos.y)
                 .Match(
-                    invalidTileError => Debug.LogError(InvalidTileError.MESSAGE),
+                    err => Debug.LogError(err.Message),
                     access => diggableData.Spawn(access, type));
         }
 
@@ -60,23 +53,12 @@ namespace MD.Map.Core
             diggableData = new DiggableData(MakeEmptyTiles(tilePositions));
         }
 
-        // private void HandleDigRequest(DigRequestData reqData) => DigAt(reqData.x, reqData.y, reqData.power);
-
-        public void DigAt(int x, int y, int power, uint diggerID)
+        public Either<InvalidTileError, Either<InvalidAccessError, ReducedData>> DigAt(int x, int y, int power)
         {
             //Debug.Log("Try digging at: " + x + " : " + y);
-
-            diggableData
+            return diggableData
                 .GetAccessAt(x, y)
-                .Match(
-                    err => Debug.LogError(InvalidTileError.MESSAGE),
-                    access => 
-                    {
-                        var reducedData = diggableData.Reduce(access, power);
-                        Debug.Log("Current: " + reducedData.current + " Max: " + reducedData.max);
-                        DiggableEventTrigger.TriggerEvent(reducedData.type, diggerID, reducedData.current, reducedData.max);
-                    }
-                );
+                .Map(access => diggableData.Reduce(access, power));
         }
 
         private Vector2Int[] GenTestMap()
@@ -181,42 +163,12 @@ namespace MD.Map.Core
                 diggableData
                     .GetDataAt(positions[i].x, positions[i].y)
                     .Match(
-                        err => Debug.LogError(InvalidTileError.MESSAGE),
+                        err => Debug.LogError(err.Message),
                         tileData => diggableArea[i] = tileData.Type
                     );
             }
 
             return diggableArea;
         }
-    }
-
-    public static class DiggableEventTrigger
-    {
-        private static Dictionary<DiggableType, System.Action<uint, int, int>> eventTriggerDict = 
-            new Dictionary<DiggableType, System.Action<uint, int, int>>()
-            {
-                { DiggableType.CommonGem, TriggerGemDugEvent },
-                { DiggableType.UncommonGem, TriggerGemDugEvent },
-                { DiggableType.RareGem, TriggerGemDugEvent },
-                { DiggableType.NormalBomb, TriggerProjectileDugEvent },
-                { DiggableType.Empty, (diggerID, cur, max) => { UnityEngine.Debug.Log("Dug Empty Tile"); } }
-            };
-
-        private static void TriggerGemDugEvent(uint diggerID, int cur, int max)
-        {
-            Debug.Log("Trigger Gem Dug Event");
-            EventManager.Instance.TriggerEvent(new DigProgressData(cur, max));
-            if (cur <= 0) EventManager.Instance.TriggerEvent(new MD.Diggable.Gem.GemDigData(diggerID, max));
-        }
-
-        private static void TriggerProjectileDugEvent(uint diggerID, int cur, int max)
-        {
-            UnityEngine.Debug.Log("Trigger Projectile Dug Event");
-        } 
-
-        public static void TriggerEvent(DiggableType diggableType, uint diggerID, int cur, int max)
-        {
-            eventTriggerDict[diggableType](diggerID, cur, max);
-        }   
     }
 }
