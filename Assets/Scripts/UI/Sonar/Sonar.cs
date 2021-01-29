@@ -75,7 +75,7 @@ namespace MD.UI
         private void ListenToEvents()
         {
             var eventManager = EventSystems.EventManager.Instance;
-            // eventManager.StartListening<MoveData>(HandleMoveData);
+            eventManager.StartListening<MoveData>(HandleMoveData);
             eventManager.StartListening<ScanData>(UpdateScanArea);
             eventManager.StartListening<DiggableSpawnData>(UpdateScanArea);
             // eventManager.StartListening<DiggableRemoveData>(HandleDiggableRemoveEvent);
@@ -84,7 +84,7 @@ namespace MD.UI
         private void OnDestroy()
         {
             var eventManager = EventSystems.EventManager.Instance;
-            // eventManager.StopListening<MoveData>(HandleMoveData);
+            eventManager.StopListening<MoveData>(HandleMoveData);
             eventManager.StopListening<ScanData>(UpdateScanArea);
             eventManager.StopListening<DiggableSpawnData>(UpdateScanArea);
             // eventManager.StartListening<DiggableRemoveData>(HandleDiggableRemoveEvent);

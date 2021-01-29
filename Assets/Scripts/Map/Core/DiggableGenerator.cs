@@ -34,7 +34,7 @@ namespace MD.Map.Core
             System.Linq.Enumerable.Range(0, startSpawnAmount).ForEach(_ => SetupRandomDiggable());
             // diggableData.Log();
             // tileGraph.Log();
-            // StartCoroutine(RandomSpawn());
+            //StartCoroutine(RandomSpawn());
         }
 
         public void SetTile(Vector2Int pos, DiggableType type)
@@ -169,6 +169,14 @@ namespace MD.Map.Core
             }
 
             return diggableArea;
+        }
+    
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                SpawnAt(new Vector2Int(0, 0), DiggableType.RareGem);
+            }
         }
     }
 }

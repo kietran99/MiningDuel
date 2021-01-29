@@ -41,21 +41,21 @@ namespace MD.Character
 
         public override void OnStartClient()
         {
-            EventSystems.EventManager.Instance.StartListening<GemDigSuccessData>(HandleGemDigSuccess);
+            EventSystems.EventManager.Instance.StartListening<GemDugData>(HandleGemDug);
             EventSystems.EventManager.Instance.StartListening<DropObtainData>(HandleDropObtain);
             EventSystems.EventManager.Instance.StartListening<ExplodedData>(HandleExplosion);
         }
 
         public override void OnStopClient()
         {
-            EventSystems.EventManager.Instance.StopListening<GemDigSuccessData>(HandleGemDigSuccess);
+            EventSystems.EventManager.Instance.StopListening<GemDugData>(HandleGemDug);
             EventSystems.EventManager.Instance.StopListening<DropObtainData>(HandleDropObtain);
             EventSystems.EventManager.Instance.StopListening<ExplodedData>(HandleExplosion);
         }
 
-        private void HandleGemDigSuccess(GemDigSuccessData gemDigSuccessData)
+        private void HandleGemDug(GemDugData gemDugData)
         {
-            HandleScoreChangeEvent(gemDigSuccessData.diggerID, CmdIncreaseScore, gemDigSuccessData.value);
+            HandleScoreChangeEvent(gemDugData.diggerID, CmdIncreaseScore, gemDugData.value);
         }
 
         private void HandleExplosion(ExplodedData explodedData)

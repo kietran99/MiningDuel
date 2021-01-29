@@ -18,7 +18,6 @@ namespace MD.Map.Core
 
         private static void TriggerGemDugEvent(NetworkIdentity digger, int cur, int max)
         {
-            // Debug.Log("Trigger Gem Dug Event");
             EventManager.Instance.TriggerEvent(new MD.Diggable.Gem.DigProgressData(cur, max));
 
             if (cur <= 0) 
