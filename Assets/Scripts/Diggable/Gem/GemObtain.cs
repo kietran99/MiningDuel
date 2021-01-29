@@ -33,7 +33,7 @@ namespace MD.Diggable.Gem
             RpcSetDigger(digger.netIdentity);
             diggerID = digger.netIdentity; 
 
-            bool isBot = digger.GetType().Equals(typeof(BotDigAction));          
+            bool isBot = digger.GetType().Equals(typeof(MD.AI.BotDigAction));          
             
             if (!isBot)
             {

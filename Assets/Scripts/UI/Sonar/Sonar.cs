@@ -36,7 +36,7 @@ namespace MD.UI
         private float symbolSize;
         private IObjectPool tilePool;
         private IObjectPool symbolPool;
-        private SonarProxy sonarProxy;
+        private DiggableGeneratorCommunicator digGenComm;
         #endregion       
 
         void Start()
@@ -46,17 +46,17 @@ namespace MD.UI
 
         private System.Collections.IEnumerator SetupOnSonarProxyInit()
         {
-            bool initSonarProxy = false;
+            bool initDigGenComm = false;
 
-            while (!initSonarProxy)
+            while (!initDigGenComm)
             {
                 ServiceLocator
-                .Resolve<SonarProxy>()
+                .Resolve<DiggableGeneratorCommunicator>()
                 .Match(
                     unavailServiceErr => {},
-                    proxy => 
+                    digGenComm => 
                     {
-                        sonarProxy = proxy;
+                        this.digGenComm = digGenComm;
                         symbolPool = symbolPoolObject.GetComponent<IObjectPool>();
                         symbolSize = symbolContainer.rect.width / (2 * scanRange + 1);
                         tilePool = tilePoolObject.GetComponent<IObjectPool>();
@@ -64,7 +64,7 @@ namespace MD.UI
                         ListenToEvents();          
                         InitScanArea();
 
-                        initSonarProxy = true;
+                        initDigGenComm = true;
                     }
                 );
 
@@ -78,7 +78,7 @@ namespace MD.UI
             eventManager.StartListening<MoveData>(HandleMoveData);
             eventManager.StartListening<ScanData>(UpdateScanArea);
             eventManager.StartListening<DiggableSpawnData>(UpdateScanArea);
-            // eventManager.StartListening<DiggableRemoveData>(HandleDiggableRemoveEvent);
+            eventManager.StartListening<DiggableRemoveData>(HandleDiggableRemoveEvent);
         }
 
         private void OnDestroy()
@@ -87,7 +87,7 @@ namespace MD.UI
             eventManager.StopListening<MoveData>(HandleMoveData);
             eventManager.StopListening<ScanData>(UpdateScanArea);
             eventManager.StopListening<DiggableSpawnData>(UpdateScanArea);
-            // eventManager.StartListening<DiggableRemoveData>(HandleDiggableRemoveEvent);
+            eventManager.StartListening<DiggableRemoveData>(HandleDiggableRemoveEvent);
         }
 
         #region UPDATE SCAN AREA
@@ -113,7 +113,7 @@ namespace MD.UI
         private void RequestScanArea(float centerX, float centerY)
         {
             var scanArea = GetScannablePos(centerX, centerY).ToArray();
-            sonarProxy.CmdRequestScanArea(scanArea);
+            digGenComm.CmdRequestScanArea(scanArea);
         }      
 
         private void UpdateScanArea(ScanData scanData) => Show(scanData.diggableArea);
@@ -165,7 +165,7 @@ namespace MD.UI
         {
             ConvertWorldToScannablePos(diggableRemoveData.x, diggableRemoveData.y)
                 .Match(
-                    outOfScannableRangeError => Debug.Log(outOfScannableRangeError.Message),
+                    outOfScannableRangeError => Debug.LogWarning(outOfScannableRangeError.Message),
                     scannablePos => RemoveSymbolAt(scannablePos.x, scannablePos.y)
                 );
         }

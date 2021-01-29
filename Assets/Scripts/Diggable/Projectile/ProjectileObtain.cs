@@ -27,13 +27,13 @@ namespace MD.Diggable.Projectile
         public override void OnStartClient()
         {
             projectile = GetComponent<DiggableProjectile>();
-            EventManager.Instance.TriggerEvent(new DiggableSpawnData(projectile.DiggableType(), transform.position.x, transform.position.y));
+            EventManager.Instance.TriggerEvent(new DiggableSpawnData(projectile.Type, transform.position.x, transform.position.y));
         }
 
         public override void OnStopClient()
         {
             //fire an event for sonar to update
-            EventManager.Instance.TriggerEvent(new DiggableDestroyData(projectile.DiggableType(), transform.position.x, transform.position.y));
+            EventManager.Instance.TriggerEvent(new DiggableDestroyData(projectile.Type, transform.position.x, transform.position.y));
         }
 
         [Server]
@@ -42,9 +42,9 @@ namespace MD.Diggable.Projectile
             currentDigger = digger;
             RpcSetDigger(digger.netIdentity);
             diggerID = digger.netIdentity;
-            EventManager.Instance.TriggerEvent(new ServerDiggableDestroyData(projectile.DiggableType(), transform.position.x, transform.position.y, currentDigger));
+            EventManager.Instance.TriggerEvent(new ServerDiggableDestroyData(projectile.Type, transform.position.x, transform.position.y, currentDigger));
             
-            bool isBot = digger.GetType().Equals(typeof(BotDigAction));          
+            bool isBot = digger.GetType().Equals(typeof(MD.AI.BotDigAction));          
             
             if (!isBot)
             {
@@ -57,7 +57,7 @@ namespace MD.Diggable.Projectile
         [TargetRpc]
         private void TargetTriggerProjectileObtain(NetworkConnection target)
         {
-            EventManager.Instance.TriggerEvent(new ProjectileObtainData(projectile.GetStats(), transform.position.x, transform.position.y));
+            EventManager.Instance.TriggerEvent(new ProjectileObtainData(target.identity, (DiggableType) projectile.Type));
         }
 
         [ClientRpc]

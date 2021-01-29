@@ -43,6 +43,12 @@ namespace MD.Character
         [Command]
         protected void CmdThrowProjectile(float dirX, float dirY, float power)
         {
+            if (holdingProjectile == null) 
+            {
+                Debug.LogWarning("Not Holding Any Proectile");
+                return;
+            }
+            
             holdingProjectile.Launch(basePower, dirX, dirY);
         }
 

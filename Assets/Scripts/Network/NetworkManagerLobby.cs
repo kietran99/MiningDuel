@@ -6,11 +6,17 @@ using UnityEngine.SceneManagement;
 using Mirror;
 using MD.Character;
 using MD.Network.GameMode;
+using MD.AI;
 
 namespace MD.UI
 {
     public class NetworkManagerLobby : NetworkManager
     {
+        private readonly string NAME_PLAYER_ONLINE = "Player Online";
+        private readonly string MAP_MANAGER = "Map Manager";
+        private readonly string DIGGABLE_GENERATOR = "Diggable Generator";
+        private readonly string DIGGABLE_GENERATOR_COMMUNICATOR = "Diggable Generator Communicator";
+
         #region SERIALIZE FIELDS
         [Header("Scene")]
         [Scene] [SerializeField]
@@ -37,10 +43,6 @@ namespace MD.UI
         #endregion
 
         #region FIELDS
-        private readonly string NAME_PLAYER_ONLINE = "Player Online";
-        private readonly string MAP_MANAGER = "Map Manager";
-        private readonly string DIGGABLE_GENERATOR = "Diggable Generator";
-
         public List<GameObject> DontDestroyOnLoadObjects = new List<GameObject>();
 
         private Player networkPlayerPrefab = null;
@@ -262,22 +264,16 @@ namespace MD.UI
                 return;
             }
             
-            GenDigGenProxy();
-            Players.ForEach(player => GenSonarProxy(player.connectionToClient));            
+            Players.ForEach(player => GenDiggableGeneratorCommunicator(player.connectionToClient));            
             mapManager.GenerateMap(); 
             //TODO check if all players loaded scene
             SetupGame();           
         }
 
-        private void GenDigGenProxy()
+        private void GenDiggableGeneratorCommunicator(NetworkConnection conn)
         {
-            NetworkServer.Spawn(Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals("Dig Gen Proxy"))));
-        }
-
-        private void GenSonarProxy(NetworkConnection conn)
-        {
-            var sonarProxy = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals("Sonar Proxy")));
-            NetworkServer.Spawn(sonarProxy, conn);
+            var digGenComm = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(DIGGABLE_GENERATOR_COMMUNICATOR)));
+            NetworkServer.Spawn(digGenComm, conn);
         }
 
         private void SetupGame()

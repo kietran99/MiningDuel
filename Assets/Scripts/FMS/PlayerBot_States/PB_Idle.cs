@@ -1,29 +1,33 @@
 using UnityEngine;
-public class PB_Idle : FMSState
-{
-    public PB_Idle(PlayerBot bot) : base(bot)
-    {
-        name = STATE.IDLE;
-    }
 
-    public override void Enter()
+namespace MD.AI
+{
+    public class PB_Idle : FSMState
     {
-        Debug.Log("idle");
-        base.Enter();
-    }
-    public override void Update()
-    {
-        base.Update();
-        stage = EVENT.EXIT;
-        if (bot.GetCurrentScore() < bot.player.CurrentScore && bot.GetCurrentScore() >= 20)
+        public PB_Idle(PlayerBot bot) : base(bot)
         {
-            Debug.Log("<player score and >= 20 score");
-            nextState = new PB_FindPlayer(bot);
+            name = STATE.IDLE;
         }
-        else
+
+        public override void Enter()
         {
-            Debug.Log(">= player score or <20 score");
-            nextState = new PB_FindDiggable(bot, false);
+            Debug.Log("idle");
+            base.Enter();
+        }
+        public override void Update()
+        {
+            base.Update();
+            stage = EVENT.EXIT;
+            if (bot.GetCurrentScore() < bot.player.CurrentScore && bot.GetCurrentScore() >= 20)
+            {
+                Debug.Log("<player score and >= 20 score");
+                nextState = new PB_FindPlayer(bot);
+            }
+            else
+            {
+                Debug.Log(">= player score or <20 score");
+                nextState = new PB_FindDiggable(bot, false);
+            }
         }
     }
 }

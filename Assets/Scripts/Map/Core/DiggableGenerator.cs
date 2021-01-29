@@ -5,7 +5,6 @@ using UnityEngine;
 using EventSystems;
 using Mirror;
 using Functional.Type;
-using Functional;
 
 namespace MD.Map.Core
 {
@@ -25,9 +24,17 @@ namespace MD.Map.Core
         private TileGraph tileGraph;
         #endregion
 
+        private DiggableEventBroadcaster eventBroadcaster;
+
+        public Action<Mirror.NetworkConnection, Diggable.Gem.DigProgressData> DigProgressEvent { get; set; }
+        public Action<Mirror.NetworkConnection, Diggable.Gem.GemObtainData> GemObtainEvent { get; set; }
+        public Action<Mirror.NetworkConnection, Diggable.Projectile.ProjectileObtainData> ProjectileObtainEvent { get; set; }
+        public Action<Diggable.DiggableRemoveData> DiggableDestroyEvent { get; set; }
+
         public override void OnStartServer()
         {
             ServiceLocator.Register((IDiggableGenerator) this);
+            eventBroadcaster = new DiggableEventBroadcaster(this);
             var tilePositions = GenTestMap();
             tileGraph = new TileGraph(tilePositions);
             diggableData = new DiggableData(MakeEmptyTiles(tilePositions));
@@ -53,12 +60,30 @@ namespace MD.Map.Core
             diggableData = new DiggableData(MakeEmptyTiles(tilePositions));
         }
 
-        public Either<InvalidTileError, Either<InvalidAccessError, ReducedData>> DigAt(int x, int y, int power)
+        public void DigAt(Mirror.NetworkIdentity digger, int x, int y, int power)
         {
-            //Debug.Log("Try digging at: " + x + " : " + y);
-            return diggableData
+            diggableData
                 .GetAccessAt(x, y)
-                .Map(access => diggableData.Reduce(access, power));
+                .Match(
+                    invalidTileErr => Debug.LogError(invalidTileErr.Message),
+                    access => 
+                    {
+                        diggableData
+                            .Reduce(access, power)
+                            .Match(                           
+                                invalidAccessErr => Debug.LogError(invalidAccessErr.Message),
+                                reducedData => 
+                                {
+                                    eventBroadcaster.TriggerDiggableDugEvent(digger, reducedData);
+
+                                    if (reducedData.isEmpty) 
+                                    {
+                                        eventBroadcaster.TriggerDiggableDestroyEvent(x, y);                                    
+                                    }
+                                }                                    
+                            );
+                    }
+                );
         }
 
         private Vector2Int[] GenTestMap()
@@ -176,6 +201,10 @@ namespace MD.Map.Core
             if (Input.GetKeyDown(KeyCode.Z))
             {
                 SpawnAt(new Vector2Int(0, 0), DiggableType.RareGem);
+            }
+
+            else if (Input.GetKeyDown(KeyCode.X))
+            {
             }
         }
     }

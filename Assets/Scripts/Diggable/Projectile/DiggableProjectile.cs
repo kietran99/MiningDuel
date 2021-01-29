@@ -27,7 +27,7 @@ namespace MD.Diggable.Projectile
         {
             RemainingHit = value;               
         }
-        public int DiggableType() => projectileType;
+        public int Type => projectileType;
 
         public void DecreaseValue(int power)
         {

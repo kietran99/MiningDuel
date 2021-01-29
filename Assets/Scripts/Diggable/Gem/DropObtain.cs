@@ -32,7 +32,7 @@ namespace MD.Diggable.Gem
             }
             else
             {
-                other.GetComponent<PlayerBot>().score += value;
+                other.GetComponent<MD.AI.PlayerBot>().score += value;
             }
 
             Destroy(gameObject);

@@ -16,15 +16,15 @@ namespace MD.VisualEffects
             spriteRenderer = GetComponent<SpriteRenderer>();  
             animator = GetComponent<Animator>(); 
 
-            EventSystems.EventManager.Instance.StartListening<GemDugData>(HandleGemDug);
+            EventSystems.EventManager.Instance.StartListening<GemObtainData>(HandleGemDug);
         }
 
         private void OnDisable() 
         {
-            EventSystems.EventManager.Instance.StopListening<GemDugData>(HandleGemDug);
+            EventSystems.EventManager.Instance.StopListening<GemObtainData>(HandleGemDug);
         }
 
-        private void HandleGemDug(GemDugData gemDugData)
+        private void HandleGemDug(GemObtainData gemDugData)
         {
             var gem = DiggableTypeConverter.Convert((DiggableType) gemDugData.value);
             Play(gem.WorldSprite);

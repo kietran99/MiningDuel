@@ -1,16 +1,18 @@
-﻿namespace MD.Diggable.Projectile
+﻿using Mirror;
+
+namespace MD.Diggable.Projectile
 {
     public class ProjectileObtainData : EventSystems.IEventData
     {
-        public ProjectileStats stats;
-        public float posX;
-        public float posY;
+        public NetworkIdentity networkIdentity;
+        public DiggableType type;
 
-        public ProjectileObtainData(ProjectileStats stats, float posX, float posY)
+        public ProjectileObtainData() {}
+
+        public ProjectileObtainData(NetworkIdentity networkIdentity, DiggableType type)
         {
-            this.stats = stats;
-            this.posX = posX;
-            this.posY = posY;
+            this.networkIdentity = networkIdentity;
+            this.type = type;
         }
     }
 }

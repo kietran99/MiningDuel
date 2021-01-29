@@ -7,6 +7,7 @@ using UnityEngine;
 using Mirror;
 using MD.Character;
 using UnityEngine.SceneManagement;
+using MD.AI;
 
 public static class MapDataTypeExtensions
 {
@@ -85,7 +86,7 @@ public class MapManager : NetworkBehaviour, IMapManager
     private float halfTileSize = .5f;
     private DiggableType[,] mapData;
     private GameObject[,] diggables;
-    private PlayerItemSpawner itemSpawner = null;
+    private ProjectileSpawner itemSpawner = null;
 
     private bool canGenerateNewGem;
     #endregion
@@ -126,7 +127,7 @@ public class MapManager : NetworkBehaviour, IMapManager
     public override void OnStartServer()
     {
         base.OnStartServer();
-        itemSpawner = GetComponent<PlayerItemSpawner>();
+        itemSpawner = GetComponent<ProjectileSpawner>();
         EventManager.Instance.StartListening<ServerDiggableDestroyData>(HandleDigSuccess);
     }
 

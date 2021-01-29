@@ -1,5 +1,4 @@
-﻿using MD.Diggable;
-using MD.Diggable.Gem;
+﻿using MD.Diggable.Gem;
 using Mirror;
 using UnityEngine;
 
@@ -39,21 +38,21 @@ namespace MD.Character
             currentMultiplier = 1f;
         }
 
-        public override void OnStartClient()
+        public override void OnStartAuthority()
         {
-            EventSystems.EventManager.Instance.StartListening<GemDugData>(HandleGemDug);
+            EventSystems.EventManager.Instance.StartListening<GemObtainData>(HandleGemDug);
             EventSystems.EventManager.Instance.StartListening<DropObtainData>(HandleDropObtain);
             EventSystems.EventManager.Instance.StartListening<ExplodedData>(HandleExplosion);
         }
 
-        public override void OnStopClient()
+        public override void OnStopAuthority()
         {
-            EventSystems.EventManager.Instance.StopListening<GemDugData>(HandleGemDug);
+            EventSystems.EventManager.Instance.StopListening<GemObtainData>(HandleGemDug);
             EventSystems.EventManager.Instance.StopListening<DropObtainData>(HandleDropObtain);
             EventSystems.EventManager.Instance.StopListening<ExplodedData>(HandleExplosion);
         }
 
-        private void HandleGemDug(GemDugData gemDugData)
+        private void HandleGemDug(GemObtainData gemDugData)
         {
             HandleScoreChangeEvent(gemDugData.diggerID, CmdIncreaseScore, gemDugData.value);
         }

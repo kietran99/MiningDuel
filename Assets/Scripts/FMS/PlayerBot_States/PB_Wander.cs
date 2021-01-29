@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PB_Wander : FMSState
+namespace MD.AI
+{
+    public class PB_Wander : FSMState
 {
     private int currentIndex = 0;
     private bool forBomb = false;
@@ -41,4 +41,5 @@ public class PB_Wander : FMSState
             }
         }
     }
+}
 }

@@ -1,7 +1,8 @@
 ﻿using MD.Diggable.Projectile;
 using UnityEngine;
 using Mirror;
-namespace MD.Character
+
+namespace MD.AI
 {
     [RequireComponent(typeof(PlayerBot))]
     public class BotExplosionHandler : MonoBehaviour, IExplodable
