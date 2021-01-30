@@ -1,16 +1,15 @@
 namespace MD.Diggable
 {
-    //data for sonar and map on client to update
     public struct DiggableSpawnData : EventSystems.IEventData
     {
-        public float posX;
-        public float posY;
-        public int diggable;
-        public DiggableSpawnData(int diggable,float posX, float posY)
+        public int x, y;
+        public DiggableType type;
+
+        public DiggableSpawnData(int x, int y, DiggableType type)
         {
-            this.diggable= diggable;
-            this.posX = posX;
-            this.posY = posY;
+            this.x = x;
+            this.y = y;
+            this.type = type;
         }
     }
 }

@@ -27,7 +27,7 @@ namespace MD.Diggable.Projectile
         public override void OnStartClient()
         {
             projectile = GetComponent<DiggableProjectile>();
-            EventManager.Instance.TriggerEvent(new DiggableSpawnData(projectile.Type, transform.position.x, transform.position.y));
+            // EventManager.Instance.TriggerEvent(new DiggableSpawnData(projectile.Type, transform.position.x, transform.position.y));
         }
 
         public override void OnStopClient()

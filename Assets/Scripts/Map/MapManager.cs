@@ -154,14 +154,14 @@ public class MapManager : NetworkBehaviour, IMapManager
     [Client]
     private void AddDiggableToMapData(DiggableSpawnData data)
     {
-        Vector2Int idx = PositionToIndex(new Vector2(data.posX,data.posY));
+        Vector2Int idx = PositionToIndex(new Vector2(data.x, data.y));
         try
         {
-            mapData[idx.x, idx.y] = data.diggable.ToDiggable();
+            mapData[idx.x, idx.y] = data.type;
         }
         catch
         {
-            Debug.Log("cant add  "+ data.diggable.ToDiggable() + " in mapdata at index " + idx);
+            Debug.Log("Cannot add  "+ data.type + " in mapdata at index " + idx);
         }        
     }
 

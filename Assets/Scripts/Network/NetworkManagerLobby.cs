@@ -13,7 +13,6 @@ namespace MD.UI
     public class NetworkManagerLobby : NetworkManager
     {
         private readonly string NAME_PLAYER_ONLINE = "Player Online";
-        private readonly string MAP_MANAGER = "Map Manager";
         private readonly string DIGGABLE_GENERATOR = "Diggable Generator";
         private readonly string DIGGABLE_GENERATOR_COMMUNICATOR = "Diggable Generator Communicator";
 
@@ -44,8 +43,18 @@ namespace MD.UI
 
         #region FIELDS
         public List<GameObject> DontDestroyOnLoadObjects = new List<GameObject>();
-
         private Player networkPlayerPrefab = null;
+        public List<NetworkRoomPlayerLobby> RoomPlayers { get; } = new List<NetworkRoomPlayerLobby>();
+        public List<Player> Players { get; } = new List<Player>();
+        public List<PlayerBot> Bots { get; } = new List<PlayerBot>();
+        public bool isBotTraining;
+        private IGameModeManager gameModeManager;
+        #endregion
+
+        public static event Action OnClientConnected;
+        public static event Action OnClientDisconnnected;
+
+        public int MinNumPlayers => minimumPlayers; 
         private Player NetworkPlayerPrefab
         {
             set => networkPlayerPrefab = value;
@@ -56,31 +65,6 @@ namespace MD.UI
                 return networkPlayerPrefab;
             }
         }
-
-        private MapManager mapManagerPrefab = null;
-        private MapManager MapManagerPrefab
-        {
-            set => mapManagerPrefab = value;
-            get
-            {
-                if (mapManagerPrefab != null) return mapManagerPrefab;
-                mapManagerPrefab = spawnPrefabs.Find(prefab => prefab.name.Equals(MAP_MANAGER)).GetComponent<MapManager>();
-                return mapManagerPrefab;
-            }
-        }
-
-        public List<NetworkRoomPlayerLobby> RoomPlayers { get; } = new List<NetworkRoomPlayerLobby>();
-        public List<Player> Players { get; } = new List<Player>();
-        public List<PlayerBot> Bots { get; } = new List<PlayerBot>();
-        private MapManager mapManager;
-        public bool isBotTraining;
-        private IGameModeManager gameModeManager;
-        #endregion
-
-        public int MinNumPlayers { get => minimumPlayers; }
-
-        public static event Action OnClientConnected;
-        public static event Action OnClientDisconnnected;
 
         public override void OnStartServer() 
         {
@@ -217,14 +201,13 @@ namespace MD.UI
             }
 
             InitEnv();
-            gameModeManager.HandleServerChangeScene(mapManager.netIdentity);
+            gameModeManager.HandleServerChangeScene();
         }
 
         private void InitEnv()
         {
             spawnPointPicker.Reset();  
-            SpawnDiggableGenerator();   
-            SpawnMapManager();           
+            SpawnDiggableGenerator();            
         }
 
         private void SpawnDiggableGenerator()
@@ -233,15 +216,6 @@ namespace MD.UI
             NetworkServer.Spawn(diggableGenerator);
             DontDestroyOnLoad(diggableGenerator);
             DontDestroyOnLoadObjects.Add(diggableGenerator);
-        }
-
-        private void SpawnMapManager()
-        {        
-            mapManager = Instantiate(MapManagerPrefab);
-            NetworkServer.Spawn(mapManager.gameObject);
-            
-            DontDestroyOnLoad(mapManager);
-            DontDestroyOnLoadObjects.Add(mapManager.gameObject); 
         }
 
         public void SpawnPvPPlayers()
@@ -253,7 +227,6 @@ namespace MD.UI
                 var conn = roomPlayer.netIdentity.connectionToClient;
                 NetworkServer.Destroy(conn.identity.gameObject);
                 NetworkServer.ReplacePlayerForConnection(conn, player.gameObject, true);
-                player.TargetRegisterMapManager(mapManager.netIdentity);
             });          
         }
 
@@ -265,7 +238,6 @@ namespace MD.UI
             }
             
             Players.ForEach(player => GenDiggableGeneratorCommunicator(player.connectionToClient));            
-            mapManager.GenerateMap(); 
             //TODO check if all players loaded scene
             SetupGame();           
         }

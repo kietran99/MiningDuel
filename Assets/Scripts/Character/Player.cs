@@ -63,12 +63,6 @@ namespace MD.Character
             playerName = name;
         }
 
-        [TargetRpc]
-        public void TargetRegisterMapManager(NetworkIdentity mapManager)
-        {
-            ServiceLocator.Register(mapManager.GetComponent<IMapManager>());
-        }
-
         [Server]
         public void Movable(bool value) => canMove = value;
 

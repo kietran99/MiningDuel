@@ -52,9 +52,9 @@ namespace MD.Character
             EventSystems.EventManager.Instance.StopListening<ExplodedData>(HandleExplosion);
         }
 
-        private void HandleGemDug(GemObtainData gemDugData)
+        private void HandleGemDug(GemObtainData gemObtainData)
         {
-            HandleScoreChangeEvent(gemDugData.diggerID, CmdIncreaseScore, gemDugData.value);
+            HandleScoreChangeEvent(gemObtainData.diggerID, CmdIncreaseScore, gemObtainData.value);
         }
 
         private void HandleExplosion(ExplodedData explodedData)

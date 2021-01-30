@@ -24,11 +24,6 @@ namespace MD.Network.GameMode
             networkManager.StartGame();
         }
 
-        public override void HandleServerChangeScene(NetworkIdentity mapManagerID)
-        {
-            player.TargetRegisterMapManager(mapManagerID);
-        }
-
         public override bool IsReadyToStart()
         {
             return networkManager.numPlayers == 1;

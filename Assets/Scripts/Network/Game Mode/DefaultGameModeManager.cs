@@ -14,13 +14,14 @@ namespace MD.Network.GameMode
             networkManager.StartHost();
         }
 
-        public abstract void HandleOnServerAddPlayer(NetworkConnection conn);
-        public abstract void HandleServerChangeScene(NetworkIdentity mapManagerID);
-        public abstract bool IsReadyToStart();
+        public virtual void HandleServerChangeScene() {}
 
         public virtual void SetupGame()
         {
             networkManager.SetupPlayerState(matchTime);
         }
+
+        public abstract void HandleOnServerAddPlayer(NetworkConnection conn);
+        public abstract bool IsReadyToStart();
     }
 }

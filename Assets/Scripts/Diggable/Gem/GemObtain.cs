@@ -17,7 +17,8 @@ namespace MD.Diggable.Gem
         public override void OnStartClient()
         {
             gemValue = GetComponent<GemValue>();
-            EventManager.Instance.TriggerEvent(new DiggableSpawnData(gemValue.Value, transform.position.x, transform.position.y));
+            // EventManager.Instance.TriggerEvent(
+                // new DiggableSpawnData((int) transform.position.x, (int) transform.position.y), gemValue.Value as DiggableType);
         }
 
         public override void OnStopClient()

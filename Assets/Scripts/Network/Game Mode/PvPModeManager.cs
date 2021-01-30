@@ -12,7 +12,7 @@ namespace MD.Network.GameMode
             networkManager.SpawnRoomPlayer(conn);
         }
 
-        public override void HandleServerChangeScene(NetworkIdentity mapManagerID)
+        public override void HandleServerChangeScene()
         {
             networkManager.SpawnPvPPlayers();
         }

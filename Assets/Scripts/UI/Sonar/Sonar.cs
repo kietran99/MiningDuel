@@ -41,10 +41,10 @@ namespace MD.UI
 
         void Start()
         {
-            StartCoroutine(SetupOnSonarProxyInit());
+            StartCoroutine(SetupOnDigGenCommInit());
         }
 
-        private System.Collections.IEnumerator SetupOnSonarProxyInit()
+        private System.Collections.IEnumerator SetupOnDigGenCommInit()
         {
             bool initDigGenComm = false;
 
@@ -75,19 +75,19 @@ namespace MD.UI
         private void ListenToEvents()
         {
             var eventManager = EventSystems.EventManager.Instance;
-            eventManager.StartListening<MoveData>(HandleMoveData);
+            eventManager.StartListening<MoveData>(HandleMoveEvent);
             eventManager.StartListening<ScanData>(UpdateScanArea);
-            eventManager.StartListening<DiggableSpawnData>(UpdateScanArea);
+            eventManager.StartListening<DiggableSpawnData>(HandleDiggableSpawnEvent);
             eventManager.StartListening<DiggableRemoveData>(HandleDiggableRemoveEvent);
         }
 
         private void OnDestroy()
         {
             var eventManager = EventSystems.EventManager.Instance;
-            eventManager.StopListening<MoveData>(HandleMoveData);
+            eventManager.StopListening<MoveData>(HandleMoveEvent);
             eventManager.StopListening<ScanData>(UpdateScanArea);
-            eventManager.StopListening<DiggableSpawnData>(UpdateScanArea);
-            eventManager.StartListening<DiggableRemoveData>(HandleDiggableRemoveEvent);
+            eventManager.StopListening<DiggableSpawnData>(HandleDiggableSpawnEvent);
+            eventManager.StopListening<DiggableRemoveData>(HandleDiggableRemoveEvent);
         }
 
         #region UPDATE SCAN AREA
@@ -98,7 +98,7 @@ namespace MD.UI
             RequestScanArea(player.transform.position.x, player.transform.position.y);
         }
 
-        private void HandleMoveData(MoveData moveData)
+        private void HandleMoveEvent(MoveData moveData)
         {
             float deltaX = lastCenterPos.x.DeltaInt(moveData.x);
             float deltaY = lastCenterPos.y.DeltaInt(moveData.y);
@@ -118,29 +118,30 @@ namespace MD.UI
 
         private void UpdateScanArea(ScanData scanData) => Show(scanData.diggableArea);
 
-        private void UpdateScanArea(DiggableSpawnData data)
-        {
-            if (!TryWorldToScannablePos(new Vector2(data.posX, data.posY), out Vector2 scannablePos)) return;
-
-            GenSymbol(scannablePos, data.diggable.ToDiggable());
+        private void HandleDiggableSpawnEvent(DiggableSpawnData diggableSpawnData)
+        {            
+            ConvertWorldToScannablePos(diggableSpawnData.x, diggableSpawnData.y)
+                .Match(
+                    OutOfScannableRangeError => {},
+                    scannablePos => PutSymbol(scannablePos, diggableSpawnData.type)
+                );
         }
 
-        private bool TryWorldToScannablePos(Vector2 worldPos, out Vector2 scannablePos)
-        {
-            Vector2 relaPos = new Vector2(Mathf.Floor(worldPos.x) - Mathf.Floor(lastCenterPos.x),
-                Mathf.Floor(worldPos.y) - Mathf.Floor(lastCenterPos.y));
-            (Vector2 resPos, int idx) = relScannablePos.LookUp(
-                pos => pos.x.IsEqual(relaPos.x) && pos.y.IsEqual(relaPos.y));
-            scannablePos = resPos;
-            return !idx.Equals(Constants.INVALID);
-        } 
-
-        private void GenSymbol(Vector2 pos, DiggableType diggableType)
+        private void PutSymbol(Vector2 pos, DiggableType diggableType)
         {
             var symbol = symbolPool.Pop().GetComponent<Image>();
             symbol.rectTransform.sizeDelta = new Vector2(symbolSize, symbolSize);
             symbol.transform.position = symbolContainer.position + new Vector3(pos.x * symbolSize, pos.y * symbolSize, 0f);           
             symbol.sprite = DiggableTypeConverter.Convert(diggableType).SonarSprite;
+        }
+
+        private void HandleDiggableRemoveEvent(DiggableRemoveData diggableRemoveData)
+        {
+            ConvertWorldToScannablePos(diggableRemoveData.x, diggableRemoveData.y)
+                .Match(
+                    outOfScannableRangeError => {},
+                    scannablePos => RemoveSymbolAt(scannablePos.x, scannablePos.y)
+                );
         }
 
         private Functional.Type.Either<OutOfScannableRangeError, Vector2> ConvertWorldToScannablePos(float x, float y)
@@ -161,15 +162,6 @@ namespace MD.UI
             return resPos;
         }    
 
-        private void HandleDiggableRemoveEvent(DiggableRemoveData diggableRemoveData)
-        {
-            ConvertWorldToScannablePos(diggableRemoveData.x, diggableRemoveData.y)
-                .Match(
-                    outOfScannableRangeError => Debug.LogWarning(outOfScannableRangeError.Message),
-                    scannablePos => RemoveSymbolAt(scannablePos.x, scannablePos.y)
-                );
-        }
-
         private void Show(DiggableType[] diggableArea)
         {
             symbolPool.Reset();
@@ -178,7 +170,7 @@ namespace MD.UI
             {
                 if (diggableArea[i].Equals(DiggableType.Empty)) continue;
 
-                GenSymbol(relScannablePos[i], diggableArea[i]);
+                PutSymbol(relScannablePos[i], diggableArea[i]);
             }
         }
 

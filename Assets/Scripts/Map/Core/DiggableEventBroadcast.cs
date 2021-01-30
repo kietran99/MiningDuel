@@ -47,6 +47,11 @@ namespace MD.Map.Core
             eventTriggerDict[lastDugType](digger, reducedData.current, reducedData.max);            
         } 
 
+        public void TriggerDiggableSpawnEvent(int x, int y, DiggableType type)
+        {
+            diggableGenerator.DiggableSpawnEvent?.Invoke(new MD.Diggable.DiggableSpawnData(x, y, type));
+        }
+
         public void TriggerDiggableDestroyEvent(int x, int y)
         {
             diggableGenerator.DiggableDestroyEvent?.Invoke(new MD.Diggable.DiggableRemoveData(x, y));

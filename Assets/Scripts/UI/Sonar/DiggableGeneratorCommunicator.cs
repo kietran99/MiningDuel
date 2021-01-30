@@ -22,7 +22,6 @@ namespace MD.Diggable.Core
         // TargetRpc callbacks without NetworkConnection as an arg are invoked on every authoritative DigGenComm.
         // TargetRpc callbacks with NetworkConnection as an arg are invoked on the same DigGenComm on each client regardless of its authority.
         [Command]
-
         private void CmdSubscribeDiggableEvents()
         {
             ServiceLocator
@@ -35,6 +34,7 @@ namespace MD.Diggable.Core
                         digGen.GemObtainEvent           += TargetHandleGemObtainEvent;
                         digGen.ProjectileObtainEvent    += TargetHandleProjectileObtainEvent;
                         digGen.DiggableDestroyEvent     += RpcHandleDiggableDestroyEvent;
+                        digGen.DiggableSpawnEvent       += RpcHandleDiggableSpawnEvent;
                     }
                 );
         }
@@ -52,6 +52,7 @@ namespace MD.Diggable.Core
                         digGen.GemObtainEvent           -= TargetHandleGemObtainEvent;
                         digGen.ProjectileObtainEvent    -= TargetHandleProjectileObtainEvent;
                         digGen.DiggableDestroyEvent     -= RpcHandleDiggableDestroyEvent;
+                        digGen.DiggableSpawnEvent       -= RpcHandleDiggableSpawnEvent;
                     }
                 );
         }
@@ -84,6 +85,12 @@ namespace MD.Diggable.Core
         private void RpcHandleDiggableDestroyEvent(Diggable.DiggableRemoveData diggableRemoveData)
         {
             EventManager.Instance.TriggerEvent(diggableRemoveData);
+        }
+
+        [ClientRpc]
+        private void RpcHandleDiggableSpawnEvent(Diggable.DiggableSpawnData diggableSpawnData)
+        {
+            EventManager.Instance.TriggerEvent(diggableSpawnData);
         }
 
         [Command]

@@ -64,7 +64,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   startSpawnAmount: 50
-  generateInterval: 1
+  generateInterval: 2
 --- !u!114 &611995917156761752
 MonoBehaviour:
   m_ObjectHideFlags: 0

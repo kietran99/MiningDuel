@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using EventSystems;
 using Mirror;
 
 namespace MD.Map.Core
@@ -19,40 +18,75 @@ namespace MD.Map.Core
         #endregion
 
         #region FIELDS
-        private EventConsumer eventConsumer;
         private IDiggableData diggableData;
         private TileGraph tileGraph;
+        private DiggableEventBroadcaster eventBroadcaster;
         #endregion
 
-        private DiggableEventBroadcaster eventBroadcaster;
-
+        #region EVENTS
         public Action<Mirror.NetworkConnection, Diggable.Gem.DigProgressData> DigProgressEvent { get; set; }
         public Action<Mirror.NetworkConnection, Diggable.Gem.GemObtainData> GemObtainEvent { get; set; }
         public Action<Mirror.NetworkConnection, Diggable.Projectile.ProjectileObtainData> ProjectileObtainEvent { get; set; }
         public Action<Diggable.DiggableRemoveData> DiggableDestroyEvent { get; set; }
+        public Action<Diggable.DiggableSpawnData> DiggableSpawnEvent { get; set; }
+        #endregion
 
         public override void OnStartServer()
         {
             ServiceLocator.Register((IDiggableGenerator) this);
             eventBroadcaster = new DiggableEventBroadcaster(this);
-            var tilePositions = GenTestMap();
+            var tilePositions = GenerateDefaultMap();
             tileGraph = new TileGraph(tilePositions);
             diggableData = new DiggableData(MakeEmptyTiles(tilePositions));
-            System.Linq.Enumerable.Range(0, startSpawnAmount).ForEach(_ => SetupRandomDiggable());
+            System.Linq.Enumerable.Range(0, startSpawnAmount).ForEach(_ => RandomSpawn());
             // diggableData.Log();
             // tileGraph.Log();
-            //StartCoroutine(RandomSpawn());
+            StartCoroutine(RandomSpawnOverTime());
         }
 
-        public void SetTile(Vector2Int pos, DiggableType type)
-        {      
-            if (type.Equals(DiggableType.Empty)) return;
+        private Vector2Int[] GenerateDefaultMap()
+        {
+            var (longEdgeLen, shortEdgeLen) = (24, 20);
+            var map = new Vector2Int[longEdgeLen * shortEdgeLen];
+            int cnt = 0;
 
-            diggableData
-                .GetAccessAt(pos.x, pos.y)
-                .Match(
-                    err => Debug.LogError(err.Message),
-                    access => diggableData.Spawn(access, type));
+            for (int i = -longEdgeLen / 2; i < longEdgeLen / 2; i++)
+            {
+                for (int j = -shortEdgeLen / 2; j < shortEdgeLen / 2; j++)
+                {
+                    map[cnt] = new Vector2Int(i, j);
+                    cnt++;
+                }
+            }
+
+            return map;
+        }
+
+        private IEnumerator RandomSpawnOverTime()
+        {
+            bool shouldSpawn = true;
+            var interval = new WaitForSecondsRealtime(generateInterval);
+
+            while (shouldSpawn)
+            {
+                yield return interval;
+
+                RandomSpawn();               
+                shouldSpawn = diggableData.FreeTiles.Count != 0;               
+            }           
+        }
+
+        private void RandomSpawn()
+        {
+            var randEmptyPos = tileGraph.RandomTile();
+            var randDiggableType = RandomDiggable();
+            Debug.Log("Random Result: " + randEmptyPos + " " + randDiggableType);
+            tileGraph.OnDiggableSpawn(randEmptyPos);
+            SpawnAt(randEmptyPos, randDiggableType);
+            eventBroadcaster.TriggerDiggableSpawnEvent(randEmptyPos.x, randEmptyPos.y, randDiggableType);        
+            //diggableData.Log();
+            //tileGraph.Log();
+            //tileGraph.LogExpectedRates();
         }
 
         public void Populate(Vector2Int[] tilePositions)
@@ -86,52 +120,6 @@ namespace MD.Map.Core
                 );
         }
 
-        private Vector2Int[] GenTestMap()
-        {
-            var (longEdgeLen, shortEdgeLen) = (24, 20);
-            var map = new Vector2Int[longEdgeLen * shortEdgeLen];
-            int cnt = 0;
-
-            for (int i = -longEdgeLen / 2; i < longEdgeLen / 2; i++)
-            {
-                for (int j = -shortEdgeLen / 2; j < shortEdgeLen / 2; j++)
-                {
-                    map[cnt] = new Vector2Int(i, j);
-                    cnt++;
-                }
-            }
-
-            return map;
-        }
-
-        private void SetupRandomDiggable()
-        {
-            var randEmptyPos = tileGraph.RandomTile();
-            var randDiggable = RandomDiggable();
-            // Debug.Log("Random Result: " + randEmptyPos + " " + randDiggable);
-            tileGraph.OnDiggableSpawn(randEmptyPos);
-            SpawnAt(randEmptyPos, randDiggable);
-            // Instantiate(gemPrefab, new Vector3(randEmptyPos.x, randEmptyPos.y, 0f), Quaternion.identity);
-            
-            //diggableData.Log();
-            //tileGraph.Log();
-            //tileGraph.LogExpectedRates();
-        }
-
-        private IEnumerator RandomSpawn()
-        {
-            bool shouldSpawn = true;
-            var interval = new WaitForSecondsRealtime(generateInterval);
-
-            while (shouldSpawn)
-            {
-                yield return interval;
-
-                SetupRandomDiggable();               
-                shouldSpawn = diggableData.FreeTiles.Count == 0;               
-            }           
-        }
-
         private void SpawnAt(Vector2Int pos, DiggableType type)
         {
             diggableData.GetAccessAt(pos.x, pos.y).Match(
@@ -151,20 +139,6 @@ namespace MD.Map.Core
 
             return tiles;
         }      
-
-        private (Vector2Int, ITileData)[] RandomTiles(Vector2Int[] positions)
-        {
-            var tiles = new (Vector2Int, ITileData)[positions.Length];
-
-            for (int i = 0; i < tiles.Length; i++)
-            {
-                tiles[i] = (positions[i], RandomTileData());
-            }
-
-            return tiles;
-        }
-
-        private TileData RandomTileData() => new TileData(RandomDiggable()); 
 
         private DiggableType RandomDiggable()
         {
@@ -201,6 +175,7 @@ namespace MD.Map.Core
             if (Input.GetKeyDown(KeyCode.Z))
             {
                 SpawnAt(new Vector2Int(0, 0), DiggableType.RareGem);
+                eventBroadcaster.TriggerDiggableSpawnEvent(0, 0, DiggableType.RareGem);
             }
 
             else if (Input.GetKeyDown(KeyCode.X))

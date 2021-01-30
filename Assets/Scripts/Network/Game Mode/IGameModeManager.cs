@@ -6,7 +6,7 @@ namespace MD.Network.GameMode
     {
         void StartHost();
         void HandleOnServerAddPlayer(NetworkConnection conn);
-        void HandleServerChangeScene(NetworkIdentity mapManagerID);
+        void HandleServerChangeScene();
         bool IsReadyToStart();
         void SetupGame();
     }
