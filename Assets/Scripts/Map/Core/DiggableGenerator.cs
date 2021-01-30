@@ -47,7 +47,7 @@ namespace MD.Map.Core
         {
             ServiceLocator.Register((IDiggableGenerator) this);
             eventBroadcaster = new DiggableEventBroadcaster(this);
-            
+            InitSortedNodeBasedSpawnTable();
             var tilePositions = GenerateDefaultMap();
             tileGraph = new TileGraph(tilePositions);
             diggableData = new DiggableData(MakeEmptyTiles(tilePositions));
@@ -57,10 +57,26 @@ namespace MD.Map.Core
             StartCoroutine(RandomSpawnOverTime());
         }
 
-        private void InitNodeBasedSpawnTable()
+        private void InitSortedNodeBasedSpawnTable()
         {
-
             nodeBasedSpawnTable = new List<WeightedNode<DiggableType>>();
+            var duplicateCheckSet = new HashSet<DiggableType>();            
+
+            spawnTable
+                .ForEach(spawnRate => 
+                    {
+                        if (duplicateCheckSet.Contains(spawnRate.type))
+                        {
+                            return;
+                        }
+
+                        nodeBasedSpawnTable.Add(new WeightedNode<DiggableType>(spawnRate.type, spawnRate.weight));
+                        duplicateCheckSet.Add(spawnRate.type);
+                    }
+                );
+
+            nodeBasedSpawnTable.SortH2LByWeight();
+            nodeBasedSpawnTable.LogExpectedRates();
         }
 
         private Vector2Int[] GenerateDefaultMap()
@@ -98,8 +114,8 @@ namespace MD.Map.Core
         private void RandomSpawn()
         {
             var randEmptyPos = tileGraph.RandomTile();
-            var randDiggableType = RandomDiggable();
-            // Debug.Log("Random Result: " + randEmptyPos + " " + randDiggableType);
+            var randDiggableType = nodeBasedSpawnTable.RandomSortedList();
+            Debug.Log("Random Result: " + randEmptyPos + " " + randDiggableType);
             tileGraph.OnDiggableSpawn(randEmptyPos);
             SpawnAt(randEmptyPos, randDiggableType);
             eventBroadcaster.TriggerDiggableSpawnEvent(randEmptyPos.x, randEmptyPos.y, randDiggableType);        
@@ -157,20 +173,7 @@ namespace MD.Map.Core
             }
 
             return tiles;
-        }      
-
-        private DiggableType RandomDiggable()
-        {
-            var diggableTypes = Enum.GetValues(typeof(DiggableType));
-            List<DiggableType> typeList = new List<DiggableType>();
-            foreach (var i in diggableTypes)
-            {
-                if (((DiggableType) i).Equals(DiggableType.Empty)) continue;
-                typeList.Add((DiggableType) i);
-            }
-            
-            return typeList[UnityEngine.Random.Range(0, typeList.Count)];
-        }    
+        }         
     
         public DiggableType[] GetDiggableArea(Vector2Int[] positions)
         {
