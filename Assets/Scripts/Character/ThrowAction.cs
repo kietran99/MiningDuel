@@ -45,7 +45,7 @@ namespace MD.Character
         {
             if (holdingProjectile == null) 
             {
-                Debug.LogWarning("Not Holding Any Proectile");
+                Debug.LogWarning("Not Holding Any Projectile");
                 return;
             }
             

@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using EventSystems;
 using Mirror;
-using Functional.Type;
 
 namespace MD.Map.Core
 {
+    [RequireComponent(typeof(ProjectileSpawner))]
     public class DiggableGenerator : NetworkBehaviour, IDiggableGenerator
     {
         #region SERIALIZE FIELDS
@@ -205,6 +205,7 @@ namespace MD.Map.Core
 
             else if (Input.GetKeyDown(KeyCode.X))
             {
+                
             }
         }
     }

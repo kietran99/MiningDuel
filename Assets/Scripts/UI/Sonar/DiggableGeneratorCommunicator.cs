@@ -16,10 +16,13 @@ namespace MD.Diggable.Core
 
         public override void OnStopAuthority()
         {
-            // CmdUnsubscribeDiggableEvents();
+            CmdUnsubscribeDiggableEvents();
         }
 
+        // TargetRpc callbacks without NetworkConnection as an arg are invoked on every authoritative DigGenComm.
+        // TargetRpc callbacks with NetworkConnection as an arg are invoked on the same DigGenComm on each client regardless of its authority.
         [Command]
+
         private void CmdSubscribeDiggableEvents()
         {
             ServiceLocator
@@ -30,7 +33,7 @@ namespace MD.Diggable.Core
                     {
                         digGen.DigProgressEvent         += TargetHandleDigProgressEvent;
                         digGen.GemObtainEvent           += TargetHandleGemObtainEvent;
-                        // digGen.ProjectileObtainEvent    += TargetHandleProjectileObtainEvent;
+                        digGen.ProjectileObtainEvent    += TargetHandleProjectileObtainEvent;
                         digGen.DiggableDestroyEvent     += RpcHandleDiggableDestroyEvent;
                     }
                 );
@@ -64,7 +67,6 @@ namespace MD.Diggable.Core
         [TargetRpc]
         private void TargetHandleGemObtainEvent(NetworkConnection target, GemObtainData gemObtainData)
         {
-            // Debug.Log(gemObtainData.diggerID);
             if (!hasAuthority) return;
 
             EventManager.Instance.TriggerEvent(gemObtainData);
@@ -73,6 +75,8 @@ namespace MD.Diggable.Core
         [TargetRpc]
         private void TargetHandleProjectileObtainEvent(NetworkConnection target, ProjectileObtainData projectileObtainData)
         {
+            if (!hasAuthority) return;
+
             EventManager.Instance.TriggerEvent(projectileObtainData);
         }
 

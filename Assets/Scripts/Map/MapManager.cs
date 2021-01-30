@@ -8,6 +8,7 @@ using Mirror;
 using MD.Character;
 using UnityEngine.SceneManagement;
 using MD.AI;
+using MD.Map.Core;
 
 public static class MapDataTypeExtensions
 {
@@ -184,7 +185,7 @@ public class MapManager : NetworkBehaviour, IMapManager
 
         if (diggableDestroyData.diggable.ToDiggable().IsProjectile())
         {
-            itemSpawner.SpawnBombAtPlayer(diggableDestroyData.digger.netIdentity);
+            // itemSpawner.Spawn(diggableDestroyData.digger.netIdentity);
         }
     }
 
