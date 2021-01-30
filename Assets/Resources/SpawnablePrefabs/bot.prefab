@@ -223,14 +223,15 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   currentState: 
-  holdBombTime: 4
-  digCoolDown: 0.5
   score: 0
   isDigging: 0
   canSeePlayer: 0
-  player: {fileID: 0}
-  lastSeenPlayer: {x: 0, y: 0}
   checkPoints: []
+  exposedBombPrefab: {fileID: 5170740038248656859, guid: 12a10bcf8aa0e404aa2b018caf4f31f0,
+    type: 3}
+  holdBombTime: 4
+  digCoolDown: 0.5
+  lastSeenPlayer: {x: 0, y: 0}
 --- !u!114 &102619972807231682
 MonoBehaviour:
   m_ObjectHideFlags: 0

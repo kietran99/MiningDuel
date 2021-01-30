@@ -8,13 +8,13 @@ namespace MD.AI
         private bool forBomb = false;
         public PB_FindDiggable(PlayerBot bot, bool forBomb) : base(bot)
         {
-            name = STATE.FINDDIGGABLE;
+            name = STATE.FINDING_DIGGABLE;
             this.forBomb = forBomb;
         }
 
         public override void Enter()
         {
-            Debug.Log("find " + (forBomb?"bomb":"gem"));
+            Debug.Log("Finding: " + (forBomb? "Projectile" : "Gem"));
             base.Enter();
             Vector2 movePos = Vector2.zero;
             foundLocation =  bot.GetClosestDiggable(out movePos, forBomb);
@@ -29,14 +29,14 @@ namespace MD.AI
             base.Update();
             if (!foundLocation)
             {
-                Debug.Log("no " + (forBomb?"bomb":"gem") + " in sonar range");
+                Debug.Log("No " + (forBomb? "Projectile" : "Gem") + " in Scan Range");
                 stage = EVENT.EXIT;
                 nextState = new PB_Wander(bot, forBomb);
                 return;
             }
-            if (!bot.IsMoving())
+            if (!bot.IsMoving)
             {
-                Debug.Log("found " + (forBomb?"bomb":"gem") + " in sonar range");
+                Debug.Log("Found " + (forBomb? "Projectile" : "Gem") + " in Scan range");
                 stage = EVENT.EXIT;
                 nextState = new PB_Dig(bot, forBomb);
             }

@@ -2,8 +2,20 @@
 {
     public class FSMState
     {
-        public enum STATE {FINDPLAYERTOTHROW, FINDPLAYER, IDLE, THROWBOMBAWAY, RUN, THROWBOMB, DIG, FINDDIGGABLE, WANDER}
-        public enum EVENT {ENTER, UPDATE, EXIT}
+        public enum STATE 
+        {
+            FIND_PLAYER_TO_THROW, 
+            FIND_PLAYER, 
+            IDLE, 
+            THROW_PROJECTILE_AWAY, 
+            RUN, 
+            THROW_PROJECTILE, 
+            DIG, 
+            FINDING_DIGGABLE, 
+            WANDER
+        }
+
+        public enum EVENT { ENTER, UPDATE, EXIT }
 
         public STATE name;
         public EVENT stage;

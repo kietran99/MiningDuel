@@ -88,7 +88,7 @@ namespace MD.UI
 
         public void CleanObjectsOnDisconnect()
         {
-            Debug.Log("Cleanup on disconnect");
+            Debug.Log("Clean up on Disconnect");
 
             RoomPlayers.Clear();
             Players.Clear();
@@ -297,7 +297,7 @@ namespace MD.UI
             //if play with bot
             if (Bots.Count > 0)
             {
-                Players[0].TargetNotifyEndGame(Players[0].CurrentScore >= Bots[0].score);
+                Players[0].TargetNotifyEndGame(Players[0].CurrentScore >= Bots[(int)0].CurrentScore);
                 return;
             }
             

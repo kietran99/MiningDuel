@@ -21,11 +21,10 @@ namespace MD.Map.Core
         }
 
         [Server]
-        public void Spawn(NetworkConnection conn, ProjectileObtainData projObtainData)
+        private void Spawn(NetworkConnection _, ProjectileObtainData projObtainData)
         {
             var digger = projObtainData.thrower;
             var holdingProjectile = Instantiate(exposedBombPrefab, digger.gameObject.transform);
-            holdingProjectile.transform.parent = digger.transform;
             holdingProjectile.transform.position = new Vector3(0, 1f, 0);
             holdingProjectile.SetThrower(digger);
             digger.GetComponent<MD.Character.ThrowAction>().SetHoldingProjectile(holdingProjectile);
