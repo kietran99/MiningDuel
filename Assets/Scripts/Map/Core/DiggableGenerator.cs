@@ -115,7 +115,7 @@ namespace MD.Map.Core
         {
             var randEmptyPos = tileGraph.RandomTile();
             var randDiggableType = nodeBasedSpawnTable.RandomSortedList();
-            Debug.Log("Random Result: " + randEmptyPos + " " + randDiggableType);
+            Debug.Log("Spawn: " + randDiggableType + " at " + randEmptyPos);
             tileGraph.OnDiggableSpawn(randEmptyPos);
             SpawnAt(randEmptyPos, randDiggableType);
             eventBroadcaster.TriggerDiggableSpawnEvent(randEmptyPos.x, randEmptyPos.y, randDiggableType);        
