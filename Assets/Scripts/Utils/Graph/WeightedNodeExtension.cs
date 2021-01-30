@@ -58,12 +58,6 @@ public static class WeightedNodeExtension
         return sum;
     }
 
-    public static T RandomUnsortedList<T>(this List<WeightedNode<T>> lst)
-    {
-        lst.SortH2LByWeight();
-        return lst.RandomSortedList();
-    }
-
     public static void SortH2LByWeight<T>(this List<WeightedNode<T>> lst)
     {
         for (int i = 0, size = lst.Count; i < size; i++)

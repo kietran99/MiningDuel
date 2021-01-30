@@ -9,7 +9,18 @@ namespace MD.Map.Core
     [RequireComponent(typeof(ProjectileSpawner))]
     public class DiggableGenerator : NetworkBehaviour, IDiggableGenerator
     {
+        [Serializable]
+        public struct SpawnRate
+        {
+            public DiggableType type;
+            public int weight;
+        }
+
         #region SERIALIZE FIELDS
+        [SerializeField]
+        private SpawnRate[] spawnTable = null;
+
+        [Header("Spawn Stats")]
         [SerializeField]
         private int startSpawnAmount = 10;
 
@@ -21,6 +32,7 @@ namespace MD.Map.Core
         private IDiggableData diggableData;
         private TileGraph tileGraph;
         private DiggableEventBroadcaster eventBroadcaster;
+        private List<WeightedNode<DiggableType>> nodeBasedSpawnTable;
         #endregion
 
         #region EVENTS
@@ -35,6 +47,7 @@ namespace MD.Map.Core
         {
             ServiceLocator.Register((IDiggableGenerator) this);
             eventBroadcaster = new DiggableEventBroadcaster(this);
+            
             var tilePositions = GenerateDefaultMap();
             tileGraph = new TileGraph(tilePositions);
             diggableData = new DiggableData(MakeEmptyTiles(tilePositions));
@@ -42,6 +55,12 @@ namespace MD.Map.Core
             // diggableData.Log();
             // tileGraph.Log();
             StartCoroutine(RandomSpawnOverTime());
+        }
+
+        private void InitNodeBasedSpawnTable()
+        {
+
+            nodeBasedSpawnTable = new List<WeightedNode<DiggableType>>();
         }
 
         private Vector2Int[] GenerateDefaultMap()
@@ -80,7 +99,7 @@ namespace MD.Map.Core
         {
             var randEmptyPos = tileGraph.RandomTile();
             var randDiggableType = RandomDiggable();
-            Debug.Log("Random Result: " + randEmptyPos + " " + randDiggableType);
+            // Debug.Log("Random Result: " + randEmptyPos + " " + randDiggableType);
             tileGraph.OnDiggableSpawn(randEmptyPos);
             SpawnAt(randEmptyPos, randDiggableType);
             eventBroadcaster.TriggerDiggableSpawnEvent(randEmptyPos.x, randEmptyPos.y, randDiggableType);        
@@ -149,7 +168,7 @@ namespace MD.Map.Core
                 if (((DiggableType) i).Equals(DiggableType.Empty)) continue;
                 typeList.Add((DiggableType) i);
             }
-            //return (DiggableType) diggableTypes.GetValue(UnityEngine.Random.Range(0, diggableTypes.Length));
+            
             return typeList[UnityEngine.Random.Range(0, typeList.Count)];
         }    
     
@@ -162,7 +181,7 @@ namespace MD.Map.Core
                 diggableData
                     .GetDataAt(positions[i].x, positions[i].y)
                     .Match(
-                        err => Debug.LogError(err.Message),
+                        err => Debug.LogWarning(err.Message),
                         tileData => diggableArea[i] = tileData.Type
                     );
             }

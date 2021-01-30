@@ -97,11 +97,5 @@ namespace MD.Character
             (NetworkManager.singleton as UI.NetworkManagerLobby).CleanObjectsOnDisconnect();
             SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);            
         }       
-    
-        [Command]
-        public void CmdAssignAuthority(NetworkIdentity id)
-        {
-            id.AssignClientAuthority(connectionToClient);
-        }
     }
 }

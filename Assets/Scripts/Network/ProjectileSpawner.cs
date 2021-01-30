@@ -23,12 +23,12 @@ namespace MD.Map.Core
         [Server]
         public void Spawn(NetworkConnection conn, ProjectileObtainData projObtainData)
         {
-            var player = projObtainData.thrower;
-            var holdingProjectile = Instantiate(exposedBombPrefab, player.gameObject.transform);
-            holdingProjectile.transform.parent = player.transform;
+            var digger = projObtainData.thrower;
+            var holdingProjectile = Instantiate(exposedBombPrefab, digger.gameObject.transform);
+            holdingProjectile.transform.parent = digger.transform;
             holdingProjectile.transform.position = new Vector3(0, 1f, 0);
-            holdingProjectile.SetThrower(player);
-            player.GetComponent<MD.Character.ThrowAction>().SetHoldingProjectile(holdingProjectile);
+            holdingProjectile.SetThrower(digger);
+            digger.GetComponent<MD.Character.ThrowAction>().SetHoldingProjectile(holdingProjectile);
             NetworkServer.Spawn(holdingProjectile.gameObject);
         }
     }

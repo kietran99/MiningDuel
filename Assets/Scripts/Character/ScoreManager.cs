@@ -38,14 +38,14 @@ namespace MD.Character
             currentMultiplier = 1f;
         }
 
-        public override void OnStartAuthority()
+        public override void OnStartClient()
         {
             EventSystems.EventManager.Instance.StartListening<GemObtainData>(HandleGemDug);
             EventSystems.EventManager.Instance.StartListening<DropObtainData>(HandleDropObtain);
             EventSystems.EventManager.Instance.StartListening<ExplodedData>(HandleExplosion);
         }
 
-        public override void OnStopAuthority()
+        public override void OnStopClient()
         {
             EventSystems.EventManager.Instance.StopListening<GemObtainData>(HandleGemDug);
             EventSystems.EventManager.Instance.StopListening<DropObtainData>(HandleDropObtain);
@@ -63,7 +63,7 @@ namespace MD.Character
         }
 
         private void HandleDropObtain(DropObtainData dropObtainData)
-        {            
+        {        
             HandleScoreChangeEvent(dropObtainData.pickerID, IncreaseScore, dropObtainData.value);
         }
 
@@ -101,7 +101,7 @@ namespace MD.Character
 
         private void UpdateMultiplier(int currentScore)
         {
-            if (currentMultiplier >= multiplierThresholds[multiplierThresholds.Length - 1].multiplier) return;
+            // if (currentMultiplier >= multiplierThresholds[multiplierThresholds.Length - 1].multiplier) return;
 
             var maxMultIdx = multiplierThresholds.LookUp(threshold => threshold.score > currentScore).idx;
             maxMultIdx = maxMultIdx == -1 ? multiplierThresholds.Length : maxMultIdx;
