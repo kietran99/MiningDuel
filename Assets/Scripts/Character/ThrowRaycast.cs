@@ -2,7 +2,7 @@
 using MD.UI;
 using UnityEngine;
 
-namespace MD.VisualEffects
+namespace MD.Character
 {
     public class ThrowRaycast : MonoBehaviour
     {
@@ -34,6 +34,8 @@ namespace MD.VisualEffects
         private void DisableRaycast(ThrowInvokeData _) 
         {
             shouldRaycast = false;
+            EventSystems.EventManager.Instance.TriggerEvent(
+                new TargetedThrowInvokeData(targetTracker.targetPosition.x, targetTracker.targetPosition.y));
             targetTracker.StopTracking();
         }
 

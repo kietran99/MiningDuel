@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using MD.UI;
+using UnityEngine;
 
-namespace MD.VisualEffects
+namespace MD.Character
 {
     [RequireComponent(typeof(SpriteRenderer))]
     public class TargetTracker : MonoBehaviour
@@ -8,7 +10,7 @@ namespace MD.VisualEffects
         private Transform targetTransform;
         private SpriteRenderer spriteRenderer;
 
-        public Vector2 targetPos => targetTransform.position;
+        public Vector2 targetPosition => targetTransform.position;
 
         private void Start()
         {
