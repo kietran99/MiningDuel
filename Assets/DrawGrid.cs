@@ -72,15 +72,23 @@ public class TestGrid
         return false;
     }
 
-    public bool IsObstacle(Vector2Int index)
+    public bool IsWalkable(Vector2Int from, Vector2Int to)
     {
-        if (IsIndexValid(index.x,index.y))
+        if (IsIndexValid(to.x,to.y) && IsIndexValid(from.x,from.y))
         {
-            return gridArray[index.x,index.y] == -1;
+            //if obstacle
+            if (gridArray[to.x,to.y] == -1) return false;
+            
+            //Check if move diagonal
+            if ((from.x != to.x) && (from.y != to.y))
+            {
+                if (gridArray[from.x,to.y] == -1 && gridArray[to.x, from.y] == -1) return false;
+            }
         }
         else
         {
             Debug.Log("index out of bound");
+            return false;
         }
         return true;
     }
@@ -108,7 +116,7 @@ public class DrawGrid : MonoBehaviour
     void Start()
     {
         grid = new TestGrid(20,20,10f);
-        aStar = new AStar(20,20, grid.IsObstacle);
+        aStar = new AStar(20,20, grid.IsWalkable);
     }
 
     // Update is called once per frame

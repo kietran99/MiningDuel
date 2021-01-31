@@ -27,15 +27,15 @@ namespace PathFinding
         Node[,] grid;
         int height,width;
 
-        private Func<Vector2Int, bool> IsObstacle = null;
+        private Func<Vector2Int,Vector2Int, bool> IsWalkable = null;
 
         private MapManager mapManager;
 
-        public Grid(int height, int width, Func<Vector2Int, bool> IsObstacle)
+        public Grid(int height, int width, Func<Vector2Int,Vector2Int, bool> IsWalkable)
         {
             this.height = height;
             this.width = width;
-            this.IsObstacle = IsObstacle;
+            this.IsWalkable = IsWalkable;
             grid = new Node[width,height];
             for (int y= 0; y<height; ++y)
             {
@@ -74,7 +74,7 @@ namespace PathFinding
                     if (y <0 || y>= height) continue;
                     if (x == nodeIndex.x && y== nodeIndex.y) continue;
 
-                    if (CanWalk(x,y)) result.Add(grid[x,y]);
+                    if (CanWalk(nodeIndex.x,nodeIndex.y,x,y)) result.Add(grid[x,y]);
                 }
             }
             return result;
@@ -90,11 +90,11 @@ namespace PathFinding
             return grid[x,y];
         }
 
-        public bool CanWalk(int x, int y)
+        public bool CanWalk(int fromX, int fromY, int toX, int toY)
         {
-            if (IsObstacle != null)
+            if (IsWalkable != null)
             {
-                return !IsObstacle(new Vector2Int(x,y));
+                return IsWalkable(new Vector2Int(fromX,fromY), new Vector2Int(toX,toY));
             }
             return true;
         }
@@ -115,9 +115,9 @@ namespace PathFinding
         private List<Node> closedList;
         private Grid grid;
 
-        public AStar(int height,int width, Func<Vector2Int, bool> IsObstacle)
+        public AStar(int height,int width, Func<Vector2Int,Vector2Int, bool> IsWalkable)
         {
-            grid = new Grid(height, width, IsObstacle);
+            grid = new Grid(height, width, IsWalkable);
         }
 
         public List<Node> FindPath(Vector2Int start, Vector2Int end)
