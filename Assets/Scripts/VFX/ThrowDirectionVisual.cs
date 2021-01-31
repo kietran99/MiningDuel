@@ -21,7 +21,7 @@ namespace MD.VisualEffects
             var eventManager = EventSystems.EventManager.Instance; 
             eventManager.StartListening<Diggable.Projectile.ProjectileObtainData>(Show);
             eventManager.StartListening<UI.JoystickDragData>(HandleJoystickDragEvent);
-            eventManager.StartListening<ThrowInvokeData>(Hide);
+            eventManager.StartListening<UI.ThrowInvokeData>(Hide);
         }
 
         void OnDisable() 
@@ -29,10 +29,10 @@ namespace MD.VisualEffects
             var eventManager = EventSystems.EventManager.Instance; 
             eventManager.StopListening<Diggable.Projectile.ProjectileObtainData>(Show);
             eventManager.StopListening<UI.JoystickDragData>(HandleJoystickDragEvent);
-            eventManager.StopListening<ThrowInvokeData>(Hide);
+            eventManager.StopListening<UI.ThrowInvokeData>(Hide);
         }
 
-        private void Hide(ThrowInvokeData obj)
+        private void Hide(UI.ThrowInvokeData obj)
         {
             spriteRenderer.enabled = false;
         } 

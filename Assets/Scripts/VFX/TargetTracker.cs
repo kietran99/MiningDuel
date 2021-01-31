@@ -5,9 +5,15 @@ namespace MD.VisualEffects
     [RequireComponent(typeof(SpriteRenderer))]
     public class TargetTracker : MonoBehaviour
     {
-        [SerializeField]
         private Transform targetTransform;
         private SpriteRenderer spriteRenderer;
+
+        public Vector2 targetPos => targetTransform.position;
+
+        private void Start()
+        {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        }
 
         void FixedUpdate()
         {

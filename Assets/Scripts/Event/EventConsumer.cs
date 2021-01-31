@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace EventSystems
 {
+    [DisallowMultipleComponent]
     public class EventConsumer : MonoBehaviour
     {
         private interface IEventConnection

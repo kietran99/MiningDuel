@@ -1,4 +1,5 @@
-﻿public struct ThrowInvokeData : EventSystems.IEventData
+﻿namespace MD.UI
 {
-    
+    public struct ThrowInvokeData : EventSystems.IEventData
+    {}
 }
