@@ -11,21 +11,21 @@ namespace MD.AI
 
         public override void Enter()
         {
-            Debug.Log("idle");
+            Debug.Log("Idling");
             base.Enter();
         }
         public override void Update()
         {
             base.Update();
             stage = EVENT.EXIT;
-            if (bot.GetCurrentScore() < bot.player.CurrentScore && bot.GetCurrentScore() >= 20)
+            if (bot.CurrentScore < bot.Target.CurrentScore && bot.CurrentScore >= 20)
             {
-                Debug.Log("<player score and >= 20 score");
+                Debug.Log("Bot Score: < Player Score & >= 20");
                 nextState = new PB_FindPlayer(bot);
             }
             else
             {
-                Debug.Log(">= player score or <20 score");
+                Debug.Log("Bot Score: >= Player Score or < 20");
                 nextState = new PB_FindDiggable(bot, false);
             }
         }

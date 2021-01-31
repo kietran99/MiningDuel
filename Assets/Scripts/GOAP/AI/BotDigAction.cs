@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
+using Mirror;
 
 namespace MD.AI
 {
     public class BotDigAction : MD.Character.DigAction
     {   
         [SerializeField]
-        PlayerBot bot;
+        PlayerBot bot = null;
+
+        protected override bool IsPlayer => false;
+
         void Start()
         {
             bot = GetComponent<PlayerBot>();
@@ -27,6 +31,22 @@ namespace MD.AI
                 bot.isDigging = false;
                 CmdDig();
             }
+        }
+
+        [Command]
+        protected override void CmdDig()
+        {
+            ServiceLocator
+                .Resolve<Map.Core.IDiggableGenerator>()
+                .Match(
+                    unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
+                    diggableGenerator => 
+                        diggableGenerator.BotDigAt(
+                            bot, 
+                            Mathf.FloorToInt(transform.position.x), 
+                            Mathf.FloorToInt(transform.position.y), 
+                            power)                
+                );
         }
     }
 }

@@ -3,19 +3,18 @@ using UnityEngine;
 using Mirror;
 using MD.Character;
 using System.Linq;
+using MD.Map.Core;
 
 namespace MD.AI
 {
     public class PlayerBot : NetworkBehaviour
     {
+        #region SERIALIZE FIELDS
         [SerializeField]
         private string currentState = null;
-        public float holdBombTime = 4f;
-        public float digCoolDown = .5f;
-        private Vector2 minMoveBound,maxMoveBound;
-        private Vector2 offset = new Vector2(.5f, .5f);
+
         [SerializeField]
-        public int score;
+        private int score = 0;
 
         [SerializeField]
         public bool isDigging = false;
@@ -23,39 +22,58 @@ namespace MD.AI
         [SerializeField]
         private bool canSeePlayer = false;
 
+        [SerializeField]
+        public List<GameObject> checkPoints = new List<GameObject>();
+
+        [SerializeField]
+        private MD.Diggable.Projectile.ProjectileLauncher exposedBombPrefab = null;
+        #endregion
+
+        #region FIELDS
+        public float holdBombTime = 4f;
+        public float digCoolDown = .5f;
+        private Vector2 minMoveBound, maxMoveBound;
         private Camera mainCam = null;
         // [SerializeField]
         // private bool isThrowing = false;
         // private bool isWandering = false;
-        private IMapManager mapManager = null;
+        // private IDiggableGenerator diggableGenerator;
+        private Player target;
         private Rigidbody2D body;
         private BotAnimator animator;
-
-        private DigAction digAction;
+        private BotDigAction digAction;
         private BotThrowAction throwAction;
-        public Player player;
-
         public Vector2 lastSeenPlayer = Vector2.zero;
-        [SerializeField]
-        public List<GameObject> checkPoints = new List<GameObject>();
         private BotMoveAction moveAction;
-
         private float nextDigTime = 0f;
-        private FSMState FMS;
+        private FSMState FSM;
         // public int checkPointIdx = 0;
-        // Start is called before the first frame update
+        #endregion
+
+        public Player Target { get => target; set => target = value; }
+
+        public bool CanSeePlayer => canSeePlayer;
+
+        public int CurrentScore => score;
+
+        public bool IsMoving => moveAction.IsMoving;
+
+        public bool Throwable => throwAction.IsHoldingProjectile;
+
         void Awake()
         {
             GameObject.FindGameObjectsWithTag("CheckPoint").ForEach(checkPoints.Add);
             checkPoints = checkPoints.OrderBy(g => g.name).ToList();
         }
+
         void Start()
         {
             if(!hasAuthority) return;
+
             mainCam = Camera.main;
-            ServiceLocator.Resolve<Player>(out player);
+            ServiceLocator.Resolve<Player>(out target);
             score = 0;
-            digAction = GetComponent<DigAction>();
+            digAction = GetComponent<BotDigAction>();
             throwAction = GetComponent<BotThrowAction>();
             body = GetComponent<Rigidbody2D>();
             animator = GetComponent<BotAnimator>();
@@ -63,23 +81,19 @@ namespace MD.AI
             moveAction.SetAnimator(animator);
             minMoveBound = MapConstants.MAP_MIN_BOUND;
             maxMoveBound = MapConstants.MAP_MAX_BOUND;
-            ServiceLocator.Resolve<IMapManager>(out mapManager);
-            FMS = new PB_Idle(this);
+            FSM = new PB_Idle(this);
         }
 
         void Update()
         {
             CheckCanSeePlayer();
-            currentState = FMS.name.ToString();
-            FMS = FMS.Process();
+            currentState = FSM.name.ToString();
+            FSM = FSM.Process();
         }
 
-        public bool IsMoving() => moveAction.IsMoving();
         public void StartMoving() => moveAction.startMoving();
 
         public void SetMovePosition(Vector2 movePos) => moveAction.SetMovePos(movePos);
-
-
 
         // bool digBomb = false, takeControl = false;
 
@@ -153,7 +167,6 @@ namespace MD.AI
         //     movePos = checkPoints[checkPointIdx].transform.position;
         // }
         
-
         public int GetClosestWayPointIndex()
         {
             float sqrclosestDistant = Mathf.Infinity;
@@ -171,11 +184,11 @@ namespace MD.AI
             return currentIndex;
         }
 
-        public bool GetClosestDiggable(out Vector2 pos,bool digBomb)
+        public bool GetClosestDiggable(out Vector2 pos, bool digProj)
         {
             Vector2 sqrCenter = new Vector2(Mathf.FloorToInt(transform.position.x) + .5f, Mathf.FloorToInt(transform.position.y) + .5f);
 
-            if (digBomb ? mapManager.IsProjectileAt(sqrCenter) : mapManager.IsGemAt(sqrCenter)) 
+            if (digProj ? IsProjectileAt(sqrCenter) : IsGemAt(sqrCenter)) 
             {
                 pos = sqrCenter;
                 return true;
@@ -193,7 +206,7 @@ namespace MD.AI
 
                         position = sqrCenter + new Vector2((float)x, (float)y);
 
-                        if (digBomb ? mapManager.IsProjectileAt(position) : mapManager.IsGemAt(position))
+                        if (digProj ? IsProjectileAt(position) : IsGemAt(position))
                         {
                             pos = position;
                             return true;
@@ -214,12 +227,10 @@ namespace MD.AI
 
         public bool CanDig(bool digBomb)
         {
-            if (throwAction.IsHoldingProjectile()) return false;
+            if (throwAction.IsHoldingProjectile) return false;
 
-            return digBomb ? mapManager.IsProjectileAt(transform.position) : mapManager.IsGemAt(transform.position);
+            return digBomb ? IsProjectileAt(transform.position) : IsGemAt(transform.position);
         }
-
-        public bool CanThrow() => throwAction.IsHoldingProjectile();
 
         // private IEnumerator Dig(bool digBomb)
         // {
@@ -248,6 +259,7 @@ namespace MD.AI
             nextDigTime = Time.time + digCoolDown;
             EventSystems.EventManager.Instance.TriggerEvent(new BotDigInvokeData());
         }
+        
         // private IEnumerator CoroutineDig()
         // {
         //     isDigging = true;
@@ -299,10 +311,22 @@ namespace MD.AI
             // }
         // }
 
-        public void ThrowBomb()
+        [Server]
+        public void SpawnProjectile(DiggableType projType)
         {
-            if (throwAction.IsHoldingProjectile())       
+            var holdingProjectile = Instantiate(exposedBombPrefab, transform);
+            holdingProjectile.transform.position = new Vector3(0, 1f, 0);
+            holdingProjectile.SetThrower(netIdentity);
+            throwAction.SetHoldingProjectile(holdingProjectile);
+            NetworkServer.Spawn(holdingProjectile.gameObject);
+        }
+
+        public void ThrowProjectile()
+        {
+            if (throwAction.IsHoldingProjectile)       
+            {
                 throwAction.ThrowProjectile();
+            }
         }
 
         private void CheckCanSeePlayer()
@@ -328,23 +352,48 @@ namespace MD.AI
             if (position.x >= 0.1 && position.x <= .9 && position.y >= .1 && position.y <=.9)
             {
                 canSeePlayer = true;
-                lastSeenPlayer= player.transform.position;
+                lastSeenPlayer = Target.transform.position;
                 return;
             }
             canSeePlayer = false;
         }
 
-        public bool CanSeePlayer()
-        {        
-            return canSeePlayer;
-        }
-
-        public int GetCurrentScore() => score;
+        public void IncreaseScore(int amount) => score += amount;
 
         public void DecreaseScore(int amount)
         {
             score -= amount;
             score = score < 0 ? 0 : score;
+        }
+
+        [Server]
+        private bool IsProjectileAt(Vector2 pos)
+        {
+            var res = true;
+
+            if (!(res = ServiceLocator.Resolve(out IDiggableGenerator diggableGenerator)))
+            {
+                return res;
+            }
+
+            res = diggableGenerator.IsProjectileAt(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y)).Match(err => false, isProjAt => isProjAt);
+
+            return res;
+        }
+
+        [Server]
+        private bool IsGemAt(Vector2 pos)
+        {
+            var res = true;
+
+            if (!(res = ServiceLocator.Resolve(out IDiggableGenerator diggableGenerator)))
+            {
+                return res;
+            }
+
+            res = diggableGenerator.IsGemAt(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y)).Match(err => false, isProjAt => isProjAt);
+
+            return res;
         }
     }
 }

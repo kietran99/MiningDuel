@@ -32,6 +32,7 @@ namespace MD.Map.Core
         private IDiggableData diggableData;
         private TileGraph tileGraph;
         private DiggableEventBroadcaster eventBroadcaster;
+        private BotDiggableEventHandler botEventHandler;
         private List<WeightedNode<DiggableType>> nodeBasedSpawnTable;
         #endregion
 
@@ -47,6 +48,7 @@ namespace MD.Map.Core
         {
             ServiceLocator.Register((IDiggableGenerator) this);
             eventBroadcaster = new DiggableEventBroadcaster(this);
+            botEventHandler = new BotDiggableEventHandler();
             InitSortedNodeBasedSpawnTable();
             var tilePositions = GenerateDefaultMap();
             tileGraph = new TileGraph(tilePositions);
@@ -115,7 +117,7 @@ namespace MD.Map.Core
         {
             var randEmptyPos = tileGraph.RandomTile();
             var randDiggableType = nodeBasedSpawnTable.RandomSortedList();
-            Debug.Log("Spawn: " + randDiggableType + " at " + randEmptyPos);
+            // Debug.Log("Spawn: " + randDiggableType + " at " + randEmptyPos);
             tileGraph.OnDiggableSpawn(randEmptyPos);
             SpawnAt(randEmptyPos, randDiggableType);
             eventBroadcaster.TriggerDiggableSpawnEvent(randEmptyPos.x, randEmptyPos.y, randDiggableType);        
@@ -142,13 +144,37 @@ namespace MD.Map.Core
                             .Match(                           
                                 invalidAccessErr => Debug.LogError(invalidAccessErr.Message),
                                 reducedData => 
-                                {
+                                {                                    
                                     eventBroadcaster.TriggerDiggableDugEvent(digger, reducedData);
-
+                                    
                                     if (reducedData.isEmpty) 
                                     {
                                         eventBroadcaster.TriggerDiggableDestroyEvent(x, y);                                    
                                     }
+                                }                                    
+                            );
+                    }
+                );
+        }
+
+        public void BotDigAt(MD.AI.PlayerBot bot, int x, int y, int power)
+        {
+            diggableData
+                .GetAccessAt(x, y)
+                .Match(
+                    invalidTileErr => Debug.LogError(invalidTileErr.Message),
+                    access => 
+                    {
+                        diggableData
+                            .Reduce(access, power)
+                            .Match(                           
+                                invalidAccessErr => Debug.LogError(invalidAccessErr.Message),
+                                reducedData => 
+                                {                                                                       
+                                    if (!reducedData.isEmpty) return;
+                                    
+                                    botEventHandler.HandleDiggableDugEvent(bot, reducedData);
+                                    eventBroadcaster.TriggerDiggableDestroyEvent(x, y);                                                                        
                                 }                                    
                             );
                     }
@@ -192,6 +218,16 @@ namespace MD.Map.Core
             return diggableArea;
         }
     
+        public Functional.Type.Either<InvalidTileError, bool> IsProjectileAt(int x, int y)
+        {
+            return diggableData.GetDataAt(x, y).Map(tileData => tileData.Type.IsProjectile());
+        }
+
+        public Functional.Type.Either<InvalidTileError, bool> IsGemAt(int x, int y)
+        {
+            return diggableData.GetDataAt(x, y).Map(tileData => tileData.Type.IsGem());
+        }
+
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Z))

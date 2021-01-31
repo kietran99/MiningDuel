@@ -177,7 +177,7 @@ public class MapManager : NetworkBehaviour, IMapManager
             PlayerBot bot;
             if (bot = diggableDestroyData.digger.GetComponent<PlayerBot>())
             {
-                bot.score += diggableDestroyData.diggable;
+                bot.IncreaseScore(diggableDestroyData.diggable);
             }
 
             return;

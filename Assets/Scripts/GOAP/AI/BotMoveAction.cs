@@ -47,7 +47,7 @@ namespace MD.AI
         }
 
         public void SetAnimator(BotAnimator anim) => animator = anim;
-        public bool IsMoving() => isMoving;
+        public bool IsMoving => isMoving;
         public void startMoving() => isMoving = true;
         public void SetMovePos(Vector2 movePos) => this.movePos = movePos;
     }

@@ -7,43 +7,45 @@ namespace MD.AI
         private int currentIndex = 0;
         private bool lastSeenPlayerArrived = false;
         private float elapsedTime = 0f;
+
         public PB_FindPlayer(PlayerBot bot) : base(bot)
         {
-            name = STATE.FINDPLAYER;
+            name = STATE.FIND_PLAYER;
         }
 
         public override void Enter()
         {
-            Debug.Log("finding player");
+            Debug.Log("Finding Player");
             base.Enter();
             bot.SetMovePosition(bot.lastSeenPlayer);
             bot.StartMoving();
         }
+
         public override void Update()
         {
             base.Update();
-            if (bot.CanSeePlayer())
+            if (bot.CanSeePlayer)
             {
                 stage = EVENT.EXIT;
-                if (bot.CanThrow())
+                if (bot.Throwable)
                 {
-                    Debug.Log("found Player and has bomb");
-                    nextState = new PB_ThrowBomb(bot);
+                    Debug.Log("Found Player - Obtained Projectile");
+                    nextState = new PB_ThrowProjectile(bot);
                 }
                 else
                 {
-                    Debug.Log("found Player and doesnt have bomb");
+                    Debug.Log("Found Player - No Projectile");
                     nextState = new PB_FindDiggable(bot, true);
                 }
                 return;
             }
-            if (bot.CanThrow() && elapsedTime >= bot.holdBombTime)
+            if (bot.Throwable && elapsedTime >= bot.holdBombTime)
             {
-                Debug.Log("has bomb and out of time");
+                Debug.Log("Holding Projectile - Out of Time");
                 stage = EVENT.EXIT;
-                nextState = new PB_ThrowBombAway(bot);
+                nextState = new PB_ThrowProjectileAway(bot);
             }
-            if (!bot.IsMoving())
+            if (!bot.IsMoving)
             {
                 if (!lastSeenPlayerArrived)
                 {

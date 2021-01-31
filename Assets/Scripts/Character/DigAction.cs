@@ -8,9 +8,11 @@ namespace MD.Character
     public class DigAction : NetworkBehaviour
     {
         [SerializeField]
-        private int power = 1;
+        protected int power = 1;
 
         public int Power => power;
+
+        protected virtual bool IsPlayer => true;
 
         public override void OnStartAuthority()
         {
@@ -35,7 +37,7 @@ namespace MD.Character
         protected void HandleDigAnimEnd(DigAnimEndData data) => CmdDig();
 
         [Command]
-        public void CmdDig()
+        protected virtual void CmdDig()
         {
             ServiceLocator
                 .Resolve<IDiggableGenerator>()
