@@ -48,7 +48,6 @@ namespace MD.Map.Core
         {
             ServiceLocator.Register((IDiggableGenerator) this);
             eventBroadcaster = new DiggableEventBroadcaster(this);
-            botEventHandler = new BotDiggableEventHandler();
             InitSortedNodeBasedSpawnTable();
             var tilePositions = GenerateDefaultMap();
             tileGraph = new TileGraph(tilePositions);
@@ -56,6 +55,7 @@ namespace MD.Map.Core
             System.Linq.Enumerable.Range(0, startSpawnAmount).ForEach(_ => RandomSpawn());
             // diggableData.Log();
             // tileGraph.Log();
+            botEventHandler = new BotDiggableEventHandler();
             StartCoroutine(RandomSpawnOverTime());
         }
 

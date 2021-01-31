@@ -1,30 +1,31 @@
 ﻿using UnityEngine;
-using MD.Character;
 
-public class TargetTracker : MonoBehaviour
+namespace MD.VisualEffects
 {
-    protected Transform playerTransform;
-
-    protected virtual void Start()
+    [RequireComponent(typeof(SpriteRenderer))]
+    public class TargetTracker : MonoBehaviour
     {
-        if (!ServiceLocator.Resolve<Player>(out Player player))
+        [SerializeField]
+        private Transform targetTransform;
+        private SpriteRenderer spriteRenderer;
+
+        void FixedUpdate()
         {
-            return;
+            if (targetTransform == null) return;
+
+            transform.position = new Vector3(targetTransform.position.x, targetTransform.position.y, transform.position.z);
         }
 
-        playerTransform = player.transform;
-    }
-
-    private void FixedUpdate()
-    {
-        if (playerTransform == null)
+        public void StartTracking(Transform targetTransform)
         {
-            return;
-        }
-        
-        transform.position = GetFollowOffset(playerTransform.position);
-    }
+            this.targetTransform = targetTransform;
+            spriteRenderer.enabled = true;
+        } 
 
-    protected virtual Vector3 GetFollowOffset(Vector3 playerPos) => new Vector3(playerPos.x, playerPos.y, transform.position.z);
+        public void StopTracking() 
+        {
+            targetTransform = null;
+            spriteRenderer.enabled = false;
+        }
+    }
 }
-
