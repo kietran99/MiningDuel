@@ -14,7 +14,7 @@ public class PlayerNameInput : MonoBehaviour
     private Text shownPlayerNameText = null;
 
     [SerializeField]
-    private GameObject Mask;
+    private GameObject Mask = null;
 
     public static string DisplayName { get; private set; }
 
