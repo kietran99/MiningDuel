@@ -36,6 +36,8 @@ namespace MD.Character
 
         public int CurrentScore { get => scoreManager.CurrentScore; }
 
+        public System.Action OnSceneLoaded { get; set; }
+
         public override void OnStartClient()
         {
             DontDestroyOnLoad(this);

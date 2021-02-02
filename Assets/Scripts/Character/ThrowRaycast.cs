@@ -4,47 +4,35 @@ using UnityEngine;
 
 namespace MD.Character
 {
-    public class ThrowRaycast : MonoBehaviour
-    {
-        [SerializeField]
-        private TargetTracker targetTracker = null;
-
-        private Transform playerTransform;
+    [RequireComponent(typeof(ThrowAction))]
+    public class ThrowRaycast : Mirror.NetworkBehaviour
+    {       
         private bool shouldRaycast = false;
+        private ThrowAction throwAction;
 
-        void Start()
+        //void Start()
+        public override void OnStartLocalPlayer()
         {
-            ServiceLocator
-                .Resolve<MD.Character.Player>()
-                .Match(
-                    err => Debug.Log(err.Message),
-                    player => 
-                    {
-                        playerTransform = player.transform;
-                        var eventConsumer = gameObject.AddComponent<EventSystems.EventConsumer>();
-                        eventConsumer.StartListening<Diggable.Projectile.ProjectileObtainData>(EnableRaycast);
-                        eventConsumer.StartListening<UI.JoystickDragData>(StartRaycastingPlayers);
-                        eventConsumer.StartListening<UI.ThrowInvokeData>(DisableRaycast);
-                    }
-                );            
+            throwAction = GetComponent<ThrowAction>();
+            var eventConsumer = gameObject.AddComponent<EventSystems.EventConsumer>();
+            eventConsumer.StartListening<Diggable.Projectile.ProjectileObtainData>(EnableRaycast);
+            eventConsumer.StartListening<UI.JoystickDragData>(StartRaycastingPlayers);
+            eventConsumer.StartListening<UI.ThrowInvokeData>(DisableRaycast);              
         }
 
         private void EnableRaycast(ProjectileObtainData _) => shouldRaycast = true;
 
-        private void DisableRaycast(ThrowInvokeData _) 
-        {
-            shouldRaycast = false;
-            EventSystems.EventManager.Instance.TriggerEvent(
-                new TargetedThrowInvokeData(targetTracker.targetPosition.x, targetTracker.targetPosition.y));
-            targetTracker.StopTracking();
-        }
+        private void DisableRaycast(ThrowInvokeData _) => shouldRaycast = false;
 
         private void StartRaycastingPlayers(JoystickDragData joystickDragData)
         {
-            if (!shouldRaycast) return;
+            if (!shouldRaycast) 
+            {
+                return;
+            }
 
-            Debug.DrawLine(playerTransform.position, joystickDragData.InputDirection * 10f);
-            var hit = Physics2D.Raycast(playerTransform.position, joystickDragData.InputDirection, Mathf.Infinity);
+            Debug.DrawLine(transform.position, joystickDragData.InputDirection * 200f);
+            var hit = Physics2D.Raycast(transform.position, joystickDragData.InputDirection, Mathf.Infinity);
             var target = hit.collider;
 
             if (target == null) 
@@ -57,7 +45,7 @@ namespace MD.Character
                 return;
             }
 
-            targetTracker.StartTracking(target.transform);
+            throwAction.StartTracking(target.transform);
         }        
     }
 }

@@ -11,10 +11,16 @@ public class CameraController : MonoBehaviour
     
     void Awake()
     {
-        MapConstants.MAP_MIN_BOUND = map.localBounds.min;
-        MapConstants.MAP_MAX_BOUND = map.localBounds.max;
+        MapConstants.MapMinBound = map.localBounds.min;
+        MapConstants.MapMaxBound = map.localBounds.max;
     }
+
     void Start()
+    {
+        Init(map.localBounds.min, map.localBounds.max);
+    }
+
+    private void Init(Vector3 botLeft, Vector3 topRight)
     {
         if (!ServiceLocator.Resolve(out MD.Character.Player player)) return; 
 
@@ -23,10 +29,9 @@ public class CameraController : MonoBehaviour
         var camHalfHeight = mainCamera.orthographicSize;
         var camHalfWidth = mainCamera.aspect * camHalfHeight;
         
-        botLeftLimit = map.localBounds.min + new Vector3(camHalfWidth, camHalfHeight, 0f);
-        topRightLimit = map.localBounds.max - new Vector3(camHalfWidth, camHalfHeight, 0f);
-
-        player.GetComponent<MD.Character.MoveAction>().SetBounds(map.localBounds.min, map.localBounds.max);
+        botLeftLimit = botLeft + new Vector3(camHalfWidth, camHalfHeight, 0f);
+        topRightLimit = topRight - new Vector3(camHalfWidth, camHalfHeight, 0f);
+        player.GetComponent<MD.Character.MoveAction>().SetBounds(botLeft, topRight);
     }
 
     void LateUpdate()

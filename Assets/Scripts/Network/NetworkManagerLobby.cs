@@ -237,6 +237,8 @@ namespace MD.UI
                 return;
             }
             
+            // SpawnDiggableGenerator();
+            Players.ForEach(player => player.OnSceneLoaded?.Invoke());
             Players.ForEach(player => GenDiggableGeneratorCommunicator(player.connectionToClient));            
             //TODO check if all players loaded scene
             SetupGame();           

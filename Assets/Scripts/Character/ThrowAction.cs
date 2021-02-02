@@ -1,58 +1,75 @@
 ﻿using MD.Diggable.Projectile;
-using MD.UI;
 using UnityEngine;
 using Mirror;
 
 namespace MD.Character
 {
+    [RequireComponent(typeof(ThrowRaycast))]
     public class ThrowAction : NetworkBehaviour
     {
         [SerializeField]
-        protected float basePower = 100f;
-        
-        private Vector2 currentDir = Vector2.zero;
-        protected ProjectileLauncher holdingProjectile;
+        protected GameObject targetTrackerPrefab = null;
 
-        public override void OnStartAuthority()
+        [SerializeField]
+        protected float basePower = 100f;
+
+        [SerializeField]
+        protected float chargeTime = .5f;
+        
+        protected ProjectileLauncher holdingProjectile;
+        protected WaitForSecondsRealtime chargeTimeAsWaitForSeconds;  
+        protected TargetTracker targetTracker;   
+
+        public override void OnStartLocalPlayer()
         {
-            EventSystems.EventManager.Instance.StartListening<TargetedThrowInvokeData>(HandleTargetedThrowInvokeData);
+            GetComponent<Player>().OnSceneLoaded += SpawnTargetTracker;
+            chargeTimeAsWaitForSeconds = new WaitForSecondsRealtime(chargeTime);
+            EventSystems.EventManager.Instance.StartListening<MD.UI.ThrowInvokeData>(HandleThrowInvokeData);        
         }
 
         public override void OnStopAuthority()
         {
-            EventSystems.EventManager.Instance.StopListening<TargetedThrowInvokeData>(HandleTargetedThrowInvokeData);
+            if (!isLocalPlayer) return;
+
+            GetComponent<Player>().OnSceneLoaded -= SpawnTargetTracker;
+            EventSystems.EventManager.Instance.StopListening<MD.UI.ThrowInvokeData>(HandleThrowInvokeData);
         }
 
-        private void HandleTargetedThrowInvokeData(TargetedThrowInvokeData targetedThrowInvokeData)
+        private void HandleThrowInvokeData(MD.UI.ThrowInvokeData _) => StartCoroutine(ChargedThrow());
+
+        public void StartTracking(Transform targetTransform)
         {
+            targetTracker.StartTracking(targetTransform);
+        }
+
+        public virtual void SetHoldingProjectile(ProjectileLauncher proj) => holdingProjectile = proj;
+
+        private void SpawnTargetTracker() 
+        {   
+            targetTracker = Instantiate(targetTrackerPrefab).GetComponent<TargetTracker>();
+        }
+
+        private System.Collections.IEnumerator ChargedThrow()
+        {
+            yield return chargeTimeAsWaitForSeconds;
+
             var normalizedThrowDirection = 
-                new Vector2(targetedThrowInvokeData.x - transform.position.x, targetedThrowInvokeData.y - transform.position.y).normalized;
-            CmdThrowProjectile(normalizedThrowDirection.x, normalizedThrowDirection.y, basePower);
-        }
-
-        private void BindThrowDirection(JoystickDragData dragData)
-        {
-            if (dragData.InputDirection == Vector2.zero) return;
-            currentDir = dragData.InputDirection;
-        }
-
-        private void ThrowProjectile(ThrowInvokeData data)
-        {
-            CmdThrowProjectile(currentDir.x, currentDir.y, basePower);
+                new Vector2(targetTracker.TargetPosition.x - transform.position.x, targetTracker.TargetPosition.y - transform.position.y)
+                    .normalized;
+            CmdThrow(normalizedThrowDirection.x, normalizedThrowDirection.y);
+            targetTracker.StopTracking();
         }
 
         [Command]
-        protected void CmdThrowProjectile(float dirX, float dirY, float power)
+        protected void CmdThrow(float dirX, float dirY)
         {
             if (holdingProjectile == null) 
             {
-                Debug.LogWarning("Not Holding Any Projectile");
+                Debug.LogError("Not Holding Any Projectile");
                 return;
             }
             
             holdingProjectile.Launch(basePower, dirX, dirY);
         }
-
-        public virtual void SetHoldingProjectile(ProjectileLauncher proj) => holdingProjectile = proj;
     }
 }

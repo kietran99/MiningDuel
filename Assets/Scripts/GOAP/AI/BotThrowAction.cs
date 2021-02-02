@@ -8,7 +8,7 @@ namespace MD.AI
     {
         public override void SetHoldingProjectile(ProjectileLauncher proj)
         {
-            Debug.Log("set holding projectile on bot");
+            Debug.Log("Bot Set Holding Projectile");
             base.SetHoldingProjectile(proj);
             BotAnimator animator = GetComponent<BotAnimator>();
 
@@ -28,7 +28,7 @@ namespace MD.AI
 
             BotAnimator animator = GetComponent<BotAnimator>();
             if (animator != null) animator.RevertToIdleState();
-            base.CmdThrowProjectile(dir.x, dir.y, basePower);
+            base.CmdThrow(dir.x, dir.y);
             holdingProjectile = null;
         }
 
