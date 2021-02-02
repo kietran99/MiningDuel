@@ -43,20 +43,29 @@ namespace MD.Map.Core
         public Action<Diggable.DiggableRemoveData> DiggableDestroyEvent { get; set; }
         public Action<Diggable.DiggableSpawnData> DiggableSpawnEvent { get; set; }
         #endregion
-
+        
         public override void OnStartServer()
         {
             ServiceLocator.Register((IDiggableGenerator) this);
             eventBroadcaster = new DiggableEventBroadcaster(this);
-            botEventHandler = new BotDiggableEventHandler();
             InitSortedNodeBasedSpawnTable();
-            var tilePositions = GenerateDefaultMap();
-            tileGraph = new TileGraph(tilePositions);
-            diggableData = new DiggableData(MakeEmptyTiles(tilePositions));
-            System.Linq.Enumerable.Range(0, startSpawnAmount).ForEach(_ => RandomSpawn());
-            // diggableData.Log();
-            // tileGraph.Log();
-            StartCoroutine(RandomSpawnOverTime());
+            ServiceLocator
+                .Resolve<IMapGenerator>()
+                .Match(
+                    errorMessage => Debug.Log(errorMessage.Message), 
+                    mapGenerator => 
+                    {
+                        var tilePositions = mapGenerator.MovablePostions.ToArray();
+                        Debug.Log(tilePositions.Length);
+                        tileGraph = new TileGraph(tilePositions);
+                        diggableData = new DiggableData(MakeEmptyTiles(tilePositions));
+                        System.Linq.Enumerable.Range(0, startSpawnAmount).ForEach(_ => RandomSpawn());
+                        // diggableData.Log();
+                        // tileGraph.Log();
+                        botEventHandler = new BotDiggableEventHandler();
+                        StartCoroutine(RandomSpawnOverTime());
+                    }
+                );
         }
 
         private void InitSortedNodeBasedSpawnTable()

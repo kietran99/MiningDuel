@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using MD.VisualEffects;
 
 namespace MD.UI
 {
 [RequireComponent(typeof(Text))]
-    public class PlayerPositionTracker : TargetTracker
+    public class PlayerPositionTracker : PlayerTracker
     {        
         private Camera mainCamera;
         private Text playerNameText;
