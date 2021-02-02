@@ -168,7 +168,7 @@ namespace MD.UI
             
             for (int i = 0; i < diggableArea.Length; i++)
             {
-                if (diggableArea[i].Equals(DiggableType.Empty)) continue;
+                if (diggableArea[i].Equals(DiggableType.EMPTY)) continue;
 
                 PutSymbol(relScannablePos[i], diggableArea[i]);
             }

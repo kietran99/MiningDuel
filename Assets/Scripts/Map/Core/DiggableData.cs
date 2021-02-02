@@ -36,7 +36,7 @@ namespace MD.Map.Core
         private void AddToOccupiedAndOrFreeList((Vector2Int pos, ITileData data) tile)
         {
             occupiedTiles.Add(tile.pos, tile.data);
-            if (tile.data.Type.Equals(DiggableType.Empty))
+            if (tile.data.Type.Equals(DiggableType.EMPTY))
             {
                 freeTiles.Add(tile.pos);
             }
@@ -122,7 +122,7 @@ namespace MD.Map.Core
             Debug.Log("------------OCCUPIED TILES------------");
             foreach (var tile in occupiedTiles)
             {
-                if (!tile.Value.Type.Equals(DiggableType.Empty))
+                if (!tile.Value.Type.Equals(DiggableType.EMPTY))
                 {
                     Debug.Log(tile.Key + " " + tile.Value);
                 }                

@@ -51,7 +51,7 @@ public class ProjectileGenerator: MonoBehaviour
                         }
                         randomIndex.x = Random.Range(0 + HalfMapWidth*x, HalfMapWidth + (mapSize.x - HalfMapWidth)*x);
                         randomIndex.y = Random.Range(0 + HalfMapHeight*y, HalfMapHeight + (mapSize.y - HalfMapHeight)*y);
-                        success = mapManager.TrySpawnAt(randomIndex, DiggableType.NormalBomb, normalBombPrefab);
+                        success = mapManager.TrySpawnAt(randomIndex, DiggableType.NORMAL_BOMB, normalBombPrefab);
                         timesTried++;
                     }
                     nGeneratedGems++;

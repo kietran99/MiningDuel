@@ -10,11 +10,12 @@ namespace MD.Map.Core
         {
             eventHandlerDict = new Dictionary<DiggableType, System.Action<MD.AI.PlayerBot, int, DiggableType>>()
             {
-                { DiggableType.CommonGem, HandleGemDugEvent },
-                { DiggableType.UncommonGem, HandleGemDugEvent },
-                { DiggableType.RareGem, HandleGemDugEvent },
-                { DiggableType.NormalBomb, HandleProjectileDugEvent },
-                { DiggableType.Empty, (digger, value, type) => { UnityEngine.Debug.Log("Bot Dug Empty Tile"); } }
+                { DiggableType.COMMON_GEM, HandleGemDugEvent },
+                { DiggableType.UNCOMMON_GEM, HandleGemDugEvent },
+                { DiggableType.RARE_GEM, HandleGemDugEvent },
+                { DiggableType.SUPER_RARE_GEM, HandleGemDugEvent },
+                { DiggableType.NORMAL_BOMB, HandleProjectileDugEvent },
+                { DiggableType.EMPTY, (digger, value, type) => { UnityEngine.Debug.Log("Bot Dug Empty Tile"); } }
             };
         }
 

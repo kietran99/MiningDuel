@@ -195,7 +195,7 @@ namespace MD.Map.Core
 
             for (int i = 0; i < tiles.Length; i++)
             {
-                tiles[i] = (positions[i], new TileData(DiggableType.Empty));
+                tiles[i] = (positions[i], new TileData(DiggableType.EMPTY));
             }
 
             return tiles;
@@ -232,8 +232,8 @@ namespace MD.Map.Core
         {
             if (Input.GetKeyDown(KeyCode.Z))
             {
-                SpawnAt(new Vector2Int(0, 0), DiggableType.RareGem);
-                eventBroadcaster.TriggerDiggableSpawnEvent(0, 0, DiggableType.RareGem);
+                SpawnAt(new Vector2Int(0, 0), DiggableType.RARE_GEM);
+                eventBroadcaster.TriggerDiggableSpawnEvent(0, 0, DiggableType.RARE_GEM);
             }
 
             else if (Input.GetKeyDown(KeyCode.X))
