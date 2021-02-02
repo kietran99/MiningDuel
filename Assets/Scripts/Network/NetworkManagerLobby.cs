@@ -206,7 +206,8 @@ namespace MD.UI
 
         private void InitEnv()
         {
-            spawnPointPicker.Reset();  
+            spawnPointPicker.Reset();
+            SpawnMapGenerator();  
             SpawnDiggableGenerator();            
         }
 
@@ -216,6 +217,14 @@ namespace MD.UI
             NetworkServer.Spawn(diggableGenerator);
             DontDestroyOnLoad(diggableGenerator);
             DontDestroyOnLoadObjects.Add(diggableGenerator);
+        }
+
+        private void SpawnMapGenerator()
+        {
+            var mapGenerator = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals("Map Generator")));
+            NetworkServer.Spawn(mapGenerator);
+            DontDestroyOnLoad(mapGenerator);
+            DontDestroyOnLoadObjects.Add(mapGenerator);
         }
 
         public void SpawnPvPPlayers()
@@ -237,7 +246,8 @@ namespace MD.UI
                 return;
             }
             
-            Players.ForEach(player => GenDiggableGeneratorCommunicator(player.connectionToClient));            
+            Players.ForEach(player => GenDiggableGeneratorCommunicator(player.connectionToClient));          
+            Players.ForEach(player => GenMapRenderer(player.connectionToClient));        
             //TODO check if all players loaded scene
             SetupGame();           
         }
@@ -246,6 +256,12 @@ namespace MD.UI
         {
             var digGenComm = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(DIGGABLE_GENERATOR_COMMUNICATOR)));
             NetworkServer.Spawn(digGenComm, conn);
+        }
+
+        private void GenMapRenderer(NetworkConnection conn)
+        {
+            var mapRenderer = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals("Map Renderer")));
+            NetworkServer.Spawn(mapRenderer, conn);// chưa bỏ 
         }
 
         private void SetupGame()
