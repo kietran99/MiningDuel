@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using Mirror;
 
-namespace MD.Map.Core
+namespace MD.Diggable.Core
 {
     public class DiggableEventBroadcaster
     {
         private Dictionary<DiggableType, System.Action<NetworkIdentity, int, int>> eventTriggerDict;
-        private DiggableType lastDugType = DiggableType.Empty;
+        private DiggableType lastDugType = DiggableType.EMPTY;
         private IDiggableGenerator diggableGenerator;
 
         public DiggableEventBroadcaster(IDiggableGenerator diggableGenerator)
@@ -14,11 +14,12 @@ namespace MD.Map.Core
             this.diggableGenerator = diggableGenerator;
             eventTriggerDict = new Dictionary<DiggableType, System.Action<NetworkIdentity, int, int>>()
             {
-                { DiggableType.CommonGem, TriggerGemDugEvent },
-                { DiggableType.UncommonGem, TriggerGemDugEvent },
-                { DiggableType.RareGem, TriggerGemDugEvent },
-                { DiggableType.NormalBomb, TriggerProjectileDugEvent },
-                { DiggableType.Empty, (digger, cur, max) => { UnityEngine.Debug.Log("Dug Empty Tile"); } }
+                { DiggableType.COMMON_GEM, TriggerGemDugEvent },
+                { DiggableType.UNCOMMON_GEM, TriggerGemDugEvent },
+                { DiggableType.RARE_GEM, TriggerGemDugEvent },
+                { DiggableType.SUPER_RARE_GEM, TriggerGemDugEvent },
+                { DiggableType.NORMAL_BOMB, TriggerProjectileDugEvent },
+                { DiggableType.EMPTY, (digger, cur, max) => { UnityEngine.Debug.Log("Dug Empty Tile"); } }
             };
         }
 

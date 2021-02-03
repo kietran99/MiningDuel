@@ -8,7 +8,7 @@ using Mirror;
 using MD.Character;
 using UnityEngine.SceneManagement;
 using MD.AI;
-using MD.Map.Core;
+using MD.Diggable.Core;
 
 public static class MapDataTypeExtensions
 {
@@ -16,9 +16,9 @@ public static class MapDataTypeExtensions
     {
         switch(type)
         {
-            case DiggableType.CommonGem:
-            case DiggableType.UncommonGem:
-            case DiggableType.RareGem:
+            case DiggableType.COMMON_GEM:
+            case DiggableType.UNCOMMON_GEM:
+            case DiggableType.RARE_GEM:
                 return true;
             default: return false;
         }
@@ -28,7 +28,7 @@ public static class MapDataTypeExtensions
     {
         switch(type)
         {
-            case DiggableType.NormalBomb:
+            case DiggableType.NORMAL_BOMB:
                 return true;
             default: return false;
         }
@@ -38,15 +38,15 @@ public static class MapDataTypeExtensions
     {
         switch(value)
         {
-            case (int) DiggableType.CommonGem:
-                return DiggableType.CommonGem;
-            case (int) DiggableType.UncommonGem:
-                return DiggableType.UncommonGem;
-            case (int) DiggableType.RareGem:
-                return DiggableType.RareGem;
-            case (int) DiggableType.NormalBomb:
-                return DiggableType.NormalBomb;
-            default: return DiggableType.Empty;
+            case (int) DiggableType.COMMON_GEM:
+                return DiggableType.COMMON_GEM;
+            case (int) DiggableType.UNCOMMON_GEM:
+                return DiggableType.UNCOMMON_GEM;
+            case (int) DiggableType.RARE_GEM:
+                return DiggableType.RARE_GEM;
+            case (int) DiggableType.NORMAL_BOMB:
+                return DiggableType.NORMAL_BOMB;
+            default: return DiggableType.EMPTY;
         }
     }
 }
@@ -228,7 +228,7 @@ public class MapManager : NetworkBehaviour, IMapManager
         int areaWidth = mapSize.x / genZoneSideLength;
         int areaHeight = mapSize.y / genZoneSideLength;
  
-        var tiles = new List<(Vector2Int, MD.Map.Core.ITileData)>();
+        var tiles = new List<(Vector2Int, MD.Diggable.Core.ITileData)>();
 
         for (int y = 0; y < genZoneSideLength; y++)
         {
@@ -261,15 +261,15 @@ public class MapManager : NetworkBehaviour, IMapManager
         int random = Random.Range(1, commonDropWeight + uncommonDropWeight + rareDropWeight + 1);
         if (random <= commonDropWeight)
         {
-            return (commonGem, DiggableType.CommonGem);
+            return (commonGem, DiggableType.COMMON_GEM);
         }
 
         if (random <= commonDropWeight + uncommonDropWeight)
         {
-            return (uncommonGem, DiggableType.UncommonGem);
+            return (uncommonGem, DiggableType.UNCOMMON_GEM);
         }
         
-        return (rareGem, DiggableType.RareGem);
+        return (rareGem, DiggableType.RARE_GEM);
     }
 
     [Server]
@@ -336,7 +336,7 @@ public class MapManager : NetworkBehaviour, IMapManager
     [Server]
     public bool TrySpawnAt(Vector2Int idx, DiggableType diggableType, GameObject diggable)
     {
-        if (mapData[idx.x, idx.y] != DiggableType.Empty)
+        if (mapData[idx.x, idx.y] != DiggableType.EMPTY)
         { 
             return false;
         }

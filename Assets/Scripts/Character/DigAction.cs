@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
 using MD.Character.Animation;
-using MD.Map.Core;
+using MD.Diggable.Core;
 
 namespace MD.Character
 {

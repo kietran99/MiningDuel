@@ -24,9 +24,9 @@ namespace MD.VisualEffects
             EventSystems.EventManager.Instance.StopListening<GemObtainData>(HandleGemDug);
         }
 
-        private void HandleGemDug(GemObtainData gemDugData)
+        private void HandleGemDug(GemObtainData gemObtainData)
         {
-            var gem = DiggableTypeConverter.Convert((DiggableType) gemDugData.value);
+            var gem = DiggableTypeConverter.Convert(gemObtainData.value);
             Play(gem.WorldSprite);
         } 
 

@@ -25,7 +25,7 @@ namespace MD.Diggable.Core
         private void CmdSubscribeDiggableEvents()
         {
             ServiceLocator
-                .Resolve<Map.Core.IDiggableGenerator>()
+                .Resolve<IDiggableGenerator>()
                 .Match(
                     unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
                     digGen => 
@@ -43,7 +43,7 @@ namespace MD.Diggable.Core
         private void CmdUnsubscribeDiggableEvents()
         {
             ServiceLocator
-                .Resolve<Map.Core.IDiggableGenerator>()
+                .Resolve<IDiggableGenerator>()
                 .Match(
                     unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
                     digGen => 
@@ -97,7 +97,7 @@ namespace MD.Diggable.Core
         public void CmdRequestScanArea(Vector2Int[] positions)
         {
             ServiceLocator
-                .Resolve<Map.Core.IDiggableGenerator>()
+                .Resolve<IDiggableGenerator>()
                 .Match(
                     unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
                     digGen => TargetBroadcastScanData(digGen.GetDiggableArea(positions))
@@ -107,7 +107,8 @@ namespace MD.Diggable.Core
         [TargetRpc]
         private void TargetBroadcastScanData(DiggableType[] diggableArea)
         {
-            EventManager.Instance.TriggerEvent(new UI.ScanData() { diggableArea = diggableArea });
+            // Debug.Log("");
+            EventManager.Instance.TriggerEvent(new UI.ScanData(diggableArea));
         }
     }
 }

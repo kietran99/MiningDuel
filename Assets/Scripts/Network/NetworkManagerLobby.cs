@@ -246,13 +246,22 @@ namespace MD.UI
                 return;
             }
             
-            Players.ForEach(player => GenDiggableGeneratorCommunicator(player.connectionToClient));          
-            Players.ForEach(player => GenMapRenderer(player.connectionToClient));        
+            Players.ForEach(player => SpawnSonar(player.connectionToClient));            
+            Players.ForEach(player => SpawnDiggableGeneratorCommunicator(player.connectionToClient));  
+            Players.ForEach(player => GenMapRenderer(player.connectionToClient)); 
+
             //TODO check if all players loaded scene
             SetupGame();           
         }
 
-        private void GenDiggableGeneratorCommunicator(NetworkConnection conn)
+        private void SpawnSonar(NetworkConnection conn)
+        {
+            var sonar = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals("Sonar")));
+            NetworkServer.Spawn(sonar, conn);
+        }
+
+
+        private void SpawnDiggableGeneratorCommunicator(NetworkConnection conn)
         {
             var digGenComm = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(DIGGABLE_GENERATOR_COMMUNICATOR)));
             NetworkServer.Spawn(digGenComm, conn);

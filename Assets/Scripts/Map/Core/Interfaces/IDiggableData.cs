@@ -2,7 +2,7 @@
 using Functional.Type;
 using System.Collections.ObjectModel;
 
-namespace MD.Map.Core
+namespace MD.Diggable.Core
 {
     /// <summary>
     /// Manages in-game map and tile data

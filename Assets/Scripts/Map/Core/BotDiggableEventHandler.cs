@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MD.Map.Core
+namespace MD.Diggable.Core
 {
     public class BotDiggableEventHandler
     {
@@ -10,11 +10,12 @@ namespace MD.Map.Core
         {
             eventHandlerDict = new Dictionary<DiggableType, System.Action<MD.AI.PlayerBot, int, DiggableType>>()
             {
-                { DiggableType.CommonGem, HandleGemDugEvent },
-                { DiggableType.UncommonGem, HandleGemDugEvent },
-                { DiggableType.RareGem, HandleGemDugEvent },
-                { DiggableType.NormalBomb, HandleProjectileDugEvent },
-                { DiggableType.Empty, (digger, value, type) => { UnityEngine.Debug.Log("Bot Dug Empty Tile"); } }
+                { DiggableType.COMMON_GEM, HandleGemDugEvent },
+                { DiggableType.UNCOMMON_GEM, HandleGemDugEvent },
+                { DiggableType.RARE_GEM, HandleGemDugEvent },
+                { DiggableType.SUPER_RARE_GEM, HandleGemDugEvent },
+                { DiggableType.NORMAL_BOMB, HandleProjectileDugEvent },
+                { DiggableType.EMPTY, (digger, value, type) => { UnityEngine.Debug.Log("Bot Dug Empty Tile"); } }
             };
         }
 
@@ -28,7 +29,7 @@ namespace MD.Map.Core
             bot.SpawnProjectile(type);
         }
 
-        public void HandleDiggableDugEvent(MD.AI.PlayerBot bot, MD.Map.Core.ReducedData reducedData)
+        public void HandleDiggableDugEvent(MD.AI.PlayerBot bot, ReducedData reducedData)
         {
             eventHandlerDict[reducedData.type](bot, reducedData.max, reducedData.type);
         }

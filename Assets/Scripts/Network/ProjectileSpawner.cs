@@ -2,7 +2,7 @@ using UnityEngine;
 using Mirror;
 using MD.Diggable.Projectile;
 
-namespace MD.Map.Core
+namespace MD.Diggable.Core
 {
     [RequireComponent(typeof(DiggableGenerator))]
     public class ProjectileSpawner: NetworkBehaviour

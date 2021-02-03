@@ -1,11 +1,9 @@
-﻿using MD.Diggable.Core;
-
-namespace MD.Map.Core
+﻿namespace MD.Diggable.Core
 {
     public class TileData : ITileData
     {
         public static TileData Empty { get => empty; }
-        private static TileData empty = new TileData(DiggableType.Empty);
+        private static TileData empty = new TileData(DiggableType.EMPTY);
 
         private int digsLeft, initialDigsLeft;
 
@@ -21,14 +19,14 @@ namespace MD.Map.Core
                 }
 
                 digsLeft = 0;
-                Type = DiggableType.Empty;
+                Type = DiggableType.EMPTY;
             } 
         }
 
         public TileData(DiggableType type)
         {
             Type = type;
-            initialDigsLeft = type.Equals(DiggableType.Empty) ? 0 : DiggableTypeConverter.Convert(type).DigValue;
+            initialDigsLeft = type.Equals(DiggableType.EMPTY) ? 0 : DiggableTypeConverter.Convert(type).DigValue;
             DigsLeft = initialDigsLeft;
         }
 

@@ -67,7 +67,7 @@ namespace MD.Map.Core
 
 
             botMap.CompressBounds();
-            Camera.main.GetComponent<CameraController>().SetMapData(botMap);//k chắc
+            Camera.main.GetComponent<CameraController>().SetMapData(botMap);
         }
     }
 }
