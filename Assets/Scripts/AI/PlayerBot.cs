@@ -93,7 +93,7 @@ namespace MD.AI
 
         public void StartMoving() => moveAction.startMoving();
 
-        public void SetMovePosition(Vector2 movePos) => moveAction.SetMovePos(movePos);
+        public bool SetMovePosition(Vector2 movePos) => moveAction.SetMovePos(movePos);
 
         // bool digBomb = false, takeControl = false;
 
