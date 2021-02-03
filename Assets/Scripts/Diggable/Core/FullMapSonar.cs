@@ -5,6 +5,8 @@ namespace MD.Diggable.Core
 {
     public class FullMapSonar : NetworkBehaviour
     {
+        private float GRID_MAP_OFFSET = .5f;
+
         #region SERIALIZE FIELDS
         [SerializeField]
         private GameObject tilePoolPrefab = null;
@@ -75,7 +77,7 @@ namespace MD.Diggable.Core
         private SpriteRenderer SetTileDataFromPool(int x, int y, DiggableType type)
         {
             var tile = tilePool.Pop();
-            tile.transform.position = new Vector3(x, y, 0f);
+            tile.transform.position = new Vector3(x + .5f, y + .5f, 0f);
             var renderer = tile.GetComponentInChildren<SpriteRenderer>();
             renderer.sprite = GetSonarSprite(type);
             return renderer;
