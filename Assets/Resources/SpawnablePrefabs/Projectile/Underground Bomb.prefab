@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 8666675366005913648}
   - component: {fileID: 345120733074054545}
   - component: {fileID: -7269080300220050062}
-  - component: {fileID: 6778565948225256552}
   - component: {fileID: -8689622941057072668}
+  - component: {fileID: 6778565948225256552}
   - component: {fileID: 5261725988800386849}
   m_Layer: 0
   m_Name: Underground Bomb
@@ -73,20 +73,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &6778565948225256552
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4262454349504806188}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0792f76ef91a0c143bb570065f9c7559, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
 --- !u!114 &-8689622941057072668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103,6 +89,20 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!114 &6778565948225256552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4262454349504806188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0792f76ef91a0c143bb570065f9c7559, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!114 &5261725988800386849
 MonoBehaviour:
   m_ObjectHideFlags: 0

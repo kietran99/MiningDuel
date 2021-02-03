@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Functional.Type;
 
 namespace Functional
 {
@@ -100,7 +101,7 @@ namespace Functional
             }
         }
 
-        public static U[] Map<T, U> (Func<T, U> function, T[] iter)
+        public static U[] Map<T, U>(Func<T, U> function, T[] iter)
         {
             var result = new List<U>();
 

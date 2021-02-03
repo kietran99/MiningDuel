@@ -2,22 +2,17 @@
 using Mirror.Discovery;
 using UnityEngine;
 using Mirror;
+
 namespace MD.UI.MainMenu
 {
     public class JoinRoomController : MonoBehaviour
     {
-        #region SERIALIZE FIELDS
-        // [SerializeField]
-        // private NetworkManagerLobby networkManager = null;
-
-        // [SerializeField]
-        // private NetworkDiscovery networkDiscovery = null;
-
+        #region SERIALIZE FIELDS        
         [SerializeField]
         private GameObject roomOrganizer = null, room = null;       
         #endregion
         
-        private readonly Dictionary<long, ServerResponse> discoveredServers = new Dictionary<long, ServerResponse>();
+        private readonly Dictionary<long, CustomServerResponse> discoveredServers = new Dictionary<long, CustomServerResponse>();
         private List<GameObject> rooms = new List<GameObject>();
         private NetworkManagerLobby manager;
         private NetworkManagerLobby Manager
@@ -27,42 +22,38 @@ namespace MD.UI.MainMenu
                 if (manager != null) return manager;
                 return manager = NetworkManager.singleton as NetworkManagerLobby;
             }
-
         }
 
         void OnEnable()
-        {
-            //NetworkManagerLobby.OnClientConnected += HandleClientConnected;
-            //NetworkManagerLobby.OnClientDisconnnected += HandleClientDisconnected;
-
-            Manager.GetComponent<NetworkDiscovery>().OnServerFound.AddListener(OnDiscoveredServer);
+        {     
+            var networkDiscovery = Manager.GetComponent<CustomNetworkDiscovery>();      
+            networkDiscovery.OnServerFound.AddListener(OnServerDiscovered);
             discoveredServers.Clear();
-            Manager.GetComponent<NetworkDiscovery>().StartDiscovery();
+            networkDiscovery.StartDiscovery();
         }
 
-        public void OnDiscoveredServer(ServerResponse info)
+        public void OnServerDiscovered(CustomServerResponse info)
         {
             Debug.Log("Discovered a server with ID: " + info.serverId);
 
             if (discoveredServers.ContainsKey(info.serverId)) return;
 
             discoveredServers[info.serverId] = info;
-            InitRoom(info.EndPoint.Address.ToString());          
+            InitRoom(info.EndPoint.Address.ToString(), info.hostName);          
         }
 
-        private void InitRoom(string ipAddress)
+        private void InitRoom(string ipAddress, string hostName)
         {
             var newRoom = Instantiate(room, roomOrganizer.transform);
-            newRoom.GetComponent<JoinableRoom>().Init(Manager, ipAddress);
+            newRoom.GetComponent<JoinableRoom>().Init(Manager, ipAddress, hostName);
             rooms.Add(newRoom);
         }
 
         void OnDisable()
         {
-            //NetworkManagerLobby.OnClientConnected -= HandleClientConnected;
-            //NetworkManagerLobby.OnClientDisconnnected -= HandleClientDisconnected;
-            Manager.GetComponent<NetworkDiscovery>().OnServerFound.RemoveListener(OnDiscoveredServer);
             DestroyAllRooms();
+            var networkDiscovery = Manager.GetComponent<CustomNetworkDiscovery>();
+            networkDiscovery.OnServerFound.RemoveListener(OnServerDiscovered);            
         }
 
         private void DestroyAllRooms()
@@ -70,27 +61,5 @@ namespace MD.UI.MainMenu
             rooms.ForEach(Destroy); 
             rooms.Clear();  
         }        
-
-        // public void JoinLobby()
-        // {
-        //     if (ipAddressInputField.text.Length == 0) return;
-
-        //     string ipAddress = ipAddressInputField.text;
-        //     networkManager.networkAddress = ipAddress;
-        //     joinButton.interactable  = false;
-        //     networkManager.StartClient();
-        // }
-
-        // private void HandleClientConnected()
-        // {
-        //     if (joinButton) joinButton.interactable = true;
-        //     // if (CreateRoomWindow) CreateRoomWindow.GetComponent<RoomController>().ShowWindow();
-        // }
-
-        // private void HandleClientDisconnected()
-        // {
-        //     if (joinButton)
-        //     joinButton.interactable = true;
-        // }
     }
 }

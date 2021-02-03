@@ -13,20 +13,21 @@ namespace MD.Character
         private Vector2 currentDir = Vector2.zero;
         protected ProjectileLauncher holdingProjectile;
 
-        void Start()
+        public override void OnStartAuthority()
         {
-            if (!isLocalPlayer) return;
-
-            EventSystems.EventManager.Instance.StartListening<ThrowInvokeData>(ThrowProjectile);
-            EventSystems.EventManager.Instance.StartListening<JoystickDragData>(BindThrowDirection);
+            EventSystems.EventManager.Instance.StartListening<TargetedThrowInvokeData>(HandleTargetedThrowInvokeData);
         }
 
-        void OnDestroy()
+        public override void OnStopAuthority()
         {
-            if (!isLocalPlayer) return;
+            EventSystems.EventManager.Instance.StopListening<TargetedThrowInvokeData>(HandleTargetedThrowInvokeData);
+        }
 
-            EventSystems.EventManager.Instance.StopListening<ThrowInvokeData>(ThrowProjectile);
-            EventSystems.EventManager.Instance.StopListening<JoystickDragData>(BindThrowDirection);
+        private void HandleTargetedThrowInvokeData(TargetedThrowInvokeData targetedThrowInvokeData)
+        {
+            var normalizedThrowDirection = 
+                new Vector2(targetedThrowInvokeData.x - transform.position.x, targetedThrowInvokeData.y - transform.position.y).normalized;
+            CmdThrowProjectile(normalizedThrowDirection.x, normalizedThrowDirection.y, basePower);
         }
 
         private void BindThrowDirection(JoystickDragData dragData)
@@ -43,6 +44,12 @@ namespace MD.Character
         [Command]
         protected void CmdThrowProjectile(float dirX, float dirY, float power)
         {
+            if (holdingProjectile == null) 
+            {
+                Debug.LogWarning("Not Holding Any Projectile");
+                return;
+            }
+            
             holdingProjectile.Launch(basePower, dirX, dirY);
         }
 

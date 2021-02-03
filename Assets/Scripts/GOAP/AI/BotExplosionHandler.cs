@@ -1,7 +1,8 @@
 ﻿using MD.Diggable.Projectile;
 using UnityEngine;
 using Mirror;
-namespace MD.Character
+
+namespace MD.AI
 {
     [RequireComponent(typeof(PlayerBot))]
     public class BotExplosionHandler : MonoBehaviour, IExplodable
@@ -27,10 +28,10 @@ namespace MD.Character
         [Server]
         public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage, int bombType)
         {
-            Debug.Log(transform.name + " was exploded");
+            Debug.Log("Bot Exploded by " + transform.name);
             // if (!ServiceLocator.Resolve<IScoreManager>(out IScoreManager scoreManager)) return;
 
-            int numOfGem = Mathf.FloorToInt(Bot.GetCurrentScore() * gemDropPercentage * .01f);
+            int numOfGem = Mathf.FloorToInt(Bot.CurrentScore * gemDropPercentage * .01f);
             Bot.DecreaseScore(numOfGem);
 
             for (int i = 0; i < numOfGem; i++)

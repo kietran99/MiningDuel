@@ -1,5 +1,5 @@
-﻿using MD.Diggable;
-using MD.Diggable.Core;
+﻿using MD.Diggable.Core;
+using MD.Diggable.Gem;
 using UnityEngine;
 
 namespace MD.VisualEffects
@@ -16,17 +16,17 @@ namespace MD.VisualEffects
             spriteRenderer = GetComponent<SpriteRenderer>();  
             animator = GetComponent<Animator>(); 
 
-            EventSystems.EventManager.Instance.StartListening<GemDigSuccessData>(HandleGemDigSuccess);
+            EventSystems.EventManager.Instance.StartListening<GemObtainData>(HandleGemDug);
         }
 
         private void OnDisable() 
         {
-            EventSystems.EventManager.Instance.StopListening<GemDigSuccessData>(HandleGemDigSuccess);
+            EventSystems.EventManager.Instance.StopListening<GemObtainData>(HandleGemDug);
         }
 
-        private void HandleGemDigSuccess(GemDigSuccessData gemDigData)
+        private void HandleGemDug(GemObtainData gemObtainData)
         {
-            var gem = DiggableTypeConverter.Convert((DiggableType) gemDigData.value);
+            var gem = DiggableTypeConverter.Convert(gemObtainData.value);
             Play(gem.WorldSprite);
         } 
 

@@ -2,12 +2,12 @@
 
 public class ScanTileData
 {
-    public ScanTileData(Vector2 position, int diggable)
+    public ScanTileData(Vector2 position, DiggableType diggable)
     {
         Position = position;
-        Diggable = diggable;
+        Type = diggable;
     }
 
     public Vector2 Position { get; set; }
-    public int Diggable { get; set; }
+    public DiggableType Type { get; set; }
 }

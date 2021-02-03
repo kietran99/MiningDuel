@@ -27,16 +27,10 @@ namespace MD.UI
             EventSystems.EventManager.Instance.StopListening<ThrowInvokeData>(ShowButton);
         }
 
-        // private void ShowButton(ExplodeData obj)
-        // {
-        //     button.gameObject.SetActive(true);
-        // }
-
         private void ShowButton(ThrowInvokeData obj)
         {
             button.gameObject.SetActive(true);
         }
-
 
         private void HideButton(ProjectileObtainData obj)
         {

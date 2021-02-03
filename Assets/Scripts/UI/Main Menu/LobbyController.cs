@@ -1,6 +1,7 @@
 ﻿using Mirror.Discovery;
 using UnityEngine;
 using Mirror;
+using MD.Network.GameMode;
 
 namespace MD.UI.MainMenu
 {
@@ -12,22 +13,23 @@ namespace MD.UI.MainMenu
         [SerializeField]
         private RoomController joinRoomWindow = null;
 
-        private NetworkManagerLobby room;
-        private NetworkManagerLobby Room
+        private NetworkManagerLobby netManager;
+        private NetworkManagerLobby NetManager
         {
             get
             {
-                if (room != null) return room;
-                return room = NetworkManager.singleton as NetworkManagerLobby;
+                if (netManager != null) return netManager;
+                return netManager = NetworkManager.singleton as NetworkManagerLobby;
             }
-
         }
 
         public void OpenCreateRoomWindow()
         {
             // OpenRoomWindow(createRoomWindow);
-            Room.StartHost();
-            Room.GetComponent<NetworkDiscovery>().AdvertiseServer();
+            //NetManager.StartHost();
+            IGameModeManager gameModeManager = new PvPModeManager();
+            gameModeManager.StartHost();
+            NetManager.GetComponent<CustomNetworkDiscovery>().AdvertiseServer(PlayerPrefs.GetString(PlayerNameInput.PLAYER_PREF_NAME_KEY));
         }
 
         public void OpenJoinRoomWindow()
@@ -37,8 +39,7 @@ namespace MD.UI.MainMenu
 
         private void OpenRoomWindow(RoomController window)
         {
-            window.ShowWindow();
-            
+            window.ShowWindow();            
         }
     }
 }

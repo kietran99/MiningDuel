@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using Mirror;
-using MD.Character;
 
 namespace MD.Diggable.Gem
 {
@@ -8,8 +7,6 @@ namespace MD.Diggable.Gem
     {
         [SerializeField]
         private int value = 1;
-
-        private Transform throwerTransform;
 
         public uint ThrowerID { get; set; }
 
@@ -28,11 +25,11 @@ namespace MD.Diggable.Gem
 
             if (other.GetComponent<MD.Character.ScoreManager>() != null)
             {
-                EventSystems.EventManager.Instance.TriggerEvent(new DropObtainData(other.GetComponent<Player>().netId, value));
+                EventSystems.EventManager.Instance.TriggerEvent(new DropObtainData(ThrowerID, value));
             }
             else
             {
-                other.GetComponent<PlayerBot>().score += value;
+                other.GetComponent<MD.AI.PlayerBot>().IncreaseScore(value);
             }
 
             Destroy(gameObject);

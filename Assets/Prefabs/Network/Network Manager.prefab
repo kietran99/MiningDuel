@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 175812858257897403}
   - component: {fileID: 175812858257897400}
   - component: {fileID: 175812858257897401}
-  - component: {fileID: 175812858257897402}
+  - component: {fileID: -6777396483997107435}
   m_Layer: 0
   m_Name: Network Manager
   m_TagString: Untagged
@@ -66,15 +66,13 @@ MonoBehaviour:
   menuScene: Assets/Scenes/Main Menu Scene.unity
   gamePlayScene: Assets/Scenes/Multiplayer.unity
   maximumPlayers: 4
-  minimumPlayers: 1
+  minimumPlayers: 2
   roomPlayerPrefab: {fileID: 9037775071047316419, guid: c0e7ecaf0d50b5748919f41920282256,
     type: 3}
   botPrefab: {fileID: 5063567480658151164, guid: 54a0943568201224faf9e9135bbfdd04,
     type: 3}
   spawnPointPicker: {fileID: -5008208810592905108, guid: ef6f40e00172b8549ae0c3d7e98b2fd9,
     type: 3}
-  fadeStartCompleteEvent: {fileID: 11400000, guid: d370e0bcd750c53438ff2914187c99ea,
-    type: 2}
   DontDestroyOnLoadObjects: []
 --- !u!114 &175812858257897401
 MonoBehaviour:
@@ -118,7 +116,7 @@ MonoBehaviour:
   serverMaxReceivesPerTick: 10000
   clientMaxMessageSize: 16384
   clientMaxReceivesPerTick: 1000
---- !u!114 &175812858257897402
+--- !u!114 &-6777396483997107435
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,10 +125,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 175812858257897406}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c761308e733c51245b2e8bb4201f46dc, type: 3}
+  m_Script: {fileID: 11500000, guid: fbc53190104f9ba498c12b4c1406dedf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  secretHandshake: 4553331232438363436
+  secretHandshake: 4306297990479057092
   serverBroadcastListenPort: 47777
   ActiveDiscoveryInterval: 3
   transport: {fileID: 0}

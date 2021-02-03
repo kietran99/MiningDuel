@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 public static class CollectionExtension
 {
+    public static T Random<T>(this ReadOnlyCollection<T> lst)
+    {
+        return lst[UnityEngine.Random.Range(0, lst.Count)];
+    }
+
     public static (T item, int idx) LookUp<T>(this T[] arr, Predicate<T> condition)
     {
         for (int i = 0; i < arr.Length; i++)
@@ -57,6 +63,21 @@ public static class CollectionExtension
         return result.ToArray();
     }
 
+    public static List<T> Filter<T>(this List<T> iter, Predicate<T> conditions)
+    {
+        var result = new List<T>();
+
+        for (int i = 0; i < iter.Count; i++)
+        {
+            if (conditions(iter[i]))
+            {
+                result.Add(iter[i]);
+            }
+        }
+
+        return result;
+    }
+
     public static T Reduce<T>(this T[] iter, Func<T, T, T> function)
     {
         if (iter.Length == 0) return default(T);
@@ -91,6 +112,14 @@ public static class CollectionExtension
         }
     }
 
+    public static void ForEach<T>(this IEnumerable<T> iter, Action<T> function)
+    {
+        foreach (var item in iter)
+        {
+            function(item);
+        }
+    }
+
     public static void ForEach<T>(this T[] iter, Action<T, int> function)
     {
         for (int i = 0; i < iter.Length; i++)
@@ -98,7 +127,7 @@ public static class CollectionExtension
             function(iter[i], i);
         }
     }
-
+    
     public static T2[] Map<T1, T2>(this T1[] iter, Func<T1, T2> function)
     {
         var result = new List<T2>();
@@ -111,19 +140,15 @@ public static class CollectionExtension
         return result.ToArray();
     }
 
-    public static void ForEach<T>(this List<T> iter, Action<T> function)
+    public static T2[] Map<T1, T2>(this IEnumerable<T1> iter, Func<T1, T2> function)
     {
-        for (int i = 0; i < iter.Count; i++)
-        {
-            function(iter[i]);
-        }
-    }
+        var result = new List<T2>();
 
-    public static void ForEach<T>(this HashSet<T> iter, Action<T> function)
-    {
-        foreach (var ele in iter)
+        foreach (var item in iter)
         {
-            function(ele);
+            result.Add(function(item));
         }
+
+        return result.ToArray();
     }
 }

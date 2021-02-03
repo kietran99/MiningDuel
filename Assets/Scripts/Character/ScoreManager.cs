@@ -1,5 +1,4 @@
-﻿using MD.Diggable;
-using MD.Diggable.Gem;
+﻿using MD.Diggable.Gem;
 using Mirror;
 using UnityEngine;
 
@@ -31,6 +30,8 @@ namespace MD.Character
 
         public int CurrentScore { get => currentScore; }
 
+        public float CurrentMultiplier { get => currentMultiplier; }
+
         public override void OnStartServer()
         {
             currentScore = 0;
@@ -39,21 +40,21 @@ namespace MD.Character
 
         public override void OnStartClient()
         {
-            EventSystems.EventManager.Instance.StartListening<GemDigSuccessData>(HandleGemDigSuccess);
+            EventSystems.EventManager.Instance.StartListening<GemObtainData>(HandleGemDug);
             EventSystems.EventManager.Instance.StartListening<DropObtainData>(HandleDropObtain);
             EventSystems.EventManager.Instance.StartListening<ExplodedData>(HandleExplosion);
         }
 
         public override void OnStopClient()
         {
-            EventSystems.EventManager.Instance.StopListening<GemDigSuccessData>(HandleGemDigSuccess);
+            EventSystems.EventManager.Instance.StopListening<GemObtainData>(HandleGemDug);
             EventSystems.EventManager.Instance.StopListening<DropObtainData>(HandleDropObtain);
             EventSystems.EventManager.Instance.StopListening<ExplodedData>(HandleExplosion);
         }
 
-        private void HandleGemDigSuccess(GemDigSuccessData gemDigSuccessData)
+        private void HandleGemDug(GemObtainData gemObtainData)
         {
-            HandleScoreChangeEvent(gemDigSuccessData.diggerID, CmdIncreaseScore, gemDigSuccessData.value);
+            HandleScoreChangeEvent(gemObtainData.diggerID, CmdIncreaseScore, gemObtainData.value);
         }
 
         private void HandleExplosion(ExplodedData explodedData)
@@ -62,7 +63,7 @@ namespace MD.Character
         }
 
         private void HandleDropObtain(DropObtainData dropObtainData)
-        {            
+        {        
             HandleScoreChangeEvent(dropObtainData.pickerID, IncreaseScore, dropObtainData.value);
         }
 
@@ -100,7 +101,7 @@ namespace MD.Character
 
         private void UpdateMultiplier(int currentScore)
         {
-            if (currentMultiplier >= multiplierThresholds[multiplierThresholds.Length - 1].multiplier) return;
+            // if (currentMultiplier >= multiplierThresholds[multiplierThresholds.Length - 1].multiplier) return;
 
             var maxMultIdx = multiplierThresholds.LookUp(threshold => threshold.score > currentScore).idx;
             maxMultIdx = maxMultIdx == -1 ? multiplierThresholds.Length : maxMultIdx;

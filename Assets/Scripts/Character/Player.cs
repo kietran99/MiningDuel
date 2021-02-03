@@ -10,10 +10,7 @@ namespace MD.Character
     [RequireComponent(typeof(PlayerExplosionHandler))]
     [RequireComponent(typeof(ScoreManager))]
     public class Player : NetworkBehaviour
-    {
-        [SerializeField]
-        private SpriteRenderer indicator = null;
-
+    {        
         [SerializeField]
         private ScoreManager scoreManager = null;
 
@@ -42,7 +39,7 @@ namespace MD.Character
         public override void OnStartClient()
         {
             DontDestroyOnLoad(this);
-            Room.DontDestroyOnLoadObjects.Add(this.gameObject);
+            Room.DontDestroyOnLoadObjects.Add(gameObject);
             Room.Players.Add(this);
         }
 
@@ -54,7 +51,6 @@ namespace MD.Character
         public override void OnStartAuthority()
         {
             ServiceLocator.Register(this);
-            indicator.color = Color.green;
         }
         
         [Server]
@@ -63,14 +59,8 @@ namespace MD.Character
             playerName = name;
         }
 
-        [TargetRpc]
-        public void TargetRegisterIMapManager(NetworkIdentity mapManager)
-        {
-            ServiceLocator.Register(mapManager.GetComponent<IMapManager>());
-        }
-
         [Server]
-        public void SetCanMove(bool value) => canMove = value;
+        public void Movable(bool value) => canMove = value;
 
         [TargetRpc]
         public void TargetNotifyGameReady(float time)
@@ -100,10 +90,8 @@ namespace MD.Character
             
             Debug.Log("Quit match on client");
             NetworkManager.singleton.StopClient();
-            (NetworkManager.singleton as UI.NetworkManagerLobby).CleanObjectsWhenDisconnect();
+            (NetworkManager.singleton as UI.NetworkManagerLobby).CleanObjectsOnDisconnect();
             SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);            
-        }
-
-        
+        }       
     }
 }

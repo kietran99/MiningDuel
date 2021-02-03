@@ -1,19 +1,11 @@
-﻿using MD.Diggable.Core;
-
-namespace MD.Map.Core
+﻿namespace MD.Diggable.Core
 {
     public class TileData : ITileData
     {
         public static TileData Empty { get => empty; }
-        private static TileData empty = new TileData(DiggableType.Empty);
+        private static TileData empty = new TileData(DiggableType.EMPTY);
 
-        private int digsLeft;
-
-        public TileData(DiggableType type)
-        {
-            Type = type;
-            DigsLeft = type.Equals(DiggableType.Empty) ? 0 : DiggableTypeConverter.Convert(type).DigValue;
-        }
+        private int digsLeft, initialDigsLeft;
 
         public int DigsLeft 
         { 
@@ -27,20 +19,28 @@ namespace MD.Map.Core
                 }
 
                 digsLeft = 0;
-                Type = DiggableType.Empty;
+                Type = DiggableType.EMPTY;
             } 
         }
 
-        public DiggableType Type { get; protected set; }
-        
-        public void Reduce(int reduceVal, out bool isEmpty)
+        public TileData(DiggableType type)
         {
-            DigsLeft -= reduceVal;
-            DigsLeft = DigsLeft > 0 ? DigsLeft : 0;
-            isEmpty = IsEmpty();
+            Type = type;
+            initialDigsLeft = type.Equals(DiggableType.EMPTY) ? 0 : DiggableTypeConverter.Convert(type).DigValue;
+            DigsLeft = initialDigsLeft;
         }
 
-        public bool IsEmpty() => DigsLeft == 0;
+        public bool IsEmpty { get => DigsLeft == 0; }
+
+        public DiggableType Type { get; protected set; }
+        
+        public ReducedData Reduce(int value)
+        {
+            var reducedVal = DigsLeft - value;
+            var preReduceType = Type;
+            DigsLeft = reducedVal > 0 ? reducedVal : 0;
+            return new ReducedData(preReduceType, DigsLeft, initialDigsLeft);     
+        }
 
         public override string ToString() => "   |   " + Type.ToString() + "    |     Digs left: " + DigsLeft;
     }

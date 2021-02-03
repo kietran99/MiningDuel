@@ -1,47 +1,22 @@
 ﻿using UnityEngine;
 using Mirror;
 using MD.Character.Animation;
+using MD.Diggable.Core;
 
 namespace MD.Character
 {
     public class DigAction : NetworkBehaviour
     {
         [SerializeField]
-        private int power = 1;
+        protected int power = 1;
 
-        #region FIELDS
-        private float digCooldown = .1f;
-        private float nextDigTime = 0f;
-        private IMapManager mapManager = null;
-        private Player player = null;
-        #endregion
+        public int Power => power;
 
-        #region  PROPERTIES
-        private IMapManager MapManager
-        {
-            get
-            {
-                if (mapManager != null) return mapManager;
-                ServiceLocator.Resolve<IMapManager>(out mapManager);
-                return mapManager;
-            }
-        }
-
-        private Player Player
-        {
-            get
-            {
-                if (player != null) return player;
-                return player = GetComponent<Player>();
-            }
-        }
-
-        public int Power { get => power; }
-        #endregion
+        protected virtual bool IsPlayer => true;
 
         public override void OnStartAuthority()
         {
-            ListenToEvents();
+            StartListeningToEvents();
         }
 
         private void OnDestroy()
@@ -49,7 +24,7 @@ namespace MD.Character
             StopListeningToEvents();
         }
 
-        protected virtual void ListenToEvents()
+        protected virtual void StartListeningToEvents()
         {
             EventSystems.EventManager.Instance.StartListening<DigAnimEndData>(HandleDigAnimEnd);
         }
@@ -59,32 +34,22 @@ namespace MD.Character
             EventSystems.EventManager.Instance.StopListening<DigAnimEndData>(HandleDigAnimEnd);
         }
 
-        protected void HandleDigAnimEnd(DigAnimEndData data) => Dig();
-       
-        protected void Dig()
-        {
-            if (Time.time < nextDigTime) return;
-
-            nextDigTime = Time.time + digCooldown;
-            CmdDig();
-        }
+        protected void HandleDigAnimEnd(DigAnimEndData data) => CmdDig();
 
         [Command]
-        public void CmdDig()
+        protected virtual void CmdDig()
         {
-            if (Player != null)
-            {
-                Player.SetCanMove(false);
-                Invoke(nameof(EnableCanMove), digCooldown);
-            }
-
-            MapManager.DigAt(netIdentity, transform.position);
-        }
-        
-        [Server]
-        public void EnableCanMove()
-        {
-            Player.SetCanMove(true);
+            ServiceLocator
+                .Resolve<IDiggableGenerator>()
+                .Match(
+                    unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
+                    diggableGenerator => 
+                        diggableGenerator.DigAt(
+                            connectionToClient.identity, 
+                            Mathf.FloorToInt(transform.position.x), 
+                            Mathf.FloorToInt(transform.position.y), 
+                            power)                
+                );       
         }
     }
 }

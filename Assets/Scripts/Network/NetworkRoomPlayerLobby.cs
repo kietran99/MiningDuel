@@ -64,7 +64,6 @@ namespace MD.UI
         {
             CmdSetDisplayName(PlayerNameInput.DisplayName);
             lobbyUI.SetActive(true);
-            if (!isHost) return;
         }
 
         public string GetLocalIPAddress()
@@ -140,6 +139,7 @@ namespace MD.UI
         {
             if (netIdentity == room.RoomPlayers[0].netIdentity)
             {
+                EventSystems.EventManager.Instance.TriggerEvent(new RoomWindowToggleData(false));
                 room.StopHost();
             }
             else
@@ -177,7 +177,7 @@ namespace MD.UI
 
             if (Room.IsReadyToStart())
             {
-                room.StartLobby();
+                room.StartGame();
             }
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace Functional.Type
 {
-    public class Either<TError, TSuccess>
+    public class Either<TError, TSuccess> where TError : IError
     {
         private readonly TError error;
         private readonly TSuccess success;
@@ -36,6 +36,14 @@
         public T Match<T>(System.Func<TError, T> errorHandler, System.Func<TSuccess, T> successHandler)
         {
             return isError ? errorHandler(error) : successHandler(success);
+        }
+
+        public Either<TError, TSuccessOut> Map<TSuccessOut>(System.Func<TSuccess, TSuccessOut> fn) 
+        {
+            return Match<Either<TError, TSuccessOut>>(
+                err => err,
+                success => fn(success)
+            );
         }
     }
 }

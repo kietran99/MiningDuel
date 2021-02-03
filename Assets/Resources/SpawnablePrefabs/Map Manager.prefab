@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1571699010566400976}
+  - component: {fileID: -6368742004232275429}
   - component: {fileID: 3452437996051496441}
   - component: {fileID: 7984152198331061256}
-  - component: {fileID: -6368742004232275429}
   - component: {fileID: 8245718662862826771}
   m_Layer: 0
   m_Name: Map Manager
@@ -35,6 +35,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-6368742004232275429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3298901094621136450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0
 --- !u!114 &3452437996051496441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50,7 +66,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   gemContainer: {fileID: 797171552380202156}
-  generateZoneSideLength: 4
+  genZoneSideLength: 4
   minAmountPerZone: 2
   maxAmountPerZone: 4
   generateDelay: 2
@@ -74,22 +90,6 @@ MonoBehaviour:
   normalBombPrefab: {fileID: 4262454349504806188, guid: bfa835d739a03c545a90d6eae9f643f1,
     type: 3}
   maxAmountPerZone: 5
---- !u!114 &-6368742004232275429
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3298901094621136450}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneId: 0
-  serverOnly: 0
-  m_AssetId: 
-  hasSpawned: 0
 --- !u!114 &8245718662862826771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3298901094621136450}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9c907a8f07d49443944b1e52facb702, type: 3}
+  m_Script: {fileID: 11500000, guid: bd716a6285b95484a87583ad57b5a941, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0

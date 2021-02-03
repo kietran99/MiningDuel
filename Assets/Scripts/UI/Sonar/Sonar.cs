@@ -1,23 +1,22 @@
 ﻿using MD.Character;
 using MD.Diggable;
-using MD.Map.Core;
 using MD.Diggable.Core;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using Functional;
 
 namespace MD.UI
 {
     public class Sonar : MonoBehaviour
     {
+        private struct OutOfScannableRangeError : IError
+        {
+            public string Message => "Out of Scannable Range";
+        }
+
         #region SERIALIZE FIELDS
-        [SerializeField]
-        private bool shouldShowDebugTiles = false;
-
-        // [SerializeField]
-        // private bool isTutorial = false;
-
         [SerializeField]
         private int scanRange = 3;
 
@@ -25,94 +24,105 @@ namespace MD.UI
         private RectTransform symbolContainer = null;
 
         [SerializeField]
-        private GameObject symbolPoolObject = null;
-
-        [SerializeField]
-        private GameObject tilePoolObject = null;        
+        private GameObject symbolPoolObject = null;  
         #endregion
 
         #region FIELDS
         private Vector2[] relScannablePos;
-        private IMapManager genManager;
         private Vector2 lastCenterPos = Vector2.zero;
-        //private bool firstScan = true;
         private float symbolSize;
-        private IObjectPool tilePool;
         private IObjectPool symbolPool;
-        #endregion
-
-        private IMapManager GenManager
-        {
-            get
-            {
-                if (genManager != null) return genManager;
-                ServiceLocator.Resolve<IMapManager>(out genManager);
-                return genManager;
-            }
-        }
+        private DiggableGeneratorCommunicator digGenComm;
+        #endregion       
 
         void Start()
         {
-            symbolPool = symbolPoolObject.GetComponent<IObjectPool>();
-            symbolSize = symbolContainer.rect.width / (2 * scanRange + 1);
-            tilePool = tilePoolObject.GetComponent<IObjectPool>();
-            relScannablePos = GenSquarePositions().ToArray();            
-            ListenToEvents();
+            StartCoroutine(SetupOnDigGenCommInit());
+        }
 
-            if (shouldShowDebugTiles)
-            {
-                relScannablePos.Map(pos => tilePool.Pop().transform.position
-                = new Vector3(MapConstants.SPRITE_OFFSET.x + pos.x, MapConstants.SPRITE_OFFSET.y + pos.y, 0f));
-            }
+        private System.Collections.IEnumerator SetupOnDigGenCommInit()
+        {
+            bool initDigGenComm = false;
 
-            // if (!isTutorial && genManager == null)
-            // {
-            //     ServiceLocator.Resolve(out genManager);
-            // }
-            
-            if (GenManager != null)
+            while (!initDigGenComm)
             {
-                InitScanArea();
+                ServiceLocator
+                .Resolve<DiggableGeneratorCommunicator>()
+                .Match(
+                    unavailServiceErr => {},
+                    digGenComm => 
+                    {
+                        this.digGenComm = digGenComm;
+                        symbolPool = symbolPoolObject.GetComponent<IObjectPool>();
+                        symbolSize = symbolContainer.rect.width / (2 * scanRange + 1);
+                        relScannablePos = GenSquarePositions().ToArray();            
+                        ListenToEvents();          
+                        InitScanArea();
+
+                        initDigGenComm = true;
+                    }
+                );
+
+                yield return null;
             }
         }
 
+        private void ListenToEvents()
+        {
+            var eventManager = EventSystems.EventManager.Instance;
+            eventManager.StartListening<MoveData>(HandleMoveEvent);
+            eventManager.StartListening<ScanData>(UpdateScanArea);
+            eventManager.StartListening<DiggableSpawnData>(HandleDiggableSpawnEvent);
+            eventManager.StartListening<DiggableRemoveData>(HandleDiggableRemoveEvent);
+        }
+
+        private void OnDestroy()
+        {
+            var eventManager = EventSystems.EventManager.Instance;
+            eventManager.StopListening<MoveData>(HandleMoveEvent);
+            eventManager.StopListening<ScanData>(UpdateScanArea);
+            eventManager.StopListening<DiggableSpawnData>(HandleDiggableSpawnEvent);
+            eventManager.StopListening<DiggableRemoveData>(HandleDiggableRemoveEvent);
+        }
+
+        #region UPDATE SCAN AREA
         private void InitScanArea()
         {
             if (!ServiceLocator.Resolve<Player>(out Player player)) { return; }
 
-            UpdateScanArea(new MoveData(player.transform.position.x, player.transform.position.y));
+            RequestScanArea(player.transform.position.x, player.transform.position.y);
         }
 
-        // private bool flag = false;
-        private void Show(ScanAreaData scanAreaData)
+        private void HandleMoveEvent(MoveData moveData)
         {
-            symbolPool.Reset();
-            for (int i = 0; i < scanAreaData.Tiles.Length; i++)
-            {
-                // if (flag)
-                // {
-                //     // Debug.Log("POS: " + scanAreaData[i].Position + " VALUE: " + scanAreaData[i].Diggable);
-                // }
-                if (scanAreaData[i].Diggable == 0)  continue;
-                GenSymbol(relScannablePos[i], (DiggableType)scanAreaData[i].Diggable);
-            }
-            // flag = false;
+            float deltaX = lastCenterPos.x.DeltaInt(moveData.x);
+            float deltaY = lastCenterPos.y.DeltaInt(moveData.y);
+
+            if (deltaX <= Mathf.Epsilon && deltaY <= Mathf.Epsilon) return;
+
+            lastCenterPos = new Vector2(moveData.x, moveData.y);
+            (float roundedX, float roundedY) = (Mathf.Floor(moveData.x), Mathf.Floor(moveData.y));
+            RequestScanArea(roundedX, roundedY);
         }
-        
-        private void Show(TileData[] tileData)
+
+        private void RequestScanArea(float centerX, float centerY)
         {
+            var scanArea = GetScannablePos(centerX, centerY).ToArray();
+            digGenComm.CmdRequestScanArea(scanArea);
+        }      
 
+        private void UpdateScanArea(ScanData scanData) => Show(scanData.diggableArea);
+
+        private void HandleDiggableSpawnEvent(DiggableSpawnData diggableSpawnData)
+        {            
+            ConvertWorldToScannablePos(diggableSpawnData.x, diggableSpawnData.y)
+                .Match(
+                    OutOfScannableRangeError => {},
+                    scannablePos => PutSymbol(scannablePos, diggableSpawnData.type)
+                );
         }
 
-        private IEnumerable<TileData> ConvertToTileData(ScanTileData[] tileData)
-        {
-            for (int i = 0; i < tileData.Length; i++)
-            {
-                yield return new TileData((DiggableType)tileData[i].Diggable);
-            }
-        }
-
-        private void GenSymbol(Vector2 pos, DiggableType diggableType)
+        private void PutSymbol(Vector2 pos, DiggableType diggableType)
         {
             var symbol = symbolPool.Pop().GetComponent<Image>();
             symbol.rectTransform.sizeDelta = new Vector2(symbolSize, symbolSize);
@@ -120,93 +130,58 @@ namespace MD.UI
             symbol.sprite = DiggableTypeConverter.Convert(diggableType).SonarSprite;
         }
 
-        public void BindScanAreaData(IMapManager genManager)
+        private void HandleDiggableRemoveEvent(DiggableRemoveData diggableRemoveData)
         {
-            this.genManager = genManager;
+            ConvertWorldToScannablePos(diggableRemoveData.x, diggableRemoveData.y)
+                .Match(
+                    outOfScannableRangeError => {},
+                    scannablePos => RemoveSymbolAt(scannablePos.x, scannablePos.y)
+                );
         }
 
-        private void ListenToEvents()
+        private Functional.Type.Either<OutOfScannableRangeError, Vector2> ConvertWorldToScannablePos(float x, float y)
         {
-            var eventManager = EventSystems.EventManager.Instance;
-            eventManager.StartListening<MoveData>(AttemptToUpdateScanArea);
-            eventManager.StartListening<DiggableSpawnData>(UpdateScanArea);
-            eventManager.StartListening<DiggableDestroyData>(UpdateScanArea);
-            // eventManager.StartListening<ProjectileObtainData>(UpdateScanArea);
-        }
+            Vector2 relPos = 
+                new Vector2(
+                    Mathf.Floor(x) - Mathf.Floor(lastCenterPos.x),
+                    Mathf.Floor(y) - Mathf.Floor(lastCenterPos.y)
+                );
 
-        private void OnDestroy()
-        {
-            var eventManager = EventSystems.EventManager.Instance;
-            eventManager.StopListening<MoveData>(AttemptToUpdateScanArea);
-            eventManager.StopListening<DiggableSpawnData>(UpdateScanArea);
-            eventManager.StopListening<DiggableDestroyData>(UpdateScanArea);
-            // eventManager.StopListening<ProjectileObtainData>(UpdateScanArea);
-        }
+            (Vector2 resPos, int idx) = relScannablePos.LookUp(pos => pos.x.IsEqual(relPos.x) && pos.y.IsEqual(relPos.y));
 
-        #region UPDATE SCAN AREA
-        private void AttemptToUpdateScanArea(MoveData moveData)
-        {
-            // if (firstScan)
-            // {
-            //     firstScan = false;
-            //     return;
-            // }
-
-            float deltaX = lastCenterPos.x.DeltaInt(moveData.x);
-            float deltaY = lastCenterPos.y.DeltaInt(moveData.y);
-
-            if (deltaX <= Mathf.Epsilon && deltaY <= Mathf.Epsilon) return;
-
-            lastCenterPos = new Vector2(moveData.x, moveData.y);
-            (float roundedX, float roundedY) = //(moveData.x.Round(), moveData.y.Round());
-            (Mathf.Floor(moveData.x), Mathf.Floor(moveData.y));
-            MoveData roundedMoveData = new MoveData(roundedX, roundedY);
-            UpdateScanArea(roundedMoveData);
-        }
-
-        private void UpdateScanArea(DiggableSpawnData data)
-        {
-            //Debug.Log("World position: " + gemSpawnData.x + ", " + gemSpawnData.y);
-            if (!TryWorldToScannablePos(new Vector2(data.posX, data.posY), out Vector2 scannablePos)) return;
-
-            //Debug.Log("Output: " + scannablePos);
-            GenSymbol(scannablePos, data.diggable.ToDiggable());
-        }
-
-        private bool TryWorldToScannablePos(Vector2 worldPos, out Vector2 scannablePos)
-        {
-            Vector2 relaPos = new Vector2(Mathf.Floor(worldPos.x) - Mathf.Floor(lastCenterPos.x),
-                Mathf.Floor(worldPos.y) - Mathf.Floor(lastCenterPos.y));
-            (Vector2 resPos, int idx) = relScannablePos.LookUp(
-                pos => pos.x.IsEqual(relaPos.x) && pos.y.IsEqual(relaPos.y));
-            scannablePos = resPos;
-            return !idx.Equals(Constants.INVALID);
-        }
-                
-        private void UpdateScanArea(DiggableDestroyData digSuccessData)
-        {
-            if (TryWorldToScannablePos(new Vector2(digSuccessData.posX,digSuccessData.posY), out Vector2 relPos))
+            if (idx.Equals(Constants.INVALID))
             {
-                RemoveSymbolAt(relPos.x,relPos.y);
+                return new OutOfScannableRangeError();
+            }
+
+            return resPos;
+        }    
+
+        private void Show(DiggableType[] diggableArea)
+        {
+            symbolPool.Reset();
+            
+            for (int i = 0; i < diggableArea.Length; i++)
+            {
+                if (diggableArea[i].Equals(DiggableType.EMPTY)) continue;
+
+                PutSymbol(relScannablePos[i], diggableArea[i]);
             }
         }
 
-        private void UpdateScanArea(MoveData moveData)
+        private IEnumerable<Vector2Int> GetScannablePos(float charX, float charY)
         {
-            //Debug.Log(moveData.x + ", " + moveData.y);
-            if (shouldShowDebugTiles) ShowDebugArea(moveData);
-            Vector2[] scanArea = GetScannablePos(moveData.x, moveData.y).ToArray();
-            Show(GenManager.GetScanAreaData(scanArea));
+            foreach (var pos in relScannablePos)
+            {
+                yield return new Vector2Int(Mathf.FloorToInt(charX + pos.x), Mathf.FloorToInt(charY + pos.y));
+            }
         }
 
         private void RemoveSymbolAt(float x, float y)
         {                          
             Vector2 pos = GetSymbolPos(x,y);
-            // (GameObject item, int idx) = symbolPool.LookUp(symbol => 
-            //     symbol.transform.position.x.IsEqual(pos.x) && 
-            //     symbol.transform.position.y.IsEqual(pos.y));
-
             (GameObject item, int idx) = symbolPool.LookUp(symbol => isSymbolAt(symbol,pos));
+
             if (idx.Equals(Constants.INVALID)) return;
             
             symbolPool.Push(item.gameObject);
@@ -214,7 +189,6 @@ namespace MD.UI
 
         private bool isSymbolAt(GameObject symbol, Vector2 pos)
         {
-
             if (Mathf.Abs(symbol.transform.position.x- pos.x) < .1f
              && Mathf.Abs(symbol.transform.position.y - pos.y) <.1f)
                 return true;
@@ -226,22 +200,6 @@ namespace MD.UI
             return symbolContainer.position + new Vector3(x * symbolSize, y * symbolSize, 0f);
         }
         #endregion
-
-        private void ShowDebugArea(MoveData moveData)
-        {
-            tilePool.Reset();
-            relScannablePos.Map(pos => tilePool.Pop().transform.position =
-            new Vector3(moveData.x + pos.x + MapConstants.SPRITE_OFFSET.x,
-            moveData.y + pos.y + MapConstants.SPRITE_OFFSET.y, 0f));
-        }
-
-        private IEnumerable<Vector2> GetScannablePos(float charX, float charY)
-        {
-            foreach (var pos in relScannablePos)
-            {
-                yield return new Vector2(charX + pos.x, charY + pos.y);
-            }
-        }
                 
         #region GENERATE SCANNABLE POSITIONS
         private IEnumerable<Vector2> GenSquarePositions()

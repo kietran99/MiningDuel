@@ -24,10 +24,12 @@ namespace MD.Character
             playerId = GetComponent<NetworkIdentity>().netId;
         }
 
-        public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage, int bombType)
+        [Server]
+        public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage, int projectileType)
         {
-            int dropAmount = Mathf.FloorToInt(scoreManager.CurrentScore * gemDropPercentage * .01f);
+            int dropAmount = Mathf.FloorToInt(scoreManager.CurrentMultiplier * scoreManager.CurrentScore * gemDropPercentage * .01f);
             EventSystems.EventManager.Instance.TriggerEvent(new ExplodedData(playerId, dropAmount));
+            Debug.Log("Drop Amount: " + dropAmount);
 
             for (int i = 0; i < dropAmount; i++)
             {

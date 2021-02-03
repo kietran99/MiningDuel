@@ -4,8 +4,7 @@ using Mirror;
 
 namespace MD.Character
 {
-    [RequireComponent(typeof(Rigidbody2D))]
-    [RequireComponent(typeof(Player))]
+    [RequireComponent(typeof(Rigidbody2D), typeof(Player))]
     public class MoveAction : NetworkBehaviour
     {
         [SerializeField]
@@ -45,6 +44,7 @@ namespace MD.Character
             EventSystems.EventManager.Instance.TriggerEvent(new JoystickDragData(new Vector2(moveX, moveY)));
 #endif
             if (moveVect.Equals(Vector2.zero) || !Player.CanMove) return;
+            
             MoveCharacter(moveVect.x, moveVect.y);
         }
 
@@ -62,7 +62,9 @@ namespace MD.Character
         private void LateUpdate()
         {
             if (!isLocalPlayer) return;
+
             if (moveVect.Equals(Vector2.zero) || !Player.CanMove) return;
+
             EventSystems.EventManager.Instance.TriggerEvent(new MoveData(rigidBody.position.x, rigidBody.position.y));
         }
         

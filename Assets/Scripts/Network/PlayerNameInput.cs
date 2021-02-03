@@ -13,32 +13,46 @@ public class PlayerNameInput : MonoBehaviour
     [SerializeField]
     private Text shownPlayerNameText = null;
 
+    [SerializeField]
+    private GameObject Mask = null;
+
     public static string DisplayName { get; private set; }
 
-    private const string PLAYER_PREF_NAME_KEY = "PlayerName";
+    public const string PLAYER_PREF_NAME_KEY = "PlayerName";
 
-    private void Start() => SetUpInputField();
-
-    private void SetUpInputField()
+    public void SetActiveNameInput(bool status)
     {
-        if (!PlayerPrefs.HasKey(PLAYER_PREF_NAME_KEY)) { return; }
-
-        string defaultName = PlayerPrefs.GetString(PLAYER_PREF_NAME_KEY);
-
-        nameInputField.text = defaultName;
-
-        SetPlayerName(defaultName);
+        Mask.gameObject.SetActive(status);
+        gameObject.SetActive(status);
+        continueButton.gameObject.SetActive(status);
+        if (status) 
+        {
+            nameInputField.text = shownPlayerNameText.text;
+            continueButton.interactable = !string.IsNullOrEmpty(nameInputField.text);
+        }
     }
 
-    public void SetPlayerName(string name)
+    private void Start() 
     {
-        continueButton.interactable = !string.IsNullOrEmpty(name);
+        string currentName = PlayerPrefs.GetString(PlayerNameInput.PLAYER_PREF_NAME_KEY);
+        if(!string.IsNullOrEmpty(currentName))
+        {
+            shownPlayerNameText.text = currentName;
+            SetActiveNameInput(false);
+        } 
+    }
+    // private void SetUpInputField(string currentName) 
+    // {
+    //     nameInputField.text = currentName;
+    // }
+    public void OnChangeInput()
+    {
+        continueButton.interactable = !string.IsNullOrEmpty(nameInputField.text);
     }
 
     public void SavePlayerName()
     {
         DisplayName = nameInputField.text;
-        
         PlayerPrefs.SetString(PLAYER_PREF_NAME_KEY, DisplayName);
         gameObject.SetActive(false);
         shownPlayerNameText.text = DisplayName;
