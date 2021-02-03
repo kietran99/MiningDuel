@@ -37,7 +37,7 @@ namespace MD.AI
         protected override void CmdDig()
         {
             ServiceLocator
-                .Resolve<Map.Core.IDiggableGenerator>()
+                .Resolve<Diggable.Core.IDiggableGenerator>()
                 .Match(
                     unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
                     diggableGenerator => 

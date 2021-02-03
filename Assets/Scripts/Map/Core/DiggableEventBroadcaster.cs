@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Mirror;
 
-namespace MD.Map.Core
+namespace MD.Diggable.Core
 {
     public class DiggableEventBroadcaster
     {

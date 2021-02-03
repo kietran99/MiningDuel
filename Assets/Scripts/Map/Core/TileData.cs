@@ -1,6 +1,4 @@
-﻿using MD.Diggable.Core;
-
-namespace MD.Map.Core
+﻿namespace MD.Diggable.Core
 {
     public class TileData : ITileData
     {

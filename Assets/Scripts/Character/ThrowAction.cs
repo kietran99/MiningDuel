@@ -27,7 +27,7 @@ namespace MD.Character
 
         private class FreeThrowState : IState
         {
-            private Vector2 lastJoystickDirection;
+            private Vector2 lastJoystickDirection = Vector2.zero;
 
             public void OnStateEnter()
             {
@@ -41,6 +41,8 @@ namespace MD.Character
 
             private void UpdateJoystickLastDirection(JoystickDragData joystickDragData)
             {
+                if (joystickDragData.InputDirection.Equals(Vector2.zero)) return;
+
                 lastJoystickDirection = joystickDragData.InputDirection;
             }
 

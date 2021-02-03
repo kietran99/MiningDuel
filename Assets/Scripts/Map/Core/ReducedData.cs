@@ -1,4 +1,4 @@
-﻿namespace MD.Map.Core
+﻿namespace MD.Diggable.Core
 {
     public struct ReducedData
     {

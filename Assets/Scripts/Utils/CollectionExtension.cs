@@ -139,4 +139,16 @@ public static class CollectionExtension
 
         return result.ToArray();
     }
+
+    public static T2[] Map<T1, T2>(this IEnumerable<T1> iter, Func<T1, T2> function)
+    {
+        var result = new List<T2>();
+
+        foreach (var item in iter)
+        {
+            result.Add(function(item));
+        }
+
+        return result.ToArray();
+    }
 }

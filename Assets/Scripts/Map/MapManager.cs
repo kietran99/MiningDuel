@@ -8,7 +8,7 @@ using Mirror;
 using MD.Character;
 using UnityEngine.SceneManagement;
 using MD.AI;
-using MD.Map.Core;
+using MD.Diggable.Core;
 
 public static class MapDataTypeExtensions
 {
@@ -228,7 +228,7 @@ public class MapManager : NetworkBehaviour, IMapManager
         int areaWidth = mapSize.x / genZoneSideLength;
         int areaHeight = mapSize.y / genZoneSideLength;
  
-        var tiles = new List<(Vector2Int, MD.Map.Core.ITileData)>();
+        var tiles = new List<(Vector2Int, MD.Diggable.Core.ITileData)>();
 
         for (int y = 0; y < genZoneSideLength; y++)
         {

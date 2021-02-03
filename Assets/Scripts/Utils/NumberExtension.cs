@@ -2,12 +2,12 @@
 
 public static class NumberExtension
 {
-    public static float Round(this float floatNum)
+    public static int Round(this float floatNum)
     {
         bool isPositive = floatNum > 0f;
         float delta = floatNum - Mathf.Floor(floatNum);
         //bool shouldRoundUp = de;
-        return delta > .45f ? Mathf.Ceil(floatNum) : Mathf.Floor(floatNum);
+        return delta > .45f ? Mathf.CeilToInt(floatNum) : Mathf.FloorToInt(floatNum);
     }
 
     public static float DeltaInt(this float num_1, float num_2)

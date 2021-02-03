@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MD.Map.Core
+namespace MD.Diggable.Core
 {
     public class BotDiggableEventHandler
     {
@@ -29,7 +29,7 @@ namespace MD.Map.Core
             bot.SpawnProjectile(type);
         }
 
-        public void HandleDiggableDugEvent(MD.AI.PlayerBot bot, MD.Map.Core.ReducedData reducedData)
+        public void HandleDiggableDugEvent(MD.AI.PlayerBot bot, ReducedData reducedData)
         {
             eventHandlerDict[reducedData.type](bot, reducedData.max, reducedData.type);
         }

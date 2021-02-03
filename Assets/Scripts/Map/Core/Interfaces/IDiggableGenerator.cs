@@ -2,7 +2,7 @@
 using Functional.Type;
 using System;
 
-namespace MD.Map.Core
+namespace MD.Diggable.Core
 {
     public interface IDiggableGenerator
     {
@@ -14,6 +14,7 @@ namespace MD.Map.Core
         Action<Diggable.DiggableSpawnData> DiggableSpawnEvent { get; set; }
 
         void Populate(Vector2Int[] tilePositions);
+        SonarTileData[] InitSonarTileData { get; }
         void DigAt(Mirror.NetworkIdentity digger, int x, int y, int power);
         void BotDigAt(MD.AI.PlayerBot digger, int x, int y, int power);
         DiggableType[] GetDiggableArea(Vector2Int[] positions);

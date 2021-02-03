@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Functional.Type;
 using System.Collections.ObjectModel;
 
-namespace MD.Map.Core
+namespace MD.Diggable.Core
 {
     public struct InvalidTileError : Functional.IError
     {

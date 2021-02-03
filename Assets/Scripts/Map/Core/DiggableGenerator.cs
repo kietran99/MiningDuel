@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-namespace MD.Map.Core
+namespace MD.Diggable.Core
 {
     [RequireComponent(typeof(ProjectileSpawner))]
     public class DiggableGenerator : NetworkBehaviour, IDiggableGenerator
@@ -44,6 +44,8 @@ namespace MD.Map.Core
         public Action<Diggable.DiggableSpawnData> DiggableSpawnEvent { get; set; }
         #endregion
 
+        private SonarTileData[] initSonarTileData;
+
         public override void OnStartServer()
         {
             ServiceLocator.Register((IDiggableGenerator) this);
@@ -52,12 +54,24 @@ namespace MD.Map.Core
             var tilePositions = GenerateDefaultMap();
             tileGraph = new TileGraph(tilePositions);
             diggableData = new DiggableData(MakeEmptyTiles(tilePositions));
+            FillInitSonarTileData(tilePositions);
             System.Linq.Enumerable.Range(0, startSpawnAmount).ForEach(_ => RandomSpawn());
-            // diggableData.Log();
-            // tileGraph.Log();
             botEventHandler = new BotDiggableEventHandler();
             StartCoroutine(RandomSpawnOverTime());
         }
+
+        private void FillInitSonarTileData(Vector2Int[] tilePositions)
+        {
+            initSonarTileData = new SonarTileData[tilePositions.Length];
+            for (int i = 0; i < initSonarTileData.Length; i++) 
+            {
+                initSonarTileData[i].x = tilePositions[i].x;
+                initSonarTileData[i].y = tilePositions[i].y;
+                initSonarTileData[i].type = DiggableType.EMPTY;
+            }
+        }
+
+        public SonarTileData[] InitSonarTileData => initSonarTileData;
 
         private void InitSortedNodeBasedSpawnTable()
         {
@@ -118,12 +132,7 @@ namespace MD.Map.Core
             var randEmptyPos = tileGraph.RandomTile();
             var randDiggableType = nodeBasedSpawnTable.RandomSortedList();
             // Debug.Log("Spawn: " + randDiggableType + " at " + randEmptyPos);
-            tileGraph.OnDiggableSpawn(randEmptyPos);
-            SpawnAt(randEmptyPos, randDiggableType);
-            eventBroadcaster.TriggerDiggableSpawnEvent(randEmptyPos.x, randEmptyPos.y, randDiggableType);        
-            //diggableData.Log();
-            //tileGraph.Log();
-            //tileGraph.LogExpectedRates();
+            SpawnAt(randEmptyPos, randDiggableType);           
         }
 
         public void Populate(Vector2Int[] tilePositions)
@@ -185,7 +194,14 @@ namespace MD.Map.Core
         {
             diggableData.GetAccessAt(pos.x, pos.y).Match(
                 invalidTileErr => Debug.Log("Invalid Tile"),
-                access => diggableData.Spawn(access, type)
+                access => 
+                {
+                    tileGraph.OnDiggableSpawn(pos);
+                    diggableData.Spawn(access, type);
+                    eventBroadcaster.TriggerDiggableSpawnEvent(pos.x, pos.y, type); 
+                    (var _, var idx) = initSonarTileData.LookUp(tileData => tileData.x.Equals(pos.x) && tileData.y.Equals(pos.y));   
+                    initSonarTileData[idx].type = type;
+                }
             );
         }
 

@@ -24,17 +24,13 @@ namespace MD.UI
         private RectTransform symbolContainer = null;
 
         [SerializeField]
-        private GameObject symbolPoolObject = null;
-
-        [SerializeField]
-        private GameObject tilePoolObject = null;        
+        private GameObject symbolPoolObject = null;  
         #endregion
 
         #region FIELDS
         private Vector2[] relScannablePos;
         private Vector2 lastCenterPos = Vector2.zero;
         private float symbolSize;
-        private IObjectPool tilePool;
         private IObjectPool symbolPool;
         private DiggableGeneratorCommunicator digGenComm;
         #endregion       
@@ -59,7 +55,6 @@ namespace MD.UI
                         this.digGenComm = digGenComm;
                         symbolPool = symbolPoolObject.GetComponent<IObjectPool>();
                         symbolSize = symbolContainer.rect.width / (2 * scanRange + 1);
-                        tilePool = tilePoolObject.GetComponent<IObjectPool>();
                         relScannablePos = GenSquarePositions().ToArray();            
                         ListenToEvents();          
                         InitScanArea();

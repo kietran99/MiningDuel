@@ -3,7 +3,7 @@ using UnityEngine;
 using Mirror;
 using MD.Character;
 using System.Linq;
-using MD.Map.Core;
+using MD.Diggable.Core;
 
 namespace MD.AI
 {
