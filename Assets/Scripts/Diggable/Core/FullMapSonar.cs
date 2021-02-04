@@ -33,7 +33,6 @@ namespace MD.Diggable.Core
                     player => 
                     {
                         playerTransform = player.transform;
-                        ListenToEvents();   
                         tilePool = Instantiate(tilePoolPrefab).GetComponent<IObjectPool>();                                   
                         CmdRequestScanData();
                         CmdSubscribeDiggableEvents();
@@ -41,15 +40,7 @@ namespace MD.Diggable.Core
                 );
         }
 
-        public override void OnStopAuthority()
-        {
-            CmdUnsubscribeDiggableEvents();
-        }
-
-        private void ListenToEvents()
-        {
-            var eventConsumer = gameObject.AddComponent<EventSystems.EventConsumer>();
-        }
+        public override void OnStopAuthority() => CmdUnsubscribeDiggableEvents();
 
         [Command]
         private void CmdRequestScanData()
