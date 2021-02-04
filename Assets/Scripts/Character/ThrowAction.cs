@@ -71,7 +71,10 @@ namespace MD.Character
 
         #region SERIALIZED FIELDS
         [SerializeField]
-        protected GameObject targetTrackerPrefab = null;
+        private Player player = null;
+
+        [SerializeField]
+        private GameObject targetTrackerPrefab = null;
 
         [SerializeField]
         protected float basePower = 100f;
@@ -89,7 +92,10 @@ namespace MD.Character
 
         public override void OnStartLocalPlayer()
         {
-            GetComponent<Player>().OnSceneLoaded += SetupStates;
+            StartCoroutine(HandleGameplaySceneLoaded());
+            handFreeState = new HandFreeState();
+            freeThrowState = new FreeThrowState();
+            currentState = handFreeState;
             chargeTimeAsWaitForSeconds = new WaitForSecondsRealtime(chargeTime);
             EventSystems.EventManager.Instance.StartListening<MD.UI.ThrowInvokeData>(HandleThrowInvokeData);        
         }
@@ -98,8 +104,32 @@ namespace MD.Character
         {
             if (!isLocalPlayer) return;
 
-            GetComponent<Player>().OnSceneLoaded -= SetupStates;
             EventSystems.EventManager.Instance.StopListening<MD.UI.ThrowInvokeData>(HandleThrowInvokeData);
+        }
+
+        private System.Collections.IEnumerator HandleGameplaySceneLoaded()
+        {
+            var gameplaySceneLoaded = false;
+            var networkManager = NetworkManager.singleton as NetworkManagerLobby;
+
+            while (!gameplaySceneLoaded)
+            {
+                yield return null;
+
+                if (!UnityEngine.SceneManagement.SceneManager.GetActiveScene().path.Equals(networkManager.GameplayScene)) continue;
+
+                targetTracker = Instantiate(targetTrackerPrefab).GetComponent<TargetTracker>();
+                trackState = new TrackState(transform, targetTracker);
+
+                gameplaySceneLoaded = true;
+            }
+        }
+
+        private void ShiftState(IState state)
+        {
+            currentState.OnStateExit();
+            currentState = state;
+            currentState.OnStateEnter();
         }
 
         private void HandleThrowInvokeData(MD.UI.ThrowInvokeData _) => StartCoroutine(ChargedThrow());
@@ -112,24 +142,8 @@ namespace MD.Character
 
         public virtual void SetHoldingProjectile(ProjectileLauncher proj) 
         {
-            ShiftState(freeThrowState);
+            if (isLocalPlayer) ShiftState(freeThrowState);
             holdingProjectile = proj;
-        }
-
-        private void SetupStates() 
-        {
-            targetTracker = Instantiate(targetTrackerPrefab).GetComponent<TargetTracker>();
-            handFreeState = new HandFreeState();
-            freeThrowState = new FreeThrowState();
-            trackState = new TrackState(transform, targetTracker);
-            currentState = handFreeState;
-        }
-
-        private void ShiftState(IState state)
-        {
-            currentState.OnStateExit();
-            currentState = state;
-            currentState.OnStateEnter();
         }
 
         private System.Collections.IEnumerator ChargedThrow()

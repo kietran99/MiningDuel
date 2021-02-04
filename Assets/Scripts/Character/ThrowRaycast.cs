@@ -10,7 +10,6 @@ namespace MD.Character
         private bool shouldRaycast = false;
         private ThrowAction throwAction;
 
-        //void Start()
         public override void OnStartLocalPlayer()
         {
             throwAction = GetComponent<ThrowAction>();
@@ -31,7 +30,7 @@ namespace MD.Character
                 return;
             }
 
-            Debug.DrawLine(transform.position, joystickDragData.InputDirection * 200f);
+            // Debug.DrawLine(transform.position, joystickDragData.InputDirection * 200f);
             var hit = Physics2D.Raycast(transform.position, joystickDragData.InputDirection, Mathf.Infinity);
             var target = hit.collider;
 

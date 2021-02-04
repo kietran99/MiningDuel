@@ -29,7 +29,6 @@ namespace MD.Character
         {
             int dropAmount = Mathf.FloorToInt(scoreManager.CurrentMultiplier * scoreManager.CurrentScore * gemDropPercentage * .01f);
             EventSystems.EventManager.Instance.TriggerEvent(new ExplodedData(playerId, dropAmount));
-            Debug.Log("Drop Amount: " + dropAmount);
 
             for (int i = 0; i < dropAmount; i++)
             {

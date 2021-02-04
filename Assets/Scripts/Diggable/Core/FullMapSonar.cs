@@ -23,6 +23,9 @@ namespace MD.Diggable.Core
 
         public override void OnStartAuthority()
         {
+            GetComponent<SpriteMask>().enabled = true;
+            GetComponent<SpriteRenderer>().enabled = true;
+
             ServiceLocator
                 .Resolve<MD.Character.Player>()
                 .Match(
@@ -97,8 +100,8 @@ namespace MD.Diggable.Core
                     unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
                     digGen => 
                     {
-                        digGen.DiggableDestroyEvent     += RpcHandleDiggableDestroyEvent;
-                        digGen.DiggableSpawnEvent       += RpcHandleDiggableSpawnEvent;
+                        digGen.DiggableDestroyEvent     += TargetHandleDiggableDestroyEvent;
+                        digGen.DiggableSpawnEvent       += TargetHandleDiggableSpawnEvent;
                     }
                 );
         }
@@ -112,14 +115,14 @@ namespace MD.Diggable.Core
                     unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
                     digGen => 
                     {
-                        digGen.DiggableDestroyEvent     -= RpcHandleDiggableDestroyEvent;
-                        digGen.DiggableSpawnEvent       -= RpcHandleDiggableSpawnEvent;
+                        digGen.DiggableDestroyEvent     -= TargetHandleDiggableDestroyEvent;
+                        digGen.DiggableSpawnEvent       -= TargetHandleDiggableSpawnEvent;
                     }
                 );
         }
 
-        [ClientRpc]
-        private void RpcHandleDiggableDestroyEvent(DiggableRemoveData diggableRemoveData)
+        [TargetRpc]
+        private void TargetHandleDiggableDestroyEvent(DiggableRemoveData diggableRemoveData)
         {
             var spawnPos = new Vector2Int(diggableRemoveData.x, diggableRemoveData.y);
 
@@ -133,8 +136,8 @@ namespace MD.Diggable.Core
             tileDataDict.Add(spawnPos, renderer);
         }
 
-        [ClientRpc]
-        private void RpcHandleDiggableSpawnEvent(DiggableSpawnData diggableSpawnData)
+        [TargetRpc]
+        private void TargetHandleDiggableSpawnEvent(DiggableSpawnData diggableSpawnData)
         {
             var spawnPos = new Vector2Int(diggableSpawnData.x, diggableSpawnData.y);
             var sprite = GetSonarSprite(diggableSpawnData.type);

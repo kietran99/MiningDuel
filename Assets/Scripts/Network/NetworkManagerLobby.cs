@@ -42,6 +42,7 @@ namespace MD.UI
         #endregion
 
         #region FIELDS
+        public string GameplayScene => gamePlayScene;
         public List<GameObject> DontDestroyOnLoadObjects = new List<GameObject>();
         private Player networkPlayerPrefab = null;
         public List<NetworkRoomPlayerLobby> RoomPlayers { get; } = new List<NetworkRoomPlayerLobby>();
@@ -237,7 +238,6 @@ namespace MD.UI
                 return;
             }
             
-            Players.ForEach(player => player.OnSceneLoaded?.Invoke());
             Players.ForEach(player => SpawnSonar(player.connectionToClient));            
             Players.ForEach(player => SpawnDiggableGeneratorCommunicator(player.connectionToClient));            
             //TODO check if all players loaded scene

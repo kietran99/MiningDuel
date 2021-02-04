@@ -2,29 +2,11 @@
 
 namespace MD.Character
 {
-    public struct NonTargetError : Functional.IError
-    {
-        public string Message => "No Target is being Tracked";
-    }
-
     [RequireComponent(typeof(SpriteRenderer))]
     public class TargetTracker : MonoBehaviour
     {
         private Transform targetTransform;
         private SpriteRenderer spriteRenderer;
-
-        // public Functional.Type.Either<NonTargetError, Vector3> TargetPosition 
-        // {
-        //     get
-        //     {
-        //         if (targetTransform == null)
-        //         {
-        //             return new NonTargetError();
-        //         }
-
-        //         return targetTransform.position;
-        //     }
-        // }
 
         public Vector2 TargetPosition => targetTransform.position;
 
