@@ -66,17 +66,21 @@ namespace PathFinding
         public List<Node> GetWalkableNeighbourNodes(Vector2Int nodeIndex)
         {
             List<Node> result = new List<Node>();
-            for (int x = nodeIndex.x -1; x<= nodeIndex.x + 1; ++x)
-            {
-                if (x < 0 || x>= width) continue;
-                for (int y = nodeIndex.y -1;y<= nodeIndex.y +1; ++y)
-                {
-                    if (y <0 || y>= height) continue;
-                    if (x == nodeIndex.x && y== nodeIndex.y) continue;
+            // for (int x = nodeIndex.x -1; x<= nodeIndex.x + 1; ++x)
+            // {
+            //     if (x < 0 || x>= width) continue;
+            //     for (int y = nodeIndex.y -1;y<= nodeIndex.y +1; ++y)
+            //     {
+            //         if (y <0 || y>= height) continue;
+            //         if (x == nodeIndex.x && y== nodeIndex.y) continue;
 
-                    if (CanWalk(nodeIndex.x,nodeIndex.y,x,y)) result.Add(grid[x,y]);
-                }
-            }
+            //         if (CanWalk(nodeIndex.x,nodeIndex.y,x,y)) result.Add(grid[x,y]);
+            //     }
+            // }
+            if (CanWalk(nodeIndex.x,nodeIndex.y,nodeIndex.x,nodeIndex.y+1)) result.Add(grid[nodeIndex.x,nodeIndex.y+1]);
+            if (CanWalk(nodeIndex.x,nodeIndex.y,nodeIndex.x+1,nodeIndex.y)) result.Add(grid[nodeIndex.x +1,nodeIndex.y]);
+            if (CanWalk(nodeIndex.x,nodeIndex.y,nodeIndex.x,nodeIndex.y-1)) result.Add(grid[nodeIndex.x,nodeIndex.y-1]);
+            if (CanWalk(nodeIndex.x,nodeIndex.y,nodeIndex.x-1,nodeIndex.y)) result.Add(grid[nodeIndex.x -1,nodeIndex.y]);
             return result;
         }
 
@@ -122,6 +126,7 @@ namespace PathFinding
 
         public List<Node> FindPath(Vector2Int start, Vector2Int end)
         {
+            Debug.Log("finding path for index start" +start + " end" + end);
             grid.ResetGrid();
             if (!grid.IsIndexValid(start) || !grid.IsIndexValid(end)) return null;
             Node startNode = grid.GetNode(start);
@@ -173,6 +178,7 @@ namespace PathFinding
                 path.Add(currentNode);
                 currentNode = currentNode.preNode;
             }
+            path.Add(currentNode);
             path.Reverse();
             return path;
         }

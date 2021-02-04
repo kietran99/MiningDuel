@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace MD.AI
 {
+    [RequireComponent(typeof(PlayerBot))]
     public class BotMoveAction : NetworkBehaviour
     {
         public float speed = 3f;
-        private RaycastHit2D[] rayArr = new RaycastHit2D[10];
         // private int resCount = 0;
         // private bool collideLeft = false;
         // private float collideLeftDistance = 0f;
@@ -16,32 +16,52 @@ namespace MD.AI
 
         // private float collideRightDistance = 0f;
         // private bool collideAhead = false;
+        private Vector2Int currentIndex;
+
+        [SerializeField]
+        private int length;
+        [SerializeField]
         private int currentNode;
+
+        [SerializeField]
         private Vector2 currentGoal;
+
         private List<PathFinding.Node> path;
 
-
+        [SerializeField]
         private bool isMoving = false;
 
         private BotAnimator animator;
 
         private AStar aStar;
 
+        private MD.Map.Core.IMapGenerator mapGenerator;
 
-        ///WARNING: HARD CODE A LOT HERE .TODO: GET DATA FROM MAP MANAGER
-        private Vector2Int mapRoot = Vector2Int.one*-12;
+        private int mapWidth, mapHeight;
+
+        private PlayerBot playerBot;
+        private Vector2Int mapRoot;
 
         private float halfTileSize = .5f;
         void Start()
         {
-            aStar = new AStar(24,20,IsWalkable);
+            ServiceLocator.Resolve(out mapGenerator);
+            mapWidth = mapGenerator.MapWidth;
+            mapHeight = mapGenerator.MapHeight;
+            mapRoot = new Vector2Int (-mapWidth/2, -mapHeight/2);
+            aStar = new AStar(mapGenerator.MapWidth,mapGenerator.MapHeight,IsWalkable);
+            playerBot = transform.GetComponent<PlayerBot>();
         }
 
         ///END HARD CODE ZONE 
 
-        private Vector2 IndexToWorld(Vector2Int index)
+        private Vector2 IndexToWorldMiddleSquare(Vector2Int index)
         {
             return index + mapRoot + Vector2.one*halfTileSize;
+        }
+        private Vector2Int IndexToWorld(Vector2Int index)
+        {
+            return index + mapRoot;
         }
 
         private Vector2Int WorldToIndex(Vector2 world)
@@ -51,7 +71,6 @@ namespace MD.AI
 
         private bool IsWalkable(Vector2Int from, Vector2Int to)
         {
-            // if (IsIndexValid(to.x,to.y) && IsIndexValid(from.x,from.y))
             {
                 //if obstacle
                 if (IsObstacle(to)) return false;
@@ -62,56 +81,34 @@ namespace MD.AI
                     if (IsObstacle(new Vector2Int(from.x,to.y)) && IsObstacle(new Vector2Int(to.x, from.y))) return false;
                 }
             }
-            // else
-            // {
-            //     Debug.Log("index out of bound");
-            //     return false;
-            // }
             return true;
         }
         
         private bool IsObstacle(Vector2Int index)
         {
-            return IsContainsObstacle(IndexToWorld(index));
+            return mapGenerator.IsObstacle(index.x, index.y);
         }
-
-    ///GET OBSTACLE AT INDEX WAITING FOR MAP MANAGER API
-    private RaycastHit2D[] hits; //Change this number to however many selectable objects you think you'll have layered on top of eachother. This is for performance reasons.
-    private float rayStart = -1; //Start Raycast from this Z-Coordinate
-    private float rayEnd = 1;  //End Raycast at this Z-Coordinate
-    bool IsContainsObstacle(Vector2 Position)
-    {
-        hits = Physics2D.LinecastAll(new Vector3(Position.x,Position.y,rayStart),new Vector3(Position.x,Position.y,rayEnd));
-        if(hits.Length > 0) //Only function if we actually hit something
-        {
-            foreach (RaycastHit2D hit in hits)
-            {
-                if (hit.transform.CompareTag("obstacle")) return true;
-            }
-        }
-        return false;
-    }
-    
-    //////// 
-
 
         private void MoveBot()
         {
             if (isMoving) 
             {
                 // resCount =  Physics2D.RaycastNonAlloc(transform.position, transform.forward, rayArr);
-                
-                
-                if (Vector2.Distance(currentGoal,transform.position) < .1f)
+                // if (!IsInRightPath()) {
+                //     ReplanPath(IndexToWorld(path[path.Count -1].index));
+                //     return;
+                // }
+                if (Vector2.Distance(currentGoal,transform.position) < .15f)
                 {
                     transform.position = currentGoal;
-                    if (currentNode == path.Count -1)
+                    if (currentNode >= path.Count)
                     {
                         isMoving = false;
                         return;
                     }
                     currentNode++;
-                    currentGoal = IndexToWorld(path[currentNode].index);
+                    currentIndex = path[currentNode].index;
+                    currentGoal = IndexToWorldMiddleSquare(path[currentNode].index);
                 }
 
                 Vector2 moveDir = currentGoal - (Vector2)transform.position;
@@ -120,26 +117,83 @@ namespace MD.AI
             }
         }
 
+        private bool IsInRightPath()
+        {
+            if (WorldToIndex(transform.position) != currentIndex)
+            {
+                Debug.Log("***************" +IndexToWorld(WorldToIndex(transform.position)) +" differs from  "+ IndexToWorld(currentIndex));
+                return false;
+            }
+            return true;
+        }
+
         void FixedUpdate()
         {
             if (!hasAuthority) return;
+            foreach (PathFinding.Node node in path)
+            {
+                Debug.DrawLine(IndexToWorldMiddleSquare(node.index) -Vector2.one/10f,IndexToWorldMiddleSquare(node.index)+Vector2.one/10f, Color.green);
+            }
             MoveBot();
         }
 
         public void SetAnimator(BotAnimator anim) => animator = anim;
         public bool IsMoving => isMoving;
         public void startMoving() => isMoving = true;
-        public bool SetMovePos(Vector2 movePos) 
+        
+        void ReplanPath(Vector2 movePos)
         {
+            if (SetMovePos(movePos))
+            {
+                startMoving();
+            }
+            playerBot.ResetFMS();
+        }
+
+        public bool SetMovePos(Vector2 movePos) 
+        {         
+            Debug.Log("find path for pos " + movePos);
             path = aStar.FindPath(WorldToIndex(transform.position),WorldToIndex(movePos));
             if (path != null)
             {
-                Debug.Log("found path");
+                Debug.Log("found path ");
+                length = path.Count -1;
+                foreach (PathFinding.Node node in path)
+                {
+                    Debug.Log("->"+ IndexToWorld(node.index));
+                }
                 currentNode = 0;
-                currentGoal = IndexToWorld(path[currentNode].index);
+                currentGoal = IndexToWorldMiddleSquare(path[currentNode].index);
                 return true;
             }
+            Debug.Log("not found path");
             return false;
+        }
+
+        private int MAXTRY =20;
+        private int tried;
+        public void StartWandering()
+        {
+            Vector2Int ranDomIndex = Vector2Int.zero;
+            Vector2Int currentPos = WorldToIndex(transform.position);
+            tried =0;
+            while (tried < MAXTRY)
+            {   
+                ranDomIndex.x = Random.Range(0, mapWidth);
+                ranDomIndex.y = Random.Range(0, mapHeight);
+
+                path = aStar.FindPath(currentPos, ranDomIndex);
+                if (path != null)
+                {
+                    currentIndex = currentPos;
+                    length = path.Count -1;
+                    currentNode = 0;
+                    currentGoal = IndexToWorldMiddleSquare(path[currentNode].index);
+                    startMoving();
+                    return;
+                }
+                tried++;
+            }
         }
     }
 }

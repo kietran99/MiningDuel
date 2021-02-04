@@ -60,6 +60,7 @@ namespace MD.AI
 
         public bool Throwable => throwAction.IsHoldingProjectile;
 
+
         void Awake()
         {
             GameObject.FindGameObjectsWithTag("CheckPoint").ForEach(checkPoints.Add);
@@ -91,9 +92,16 @@ namespace MD.AI
             FSM = FSM.Process();
         }
 
+        public void ResetFMS()
+        {
+            FSM =  new PB_Idle(this);
+        }
+
         public void StartMoving() => moveAction.startMoving();
 
         public bool SetMovePosition(Vector2 movePos) => moveAction.SetMovePos(movePos);
+
+        public void StartWandering() => moveAction.StartWandering();
 
         // bool digBomb = false, takeControl = false;
 

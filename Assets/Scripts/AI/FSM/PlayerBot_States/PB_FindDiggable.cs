@@ -20,11 +20,13 @@ namespace MD.AI
             foundLocation =  bot.GetClosestDiggable(out movePos, forBomb);
             if(foundLocation)
             {
+                Debug.Log("Founf: " + (forBomb? "Projectile" : "Gem") + movePos);
                 if (!bot.SetMovePosition(movePos))
                 {
                     foundLocation = false;
                     return;
                 }
+                Debug.Log("Found path start moving");
                 bot.StartMoving();
             }
         }

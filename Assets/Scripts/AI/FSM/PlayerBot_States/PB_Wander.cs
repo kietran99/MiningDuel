@@ -18,8 +18,9 @@ namespace MD.AI
         Debug.Log("Wandering");
         base.Enter();
         currentIndex =  bot.GetClosestWayPointIndex();
-        bot.SetMovePosition(bot.checkPoints[currentIndex].transform.position);
-        bot.StartMoving();
+        // if(bot.SetMovePosition(bot.checkPoints[currentIndex].transform.position))
+        //     bot.StartMoving();
+        bot.StartWandering();
     }
     public override void Update()
     {
@@ -34,10 +35,7 @@ namespace MD.AI
             }
             else
             {
-                currentIndex++;
-                if (currentIndex > bot.checkPoints.Count -1) currentIndex = 0;
-                bot.SetMovePosition(bot.checkPoints[currentIndex].transform.position);
-                bot.StartMoving();
+                bot.StartWandering();
             }
         }
     }
