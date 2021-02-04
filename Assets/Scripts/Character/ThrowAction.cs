@@ -71,10 +71,10 @@ namespace MD.Character
 
         #region SERIALIZED FIELDS
         [SerializeField]
-        private Player player = null;
+        private GameObject targetTrackerPrefab = null;
 
         [SerializeField]
-        private GameObject targetTrackerPrefab = null;
+        private ThrowChargeIndicator throwChargeIndicator = null;
 
         [SerializeField]
         protected float basePower = 100f;
@@ -132,7 +132,24 @@ namespace MD.Character
             currentState.OnStateEnter();
         }
 
-        private void HandleThrowInvokeData(MD.UI.ThrowInvokeData _) => StartCoroutine(ChargedThrow());
+        private void HandleThrowInvokeData(MD.UI.ThrowInvokeData _) 
+        {
+            CmdRequestShowThrowChargeIndicator();
+            StartCoroutine(ChargedThrow());
+        }
+
+        [Command]
+        private void CmdRequestShowThrowChargeIndicator() => ShowThrowChargeIndicator();
+
+        [ClientRpc]
+        private void ShowThrowChargeIndicator() 
+        {
+            throwChargeIndicator.Show();
+            Invoke(nameof(HideThrowChargeIndicator), chargeTime);
+        }
+
+        [Client]
+        private void HideThrowChargeIndicator() => throwChargeIndicator.Hide();
 
         public void StartTracking(Transform targetTransform) 
         {

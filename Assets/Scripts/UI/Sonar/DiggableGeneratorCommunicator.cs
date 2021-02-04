@@ -107,7 +107,7 @@ namespace MD.Diggable.Core
         [TargetRpc]
         private void TargetBroadcastScanData(DiggableType[] diggableArea)
         {
-            Debug.Log("");
+            Debug.Log("Hello");
             EventManager.Instance.TriggerEvent(new UI.ScanData(diggableArea));
         }
     }

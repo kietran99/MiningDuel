@@ -94,8 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf55f1961acdb66448751288b5005154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: -7965588256565871280}
-  showPeriod: 0.5
+  showPeriod: 4
 --- !u!1 &6068277045544607805
 GameObject:
   m_ObjectHideFlags: 0
@@ -402,9 +401,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  player: {fileID: -7965588256565871280}
   targetTrackerPrefab: {fileID: 6908083211440036209, guid: f4b21361329e5d2439975b1d563f79d5,
     type: 3}
+  throwChargeIndicator: {fileID: 6249333315781111877}
   basePower: 150
   chargeTime: 0.5
 --- !u!114 &1733297702038592431
