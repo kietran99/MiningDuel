@@ -17,8 +17,8 @@ namespace MD.AI
         {
             Debug.Log("Finding Player");
             base.Enter();
-            bot.SetMovePosition(bot.lastSeenPlayer);
-            bot.StartMoving();
+            if(bot.SetMovePosition(bot.lastSeenPlayer))
+                bot.StartMoving();
         }
 
         public override void Update()
