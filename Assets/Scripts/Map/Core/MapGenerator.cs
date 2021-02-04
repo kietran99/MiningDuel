@@ -73,7 +73,7 @@ namespace MD.Map.Core{
         {
             // if(map[x,y] == Constants.BLOCK)
             if(map == null) return true;
-            if(map[x,y] <= 0)
+            if(map[x,y] < 0)
             {
                 return true;
             }
@@ -170,7 +170,7 @@ namespace MD.Map.Core{
         {
             Random random = new Random();
             for(int x = 0; x < width; x++)
-                for(int y = 0; y <height; y++)
+                for(int y = 0; y < height; y++)
                 {
                     int chance = random.Next(1,100);
                     if(chance <= 5)
