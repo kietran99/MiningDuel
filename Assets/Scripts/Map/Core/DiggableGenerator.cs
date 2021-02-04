@@ -51,15 +51,24 @@ namespace MD.Diggable.Core
             ServiceLocator.Register((IDiggableGenerator) this);
             eventBroadcaster = new DiggableEventBroadcaster(this);
             InitSortedNodeBasedSpawnTable();
-            var tilePositions = GenerateDefaultMap();
-            tileGraph = new TileGraph(tilePositions);
-            diggableData = new DiggableData(MakeEmptyTiles(tilePositions));
-            FillInitSonarTileData(tilePositions);
-            System.Linq.Enumerable.Range(0, startSpawnAmount).ForEach(_ => RandomSpawn());
-            botEventHandler = new BotDiggableEventHandler();
-            StartCoroutine(RandomSpawnOverTime());
-        }
+            ServiceLocator
+                .Resolve<MD.Map.Core.IMapGenerator>()
+                .Match(
 
+                    errorMessage => Debug.Log(errorMessage.Message), 
+                    mapGenerator => 
+                    {
+                        var tilePositions = mapGenerator.MovablePostions.ToArray();
+                        Debug.Log(tilePositions.Length);
+                        tileGraph = new TileGraph(tilePositions);
+                        diggableData = new DiggableData(MakeEmptyTiles(tilePositions));
+                        FillInitSonarTileData(tilePositions);
+                        System.Linq.Enumerable.Range(0, startSpawnAmount).ForEach(_ => RandomSpawn());
+                        botEventHandler = new BotDiggableEventHandler();
+                        StartCoroutine(RandomSpawnOverTime());
+                    }
+                );
+        }
         private void FillInitSonarTileData(Vector2Int[] tilePositions)
         {
             initSonarTileData = new SonarTileData[tilePositions.Length];
@@ -70,7 +79,7 @@ namespace MD.Diggable.Core
                 initSonarTileData[i].type = DiggableType.EMPTY;
             }
         }
-
+        
         public SonarTileData[] InitSonarTileData => initSonarTileData;
 
         private void InitSortedNodeBasedSpawnTable()

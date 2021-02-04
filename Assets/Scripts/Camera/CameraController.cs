@@ -12,17 +12,17 @@ public class CameraController : MonoBehaviour
     public void SetMapData(Tilemap tilemap) 
     {
         map = tilemap;
-        MapConstants.MAP_MIN_BOUND = map.localBounds.min;
-        MapConstants.MAP_MAX_BOUND = map.localBounds.max;
-        Debug.Log("Local Bounds min:" + MapConstants.MAP_MIN_BOUND); 
-        Debug.Log("Local Bounds max:" + MapConstants.MAP_MAX_BOUND); 
+        MapConstants.MapMinBound = map.localBounds.min;
+        MapConstants.MapMaxBound = map.localBounds.max;
+        Debug.Log("Local Bounds min:" + MapConstants.MapMinBound); 
+        Debug.Log("Local Bounds max:" + MapConstants.MapMaxBound); 
         Init(map.localBounds.min, map.localBounds.max);
     }
     
     void Awake()
     {
-        // MapConstants.MAP_MIN_BOUND = map.localBounds.min;
-        // MapConstants.MAP_MAX_BOUND = map.localBounds.max;
+        // MapConstants.MapMinBound = map.localBounds.min;
+        // MapConstants.MapMaxBound = map.localBounds.max;
     }
     void Start()
     {
@@ -31,8 +31,8 @@ public class CameraController : MonoBehaviour
 
     public void Init(Vector3 botLeft, Vector3 topRight)
     {
-        MapConstants.MAP_MIN_BOUND = map.localBounds.min;
-        MapConstants.MAP_MAX_BOUND = map.localBounds.max;
+        MapConstants.MapMinBound = map.localBounds.min;
+        MapConstants.MapMaxBound = map.localBounds.max;
         if (!ServiceLocator.Resolve(out MD.Character.Player player)) return; 
 
         this.player = player.transform;

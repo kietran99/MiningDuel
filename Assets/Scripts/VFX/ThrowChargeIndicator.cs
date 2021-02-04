@@ -1,29 +1,20 @@
 ﻿using MD.UI;
 using UnityEngine;
 
-namespace MD.VisualEffects
+namespace MD.Character
 {
     [RequireComponent(typeof(SpriteRenderer))]
     public class ThrowChargeIndicator : MonoBehaviour
     {
-        [SerializeField]
-        private float showPeriod = .5f;
-
         private SpriteRenderer spriteRenderer;
 
         void Start()
-        {
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            var eventConsumer = gameObject.AddComponent<EventSystems.EventConsumer>();
-            eventConsumer.StartListening<UI.ThrowInvokeData>(Show);
+        {           
+            spriteRenderer = GetComponent<SpriteRenderer>();    
         }
 
-        private void Show(ThrowInvokeData _)
-        {
-            spriteRenderer.enabled = true;
-            Invoke(nameof(Hide), showPeriod);
-        }
+        public void Show() => spriteRenderer.enabled = true;
 
-        private void Hide() => spriteRenderer.enabled = false;
+        public void Hide() => spriteRenderer.enabled = false;
     }
 }

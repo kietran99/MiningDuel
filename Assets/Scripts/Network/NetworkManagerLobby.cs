@@ -42,6 +42,7 @@ namespace MD.UI
         #endregion
 
         #region FIELDS
+        public string GameplayScene => gamePlayScene;
         public List<GameObject> DontDestroyOnLoadObjects = new List<GameObject>();
         private Player networkPlayerPrefab = null;
         public List<NetworkRoomPlayerLobby> RoomPlayers { get; } = new List<NetworkRoomPlayerLobby>();

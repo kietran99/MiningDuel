@@ -79,8 +79,8 @@ namespace MD.AI
             animator = GetComponent<BotAnimator>();
             moveAction = GetComponent<BotMoveAction>();
             moveAction.SetAnimator(animator);
-            minMoveBound = MapConstants.MAP_MIN_BOUND;
-            maxMoveBound = MapConstants.MAP_MAX_BOUND;
+            minMoveBound = MapConstants.MapMinBound;
+            maxMoveBound = MapConstants.MapMaxBound;
             FSM = new PB_Idle(this);
         }
 

@@ -1,6 +1,4 @@
-﻿using System;
-using MD.UI;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace MD.Character
 {
@@ -10,7 +8,7 @@ namespace MD.Character
         private Transform targetTransform;
         private SpriteRenderer spriteRenderer;
 
-        public Vector2 targetPosition => targetTransform.position;
+        public Vector2 TargetPosition => targetTransform.position;
 
         private void Start()
         {

@@ -6,29 +6,31 @@ namespace MD.AI
 {
     public class BotThrowAction : ThrowAction
     {
+        private BotAnimator botAnimator;
+
+        private void Start()
+        {
+            botAnimator = GetComponent<BotAnimator>();
+        }
+
         public override void SetHoldingProjectile(ProjectileLauncher proj)
         {
-            Debug.Log("set holding projectile on bot");
-            base.SetHoldingProjectile(proj);
-            BotAnimator animator = GetComponent<BotAnimator>();
-
-            if (animator != null) animator.SetHoldState();
+            Debug.Log("Bot Set Holding Projectile");
+            holdingProjectile = proj;
+            botAnimator.SetHoldState();
         }
 
         public void ThrowProjectile()
         {
-            //find player pos;
-            Player player;
             Vector2 dir = Vector2.one;
 
-            if (ServiceLocator.Resolve<Player>(out player))
+            if (ServiceLocator.Resolve<Player>(out Player player))
             {
                 dir = (player.transform.position - transform.position).normalized;
             }
 
-            BotAnimator animator = GetComponent<BotAnimator>();
-            if (animator != null) animator.RevertToIdleState();
-            base.CmdThrowProjectile(dir.x, dir.y, basePower);
+            botAnimator.RevertToIdleState();
+            base.CmdThrow(dir.x, dir.y);
             holdingProjectile = null;
         }
 

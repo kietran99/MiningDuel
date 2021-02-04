@@ -27,7 +27,8 @@ namespace MD.Diggable.Core
             var holdingProjectile = Instantiate(exposedBombPrefab, digger.gameObject.transform);
             holdingProjectile.transform.position = new Vector3(0, 1f, 0);
             holdingProjectile.SetThrower(digger);
-            digger.GetComponent<MD.Character.ThrowAction>().SetHoldingProjectile(holdingProjectile);
+            var throwAction = digger.GetComponent<MD.Character.ThrowAction>();
+            throwAction.SetHoldingProjectile(holdingProjectile);
             NetworkServer.Spawn(holdingProjectile.gameObject);
         }
     }
