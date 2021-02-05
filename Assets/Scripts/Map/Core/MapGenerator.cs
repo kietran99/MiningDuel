@@ -71,6 +71,11 @@ namespace MD.Map.Core{
         // thats why :V
         public bool IsObstacle(int x, int y)
         {
+            if(x < 0 || y < 0)
+            {
+                Debug.LogError("Negative index on Obstacle check!");
+                return true;
+            }
             // if(map[x,y] == Constants.BLOCK)
             if(map == null) return true;
             if(map[x,y] < 0)

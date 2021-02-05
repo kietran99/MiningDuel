@@ -17,7 +17,8 @@ namespace MD.Map.Core
 
         public override void OnStartAuthority()
         {
-            Instantiate(grid);
+            // Instantiate(grid);
+            grid = GameObject.FindGameObjectWithTag("Grid").GetComponent<Grid>();
             CmdRequestRender();
         }
 
@@ -54,18 +55,18 @@ namespace MD.Map.Core
                     for(int y = 0; y < height; y++)
                     {
                         
-                        botMap.SetTile(new Vector3Int(x-width/2, y-height/2, 0), tileNo1);
+                        botMap.SetTile(new Vector3Int(x, y, 0), tileNo1);
                         if(map[x*width + y] == 1)
                         {
-                            topMap.SetTile(new Vector3Int(x-width/2, y-height/2, 0), tileNo2);
+                            topMap.SetTile(new Vector3Int(x, y, 0), tileNo2);
                         }
                         else if(map[x*width + y] == 2)
                         {
-                            topMap.SetTile(new Vector3Int(x-width/2, y-height/2, 0), tileNo3);
+                            topMap.SetTile(new Vector3Int(x, y, 0), tileNo3);
                         }                  
                         else if(map[x*width + y] == -1)
                         {
-                            obstacleMap.SetTile(new Vector3Int(x-width/2, y-height/2, 0), obstacleTile);
+                            obstacleMap.SetTile(new Vector3Int(x, y, 0), obstacleTile);
                         }                  
                     }
                 }

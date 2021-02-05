@@ -43,6 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83d2a692782e8894e9a5f23327b77b6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capacity: 480
+  capacity: 2500
   objectToPool: {fileID: 3944022528217853538, guid: 181dd3a7740b7f148b1bdf3df81ff72a,
     type: 3}

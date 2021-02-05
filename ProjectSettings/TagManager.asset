@@ -6,6 +6,7 @@ TagManager:
   tags:
   - CheckPoint
   - Obstacle
+  - Grid
   layers:
   - Default
   - TransparentFX

@@ -293,7 +293,7 @@ namespace MD.UI
 
         public void SetupBotState()
         {
-            var bot = Instantiate(botPrefab);
+            var bot = Instantiate(botPrefab, new Vector3(10,10,0), Quaternion.identity);
             Bots.Add(bot.GetComponent<PlayerBot>());
             NetworkServer.Spawn(bot, Players[0].connectionToClient);
         }
