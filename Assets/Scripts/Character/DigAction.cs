@@ -51,5 +51,20 @@ namespace MD.Character
                             power)                
                 );       
         }
+
+        // Cheat control
+        [ClientCallback]
+        private void Update()
+        {
+            if (!hasAuthority)
+            {
+                return;
+            }
+            
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                EventSystems.EventManager.Instance.TriggerEvent(new DigInvokeData());            
+            }
+        }
     }
 }

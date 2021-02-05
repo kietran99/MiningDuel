@@ -21,14 +21,13 @@ namespace MD.Diggable.Core
         }
 
         [Server]
-        private void Spawn(NetworkConnection _, ProjectileObtainData projObtainData)
+        private void Spawn(NetworkConnection diggerConn, ProjectileObtainData projObtainData)
         {
             var digger = projObtainData.thrower;
             var holdingProjectile = Instantiate(exposedBombPrefab, digger.gameObject.transform);
             holdingProjectile.transform.position = new Vector3(0, 1f, 0);
             holdingProjectile.SetThrower(digger);
-            var throwAction = digger.GetComponent<MD.Character.ThrowAction>();
-            throwAction.SetHoldingProjectile(holdingProjectile);
+            digger.GetComponent<MD.Character.ThrowAction>().SetHoldingProjectile(holdingProjectile);
             NetworkServer.Spawn(holdingProjectile.gameObject);
         }
     }
