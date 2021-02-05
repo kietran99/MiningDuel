@@ -93,22 +93,22 @@ namespace MD.Diggable.Core
             EventManager.Instance.TriggerEvent(diggableSpawnData);
         }
 
-        [Command]
-        public void CmdRequestScanArea(Vector2Int[] positions)
-        {
-            ServiceLocator
-                .Resolve<IDiggableGenerator>()
-                .Match(
-                    unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
-                    digGen => TargetBroadcastScanData(digGen.GetDiggableArea(positions))
-                );
-        }
+        // [Command]
+        // public void CmdRequestScanArea(Vector2Int[] positions)
+        // {
+        //     ServiceLocator
+        //         .Resolve<IDiggableGenerator>()
+        //         .Match(
+        //             unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
+        //             digGen => TargetBroadcastScanData(digGen.GetDiggableArea(positions))
+        //         );
+        // }
 
-        [TargetRpc]
-        private void TargetBroadcastScanData(DiggableType[] diggableArea)
-        {
-            Debug.Log("Hello");
-            EventManager.Instance.TriggerEvent(new UI.ScanData(diggableArea));
-        }
+        // [TargetRpc]
+        // private void TargetBroadcastScanData(DiggableType[] diggableArea)
+        // {
+        //     Debug.Log("Yes");
+        //     EventManager.Instance.TriggerEvent(new UI.ScanData(diggableArea));
+        // }
     }
 }

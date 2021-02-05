@@ -108,7 +108,7 @@ namespace MD.UI
         private void RequestScanArea(float centerX, float centerY)
         {
             var scanArea = GetScannablePos(centerX, centerY).ToArray();
-            digGenComm.CmdRequestScanArea(scanArea);
+            // digGenComm.CmdRequestScanArea(scanArea);
         }      
 
         private void UpdateScanArea(ScanData scanData) => Show(scanData.diggableArea);

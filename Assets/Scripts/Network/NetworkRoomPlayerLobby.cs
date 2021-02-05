@@ -62,7 +62,7 @@ namespace MD.UI
 
         public override void OnStartAuthority()
         {
-            CmdSetDisplayName(PlayerNameInput.DisplayName);
+            CmdSetDisplayName(PlayerPrefs.GetString(PlayerNameInput.PLAYER_PREF_NAME_KEY, string.Empty));
             lobbyUI.SetActive(true);
         }
 
@@ -76,6 +76,7 @@ namespace MD.UI
                     return ip.ToString();
                 }
             }
+            
             throw new System.Exception("No network adapters with an IPv4 address in the system!");
         }
 

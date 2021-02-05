@@ -49,6 +49,20 @@ namespace MD.Character
             public Vector2 NormalizedThrowDirection => lastJoystickDirection;
         }
 
+        private struct ClickThrowState : IState
+        {
+            public ClickThrowState(Vector2 throwDirection)
+            {
+                NormalizedThrowDirection = throwDirection.normalized;
+            }
+
+            public void OnStateEnter() {}
+
+            public void OnStateExit() {}
+
+            public Vector2 NormalizedThrowDirection { get; private set; }
+        }
+
         private class TrackState : IState
         {
             private Transform throwerTransform;
@@ -134,22 +148,22 @@ namespace MD.Character
 
         private void HandleThrowInvokeData(MD.UI.ThrowInvokeData _) 
         {
-            CmdRequestShowThrowChargeIndicator();
-            StartCoroutine(ChargedThrow());
+            CmdShowIndicatorMomentarily();
+            StartCoroutine(ChargedThrow(currentState.NormalizedThrowDirection));
         }
 
         [Command]
-        private void CmdRequestShowThrowChargeIndicator() => ShowThrowChargeIndicator();
-
-        [ClientRpc]
-        private void ShowThrowChargeIndicator() 
+        private void CmdShowIndicatorMomentarily() 
         {
-            throwChargeIndicator.Show();
-            Invoke(nameof(HideThrowChargeIndicator), chargeTime);
+            RpcShowThrowChargeIndicator();
+            Invoke(nameof(RpcHideThrowChargeIndicator), chargeTime);
         }
 
-        [Client]
-        private void HideThrowChargeIndicator() => throwChargeIndicator.Hide();
+        [ClientRpc]
+        private void RpcShowThrowChargeIndicator() => throwChargeIndicator.Show();
+
+        [ClientRpc]
+        private void RpcHideThrowChargeIndicator() => throwChargeIndicator.Hide();
 
         public void StartTracking(Transform targetTransform) 
         {
@@ -157,17 +171,21 @@ namespace MD.Character
             targetTracker.StartTracking(targetTransform);
         }
 
+        [Server]
         public virtual void SetHoldingProjectile(ProjectileLauncher proj) 
         {
-            if (isLocalPlayer) ShiftState(freeThrowState);
+            TargetShiftFreeThrowState();
             holdingProjectile = proj;
         }
 
-        private System.Collections.IEnumerator ChargedThrow()
+        [TargetRpc]
+        private void TargetShiftFreeThrowState() => ShiftState(freeThrowState);
+
+        private System.Collections.IEnumerator ChargedThrow(Vector2 throwDirection)
         {
             yield return chargeTimeAsWaitForSeconds;
 
-            CmdThrow(currentState.NormalizedThrowDirection.x, currentState.NormalizedThrowDirection.y);
+            CmdThrow(throwDirection.x, throwDirection.y);
             ShiftState(handFreeState);
             targetTracker.StopTracking();
         }
@@ -182,6 +200,31 @@ namespace MD.Character
             }
             
             holdingProjectile.Launch(basePower, dirX, dirY);
+        }
+
+        private Camera mainCamera;
+
+        // Cheat control
+        [ClientCallback]
+        private void Update()
+        {           
+            if (mainCamera == null) mainCamera = Camera.main;
+
+            if (
+                !hasAuthority ||
+                currentState == null || 
+                currentState.Equals(handFreeState) ||
+                !isLocalPlayer ||
+                !Input.GetMouseButtonDown(1)
+                )
+            {
+                return; 
+            }
+
+            Vector2 clickPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 throwDir = clickPos - new Vector2(transform.position.x, transform.position.y);
+            ShiftState(new ClickThrowState(throwDir));
+            EventSystems.EventManager.Instance.TriggerEvent(new ThrowInvokeData());
         }
     }
 }
