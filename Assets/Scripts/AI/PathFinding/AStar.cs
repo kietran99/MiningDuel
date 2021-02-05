@@ -171,7 +171,7 @@ namespace PathFinding
 
         private List<Node> CalculatePath(Node endNode)
         {
-            List<Node> path = new List<Node>{endNode};
+            List<Node> path = new List<Node>();
             Node currentNode = endNode;
             while (currentNode.preNode != null)
             {
