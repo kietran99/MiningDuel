@@ -71,7 +71,7 @@ namespace MD.Map.Core{
         // thats why :V
         public bool IsObstacle(int x, int y)
         {
-            if(x < 0 || x> MapWidth || y < 0 || y > MapHeight)
+            if(x < 0 || x>= MapWidth || y < 0 || y >= MapHeight)
             {
                 // Debug.LogError("Negative index on Obstacle check! x= " + x + " y= " + y);
                 return true;

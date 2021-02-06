@@ -16,7 +16,6 @@ namespace MD.AI
 
         // private float collideRightDistance = 0f;
         // private bool collideAhead = false;
-        private Vector2Int currentIndex;
 
         [SerializeField]
         private int length;
@@ -81,7 +80,7 @@ namespace MD.AI
                 //Check if move diagonal
                 if ((from.x != to.x) && (from.y != to.y))
                 {
-                    if (IsObstacle(new Vector2Int(from.x,to.y)) && IsObstacle(new Vector2Int(to.x, from.y))) return false;
+                    if (IsObstacle(new Vector2Int(from.x,to.y)) || IsObstacle(new Vector2Int(to.x, from.y))) return false;
                 }
             }
             return true;
@@ -96,22 +95,14 @@ namespace MD.AI
         {
             if (isMoving && hasPath) 
             {
-                // resCount =  Physics2D.RaycastNonAlloc(transform.position, transform.forward, rayArr);
-                // if (!IsInRightPath()) {
-                //     ReplanPath(IndexToWorld(path[path.Count -1].index));
-                //     return;
-                // }
-                if (Vector2.Distance(currentGoal,transform.position) < .15f)
+                if (!IsInRightPath()) {
+                    ReplanPath(IndexToWorld(path[path.Count -1].index));
+                    return;
+                }
+                if (Vector2.Distance(currentGoal,transform.position) < .05f)
                 {
                     transform.position = currentGoal;
-                    if (currentNode >= path.Count)
-                    {
-                        hasPath = false;
-                        return;
-                    }
                     Vector2Int playerPos = WorldToIndex(transform.position);
-                    // currentNode++;
-                    // currentNode = -1;
                     bool found = false;
                     for (int i=0; i < path.Count; i++)
                     {
@@ -119,7 +110,7 @@ namespace MD.AI
                         {
                             if (i + 1 < path.Count)
                             {
-                                // currentIndex = path[i].index;
+                                currentNode = i;
                                 Debug.Log("pos is " +i);
                                 currentGoal = IndexToWorldMiddleSquare(path[i+1].index);
                                 found = true;
@@ -148,12 +139,9 @@ namespace MD.AI
 
         private bool IsInRightPath()
         {
-            if (WorldToIndex(transform.position) != currentIndex)
-            {
-                Debug.Log("***************" +IndexToWorld(WorldToIndex(transform.position)) +" differs from  "+ IndexToWorld(currentIndex));
-                return false;
-            }
-            return true;
+            Vector2Int playerIndex= WorldToIndex(transform.position);
+            if (playerIndex == path[currentNode].index || playerIndex == path[currentNode + 1].index ) return true;
+            return false;
         }
 
         void FixedUpdate()
@@ -194,7 +182,7 @@ namespace MD.AI
                 {
                     Debug.Log("->"+ IndexToWorld(node.index));
                 }
-                // currentNode = 0;
+                currentNode = 0;
                 currentGoal = IndexToWorldMiddleSquare(path[currentNode].index);
                 hasPath = true;
                 return true;
@@ -218,9 +206,8 @@ namespace MD.AI
                 path = aStar.FindPath(currentPos, ranDomIndex);
                 if (path != null)
                 {
-                    currentIndex = currentPos;
                     length = path.Count;
-                    // currentNode = 0;
+                    currentNode = 0;
                     currentGoal = IndexToWorldMiddleSquare(path[currentNode].index);
                     hasPath = true;
                     startMoving();
