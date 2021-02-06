@@ -207,7 +207,8 @@ namespace MD.UI
 
         private void InitEnv()
         {
-            spawnPointPicker.Reset();  
+            spawnPointPicker.Reset();
+            SpawnMapGenerator();  
             SpawnDiggableGenerator();            
         }
 
@@ -217,6 +218,14 @@ namespace MD.UI
             NetworkServer.Spawn(diggableGenerator);
             DontDestroyOnLoad(diggableGenerator);
             DontDestroyOnLoadObjects.Add(diggableGenerator);
+        }
+
+        private void SpawnMapGenerator()
+        {
+            var mapGenerator = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals("Map Generator")));
+            NetworkServer.Spawn(mapGenerator);
+            DontDestroyOnLoad(mapGenerator);
+            DontDestroyOnLoadObjects.Add(mapGenerator);
         }
 
         public void SpawnPvPPlayers()
@@ -239,7 +248,9 @@ namespace MD.UI
             }
             
             Players.ForEach(player => SpawnSonar(player.connectionToClient));            
-            Players.ForEach(player => SpawnDiggableGeneratorCommunicator(player.connectionToClient));            
+            Players.ForEach(player => SpawnDiggableGeneratorCommunicator(player.connectionToClient));  
+            Players.ForEach(player => GenMapRenderer(player.connectionToClient)); 
+
             //TODO check if all players loaded scene
             SetupGame();           
         }
@@ -250,10 +261,17 @@ namespace MD.UI
             NetworkServer.Spawn(sonar, conn);
         }
 
+
         private void SpawnDiggableGeneratorCommunicator(NetworkConnection conn)
         {
             var digGenComm = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(DIGGABLE_GENERATOR_COMMUNICATOR)));
             NetworkServer.Spawn(digGenComm, conn);
+        }
+
+        private void GenMapRenderer(NetworkConnection conn)
+        {
+            var mapRenderer = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals("Map Renderer")));
+            NetworkServer.Spawn(mapRenderer, conn);// chưa bỏ 
         }
 
         private void SetupGame()
@@ -275,7 +293,7 @@ namespace MD.UI
 
         public void SetupBotState()
         {
-            var bot = Instantiate(botPrefab);
+            var bot = Instantiate(botPrefab, new Vector3(10,10,0), Quaternion.identity);
             Bots.Add(bot.GetComponent<PlayerBot>());
             NetworkServer.Spawn(bot, Players[0].connectionToClient);
         }

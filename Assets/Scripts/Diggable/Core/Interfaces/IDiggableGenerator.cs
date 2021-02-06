@@ -18,7 +18,7 @@ namespace MD.Diggable.Core
         void DigAt(Mirror.NetworkIdentity digger, int x, int y, int power);
         void BotDigAt(MD.AI.PlayerBot digger, int x, int y, int power);
         DiggableType[] GetDiggableArea(Vector2Int[] positions);
-        Either<InvalidTileError, bool> IsProjectileAt(int x, int y);
+        Either<InvalidTileError, bool> IsProjectileAt(int x, int y); 
         Either<InvalidTileError, bool> IsGemAt(int x, int y);
     }
 }

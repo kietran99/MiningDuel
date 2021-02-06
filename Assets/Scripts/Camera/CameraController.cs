@@ -8,20 +8,31 @@ public class CameraController : MonoBehaviour
 
     private Transform player;
     private Vector3 botLeftLimit, topRightLimit;
+
+    public void SetMapData(Tilemap tilemap) 
+    {
+        map = tilemap;
+        MapConstants.MapMinBound = map.localBounds.min;
+        MapConstants.MapMaxBound = map.localBounds.max;
+        Debug.Log("Local Bounds min:" + MapConstants.MapMinBound); 
+        Debug.Log("Local Bounds max:" + MapConstants.MapMaxBound); 
+        Init(map.localBounds.min, map.localBounds.max);
+    }
     
     void Awake()
     {
-        MapConstants.MapMinBound = map.localBounds.min;
-        MapConstants.MapMaxBound = map.localBounds.max;
+        // MapConstants.MapMinBound = map.localBounds.min;
+        // MapConstants.MapMaxBound = map.localBounds.max;
     }
-
     void Start()
     {
-        Init(map.localBounds.min, map.localBounds.max);
+        // Init(map.localBounds.min, map.localBounds.max);
     }
 
-    private void Init(Vector3 botLeft, Vector3 topRight)
+    public void Init(Vector3 botLeft, Vector3 topRight)
     {
+        MapConstants.MapMinBound = map.localBounds.min;
+        MapConstants.MapMaxBound = map.localBounds.max;
         if (!ServiceLocator.Resolve(out MD.Character.Player player)) return; 
 
         this.player = player.transform;
@@ -31,7 +42,8 @@ public class CameraController : MonoBehaviour
         
         botLeftLimit = botLeft + new Vector3(camHalfWidth, camHalfHeight, 0f);
         topRightLimit = topRight - new Vector3(camHalfWidth, camHalfHeight, 0f);
-        player.GetComponent<MD.Character.MoveAction>().SetBounds(botLeft, topRight);
+
+        player.GetComponent<MD.Character.MoveAction>().SetBounds(map.localBounds.min, map.localBounds.max);
     }
 
     void LateUpdate()
