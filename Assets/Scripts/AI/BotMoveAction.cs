@@ -101,7 +101,7 @@ namespace MD.AI
                 }
                 if (Vector2.Distance(currentGoal,transform.position) < .05f)
                 {
-                    transform.position = currentGoal;
+                    // transform.position = currentGoal;
                     Vector2Int playerPos = WorldToIndex(transform.position);
                     bool found = false;
                     for (int i=0; i < path.Count; i++)
@@ -187,6 +187,7 @@ namespace MD.AI
                 hasPath = true;
                 return true;
             }
+            hasPath = false;
             Debug.Log("not found path");
             return false;
         }
@@ -215,6 +216,7 @@ namespace MD.AI
                 }
                 tried++;
             }
+            hasPath = false;
         }
     }
 }
