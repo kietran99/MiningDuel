@@ -25,7 +25,7 @@ namespace MD.Character
         }
 
         [Server]
-        public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage, int projectileType)
+        public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage)
         {
             int dropAmount = Mathf.FloorToInt(scoreManager.CurrentMultiplier * scoreManager.CurrentScore * gemDropPercentage * .01f);
             EventSystems.EventManager.Instance.TriggerEvent(new ExplodedData(playerId, dropAmount));

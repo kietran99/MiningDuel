@@ -122,7 +122,7 @@ namespace MD.Diggable.Projectile
 
                 IExplodable target = collide.transform.GetComponent<IExplodable>();
                 var thrower = GetComponent<ProjectileLauncher>().Thrower;
-                target?.HandleExplosion(thrower.transform, thrower.netId, stats.GemDropPercentage, -1);
+                target?.HandleExplosion(thrower.transform, thrower.netId, stats.GemDropPercentage);
             }
         }
         
