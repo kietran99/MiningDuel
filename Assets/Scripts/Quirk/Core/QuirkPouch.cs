@@ -36,6 +36,8 @@ namespace MD.Quirk
             var idxToUse = 0;
             var quirkToUse = quirks[idxToUse];
             quirkToUse.Activate();
+            quirkToUse.transform.SetParent(null);
+            UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(quirkToUse.gameObject, UnityEngine.SceneManagement.SceneManager.GetActiveScene());
             quirks.RemoveAt(idxToUse);
         }
 
