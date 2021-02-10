@@ -7,9 +7,10 @@ namespace MD.Quirk
         [SerializeField]
         private ProjectilizedCamoPerse projectilizedCamoPersePrefab = null;
 
-        protected override void Activate()
+        public override void Activate()
         {
-            var projectilizedCamoPerseInstance = Instantiate(projectilizedCamoPersePrefab);
+            Debug.Log("Activate Camo Perse");
+            // var projectilizedCamoPerseInstance = Instantiate(projectilizedCamoPersePrefab);
         }
     }
 }

@@ -16,6 +16,6 @@ namespace MD.Quirk
             Activate();
         }
 
-        protected abstract void Activate();
+        public abstract void Activate();
     }
 }

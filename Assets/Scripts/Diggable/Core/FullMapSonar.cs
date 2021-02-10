@@ -26,7 +26,7 @@ namespace MD.Diggable.Core
             GetComponent<SpriteMask>().enabled = true;
             GetComponent<SpriteRenderer>().enabled = true;
 
-            Debug.Log("Log message to ensure Mirror does not fuck up on startup");
+            Debug.Log("Log message to ensure Mirror does not fuck up");
             ServiceLocator
                 .Resolve<MD.Character.Player>()
                 .Match(
@@ -35,7 +35,7 @@ namespace MD.Diggable.Core
                     {
                         playerTransform = player.transform;
                         tilePool = Instantiate(tilePoolPrefab).GetComponent<IObjectPool>();                                   
-                        CmdRequestScanData();
+                        CmdRequestScanData();   // Bug: something about NetworkWriter that can be fixed by modify the script then save it
                         CmdSubscribeDiggableEvents();
                     }
                 );
@@ -52,7 +52,6 @@ namespace MD.Diggable.Core
                     err => Debug.Log(err.Message),
                     diggableGenerator => 
                     {
-                        Debug.Log("Request Scan Data");
                         TargetSetupSonarData(diggableGenerator.InitSonarTileData);
                     }
                 );

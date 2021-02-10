@@ -51,8 +51,12 @@ namespace MD.Quirk
             }
 
             containingQuirk.transform.SetParent(quirkPouch.transform);
-            quirkPouch.Insert(containingQuirk);
-            NetworkServer.Destroy(gameObject);
+            var success = quirkPouch.TryInsert(containingQuirk);
+
+            if (success)
+            {
+                NetworkServer.Destroy(gameObject);
+            }
         }
     }
 }

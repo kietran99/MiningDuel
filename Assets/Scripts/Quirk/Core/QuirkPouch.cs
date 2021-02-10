@@ -6,26 +6,50 @@ namespace MD.Quirk
     [RequireComponent(typeof(Character.DigAction))]
     public class QuirkPouch : NetworkBehaviour
     {
-        // private int capacity = 1;
+        private int capacity = 1;
         private System.Collections.Generic.List<BaseQuirk> quirks = new System.Collections.Generic.List<BaseQuirk>();
 
-        public void Insert(BaseQuirk quirk)
+        public bool TryInsert(BaseQuirk quirk)
         {
+            if (quirks.Count == capacity)
+            {
+                Debug.Log("Quirk Pouch: Cannot Carry More Quirk");
+                return false;
+            }
+
             quirks.Add(quirk);
+            return true;
         }
 
         [Command]
-        public void CmdUse()
+        public void CmdRequestUse() => RpcTryUse();
+
+        [ClientRpc]
+        public void RpcTryUse()
         {
-            quirks[0].RpcActivate();
+            if (quirks.Count == 0)
+            {
+                Debug.Log("Quirk Pouch: Player ID " + netId + " Not Holding any Quirk");
+                return;
+            }
+
+            var idxToUse = 0;
+            var quirkToUse = quirks[idxToUse];
+            quirkToUse.Activate();
+            quirks.RemoveAt(idxToUse);
         }
 
         [ClientCallback]
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (!hasAuthority)
             {
-                CmdUse();
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {             
+                CmdRequestUse();
             }
         }
     }
