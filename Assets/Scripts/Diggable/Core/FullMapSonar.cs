@@ -50,7 +50,11 @@ namespace MD.Diggable.Core
                 .Resolve<IDiggableGenerator>()
                 .Match(
                     err => Debug.Log(err.Message),
-                    diggableGenerator => TargetSetupSonarData(diggableGenerator.InitSonarTileData)
+                    diggableGenerator => 
+                    {
+                        Debug.Log("Request Scan Data");
+                        TargetSetupSonarData(diggableGenerator.InitSonarTileData);
+                    }
                 );
         }
 
