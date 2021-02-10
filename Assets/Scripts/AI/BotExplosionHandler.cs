@@ -26,7 +26,7 @@ namespace MD.AI
         }
 
         [Server]
-        public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage, int bombType)
+        public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage)
         {
             Debug.Log("Bot Exploded by " + transform.name);
             // if (!ServiceLocator.Resolve<IScoreManager>(out IScoreManager scoreManager)) return;
