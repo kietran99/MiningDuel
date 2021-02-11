@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using Mirror;
 
 namespace MD.Quirk
@@ -17,27 +18,35 @@ namespace MD.Quirk
                 return false;
             }
 
+            quirk.transform.SetParent(transform);
             quirks.Add(quirk);
             return true;
         }
 
         [Command]
-        public void CmdRequestUse() => RpcTryUse();
-
-        [ClientRpc]
-        public void RpcTryUse()
+        public void CmdRequestUse()
         {
             if (quirks.Count == 0)
             {
-                Debug.Log("Quirk Pouch: Player ID " + netId + " Not Holding any Quirk");
+                Debug.Log("Quirk Pouch: Player with ID " + netId + " is Not Holding any Quirk");
                 return;
             }
 
+            RpcTryUse();
+        }
+
+        [ClientRpc]
+        private void RpcTryUse()
+        {
             var idxToUse = 0;
             var quirkToUse = quirks[idxToUse];
-            quirkToUse.Activate();
+            // Obtained quirk is a child of Player GO & Player GO is a DontDestroyOnLoad GO 
+            // -> Move obtained quirk from Dont Destroy On Load Scene to Multiplayer scene
             quirkToUse.transform.SetParent(null);
-            UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(quirkToUse.gameObject, UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+            SceneManager.MoveGameObjectToScene(quirkToUse.gameObject, SceneManager.GetActiveScene()); 
+
+            quirkToUse.Activate(netIdentity);
+
             quirks.RemoveAt(idxToUse);
         }
 

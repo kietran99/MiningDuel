@@ -26,7 +26,7 @@ namespace MD.Diggable.Core
             GetComponent<SpriteMask>().enabled = true;
             GetComponent<SpriteRenderer>().enabled = true;
 
-            Debug.Log("Log message to ensure Mirror does not fuck up");
+            Debug.Log("Log mes");
             ServiceLocator
                 .Resolve<MD.Character.Player>()
                 .Match(

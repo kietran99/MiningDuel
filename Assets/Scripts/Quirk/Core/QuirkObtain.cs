@@ -50,7 +50,6 @@ namespace MD.Quirk
                 return;
             }
 
-            containingQuirk.transform.SetParent(quirkPouch.transform);
             var success = quirkPouch.TryInsert(containingQuirk);
 
             if (success)

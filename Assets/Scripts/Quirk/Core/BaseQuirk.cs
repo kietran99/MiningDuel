@@ -3,6 +3,9 @@ using Mirror;
 
 namespace MD.Quirk
 {
+    ///<remarks>
+    /// GameObjects that attached any inherited <c>BaseQuirk</c> are disabled on spawn by default
+    ///</remarks>
     public abstract class BaseQuirk : NetworkBehaviour
     {
         [SerializeField]
@@ -10,12 +13,11 @@ namespace MD.Quirk
 
         public Sprite ObtainSprite => obtainSprite;
 
-        [ClientRpc]
-        public void RpcActivate()
+        public override void OnStartClient()
         {
-            Activate();
+            gameObject.SetActive(false);
         }
 
-        public abstract void Activate();
+        public virtual void Activate(NetworkIdentity userIdentity) => gameObject.SetActive(true);
     }
 }
