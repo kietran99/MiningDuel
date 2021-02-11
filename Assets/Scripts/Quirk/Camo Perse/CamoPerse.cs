@@ -9,6 +9,9 @@ namespace MD.Quirk
         private readonly float GRID_OFFSET = .5f;
 
         [SerializeField]
+        private Sprite[] sonarSprites = null;
+
+        [SerializeField]
         private float armSeconds = 1f;
 
         [SerializeField]
@@ -21,11 +24,13 @@ namespace MD.Quirk
         {
             base.Activate(userIdentity); 
             planter = userIdentity;
+            GetComponent<SpriteRenderer>().sprite = sonarSprites[Random.Range(0, sonarSprites.Length)];
             System.Func<float, float> SnapPosition = val => Mathf.FloorToInt(val) + GRID_OFFSET;
             transform.position = new Vector3(SnapPosition(planter.transform.position.x), SnapPosition(planter.transform.position.y), 0f);
             Invoke(nameof(StartArming), armSeconds);
             gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<DigInvokeData>(RequestExplosion);
         }
+        
         private void StartArming()
         {
             GetComponent<CircleCollider2D>().enabled = true;
