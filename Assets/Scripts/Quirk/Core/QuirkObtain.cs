@@ -24,8 +24,6 @@ namespace MD.Quirk
             }
 
             containingQuirk.transform.SetParent(transform);
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            spriteRenderer.sprite = containingQuirk.ObtainSprite;
             gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<DigInvokeData>(RequestObtain);
 
             gameObject.SetActive(true);
