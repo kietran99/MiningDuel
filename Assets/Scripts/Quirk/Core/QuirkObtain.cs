@@ -11,9 +11,9 @@ namespace MD.Quirk
         private QuirkPouch quirkPouch;
         private NetworkIdentity collidingIdentity;
 
-        // Quirk Obtain is disabled by default -> Use RpcEnable to enable it & assign all its neccessary fields
+        // Quirk Obtain is disabled by default -> Use RpcInitialize to enable it & assign all its neccessary fields
         [ClientRpc]
-        public void RpcEnable(GameObject quirkGO)
+        public void RpcInitialize(GameObject quirkGO)
         {
             containingQuirk = quirkGO.GetComponent<BaseQuirk>();
 
@@ -23,6 +23,7 @@ namespace MD.Quirk
                 return;
             }
 
+            containingQuirk.transform.SetParent(transform);
             spriteRenderer = GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = containingQuirk.ObtainSprite;
             gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<DigInvokeData>(RequestObtain);

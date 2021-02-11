@@ -181,7 +181,7 @@ namespace MD.Diggable.Core
             NetworkServer.Spawn(quirkObtainInstance);
             var quirkInstance = Instantiate(quirkPrefab);
             NetworkServer.Spawn(quirkInstance);
-            quirkObtainInstance.GetComponent<QuirkObtain>().RpcEnable(quirkInstance);
+            quirkObtainInstance.GetComponent<QuirkObtain>().RpcInitialize(quirkInstance);
         }
 
         public void DigAt(Mirror.NetworkIdentity digger, int x, int y, int power)
