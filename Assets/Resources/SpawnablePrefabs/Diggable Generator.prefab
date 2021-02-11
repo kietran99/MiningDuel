@@ -64,6 +64,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   spawnTable:
+  - type: 273
+    weight: 40
   - type: 1
     weight: 8
   - type: 4

@@ -9,6 +9,7 @@ namespace MD.Quirk
         private SpriteRenderer spriteRenderer;
         private BaseQuirk containingQuirk = null;
         private QuirkPouch quirkPouch;
+        private NetworkIdentity collidingIdentity;
 
         // Quirk Obtain is disabled by default -> Use RpcEnable to enable it & assign all its neccessary fields
         [ClientRpc]
@@ -24,6 +25,7 @@ namespace MD.Quirk
 
             spriteRenderer = GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = containingQuirk.ObtainSprite;
+            gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<DigInvokeData>(RequestObtain);
 
             gameObject.SetActive(true);
         }
@@ -36,8 +38,38 @@ namespace MD.Quirk
                 return;
             }
 
-            RpcPouchInsert(other.GetComponent<NetworkIdentity>());    
+            var collidingIdentity = other.GetComponent<NetworkIdentity>();    
+            RpcBindCollidingTarget(collidingIdentity);
+            netIdentity.AssignClientAuthority(collidingIdentity.connectionToClient);   
         }
+
+        [ServerCallback]
+        private void OnTriggerExit2D(Collider2D other)
+        {            
+            if (!other.CompareTag(Constants.PLAYER_TAG))
+            {
+                return;
+            }
+
+            RpcBindCollidingTarget(null);  
+            netIdentity.RemoveClientAuthority();    
+        }
+
+        [ClientRpc]
+        private void RpcBindCollidingTarget(NetworkIdentity collidingIdentity) => this.collidingIdentity = collidingIdentity;
+
+        private void RequestObtain(DigInvokeData _)
+        {
+            if (collidingIdentity == null || !collidingIdentity.hasAuthority)
+            {
+                return;
+            }
+
+            CmdObtain();
+        }
+
+        [Command]
+        private void CmdObtain() => RpcPouchInsert(collidingIdentity);
 
         [ClientRpc]
         private void RpcPouchInsert(NetworkIdentity collidingPlayer)
@@ -54,6 +86,7 @@ namespace MD.Quirk
 
             if (success)
             {
+                GetComponent<CircleCollider2D>().enabled = false;
                 NetworkServer.Destroy(gameObject);
             }
         }

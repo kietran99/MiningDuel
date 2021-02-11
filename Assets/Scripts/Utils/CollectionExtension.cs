@@ -151,4 +151,9 @@ public static class CollectionExtension
 
         return result.ToArray();
     }
+
+    public static T Random<T>(this T[] arr)
+    {
+        return arr[UnityEngine.Random.Range(0, arr.Length)];
+    }
 }

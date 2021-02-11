@@ -159,6 +159,12 @@ namespace MD.Diggable.Core
                     invalidTileErr => Debug.Log("Invalid Tile"),
                     access => 
                     {
+                        if (type.Equals(DiggableType.QUIRK))
+                        {
+                            SpawnQuirkObtainAt(pos.x, pos.y, spawnableQuirkPrefabs.Random());
+                            return;
+                        }
+
                         tileGraph.OnDiggableSpawn(pos);
                         diggableData.Spawn(access, type);
                         eventBroadcaster.TriggerDiggableSpawnEvent(pos.x, pos.y, type); 
@@ -166,6 +172,16 @@ namespace MD.Diggable.Core
                         initSonarTileData[idx] = new SonarTileData(initSonarTileData[idx].x, initSonarTileData[idx].y, type);
                     }
                 );
+        }
+
+        private void SpawnQuirkObtainAt(int x, int y, GameObject quirkPrefab)
+        {
+            var quirkObtainInstance = 
+                Instantiate(quirkObtainPrefab, new Vector3(x + MapConstants.GRID_OFFSET, y + MapConstants.GRID_OFFSET, 0f), Quaternion.identity);
+            NetworkServer.Spawn(quirkObtainInstance);
+            var quirkInstance = Instantiate(quirkPrefab);
+            NetworkServer.Spawn(quirkInstance);
+            quirkObtainInstance.GetComponent<QuirkObtain>().RpcEnable(quirkInstance);
         }
 
         public void DigAt(Mirror.NetworkIdentity digger, int x, int y, int power)
@@ -257,15 +273,6 @@ namespace MD.Diggable.Core
             return diggableData.GetDataAt(x, y).Map(tileData => tileData.Type.IsGem());
         }
 
-        private void SpawnQuirkObtain(GameObject quirkPrefab, Vector3 position)
-        {
-            var quirkObtainInstance = Instantiate(quirkObtainPrefab, position, Quaternion.identity);
-            NetworkServer.Spawn(quirkObtainInstance);
-            var quirkInstance = Instantiate(quirkPrefab);
-            NetworkServer.Spawn(quirkInstance);
-            quirkObtainInstance.GetComponent<QuirkObtain>().RpcEnable(quirkInstance);
-        }
-
         [ServerCallback]
         void Update()
         {
@@ -277,7 +284,7 @@ namespace MD.Diggable.Core
 
             else if (Input.GetKeyDown(KeyCode.X))
             {               
-                SpawnQuirkObtain(spawnableQuirkPrefabs[0], new Vector3(5.5f, 5.5f, 0f));
+                SpawnQuirkObtainAt(5, 5, spawnableQuirkPrefabs.Random());
             }
         }
     }

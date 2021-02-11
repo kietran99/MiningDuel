@@ -24,7 +24,7 @@ namespace MD.Quirk
         {
             base.Activate(userIdentity); 
             planter = userIdentity;
-            GetComponent<SpriteRenderer>().sprite = sonarSprites[Random.Range(0, sonarSprites.Length)];
+            GetComponent<SpriteRenderer>().sprite = sonarSprites.Random();
             System.Func<float, float> SnapPosition = val => Mathf.FloorToInt(val) + GRID_OFFSET;
             transform.position = new Vector3(SnapPosition(planter.transform.position.x), SnapPosition(planter.transform.position.y), 0f);
             Invoke(nameof(StartArming), armSeconds);
@@ -45,7 +45,7 @@ namespace MD.Quirk
             }
 
             var collidingIdentity = other.GetComponent<NetworkIdentity>();
-            RpcShiftState(collidingIdentity);            
+            RpcBindCollidingTarget(collidingIdentity);            
             netIdentity.AssignClientAuthority(collidingIdentity.connectionToClient);
         }
 
@@ -57,12 +57,12 @@ namespace MD.Quirk
                 return;
             }
 
-            RpcShiftState(null);
+            RpcBindCollidingTarget(null);
             netIdentity.RemoveClientAuthority();
         }      
 
         [ClientRpc]
-        private void RpcShiftState(NetworkIdentity collidingTarget)
+        private void RpcBindCollidingTarget(NetworkIdentity collidingTarget)
         {
             this.collidingTarget = collidingTarget;
         }
@@ -92,7 +92,7 @@ namespace MD.Quirk
             explodeTarget?.HandleExplosion(planter.transform, planter.netId, gemDropPercentage);
 
             GetComponent<CircleCollider2D>().enabled = false;
-            RpcShiftState(null);
+            RpcBindCollidingTarget(null);
             NetworkServer.Destroy(gameObject);
         }
     }
