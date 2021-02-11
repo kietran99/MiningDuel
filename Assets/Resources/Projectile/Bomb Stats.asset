@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Bomb Stats
   m_EditorClassIdentifier: 
   projectileSprite: {fileID: 21300000, guid: 8c6be1f0b5ab4504786e427510d3f07a, type: 3}
-  sonarSprite: {fileID: 21300000, guid: fa98014ac19c8234691fc97d851aa9f6, type: 3}
+  sonarSprite: {fileID: 21300000, guid: 8c6be1f0b5ab4504786e427510d3f07a, type: 3}
   gemDropPercentage: 20

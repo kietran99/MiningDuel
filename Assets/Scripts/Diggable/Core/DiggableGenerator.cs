@@ -257,9 +257,9 @@ namespace MD.Diggable.Core
             return diggableData.GetDataAt(x, y).Map(tileData => tileData.Type.IsGem());
         }
 
-        private void SpawnQuirkObtain(GameObject quirkPrefab)
+        private void SpawnQuirkObtain(GameObject quirkPrefab, Vector3 position)
         {
-            var quirkObtainInstance = Instantiate(quirkObtainPrefab, new Vector3(5f, 5f, 0f), Quaternion.identity);
+            var quirkObtainInstance = Instantiate(quirkObtainPrefab, position, Quaternion.identity);
             NetworkServer.Spawn(quirkObtainInstance);
             var quirkInstance = Instantiate(quirkPrefab);
             NetworkServer.Spawn(quirkInstance);
@@ -277,7 +277,7 @@ namespace MD.Diggable.Core
 
             else if (Input.GetKeyDown(KeyCode.X))
             {               
-                SpawnQuirkObtain(spawnableQuirkPrefabs[0]);
+                SpawnQuirkObtain(spawnableQuirkPrefabs[0], new Vector3(5.5f, 5.5f, 0f));
             }
         }
     }
