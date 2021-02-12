@@ -3,7 +3,7 @@ using Mirror;
 
 namespace MD.Quirk
 {
-    [RequireComponent(typeof(SpriteRenderer), typeof(CircleCollider2D))]
+    [RequireComponent(typeof(CircleCollider2D))]
     public class QuirkObtain : NetworkBehaviour
     {
         private SpriteRenderer spriteRenderer;
