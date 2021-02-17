@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 2626691592387369390}
   - component: {fileID: 2626691592387369376}
   - component: {fileID: 5391173634029445593}
-  - component: {fileID: 2626691592387369391}
   - component: {fileID: 986445146230209322}
   m_Layer: 0
   m_Name: Sonar
@@ -125,7 +124,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 4
   m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  m_Color: {r: 0.8160377, g: 1, b: 0.8203159, a: 0.23529412}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.5882353}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -151,22 +150,6 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
---- !u!114 &2626691592387369391
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2626691592387369388}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 527087b0f5edb3443a2c9b1624f1705d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  scannableSideLength: 11
-  tilePoolObject: {fileID: 5120959642936048130}
 --- !u!114 &986445146230209322
 MonoBehaviour:
   m_ObjectHideFlags: 0

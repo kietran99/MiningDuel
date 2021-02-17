@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Common Gem Stats
   m_EditorClassIdentifier: 
   gemSprite: {fileID: 21300000, guid: 12ae9a51180b0a546acffb2875d3daa1, type: 3}
-  sonarSprite: {fileID: 21300000, guid: 12ae9a51180b0a546acffb2875d3daa1, type: 3}
+  sonarSprite: {fileID: -1564068078248656243, guid: 9a61166f05c4e23429ed7c17bae4c1b9,
+    type: 3}
   value: 1
