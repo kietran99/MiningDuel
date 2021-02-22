@@ -2,20 +2,20 @@
 using UnityEngine;
 using MD.Diggable.Core;
 using System.Collections;
-using MD.Character;
 
 namespace MD.Quirk
 {
     public class DrillMachine : BaseQuirk, MD.Diggable.Projectile.IExplodable 
     {
-        public int drillPower = 5;
-        public float drillDelay = 2f;
+        [SerializeField]
+        private int drillPower = 5;
+        
+        [SerializeField]
+        private float drillDelay = 2f;
 
         private readonly float GRID_OFFSET = .5f;
         private NetworkIdentity owner = null;
-        private Vector2 currentTarget;
-
-        private bool IsDestroyed = false;
+        private bool shouldDestroy = false;
 
         // public int maxUses = 3; 
         // int usesLeft = 0;
@@ -34,10 +34,9 @@ namespace MD.Quirk
             StartCoroutine(StartDrilling());
         }
 
-
         private IEnumerator StartDrilling()
         {
-            while(!IsDestroyed)
+            while(!shouldDestroy)
             {
                 if (GetClosestDiggable(out Vector2 currentTarget))
                 {
@@ -60,12 +59,11 @@ namespace MD.Quirk
 
         public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage)
         {
-            Debug.Log("drillmachine explode");
+            Debug.Log("Drill Machine Exploded");
             StopAllCoroutines();
-            IsDestroyed = true;
+            shouldDestroy = true;
             Destroy(gameObject);
         }
-
 
         private bool GetClosestDiggable(out Vector2 pos)
         {
@@ -97,6 +95,7 @@ namespace MD.Quirk
                     }
                 }
             }
+
             pos = default;
             return false;
         }
