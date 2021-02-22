@@ -78,8 +78,8 @@ namespace MD.Diggable.Projectile
         {
             if (!isThrown) return;
 
-            if (!other.CompareTag(Constants.PLAYER_TAG)) return;
-            
+            // if (!other.CompareTag(Constants.PLAYER_TAG)) return;
+            if (other.GetComponent<IExplodable>() == null) return;
             var launcher = GetComponent<ProjectileLauncher>();
             if (launcher)
             {
@@ -94,7 +94,7 @@ namespace MD.Diggable.Projectile
         [ServerCallback]
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (!other.CompareTag(Constants.PLAYER_TAG)) return;
+            if (!other.CompareTag(Constants.PLAYER_TAG) || isThrown) return;
 
             if (other.GetComponent<MD.Character.ThrowAction>().netIdentity == GetComponent<ProjectileLauncher>().Thrower)
             {
@@ -118,9 +118,10 @@ namespace MD.Diggable.Projectile
 
             foreach (Collider2D collide in colliders)
             {
-                if (!collide.CompareTag(Constants.PLAYER_TAG)) continue;  
+                // if (!collide.CompareTag(Constants.PLAYER_TAG)) continue;  
 
                 IExplodable target = collide.transform.GetComponent<IExplodable>();
+                if (target == null) continue;
                 var thrower = GetComponent<ProjectileLauncher>().Thrower;
                 target?.HandleExplosion(thrower.transform, thrower.netId, stats.GemDropPercentage);
             }

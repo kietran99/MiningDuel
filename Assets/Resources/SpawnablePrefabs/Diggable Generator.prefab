@@ -81,7 +81,7 @@ MonoBehaviour:
   quirkObtainPrefab: {fileID: 711221842714100812, guid: 231bd0e423307404682396cb5f9ee9cd,
     type: 3}
   spawnableQuirkPrefabs:
-  - {fileID: 3136954806002261184, guid: 75ede8a2c6074fc4496ea2678c5977aa, type: 3}
+  - {fileID: 9086475506681265454, guid: d3d86a13f978d544fb1b64d5b58e439a, type: 3}
 --- !u!114 &611995917156761752
 MonoBehaviour:
   m_ObjectHideFlags: 0
