@@ -9,7 +9,9 @@ namespace MD.UI
     {        
         private Camera mainCamera;
         private Text playerNameText;
-        private Vector2 baseOffset = new Vector2(0f, 130f);
+
+        [SerializeField]
+        private Vector2 baseOffset = new Vector2(0f, 150f);
 
         protected override void Start()
         {
