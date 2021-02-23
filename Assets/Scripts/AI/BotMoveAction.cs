@@ -147,13 +147,13 @@ namespace MD.AI
         void FixedUpdate()
         {
             if (!hasAuthority) return;
-            if (path != null)
-            {
-                foreach (PathFinding.Node node in path)
-                {
-                    Debug.DrawLine(IndexToWorldMiddleSquare(node.index) -Vector2.one/10f,IndexToWorldMiddleSquare(node.index)+Vector2.one/10f, Color.green);
-                }
-            }
+            // if (path != null)
+            // {
+            //     foreach (PathFinding.Node node in path)
+            //     {
+            //         Debug.DrawLine(IndexToWorldMiddleSquare(node.index) -Vector2.one/10f,IndexToWorldMiddleSquare(node.index)+Vector2.one/10f, Color.green);
+            //     }
+            // }
             MoveBot();
         }
 

@@ -85,6 +85,9 @@ namespace MD.Quirk
 
             if (success)
             {
+                //assign client authority for command rpc
+                containingQuirk.netIdentity.AssignClientAuthority(collidingPlayer.connectionToClient);
+                
                 GetComponent<CircleCollider2D>().enabled = false;
                 NetworkServer.Destroy(gameObject);
             }
