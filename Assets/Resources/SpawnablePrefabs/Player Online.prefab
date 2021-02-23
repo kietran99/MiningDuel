@@ -5203,6 +5203,7 @@ MonoBehaviour:
   droppingGemPrefab: {fileID: 4802790712231606850, guid: d56af095d3afca945b6f0310bc2f873c,
     type: 3}
   maxExplosionForce: 250
+  playerRenderer: {fileID: 9079084059549055238}
 --- !u!114 &546028043007059227
 MonoBehaviour:
   m_ObjectHideFlags: 0
