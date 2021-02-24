@@ -24,7 +24,7 @@ namespace MD.Quirk
         }
 
         [Command]
-        public void CmdRequestUse()
+        public void CmdRequestUse(int idxToUse)
         {
             if (quirks.Count == 0)
             {
@@ -32,13 +32,12 @@ namespace MD.Quirk
                 return;
             }
 
-            RpcTryUse();
+            RpcTryUse(idxToUse);
         }
 
         [ClientRpc]
-        private void RpcTryUse()
+        private void RpcTryUse(int idxToUse)
         {
-            var idxToUse = 0;
             var quirkToUse = quirks[idxToUse];
             // Obtained quirk is a child of Player GO & Player GO is a DontDestroyOnLoad GO 
             // -> Move obtained quirk from Dont Destroy On Load Scene to Multiplayer scene
@@ -60,7 +59,7 @@ namespace MD.Quirk
 
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {             
-                CmdRequestUse();
+                CmdRequestUse(0);
             }
         }
     }
