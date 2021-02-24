@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using Mirror;
+using MD.UI;
+using System;
 
 namespace MD.Quirk
 {
@@ -10,12 +12,32 @@ namespace MD.Quirk
         private int capacity = 1;
         private System.Collections.Generic.List<BaseQuirk> quirks = new System.Collections.Generic.List<BaseQuirk>();
 
+        public override void OnStartAuthority()
+        {
+            EventSystems.EventManager.Instance.StartListening<UI.QuirkInvokeData>(HandleQuirkInvokeEvent);
+        }
+
+        public override void OnStopAuthority()
+        {
+            EventSystems.EventManager.Instance.StartListening<UI.QuirkInvokeData>(HandleQuirkInvokeEvent);
+        }
+
+        private void HandleQuirkInvokeEvent(QuirkInvokeData quirkInvokeData)
+        {
+            CmdRequestUse(quirkInvokeData.idx);
+        }
+
         public bool TryInsert(BaseQuirk quirk)
         {
             if (quirks.Count == capacity)
             {
                 Debug.Log("Quirk Pouch: Cannot Carry More Quirk");
                 return false;
+            }
+
+            if (hasAuthority)
+            {
+                EventSystems.EventManager.Instance.TriggerEvent(new QuirkObtainData(quirk.ObtainSprite));
             }
 
             quirk.transform.SetParent(transform);
