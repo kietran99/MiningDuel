@@ -317,7 +317,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 1}
+      maxColor: {r: 0.5849056, g: 0.38771906, b: 0.21244211, a: 0.5882353}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -5200,10 +5200,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 587de6153c0b3fd44abcae8c6c05444b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   droppingGemPrefab: {fileID: 4802790712231606850, guid: d56af095d3afca945b6f0310bc2f873c,
     type: 3}
   maxExplosionForce: 250
   playerRenderer: {fileID: 9079084059549055238}
+  numberOfFlashes: 3
+  flashDelay: 0.075
 --- !u!114 &546028043007059227
 MonoBehaviour:
   m_ObjectHideFlags: 0
