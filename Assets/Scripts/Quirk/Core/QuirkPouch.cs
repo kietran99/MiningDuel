@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using Mirror;
+using MD.UI;
+using System;
 
 namespace MD.Quirk
 {
@@ -10,6 +12,21 @@ namespace MD.Quirk
         private int capacity = 1;
         private System.Collections.Generic.List<BaseQuirk> quirks = new System.Collections.Generic.List<BaseQuirk>();
 
+        public override void OnStartAuthority()
+        {
+            EventSystems.EventManager.Instance.StartListening<UI.QuirkInvokeData>(HandleQuirkInvokeEvent);
+        }
+
+        public override void OnStopAuthority()
+        {
+            EventSystems.EventManager.Instance.StartListening<UI.QuirkInvokeData>(HandleQuirkInvokeEvent);
+        }
+
+        private void HandleQuirkInvokeEvent(QuirkInvokeData quirkInvokeData)
+        {
+            CmdRequestUse(quirkInvokeData.idx);
+        }
+
         public bool TryInsert(BaseQuirk quirk)
         {
             if (quirks.Count == capacity)
@@ -18,13 +35,18 @@ namespace MD.Quirk
                 return false;
             }
 
+            if (hasAuthority)
+            {
+                EventSystems.EventManager.Instance.TriggerEvent(new QuirkObtainData(quirk.ObtainSprite));
+            }
+
             quirk.transform.SetParent(transform);
             quirks.Add(quirk);
             return true;
         }
 
         [Command]
-        public void CmdRequestUse()
+        public void CmdRequestUse(int idxToUse)
         {
             if (quirks.Count == 0)
             {
@@ -32,13 +54,12 @@ namespace MD.Quirk
                 return;
             }
 
-            RpcTryUse();
+            RpcTryUse(idxToUse);
         }
 
         [ClientRpc]
-        private void RpcTryUse()
+        private void RpcTryUse(int idxToUse)
         {
-            var idxToUse = 0;
             var quirkToUse = quirks[idxToUse];
             // Obtained quirk is a child of Player GO & Player GO is a DontDestroyOnLoad GO 
             // -> Move obtained quirk from Dont Destroy On Load Scene to Multiplayer scene
@@ -60,7 +81,7 @@ namespace MD.Quirk
 
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {             
-                CmdRequestUse();
+                CmdRequestUse(0);
             }
         }
     }
