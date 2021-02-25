@@ -45,7 +45,8 @@ namespace MD.Quirk
             }
 
             var collidingIdentity = other.GetComponent<NetworkIdentity>();
-            RpcBindCollidingTarget(collidingIdentity);            
+            RpcBindCollidingTarget(collidingIdentity);   
+            if (netIdentity.hasAuthority) netIdentity.RemoveClientAuthority();         
             netIdentity.AssignClientAuthority(collidingIdentity.connectionToClient);
         }
 

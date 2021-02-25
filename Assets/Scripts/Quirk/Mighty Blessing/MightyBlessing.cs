@@ -15,24 +15,25 @@ namespace MD.Quirk
         private int power = 9999;
 
         [SerializeField]
-        private float digAllInRangeDelay = .01f;
+        private float digDelay = .01f;
 
         private Vector2Int center;
 
         public override void Activate(NetworkIdentity userIdentity)
         {
             base.Activate(userIdentity);
+
+            if (!hasAuthority)
+            {
+                return;
+            }
+
             center = new Vector2Int (
                 Mathf.FloorToInt(userIdentity.transform.position.x),
                 Mathf.FloorToInt(userIdentity.transform.position.y)
             );
+      
             CmdRequestGemPos(userIdentity, center);
-        }
-
-        [TargetRpc]
-        private void TargetStartDig(NetworkIdentity user,Vector2Int[] posToDig)
-        {
-            StartCoroutine(DigAllInRange(user, posToDig));
         }
 
         [Command]
@@ -41,33 +42,50 @@ namespace MD.Quirk
             Vector2Int[] digArea = GenCircularScannablePositions(center, radius);
             List<Vector2Int> posToDig = new List<Vector2Int>();
             ServiceLocator.Resolve(out IDiggableGenerator diggableGenerator);
+
             foreach (Vector2Int pos in digArea)
             {
-                if (diggableGenerator.IsGemAt(pos.x,pos.y).Match(err => false, isProjAt => isProjAt))
+                if (diggableGenerator.IsGemAt(pos.x, pos.y).Match(err => false, isProjAt => isProjAt))
                 {
                     posToDig.Add(pos);
                 }
             }
+
             TargetStartDig(user, posToDig.ToArray());
+        }
+
+        [TargetRpc]
+        private void TargetStartDig(NetworkIdentity user, Vector2Int[] posToDig)
+        {
+            StartCoroutine(DigAllInRange(user, posToDig));
         }
 
         private IEnumerator DigAllInRange(NetworkIdentity userIdentity, Vector2Int[] posToDig)
         {
+            var digDelayAsWFS = new WaitForSeconds(digDelay);
+
             for (int i= 0; i < posToDig.Length; i++)
             {
-                ServiceLocator
-                .Resolve<IDiggableGenerator>()
-                .Match(
-                    unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
-                    diggableGenerator => 
-                        diggableGenerator.DigAt(
-                            userIdentity, 
-                            posToDig[i].x, 
-                            posToDig[i].y,
-                            power)                
-                );
-                yield return new WaitForSeconds(digAllInRangeDelay);
+                CmdDig(userIdentity, posToDig[i]);
+                yield return digDelayAsWFS;
             }
+
+            NetworkServer.Destroy(gameObject);
+        }
+
+        [Command]
+        private void CmdDig(NetworkIdentity userIdentity, Vector2Int pos){
+            ServiceLocator
+            .Resolve<IDiggableGenerator>()
+            .Match(
+                unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
+                diggableGenerator => 
+                    diggableGenerator.DigAt(
+                        userIdentity, 
+                        pos.x, 
+                        pos.y,
+                        power)                
+            );
         }
 
         private Vector2Int[] GenCircularScannablePositions(Vector2Int center,int scanRange)
@@ -98,6 +116,7 @@ namespace MD.Quirk
                     res.Add(new Vector2Int(x, y) + center);
                 }
             }
+
             return res;
         }
 

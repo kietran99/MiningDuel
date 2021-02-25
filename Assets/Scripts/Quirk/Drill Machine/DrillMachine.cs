@@ -52,10 +52,10 @@ namespace MD.Quirk
                                 drillPower)                
                     );
                 }
+                
                 yield return new WaitForSeconds(drillDelay);
             }
         }
-
 
         public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage)
         {

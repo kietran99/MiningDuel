@@ -2,7 +2,6 @@
 using UnityEngine.SceneManagement;
 using Mirror;
 using MD.UI;
-using System;
 
 namespace MD.Quirk
 {
@@ -19,7 +18,7 @@ namespace MD.Quirk
 
         public override void OnStopAuthority()
         {
-            EventSystems.EventManager.Instance.StartListening<UI.QuirkInvokeData>(HandleQuirkInvokeEvent);
+            EventSystems.EventManager.Instance.StopListening<UI.QuirkInvokeData>(HandleQuirkInvokeEvent);
         }
 
         private void HandleQuirkInvokeEvent(QuirkInvokeData quirkInvokeData)
