@@ -62,7 +62,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  obtainSprite: {fileID: 0}
+  obtainSprite: {fileID: 21300000, guid: 9515b3f470628c74980e1e2b5b0d7912, type: 3}
   radius: 5
   power: 9999
   smallDelay: 0.05

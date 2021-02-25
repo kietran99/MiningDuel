@@ -1,116 +1,121 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MD.Quirk;
 using Mirror;
 using MD.Diggable.Core;
-public class MightyBlessing : BaseQuirk
+
+namespace MD.Quirk
 {
-    [SerializeField]
-    private int radius = 5;
-    [SerializeField]
-    private int power = 9999;
-    [SerializeField]
-    private float smallDelay = .01f;
-
-    private Vector2Int center;
-    public override void Activate(NetworkIdentity userIdentity)
+    public class MightyBlessing : BaseQuirk
     {
-        base.Activate(userIdentity);
-        center = new Vector2Int (
-            Mathf.FloorToInt(userIdentity.transform.position.x),
-            Mathf.FloorToInt(userIdentity.transform.position.y)
-        );
-        CmdRequestGemPos(userIdentity, center);
-    }
+        [SerializeField]
+        private int radius = 5;
 
-    [TargetRpc]
-    private void TargetStartDig(NetworkIdentity user,Vector2Int[] posToDig)
-    {
-        StartCoroutine(DigAllInRange(user, posToDig));
-    }
+        [SerializeField]
+        private int power = 9999;
 
-    [Command]
-    private void CmdRequestGemPos(NetworkIdentity user, Vector2Int center)
-    {
-        Vector2Int[] digArea = GenCircularScannablePositions(center, radius);
-        List<Vector2Int> posToDig = new List<Vector2Int>();
-        ServiceLocator.Resolve(out IDiggableGenerator diggableGenerator);
-        foreach (Vector2Int pos in digArea)
+        [SerializeField]
+        private float digAllInRangeDelay = .01f;
+
+        private Vector2Int center;
+
+        public override void Activate(NetworkIdentity userIdentity)
         {
-            if (diggableGenerator.IsGemAt(pos.x,pos.y).Match(err => false, isProjAt => isProjAt))
-            {
-                posToDig.Add(pos);
-            }
-        }
-        TargetStartDig(user, posToDig.ToArray());
-    }
-
-    private IEnumerator DigAllInRange(NetworkIdentity userIdentity, Vector2Int[] posToDig)
-    {
-        for (int i= 0; i < posToDig.Length; i++)
-        {
-            ServiceLocator
-            .Resolve<IDiggableGenerator>()
-            .Match(
-                unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
-                diggableGenerator => 
-                    diggableGenerator.DigAt(
-                        userIdentity, 
-                        posToDig[i].x, 
-                        posToDig[i].y,
-                        power)                
+            base.Activate(userIdentity);
+            center = new Vector2Int (
+                Mathf.FloorToInt(userIdentity.transform.position.x),
+                Mathf.FloorToInt(userIdentity.transform.position.y)
             );
-            yield return new WaitForSeconds(smallDelay);
-        }
-    }
-
-    private Vector2Int[] GenCircularScannablePositions(Vector2Int center,int scanRange)
-    {
-        var temp = new List<Vector2Int>();
-        temp.AddRange(GenGemPositions(center,scanRange));
-        temp.AddRange(GenFillerPositions(center, scanRange));
-
-        foreach (Vector2Int pos in temp)
-        {
-            Vector3 pos3d = new Vector3(pos.x,pos.y,-1f);
-            Debug.DrawLine((Vector2)pos , pos + Vector2.one/10f, Color.green,5f);
+            CmdRequestGemPos(userIdentity, center);
         }
 
-        return temp.ToArray();
-    }
-
-    private List<Vector2Int> GenGemPositions(Vector2Int center, int range)
-    {
-        var res = new List<Vector2Int>();
-
-        for (int x = -range; x <= range; x++)
+        [TargetRpc]
+        private void TargetStartDig(NetworkIdentity user,Vector2Int[] posToDig)
         {
-            var yRange = range - Mathf.Abs(x);
+            StartCoroutine(DigAllInRange(user, posToDig));
+        }
 
-            for (int y = -yRange; y <= yRange; y++)
+        [Command]
+        private void CmdRequestGemPos(NetworkIdentity user, Vector2Int center)
+        {
+            Vector2Int[] digArea = GenCircularScannablePositions(center, radius);
+            List<Vector2Int> posToDig = new List<Vector2Int>();
+            ServiceLocator.Resolve(out IDiggableGenerator diggableGenerator);
+            foreach (Vector2Int pos in digArea)
             {
-                res.Add(new Vector2Int(x, y) + center);
+                if (diggableGenerator.IsGemAt(pos.x,pos.y).Match(err => false, isProjAt => isProjAt))
+                {
+                    posToDig.Add(pos);
+                }
+            }
+            TargetStartDig(user, posToDig.ToArray());
+        }
+
+        private IEnumerator DigAllInRange(NetworkIdentity userIdentity, Vector2Int[] posToDig)
+        {
+            for (int i= 0; i < posToDig.Length; i++)
+            {
+                ServiceLocator
+                .Resolve<IDiggableGenerator>()
+                .Match(
+                    unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
+                    diggableGenerator => 
+                        diggableGenerator.DigAt(
+                            userIdentity, 
+                            posToDig[i].x, 
+                            posToDig[i].y,
+                            power)                
+                );
+                yield return new WaitForSeconds(digAllInRangeDelay);
             }
         }
-        return res;
-    }
 
-    private List<Vector2Int> GenFillerPositions(Vector2Int center, int range)
-    {
-        var res = new List<Vector2Int>();
-        var fillerRange = range + 1;
-
-        for (int x = -fillerRange ; x <= fillerRange; x++)
+        private Vector2Int[] GenCircularScannablePositions(Vector2Int center,int scanRange)
         {
-            var y = fillerRange - Mathf.Abs(x);
+            var temp = new List<Vector2Int>();
+            temp.AddRange(GenGemPositions(center,scanRange));
+            temp.AddRange(GenFillerPositions(center, scanRange));
 
-            if (y == 0 || y == fillerRange) continue;
-            res.Add(new Vector2Int(x, y) + center);
-            res.Add(new Vector2Int(x, -y) + center);
+            foreach (Vector2Int pos in temp)
+            {
+                Vector3 pos3d = new Vector3(pos.x,pos.y,-1f);
+                Debug.DrawLine((Vector2)pos , pos + Vector2.one/10f, Color.green,5f);
+            }
+
+            return temp.ToArray();
         }
 
-        return res;
-    }
+        private List<Vector2Int> GenGemPositions(Vector2Int center, int range)
+        {
+            var res = new List<Vector2Int>();
 
+            for (int x = -range; x <= range; x++)
+            {
+                var yRange = range - Mathf.Abs(x);
+
+                for (int y = -yRange; y <= yRange; y++)
+                {
+                    res.Add(new Vector2Int(x, y) + center);
+                }
+            }
+            return res;
+        }
+
+        private List<Vector2Int> GenFillerPositions(Vector2Int center, int range)
+        {
+            var res = new List<Vector2Int>();
+            var fillerRange = range + 1;
+
+            for (int x = -fillerRange ; x <= fillerRange; x++)
+            {
+                var y = fillerRange - Mathf.Abs(x);
+
+                if (y == 0 || y == fillerRange) continue;
+                res.Add(new Vector2Int(x, y) + center);
+                res.Add(new Vector2Int(x, -y) + center);
+            }
+
+            return res;
+        }
+    }
 }

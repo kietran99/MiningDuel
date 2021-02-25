@@ -6,7 +6,6 @@ namespace MD.Quirk
     [RequireComponent(typeof(CircleCollider2D))]
     public class QuirkObtain : NetworkBehaviour
     {
-        private SpriteRenderer spriteRenderer;
         private BaseQuirk containingQuirk = null;
         private QuirkPouch quirkPouch;
         private NetworkIdentity collidingIdentity;
@@ -65,10 +64,17 @@ namespace MD.Quirk
             }
 
             CmdObtain();
+            CmdAssignQuirkAuthority(containingQuirk.netIdentity, collidingIdentity);
         }
 
         [Command]
         private void CmdObtain() => RpcPouchInsert(collidingIdentity);
+
+        [Command]
+        private void CmdAssignQuirkAuthority(NetworkIdentity quirkIdentity, NetworkIdentity playerIdentity)
+        {
+            quirkIdentity.AssignClientAuthority(playerIdentity.connectionToClient);
+        }
 
         [ClientRpc]
         private void RpcPouchInsert(NetworkIdentity collidingPlayer)
@@ -85,9 +91,6 @@ namespace MD.Quirk
 
             if (success)
             {
-                //assign client authority for command rpc
-                containingQuirk.netIdentity.AssignClientAuthority(collidingPlayer.connectionToClient);
-                
                 GetComponent<CircleCollider2D>().enabled = false;
                 NetworkServer.Destroy(gameObject);
             }

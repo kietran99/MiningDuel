@@ -284,7 +284,8 @@ namespace MD.Diggable.Core
 
             else if (Input.GetKeyDown(KeyCode.X))
             {               
-                SpawnQuirkObtainAt(5, 5, spawnableQuirkPrefabs.Random());
+                // SpawnQuirkObtainAt(5, 5, spawnableQuirkPrefabs.Random());
+                SpawnQuirkObtainAt(5, 5, spawnableQuirkPrefabs.LookUp(prefab => prefab.name.Equals("Mighty Blessing")).item);
             }
         }
     }
