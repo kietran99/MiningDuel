@@ -50,19 +50,24 @@ public class MightyBlessing : BaseQuirk
     {
         for (int i= 0; i < posToDig.Length; i++)
         {
-            ServiceLocator
-            .Resolve<IDiggableGenerator>()
-            .Match(
-                unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
-                diggableGenerator => 
-                    diggableGenerator.DigAt(
-                        userIdentity, 
-                        posToDig[i].x, 
-                        posToDig[i].y,
-                        power)                
-            );
+            CMDDig(userIdentity, posToDig[i]);
             yield return new WaitForSeconds(smallDelay);
         }
+    }
+
+    [Command]
+    private void CMDDig(NetworkIdentity userIdentity, Vector2Int pos){
+        ServiceLocator
+        .Resolve<IDiggableGenerator>()
+        .Match(
+            unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
+            diggableGenerator => 
+                diggableGenerator.DigAt(
+                    userIdentity, 
+                    pos.x, 
+                    pos.y,
+                    power)                
+        );
     }
 
     private Vector2Int[] GenCircularScannablePositions(Vector2Int center,int scanRange)

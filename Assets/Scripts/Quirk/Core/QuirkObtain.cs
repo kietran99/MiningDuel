@@ -65,10 +65,14 @@ namespace MD.Quirk
             }
 
             CmdObtain();
+            CmdAssignAuthority(containingQuirk.netIdentity, collidingIdentity);
         }
 
         [Command]
         private void CmdObtain() => RpcPouchInsert(collidingIdentity);
+
+        [Command]
+        private void CmdAssignAuthority(NetworkIdentity quirk, NetworkIdentity player) => quirk.AssignClientAuthority(player.connectionToClient);
 
         [ClientRpc]
         private void RpcPouchInsert(NetworkIdentity collidingPlayer)
@@ -85,8 +89,6 @@ namespace MD.Quirk
 
             if (success)
             {
-                //assign client authority for command rpc
-                containingQuirk.netIdentity.AssignClientAuthority(collidingPlayer.connectionToClient);
                 
                 GetComponent<CircleCollider2D>().enabled = false;
                 NetworkServer.Destroy(gameObject);
