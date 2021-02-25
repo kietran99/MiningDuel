@@ -18,6 +18,8 @@ namespace MD.Quirk
             gameObject.SetActive(false);
         }
 
-        public virtual void Activate(NetworkIdentity userIdentity) => gameObject.SetActive(true);
+        public virtual void SingleActivate(NetworkIdentity userIdentity) {}
+
+        public virtual void SyncActivate(NetworkIdentity userIdentity) => gameObject.SetActive(true);
     }
 }

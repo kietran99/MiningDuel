@@ -20,9 +20,9 @@ namespace MD.Quirk
         private NetworkIdentity planter = null, collidingTarget = null;
 
         // [Client]
-        public override void Activate(NetworkIdentity userIdentity)
+        public override void SyncActivate(NetworkIdentity userIdentity)
         {
-            base.Activate(userIdentity); 
+            base.SyncActivate(userIdentity); 
             planter = userIdentity;
             GetComponent<SpriteRenderer>().sprite = sonarSprites.Random();
             System.Func<float, float> SnapPosition = val => Mathf.FloorToInt(val) + GRID_OFFSET;
@@ -46,7 +46,7 @@ namespace MD.Quirk
 
             var collidingIdentity = other.GetComponent<NetworkIdentity>();
             RpcBindCollidingTarget(collidingIdentity);   
-            if (netIdentity.hasAuthority) netIdentity.RemoveClientAuthority();         
+            netIdentity.RemoveClientAuthority();         
             netIdentity.AssignClientAuthority(collidingIdentity.connectionToClient);
         }
 

@@ -25,9 +25,9 @@ namespace MD.Quirk
         //     usesLeft = maxUses;
         // }
 
-        public override void Activate(NetworkIdentity userIdentity)
+        public override void SyncActivate(NetworkIdentity userIdentity)
         {
-            base.Activate(userIdentity);
+            base.SyncActivate(userIdentity);
             System.Func<float, float> SnapPosition = val => Mathf.FloorToInt(val) + GRID_OFFSET;
             transform.position = new Vector3(SnapPosition(userIdentity.transform.position.x), SnapPosition(userIdentity.transform.position.y), 0f);
             owner = userIdentity;

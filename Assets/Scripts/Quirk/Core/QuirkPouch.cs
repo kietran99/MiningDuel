@@ -53,22 +53,30 @@ namespace MD.Quirk
                 return;
             }
 
-            RpcTryUse(idxToUse);
+            RpcMoveQuirkGOToScene(idxToUse);
+            RpcSyncActivate(idxToUse);
+            TargetActivate(idxToUse);
+            RemoveAt(idxToUse);
         }
 
         [ClientRpc]
-        private void RpcTryUse(int idxToUse)
+        private void RpcMoveQuirkGOToScene(int idx)
         {
-            var quirkToUse = quirks[idxToUse];
+            var quirkToUse = quirks[idx];
             // Obtained quirk is a child of Player GO & Player GO is a DontDestroyOnLoad GO 
             // -> Move obtained quirk from Dont Destroy On Load Scene to Multiplayer scene
             quirkToUse.transform.SetParent(null);
             SceneManager.MoveGameObjectToScene(quirkToUse.gameObject, SceneManager.GetActiveScene()); 
-
-            quirkToUse.Activate(netIdentity);
-
-            quirks.RemoveAt(idxToUse);
         }
+
+        [ClientRpc]
+        private void RpcSyncActivate(int idx) => quirks[idx].SyncActivate(netIdentity);
+
+        [TargetRpc]
+        private void TargetActivate(int idx) => quirks[idx].SingleActivate(netIdentity);
+
+        [ClientRpc]
+        private void RemoveAt(int idx) => quirks.RemoveAt(idx);
 
         [ClientCallback]
         private void Update()

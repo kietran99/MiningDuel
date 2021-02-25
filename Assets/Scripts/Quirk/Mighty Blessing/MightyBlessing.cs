@@ -19,15 +19,8 @@ namespace MD.Quirk
 
         private Vector2Int center;
 
-        public override void Activate(NetworkIdentity userIdentity)
+        public override void SingleActivate(NetworkIdentity userIdentity)
         {
-            base.Activate(userIdentity);
-
-            if (!hasAuthority)
-            {
-                return;
-            }
-
             center = new Vector2Int (
                 Mathf.FloorToInt(userIdentity.transform.position.x),
                 Mathf.FloorToInt(userIdentity.transform.position.y)
