@@ -91,9 +91,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3728911073481921151}
   - component: {fileID: 6198926327365011699}
-  - component: {fileID: 7267176726980965476}
   - component: {fileID: 758182922641621686}
   - component: {fileID: 7894777623437921841}
+  - component: {fileID: 7267176726980965476}
   m_Layer: 8
   m_Name: Drill Machine
   m_TagString: Untagged
@@ -132,23 +132,6 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
---- !u!114 &7267176726980965476
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9086475506681265454}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe8b31725fc9178419d3a42d73ea8cde, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  obtainSprite: {fileID: 0}
-  drillPower: 9999
-  drillDelay: 1.5
 --- !u!61 &758182922641621686
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -196,3 +179,20 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &7267176726980965476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9086475506681265454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe8b31725fc9178419d3a42d73ea8cde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  obtainSprite: {fileID: 21300000, guid: c1200fba9ced0694582075c61527fc8a, type: 3}
+  drillPower: 9999
+  drillDelay: 1.5
