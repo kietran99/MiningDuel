@@ -14,7 +14,6 @@ namespace MD.Quirk
         private float drillDelay = 2f;
 
         private readonly float GRID_OFFSET = .5f;
-        private NetworkIdentity owner = null;
         private bool shouldDestroy = false;
 
         // public int maxUses = 3; 
@@ -25,36 +24,47 @@ namespace MD.Quirk
         //     usesLeft = maxUses;
         // }
 
-        public override void SyncActivate(NetworkIdentity userIdentity)
+        public override void SyncActivate(NetworkIdentity user)
         {
-            base.SyncActivate(userIdentity);
+            base.SyncActivate(user);
             System.Func<float, float> SnapPosition = val => Mathf.FloorToInt(val) + GRID_OFFSET;
-            transform.position = new Vector3(SnapPosition(userIdentity.transform.position.x), SnapPosition(userIdentity.transform.position.y), 0f);
-            owner = userIdentity;
-            StartCoroutine(StartDrilling());
+            transform.position = new Vector3(SnapPosition(user.transform.position.x), SnapPosition(user.transform.position.y), 0f);
         }
 
-        private IEnumerator StartDrilling()
+        public override void SingleActivate(NetworkIdentity user)
+        {             
+            StartCoroutine(StartDrilling(user));
+        }      
+
+        private IEnumerator StartDrilling(NetworkIdentity user)
         {
             while(!shouldDestroy)
-            {
-                if (GetClosestDiggable(out Vector2 currentTarget))
-                {
-                    ServiceLocator
-                    .Resolve<IDiggableGenerator>()
-                    .Match(
-                        unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
-                        diggableGenerator => 
-                            diggableGenerator.DigAt(
-                                owner, 
-                                Mathf.FloorToInt(currentTarget.x), 
-                                Mathf.FloorToInt(currentTarget.y), 
-                                drillPower)                
-                    );
-                }
+            {                            
+                CmdRequestDrill(user);
                 
                 yield return new WaitForSeconds(drillDelay);
             }
+        }
+
+        [Command]
+        private void CmdRequestDrill(NetworkIdentity user)
+        {
+            if (!GetClosestDiggable(out Vector2 currentTarget))
+            {
+                return;
+            }
+
+            ServiceLocator
+                .Resolve<IDiggableGenerator>()
+                .Match(
+                    unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
+                    diggableGenerator => 
+                        diggableGenerator.DigAt(
+                            user, 
+                            Mathf.FloorToInt(currentTarget.x), 
+                            Mathf.FloorToInt(currentTarget.y), 
+                            drillPower)                
+                );
         }
 
         public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage)
@@ -65,6 +75,7 @@ namespace MD.Quirk
             Destroy(gameObject);
         }
 
+        [Server]
         private bool GetClosestDiggable(out Vector2 pos)
         {
             Vector2 sqrCenter = new Vector2(Mathf.FloorToInt(transform.position.x) + .5f, Mathf.FloorToInt(transform.position.y) + .5f);
@@ -100,18 +111,15 @@ namespace MD.Quirk
             return false;
         }
 
+        [Server]
         private bool IsGemAt(Vector2 pos)
         {
-            var res = false;
-
-            if (!(res = ServiceLocator.Resolve(out IDiggableGenerator diggableGenerator)))
+            if (!ServiceLocator.Resolve(out IDiggableGenerator diggableGenerator))
             {
-                return res;
+                return false;
             }
 
-            res = diggableGenerator.IsGemAt(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y)).Match(err => false, isProjAt => isProjAt);
-
-            return res;
+            return diggableGenerator.IsGemAt(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y)).Match(err => false, isProjAt => isProjAt);
         }
     }
 }
