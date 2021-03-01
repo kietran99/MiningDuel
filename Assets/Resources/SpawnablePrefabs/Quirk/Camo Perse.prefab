@@ -130,7 +130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  obtainSprite: {fileID: 21300000, guid: f7c36399c8f53cc41a88f65ee2417ac7, type: 3}
+  quirkData: {fileID: 11400000, guid: 10e6db0ca9b798742bf93a3394546120, type: 2}
   sonarSprites:
   - {fileID: 21300000, guid: 2c54edcc70f87e0478daf6ebdf2fa490, type: 3}
   - {fileID: 21300000, guid: 89700463fb296c64a83f21035d8fd322, type: 3}

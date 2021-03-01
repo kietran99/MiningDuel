@@ -193,6 +193,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  obtainSprite: {fileID: 21300000, guid: c1200fba9ced0694582075c61527fc8a, type: 3}
+  quirkData: {fileID: 11400000, guid: 123f987951770ae43a440580660bc815, type: 2}
   drillPower: 9999
   drillDelay: 1.5

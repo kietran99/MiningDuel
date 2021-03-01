@@ -9,9 +9,9 @@ namespace MD.Quirk
     public abstract class BaseQuirk : NetworkBehaviour
     {
         [SerializeField]
-        private Sprite obtainSprite = null;
+        private QuirkData quirkData = null;
 
-        public Sprite ObtainSprite => obtainSprite;
+        public Sprite ObtainSprite => quirkData.ObtainSprite;
 
         public override void OnStartClient()
         {

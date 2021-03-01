@@ -25,7 +25,6 @@ namespace MD.Diggable.Core
 
         private void TriggerGemDugEvent(NetworkIdentity digger, int cur, int max)
         {
-            UnityEngine.Debug.Log("Diggable Generator: " + (diggableGenerator.DigProgressEvent == null));
             diggableGenerator
                 .DigProgressEvent?
                 .Invoke(digger.connectionToClient, new MD.Diggable.Gem.DigProgressData(cur, max));
