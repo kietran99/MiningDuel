@@ -25,6 +25,7 @@ namespace MD.UI
             }
 
             playerNameText.text = player.PlayerName;
+            playerNameText.color = player.PlayerColor;
             gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<EndGameData>(Hide);
         }
 

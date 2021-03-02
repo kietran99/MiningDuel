@@ -164,7 +164,7 @@ namespace MD.UI
         public Player SpawnNetworkPlayer(NetworkConnection conn)
         {
             var player = Instantiate(NetworkPlayerPrefab, spawnPointPicker.NextSpawnPoint.position, Quaternion.identity);
-            player.SetPlayerName(PlayerPrefs.GetString(PlayerNameInput.PLAYER_PREF_NAME_KEY));
+            player.SetPlayerNameAndColor(PlayerPrefs.GetString(PlayerNameInput.PLAYER_PREF_NAME_KEY));
             NetworkServer.AddPlayerForConnection(conn, player.gameObject); 
             return player;        
         }
@@ -236,7 +236,7 @@ namespace MD.UI
             RoomPlayers.ToArray().ForEach(roomPlayer =>
             {
                 var player = Instantiate(NetworkPlayerPrefab, spawnPointPicker.NextSpawnPoint.position, Quaternion.identity);
-                player.SetPlayerName(roomPlayer.DisplayName);
+                player.SetPlayerNameAndColor(roomPlayer.DisplayName);
                 var conn = roomPlayer.netIdentity.connectionToClient;
                 NetworkServer.Destroy(conn.identity.gameObject);
                 NetworkServer.ReplacePlayerForConnection(conn, player.gameObject, true);
