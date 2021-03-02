@@ -15,6 +15,9 @@ namespace MD.UI
         private readonly string NAME_PLAYER_ONLINE = "Player Online";
         private readonly string DIGGABLE_GENERATOR = "Diggable Generator";
         private readonly string DIGGABLE_GENERATOR_COMMUNICATOR = "Diggable Generator Communicator";
+        private readonly string SONAR = "Sonar";
+        private readonly string MAP_GENERATOR = "Map Generator";
+        private readonly string MAP_RENDERER = "Map Renderer";
 
         #region SERIALIZE FIELDS
         [Header("Scene")]
@@ -222,7 +225,7 @@ namespace MD.UI
 
         private void SpawnMapGenerator()
         {
-            var mapGenerator = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals("Map Generator")));
+            var mapGenerator = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(MAP_GENERATOR)));
             NetworkServer.Spawn(mapGenerator);
             DontDestroyOnLoad(mapGenerator);
             DontDestroyOnLoadObjects.Add(mapGenerator);
@@ -257,10 +260,9 @@ namespace MD.UI
 
         private void SpawnSonar(NetworkConnection conn)
         {
-            var sonar = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals("Sonar")));
+            var sonar = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(SONAR)));
             NetworkServer.Spawn(sonar, conn);
         }
-
 
         private void SpawnDiggableGeneratorCommunicator(NetworkConnection conn)
         {
@@ -270,8 +272,8 @@ namespace MD.UI
 
         private void GenMapRenderer(NetworkConnection conn)
         {
-            var mapRenderer = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals("Map Renderer")));
-            NetworkServer.Spawn(mapRenderer, conn);// chưa bỏ 
+            var mapRenderer = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(MAP_RENDERER)));
+            NetworkServer.Spawn(mapRenderer, conn);
         }
 
         private void SetupGame()
