@@ -215,7 +215,7 @@ namespace MD.Character
                 currentState == null || 
                 currentState.Equals(handFreeState) ||
                 !isLocalPlayer ||
-                !Input.GetMouseButtonDown(1)
+                !Input.GetMouseButtonDown(0)
                 )
             {
                 return; 
