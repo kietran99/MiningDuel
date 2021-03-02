@@ -13,11 +13,17 @@ namespace MD.UI
 
         [SerializeField]
         private Vector2 baseOffset = new Vector2(0f, 150f);
-        
+
         private Camera mainCamera;
 
         private void Start()
         {
+            if (player.isLocalPlayer)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+
             playerNameText.text = player.PlayerName;
             gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<EndGameData>(Hide);
         }
