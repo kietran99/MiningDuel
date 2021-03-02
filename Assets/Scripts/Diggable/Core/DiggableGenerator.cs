@@ -273,6 +273,14 @@ namespace MD.Diggable.Core
             return diggableData.GetDataAt(x, y).Map(tileData => tileData.Type.IsGem());
         }
 
+        public void SpawnQuirkObtainAt(int x, int y, QuirkType type)
+        {
+            var quirkObtainInstance = 
+                Instantiate(quirkObtainPrefab, new Vector3(x + MapConstants.GRID_OFFSET, y + MapConstants.GRID_OFFSET, 0f), Quaternion.identity);
+            NetworkServer.Spawn(quirkObtainInstance);
+            quirkObtainInstance.GetComponent<QuirkObtain>().RpcInit(type);
+        }
+
         [ServerCallback]
         void Update()
         {
@@ -285,7 +293,8 @@ namespace MD.Diggable.Core
             else if (Input.GetKeyDown(KeyCode.X))
             {               
                 // SpawnQuirkObtainAt(5, 5, spawnableQuirkPrefabs.Random());
-                SpawnQuirkObtainAt(7, 7, spawnableQuirkPrefabs.LookUp(prefab => prefab.name.Equals("Mighty Blessing")).item);
+                // SpawnQuirkObtainAt(7, 7, spawnableQuirkPrefabs.LookUp(prefab => prefab.name.Equals("Mighty Blessing")).item);
+                SpawnQuirkObtainAt(7, 7, QuirkType.MIGHTY_BLESSING);
                 // SpawnQuirkObtainAt(7, 7, spawnableQuirkPrefabs.LookUp(prefab => prefab.name.Equals("Drill Machine")).item);
                 // SpawnQuirkObtainAt(7, 7, spawnableQuirkPrefabs.LookUp(prefab => prefab.name.Equals("Camo Perse")).item);
             }

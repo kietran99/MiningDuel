@@ -204,7 +204,6 @@ namespace MD.Character
 
         private Camera mainCamera;
 
-        // Cheat control
         [ClientCallback]
         private void Update()
         {           

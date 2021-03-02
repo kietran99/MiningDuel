@@ -2,7 +2,7 @@
 
 namespace MD.Quirk
 {
-    [CreateAssetMenu(fileName="Quirk Data", menuName="Generator/Quirk Data")]
+    [CreateAssetMenu(fileName="Quirk Data", menuName="Generator/Quirk/Quirk Data")]
     public class QuirkData : ScriptableObject
     {
         [SerializeField]
