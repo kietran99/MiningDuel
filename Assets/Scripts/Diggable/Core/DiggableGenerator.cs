@@ -294,8 +294,9 @@ namespace MD.Diggable.Core
             {               
                 // SpawnQuirkObtainAt(5, 5, spawnableQuirkPrefabs.Random());
                 // SpawnQuirkObtainAt(7, 7, spawnableQuirkPrefabs.LookUp(prefab => prefab.name.Equals("Mighty Blessing")).item);
-                SpawnQuirkObtainAt(7, 7, QuirkType.MIGHTY_BLESSING);
+                // SpawnQuirkObtainAt(7, 7, QuirkType.MIGHTY_BLESSING);
                 // SpawnQuirkObtainAt(7, 7, spawnableQuirkPrefabs.LookUp(prefab => prefab.name.Equals("Drill Machine")).item);
+                SpawnQuirkObtainAt(7, 7, QuirkType.DRILL_MACHINE);
                 // SpawnQuirkObtainAt(7, 7, spawnableQuirkPrefabs.LookUp(prefab => prefab.name.Equals("Camo Perse")).item);
             }
         }
