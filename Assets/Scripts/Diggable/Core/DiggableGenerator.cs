@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using MD.Quirk;
@@ -10,16 +9,23 @@ namespace MD.Diggable.Core
     [RequireComponent(typeof(ProjectileSpawner))]
     public class DiggableGenerator : NetworkBehaviour, IDiggableGenerator
     {
+        #region LOOT TABLES
         [Serializable]
-        public struct SpawnRate
-        {
-            public DiggableType type;
-            public int weight;
-        }
+        public class DiggableSpawnEntry : LootEntry<DiggableType> {}
+
+        [Serializable]
+        public class DiggableLootTable : LootTable<DiggableSpawnEntry, DiggableType> {}
+
+        [Serializable]
+        public class QuirkSpawnEntry : LootEntry<QuirkType> {}
+
+        [Serializable]
+        public class QuirkLootTable : LootTable<QuirkSpawnEntry, QuirkType> {}
+        #endregion
 
         #region SERIALIZE FIELDS
         [SerializeField]
-        private SpawnRate[] spawnTable = null;
+        private DiggableLootTable diggableLootTable = null;
 
         [Header("Spawn Stats")]
         [SerializeField]
@@ -30,10 +36,10 @@ namespace MD.Diggable.Core
 
         [Header("Quirk")]
         [SerializeField]
-        private GameObject quirkObtainPrefab = null;
+        private QuirkLootTable quirkLootTable = null;
 
         [SerializeField]
-        private GameObject[] spawnableQuirkPrefabs = null;
+        private GameObject quirkObtainPrefab = null;
         #endregion
 
         #region FIELDS
@@ -41,7 +47,6 @@ namespace MD.Diggable.Core
         private TileGraph tileGraph;
         private DiggableEventBroadcaster eventBroadcaster;
         private BotDiggableEventHandler botEventHandler;
-        private List<WeightedNode<DiggableType>> nodeBasedSpawnTable;
         #endregion
 
         #region EVENTS
@@ -58,7 +63,6 @@ namespace MD.Diggable.Core
         {
             ServiceLocator.Register((IDiggableGenerator) this);
             eventBroadcaster = new DiggableEventBroadcaster(this);
-            InitSortedNodeBasedSpawnTable();
             ServiceLocator
                 .Resolve<MD.Map.Core.IMapGenerator>()
                 .Match(
@@ -72,6 +76,7 @@ namespace MD.Diggable.Core
                         diggableData = new DiggableData(MakeEmptyTiles(tilePositions));
                         FillInitSonarTileData(tilePositions);
                         System.Linq.Enumerable.Range(0, startSpawnAmount).ForEach(_ => RandomSpawn());
+                        quirkLootTable.Log();
                         botEventHandler = new BotDiggableEventHandler();
                         StartCoroutine(RandomSpawnOverTime());
                     }
@@ -89,29 +94,7 @@ namespace MD.Diggable.Core
         
         public SonarTileData[] InitSonarTileData => initSonarTileData;
 
-        private void InitSortedNodeBasedSpawnTable()
-        {
-            nodeBasedSpawnTable = new List<WeightedNode<DiggableType>>();
-            var duplicateCheckSet = new HashSet<DiggableType>();            
-
-            spawnTable
-                .ForEach(spawnRate => 
-                    {
-                        if (duplicateCheckSet.Contains(spawnRate.type))
-                        {
-                            return;
-                        }
-
-                        nodeBasedSpawnTable.Add(new WeightedNode<DiggableType>(spawnRate.type, spawnRate.weight));
-                        duplicateCheckSet.Add(spawnRate.type);
-                    }
-                );
-
-            nodeBasedSpawnTable.SortH2LByWeight();
-            nodeBasedSpawnTable.LogExpectedRates();
-        }
-
-        private Vector2Int[] GenerateDefaultMap()
+        private Vector2Int[] GenerateDefault()
         {
             var (longEdgeLen, shortEdgeLen) = (24, 20);
             var map = new Vector2Int[longEdgeLen * shortEdgeLen];
@@ -146,8 +129,8 @@ namespace MD.Diggable.Core
         private void RandomSpawn()
         {
             var randEmptyPos = tileGraph.RandomTile();
-            var randDiggableType = nodeBasedSpawnTable.RandomSortedList();
-            // Debug.Log("Spawn: " + randDiggableType + " at " + randEmptyPos);
+            var randDiggableType = diggableLootTable.Random;
+            // Debug.Log("DIG GEN: Spawn: " + randDiggableType + " at " + randEmptyPos);
             SpawnAt(randEmptyPos, randDiggableType);           
         }
 
@@ -161,7 +144,7 @@ namespace MD.Diggable.Core
                     {
                         if (type.Equals(DiggableType.QUIRK))
                         {
-                            SpawnQuirkObtainAt(pos.x, pos.y, spawnableQuirkPrefabs.Random());
+                            SpawnQuirkObtainAt(pos.x, pos.y, quirkLootTable.Random);
                             return;
                         }
 
@@ -172,16 +155,6 @@ namespace MD.Diggable.Core
                         initSonarTileData[idx] = new SonarTileData(initSonarTileData[idx].x, initSonarTileData[idx].y, type);
                     }
                 );
-        }
-
-        private void SpawnQuirkObtainAt(int x, int y, GameObject quirkPrefab)
-        {
-            var quirkObtainInstance = 
-                Instantiate(quirkObtainPrefab, new Vector3(x + MapConstants.GRID_OFFSET, y + MapConstants.GRID_OFFSET, 0f), Quaternion.identity);
-            NetworkServer.Spawn(quirkObtainInstance);
-            var quirkInstance = Instantiate(quirkPrefab);
-            NetworkServer.Spawn(quirkInstance);
-            quirkObtainInstance.GetComponent<QuirkObtain>().RpcInitialize(quirkInstance);
         }
 
         public void DigAt(Mirror.NetworkIdentity digger, int x, int y, int power)
@@ -292,12 +265,8 @@ namespace MD.Diggable.Core
 
             else if (Input.GetKeyDown(KeyCode.X))
             {               
-                // SpawnQuirkObtainAt(5, 5, spawnableQuirkPrefabs.Random());
-                // SpawnQuirkObtainAt(7, 7, spawnableQuirkPrefabs.LookUp(prefab => prefab.name.Equals("Mighty Blessing")).item);
                 // SpawnQuirkObtainAt(7, 7, QuirkType.MIGHTY_BLESSING);
-                // SpawnQuirkObtainAt(7, 7, spawnableQuirkPrefabs.LookUp(prefab => prefab.name.Equals("Drill Machine")).item);
                 SpawnQuirkObtainAt(7, 7, QuirkType.DRILL_MACHINE);
-                // SpawnQuirkObtainAt(7, 7, spawnableQuirkPrefabs.LookUp(prefab => prefab.name.Equals("Camo Perse")).item);
             }
         }
     }
