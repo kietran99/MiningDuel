@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Drill Machine Data
   m_EditorClassIdentifier: 
   obtainSprite: {fileID: 21300000, guid: c1200fba9ced0694582075c61527fc8a, type: 3}
-  description: 
+  description: Searches and digs for gems in a small area.

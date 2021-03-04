@@ -13,6 +13,8 @@ namespace MD.Quirk
 
         public Sprite ObtainSprite => quirkData.ObtainSprite;
 
+        public string Description => quirkData.Description;
+
         public override void OnStartClient()
         {
             gameObject.SetActive(false);
