@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Functional.Type;
+using UnityEngine;
 
 namespace MD.Tutorial
 {
@@ -12,12 +13,17 @@ namespace MD.Tutorial
             public int lineIdx;
         }
 
+        [SerializeField]
+        private GameObject materialPrefab = null;
+
         [TextArea]
         [SerializeField]
         private string[] lines = null;
 
         [SerializeField]
         private UIFocus[] focusLines = null;
+
+        public Option<GameObject> MaterialPrefab => materialPrefab != null ? materialPrefab : Option<GameObject>.None;
 
         public string[] Lines => lines;
 

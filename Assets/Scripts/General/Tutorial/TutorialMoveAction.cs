@@ -1,6 +1,5 @@
 ﻿using MD.UI;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 namespace MD.Tutorial
 {
@@ -10,7 +9,7 @@ namespace MD.Tutorial
         private float speed = 1f;
 
         [SerializeField]
-        private Tilemap map = null;
+        private UnityEngine.Tilemaps.Tilemap map = null;
 
         private Rigidbody2D rigidBody;
         private Vector2 moveVect, minMoveBound, maxMoveBound;
@@ -21,7 +20,7 @@ namespace MD.Tutorial
             rigidBody = GetComponent<Rigidbody2D>();
             minMoveBound = map.localBounds.min + new Vector3(.6f, .2f, 0f);
             maxMoveBound = map.localBounds.max - new Vector3(.6f, .6f, 0f);
-            gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<JoystickDragData>(BindMoveVector);
+            GetComponent<EventSystems.EventConsumer>().StartListening<JoystickDragData>(BindMoveVector);
         }
 
         void FixedUpdate()

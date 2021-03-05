@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d394ec1d265d23e49861cf61e8a4fa17, type: 3}
   m_Name: Move Tutorial Data
   m_EditorClassIdentifier: 
+  materialPrefab: {fileID: 0}
   lines:
-  - Move around by dragging the joystick.
+  - Welcome to the Move tutorial!
+  - You can run by dragging the joystick.
+  - Try moving around for a little bit.
   focusLines:
   - gameObjectName: Joystick
-    lineIdx: 0
+    lineIdx: 1

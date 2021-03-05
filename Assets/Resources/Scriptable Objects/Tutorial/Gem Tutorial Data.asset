@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d394ec1d265d23e49861cf61e8a4fa17, type: 3}
+  m_Name: Gem Tutorial Data
+  m_EditorClassIdentifier: 
+  materialPrefab: {fileID: 6953271470035340885, guid: 796772d12f1da3e459005d4607f3d4b0,
+    type: 3}
+  lines:
+  - Welcome to the Gem tutorial!
+  - Let's start with the basics of Gem.
+  - As you may know, Gem is the most precious resource.
+  - Therefore your prime goal should be mining as much Gem as possible.
+  - The player with the most Gem collected at the end of the match
+  - is thereby declared the Mining Champion!
+  - Sounds exciting?
+  - Imma teach you how to look for Gem and excavate them.
+  - First of all, let's try running around to see if the Sonar picks up any Gem signal.
+  - 
+  focusLines: []

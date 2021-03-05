@@ -7,12 +7,6 @@ namespace MD.Tutorial
     {
         #region SERIALIZE FIELDS
         [SerializeField]
-        private Transform[] components = null;
-
-        [SerializeField]
-        private TutorialNavigateData[] navigateData = null;
-
-        [SerializeField]
         private Button nextLineButton = null;
 
         [SerializeField]
@@ -23,6 +17,12 @@ namespace MD.Tutorial
 
         [SerializeField]
         private GameObject mask = null;
+
+        [SerializeField]
+        private Transform[] components = null;
+
+        [SerializeField]
+        private TutorialNavigateData[] navigateData = null;
         #endregion
 
         private TutorialNavigateData curNavData;
@@ -31,7 +31,7 @@ namespace MD.Tutorial
         private void Start()
         {
             nextLineButton.onClick.AddListener(HandleNavContainerClick);
-            LoadData(navigateData[1]);
+            LoadData(navigateData[2]);
         }
 
         private void OnDestroy() => nextLineButton.onClick.RemoveAllListeners();
@@ -40,6 +40,7 @@ namespace MD.Tutorial
         {
             curLineIdx = 0;
             curNavData = data;
+            data.MaterialPrefab.Match(prefab => Instantiate(prefab), () => {});
             HandleNavContainerClick();
         }
 
