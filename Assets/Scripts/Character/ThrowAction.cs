@@ -5,7 +5,6 @@ using MD.UI;
 
 namespace MD.Character
 {
-    [RequireComponent(typeof(ThrowRaycast))]
     public class ThrowAction : NetworkBehaviour
     {
         #region STATES

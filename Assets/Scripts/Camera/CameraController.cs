@@ -18,21 +18,12 @@ public class CameraController : MonoBehaviour
         Debug.Log("Local Bounds max:" + MapConstants.MapMaxBound); 
         Init(map.localBounds.min, map.localBounds.max);
     }
-    
-    void Awake()
-    {
-        // MapConstants.MapMinBound = map.localBounds.min;
-        // MapConstants.MapMaxBound = map.localBounds.max;
-    }
-    void Start()
-    {
-        // Init(map.localBounds.min, map.localBounds.max);
-    }
 
     public void Init(Vector3 botLeft, Vector3 topRight)
     {
         MapConstants.MapMinBound = map.localBounds.min;
         MapConstants.MapMaxBound = map.localBounds.max;
+        
         if (!ServiceLocator.Resolve(out MD.Character.Player player)) return; 
 
         this.player = player.transform;

@@ -23,7 +23,6 @@ namespace MD.Character.Animation
             bool isBot = animator.GetComponent<BotTag>();
             if (isBot)
             {
-                //Debug.Log("BOT DIG");
                 EventSystems.EventManager.Instance.TriggerEvent(new BotDigAnimEndData());
             }
             else 

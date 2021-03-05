@@ -1,49 +1,37 @@
 ﻿using MD.UI;
 using UnityEngine;
-using Mirror;
+using UnityEngine.Tilemaps;
 
-namespace MD.Character
+namespace MD.Tutorial
 {
-    [RequireComponent(typeof(Rigidbody2D))]
-    public class MoveAction : NetworkBehaviour
+    public class TutorialMoveAction : MonoBehaviour
     {
         [SerializeField]
         private float speed = 1f;
+
+        [SerializeField]
+        private Tilemap map = null;
 
         private Rigidbody2D rigidBody;
         private Vector2 moveVect, minMoveBound, maxMoveBound;
         private Vector2 offset = new Vector2(.5f, .5f);
 
-        private Player player = null;
-        private Player Player
-        {
-            get
-            {
-                if (player != null) return player;
-                return player = GetComponent<Player>();
-            }
-        }
-
         private void Start()
         {
             rigidBody = GetComponent<Rigidbody2D>();
-            EventSystems.EventManager.Instance.StartListening<JoystickDragData>(BindMoveVector);
-        }
-
-        private void OnDestroy()
-        {
-            EventSystems.EventManager.Instance.StopListening<JoystickDragData>(BindMoveVector);
+            minMoveBound = map.localBounds.min + new Vector3(.6f, .2f, 0f);
+            maxMoveBound = map.localBounds.max - new Vector3(.6f, .6f, 0f);
+            gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<JoystickDragData>(BindMoveVector);
         }
 
         void FixedUpdate()
         {
-            if (!isLocalPlayer) return;
 #if UNITY_EDITOR
             var moveX = Input.GetAxisRaw("Horizontal");
             var moveY = Input.GetAxisRaw("Vertical");
             EventSystems.EventManager.Instance.TriggerEvent(new JoystickDragData(new Vector2(moveX, moveY)));
 #endif
-            if (moveVect.Equals(Vector2.zero) || !Player.CanMove) return;
+            // if (moveVect.Equals(Vector2.zero) || !Player.CanMove) return;
             
             MoveCharacter(moveVect.x, moveVect.y);
         }
@@ -56,22 +44,13 @@ namespace MD.Character
             transform.Translate(movePos * Time.fixedDeltaTime);
             transform.position = new Vector2(Mathf.Clamp(transform.position.x, minMoveBound.x + offset.x, maxMoveBound.x - offset.x),
                                 Mathf.Clamp(transform.position.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));
-            // rigidBody.MovePosition(movePos*Time.fixedDeltaTime);
         } 
 
         private void LateUpdate()
         {
-            if (!isLocalPlayer) return;
-
-            if (moveVect.Equals(Vector2.zero) || !Player.CanMove) return;
+            // if (moveVect.Equals(Vector2.zero) || !Player.CanMove) return;
 
             EventSystems.EventManager.Instance.TriggerEvent(new MoveData(rigidBody.position.x, rigidBody.position.y));
-        }
-        
-        public void SetBounds(Vector2 minMoveBound, Vector2 maxMoveBound)
-        {
-            this.minMoveBound = minMoveBound;
-            this.maxMoveBound = maxMoveBound;
         }
     }
 }
