@@ -6,8 +6,11 @@ namespace MD.Quirk
     [RequireComponent(typeof(CircleCollider2D))]
     public class QuirkObtain : NetworkBehaviour
     {
-        private BaseQuirk containingQuirk = null;
-        private QuirkPouch quirkPouch;
+        [SerializeField]
+        private QuirkMapper quirkMapper = null;
+
+        private BaseQuirk containingQuirk;
+        private QuirkType containingQuirkType;
         private NetworkIdentity collidingIdentity;
 
         // Quirk Obtain is disabled by default -> Use RpcInitialize to enable it & assign all its neccessary fields
@@ -25,6 +28,14 @@ namespace MD.Quirk
             containingQuirk.transform.SetParent(transform);
             gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<DigInvokeData>(RequestObtain);
 
+            gameObject.SetActive(true);
+        }
+
+        [ClientRpc]
+        public void RpcInit(QuirkType type)
+        {
+            containingQuirkType = type;
+            gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<DigInvokeData>(RequestObtain);
             gameObject.SetActive(true);
         }
 
@@ -57,6 +68,7 @@ namespace MD.Quirk
         [ClientRpc]
         private void RpcBindCollidingTarget(NetworkIdentity collidingIdentity) => this.collidingIdentity = collidingIdentity;
 
+        [Client]
         private void RequestObtain(DigInvokeData _)
         {
             if (collidingIdentity == null || !collidingIdentity.hasAuthority)
@@ -64,23 +76,28 @@ namespace MD.Quirk
                 return;
             }
 
+            CmdRequestSpawnQuirk(containingQuirkType);
             CmdObtain();
-            CmdAssignQuirkAuthority(containingQuirk.netIdentity, collidingIdentity);
         }
+
+        [Command]
+        private void CmdRequestSpawnQuirk(QuirkType type)
+        {
+            var obtainingQuirk = Instantiate(quirkMapper.Map(type));
+            NetworkServer.Spawn(obtainingQuirk, collidingIdentity.connectionToClient);
+            RpcBindContainingQuirk(obtainingQuirk.GetComponent<NetworkIdentity>());
+        }
+
+        [ClientRpc]
+        private void RpcBindContainingQuirk(NetworkIdentity quirkIdentity) => containingQuirk = quirkIdentity.GetComponent<BaseQuirk>();
 
         [Command]
         private void CmdObtain() => RpcPouchInsert(collidingIdentity);
 
-        [Command]
-        private void CmdAssignQuirkAuthority(NetworkIdentity quirkIdentity, NetworkIdentity playerIdentity)
-        {
-            quirkIdentity.AssignClientAuthority(playerIdentity.connectionToClient);
-        }
-
         [ClientRpc]
         private void RpcPouchInsert(NetworkIdentity collidingPlayer)
         {
-            quirkPouch = collidingPlayer.GetComponent<QuirkPouch>();
+            var quirkPouch = collidingPlayer.GetComponent<QuirkPouch>();
 
             if (quirkPouch == null)
             {

@@ -83,6 +83,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  quirkMapper: {fileID: 11400000, guid: dcfc922b822cef04ca36b02fa7bc1bba, type: 2}
 --- !u!95 &1922985205463417550
 Animator:
   serializedVersion: 3

@@ -4,7 +4,7 @@ using Mirror;
 
 namespace MD.Character
 {
-    [RequireComponent(typeof(Rigidbody2D), typeof(Player))]
+    [RequireComponent(typeof(Rigidbody2D))]
     public class MoveAction : NetworkBehaviour
     {
         [SerializeField]

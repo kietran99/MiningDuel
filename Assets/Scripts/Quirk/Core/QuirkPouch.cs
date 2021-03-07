@@ -36,7 +36,7 @@ namespace MD.Quirk
 
             if (hasAuthority)
             {
-                EventSystems.EventManager.Instance.TriggerEvent(new QuirkObtainData(quirk.ObtainSprite));
+                EventSystems.EventManager.Instance.TriggerEvent(new QuirkObtainData(quirk.ObtainSprite, quirk.Description));
             }
 
             quirk.transform.SetParent(transform);

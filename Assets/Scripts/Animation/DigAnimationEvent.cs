@@ -23,16 +23,15 @@ namespace MD.Character.Animation
             bool isBot = animator.GetComponent<BotTag>();
             if (isBot)
             {
-                //Debug.Log("BOT DIG");
                 EventSystems.EventManager.Instance.TriggerEvent(new BotDigAnimEndData());
+                return;
             }
-            else 
+                  
+            var player = animator.transform.parent.GetComponent<Player>();
+            if (player != null && player.hasAuthority) 
             {
-                //WARNING cheating here
-                if (animator.transform.parent.GetComponent<Player>().hasAuthority)             
-                //
-                    EventSystems.EventManager.Instance.TriggerEvent(new DigAnimEndData());
-            }
+                EventSystems.EventManager.Instance.TriggerEvent(new DigAnimEndData());
+            }        
         }
        
         // OnStateMove is called right after Animator.OnAnimatorMove()

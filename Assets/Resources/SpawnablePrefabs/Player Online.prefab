@@ -5257,6 +5257,7 @@ MonoBehaviour:
   syncInterval: 0.1
   colorPicker: {fileID: 11400000, guid: a9877fe161cc7fa4084ab91bd2bd5de0, type: 2}
   scoreManager: {fileID: 546028043007059227}
+  colorIdx: 0
 --- !u!114 &7091697348273341027
 MonoBehaviour:
   m_ObjectHideFlags: 0

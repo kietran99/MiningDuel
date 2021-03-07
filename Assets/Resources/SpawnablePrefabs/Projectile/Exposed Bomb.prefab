@@ -139,7 +139,10 @@ MonoBehaviour:
   projectileObject: {fileID: 5512573233695929278}
   stats: {fileID: 11400000, guid: 1e2aa287b485d584991bba88ec458bf7, type: 2}
   spriteRenderer: {fileID: 6175424214477684141}
+  almostExplodeSprite: {fileID: 21300000, guid: 1a8982c2b55567947a97c4724e8853bc,
+    type: 3}
   explodeSprite: {fileID: 21300044, guid: 7384dec0e667b8643bee02d3ecaf659c, type: 3}
+  sparkEffect: {fileID: 6333079786542684399}
   explodeLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295

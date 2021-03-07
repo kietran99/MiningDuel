@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d394ec1d265d23e49861cf61e8a4fa17, type: 3}
+  m_Name: Diggables Tutorial Data
+  m_EditorClassIdentifier: 
+  materialPrefab: {fileID: 3462802634060813096, guid: b685e5afd9ea8cb49a0a0dac63e637d1,
+    type: 3}
+  lines:
+  - Welcome to Diggable 101!
+  - Where we will cover the basics of Diggables.
+  - Do you know that there are 3 types of
+  - 'Diggable in this world? Which comprises:'
+  - Gems - Rack up as much of these as possible to win the game.
+  - Projectiles - Your primary support as well as offensive tools.
+  - And last but not least!
+  - Quirks - These are amazing as they grant players
+  - superior abilities that can turn the tides
+  - of the battle if used correctly!
+  - But wait. There's a catch! You see, these Diggables
+  - are not exposed to the naked eye so you probably
+  - can't see any of them (well unless you freakin' cheat and that's not nice at
+    all)
+  - Fortunately, the mechanics of this world invented a nice little tool
+  - which is the circle zone around the player called the Sonar!
+  - Every Diggable is visible inside the Sonar
+  - hence using the Sonar wisely is the key to victory.
+  - That's it for the Diggable introduction.
+  - See you in other tutorials.
+  focusLines: []

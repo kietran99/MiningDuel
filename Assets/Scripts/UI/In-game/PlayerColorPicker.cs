@@ -2,7 +2,7 @@
 
 namespace MD.Character
 {
-    [CreateAssetMenu(fileName="Player Color Picker", menuName="Generator/Player Color Picker")]
+    [CreateAssetMenu(fileName="Player Color Picker", menuName="Generator/General/Player Color Picker")]
     public class PlayerColorPicker : ScriptableObject
     {
         [SerializeField]
