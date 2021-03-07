@@ -35,6 +35,7 @@ namespace MD.Tutorial
             }
 
             diggable = true;
+            EventSystems.EventManager.Instance.TriggerEvent(new DiggableContactData());
         }
 
         private void OnTriggerExit2D(Collider2D other)

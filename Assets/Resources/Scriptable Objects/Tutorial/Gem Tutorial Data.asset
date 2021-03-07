@@ -12,17 +12,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d394ec1d265d23e49861cf61e8a4fa17, type: 3}
   m_Name: Gem Tutorial Data
   m_EditorClassIdentifier: 
-  materialPrefab: {fileID: 6953271470035340885, guid: 796772d12f1da3e459005d4607f3d4b0,
+  tutorialMaterial: {fileID: 7469913954116852591, guid: 796772d12f1da3e459005d4607f3d4b0,
     type: 3}
   lines:
   - Welcome to the Gem tutorial!
   - Let's start with the basics of Gem.
-  - As you may know, Gem is the most precious resource.
+  - As you may know, Gem is the most precious resource in this world.
   - Therefore your prime goal should be mining as much Gem as possible.
-  - The player with the most Gem collected at the end of the match
-  - is thereby declared the Mining Champion!
+  - The more Gem you collected the higher your final score.
+  - So be sure to give it your best shot!
   - Sounds exciting?
-  - Imma teach you how to look for Gem and excavate them.
-  - First of all, let's try running around to see if the Sonar picks up any Gem signal.
-  - 
-  focusLines: []
+  - Now let's try it out, shall we?
+  - First of all, let's run around to see if the Sonar picks up any Gem signal.
+  - Hey! There's a Gem over there! Let's head towards and step on top of it!
+  - Now hit the dig button.
+  - Nicely done!
+  - Now pay attention to this!
+  - You just dig up a Common Gem so your score increases by 1.
+  - There is a wide array of Gem in this world
+  - and rarer ones nets you more score!
+  - Moreover, the higher your score is the faster it increases,
+  - Indicated by the number over here.
+  - Amazing, right?
+  - Well that's all the basics about Gems.
+  - I'll find you in another tutorial.
+  focusLines:
+  - objectName: Dig Button Container
+    lineIdx: 10
+  - objectName: Score Canvas
+    lineIdx: 12
+  - objectName: Multiplier Canvas
+    lineIdx: 17

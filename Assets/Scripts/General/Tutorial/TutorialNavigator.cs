@@ -26,11 +26,12 @@ namespace MD.Tutorial
         #endregion
 
         private TutorialNavigateData curNavData;
-        private int curLineIdx = 0;
+        private TutorialState curTutorialState;
 
         private void Start()
         {
-            nextLineButton.onClick.AddListener(HandleNavContainerClick);
+            nextLineButton.onClick.AddListener(ProcessTutorialState);
+            gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<TutorialStateChangeData>(UpdateView);
             LoadData(navigateData[2]);
         }
 
@@ -38,23 +39,20 @@ namespace MD.Tutorial
 
         private void LoadData(TutorialNavigateData data)
         {
-            curLineIdx = 0;
             curNavData = data;
-            data.MaterialPrefab.Match(prefab => Instantiate(prefab), () => {});
-            HandleNavContainerClick();
+            curTutorialState = data.SetupEnvironment();
         }
 
-        private void HandleNavContainerClick()
-        {
-            if (curLineIdx >= curNavData.Lines.Length)
-            {
-                return;
-            }
+        private void ProcessTutorialState()
+        {      
+            curTutorialState.RequestNextState();
+        }
 
+        private void UpdateView(TutorialStateChangeData stateChangeData)
+        {
             Unfocus();
-            PrintLine(curNavData.Lines[curLineIdx], curLineIdx == (curNavData.Lines.Length - 1));
-            MayFocus();
-            curLineIdx++;
+            PrintLine(stateChangeData.line, stateChangeData.isLastLine);
+            stateChangeData.maybefocusObjectName.Match(objName => MayFocus(objName), () => {});
         }
 
         private void PrintLine(string line, bool isLastLine)
@@ -63,20 +61,13 @@ namespace MD.Tutorial
             nextLineAvailableImage.SetActive(!isLastLine);
         }
 
-        private void MayFocus()
+        private void MayFocus(string objToFocus)
         {
-            var maybeFocusLine = curNavData.FocusLines.LookUp(line => line.lineIdx == curLineIdx);
-
-            if (maybeFocusLine.idx.Equals(Constants.INVALID))
-            {
-                return;
-            }
-
-            var maybeComponent = components.LookUp(component => component.name.Equals(maybeFocusLine.item.gameObjectName));
+            var maybeComponent = components.LookUp(component => component.name.Equals(objToFocus));
 
             if (maybeComponent.idx.Equals(Constants.INVALID))
             {
-                Debug.LogWarning("Cannot find any Game Object named: " + maybeFocusLine.item.gameObjectName);
+                Debug.LogWarning("Cannot find any Game Object named: " + objToFocus);
                 return;
             }
 
@@ -98,11 +89,6 @@ namespace MD.Tutorial
         private void BringToFront(Transform component)
         {
             component.SetSiblingIndex(transform.GetSiblingIndex() + 1);
-        }
-
-        private void BringToBack(Transform component)
-        {
-            component.SetSiblingIndex(transform.GetSiblingIndex() - 1);
         }
     }
 }

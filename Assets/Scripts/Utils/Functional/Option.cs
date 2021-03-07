@@ -38,5 +38,10 @@
         {
             return isPresent ? presentHandler(value) : absentHandler();
         }
+
+        public Option<U> Map<U>(System.Func<T, U> presentHandler)
+        {
+            return isPresent ? presentHandler(value) : Option<U>.None;
+        }
     }
 }
