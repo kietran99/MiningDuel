@@ -24,28 +24,35 @@ namespace MD.Map.Core{
         }}
         public int MapWidth => width;
         public int MapHeight => height;
+        [SerializeField] bool useGeneratedMaps = false;
         // public int GetCount{get{return count;}}
 
         public override void OnStartServer()
         {
             // base.OnStartServer();
             ServiceLocator.Register((IMapGenerator)this);  
-
-            totalFill = randomFillPercent1 + randomFillPercent2;
-            totalFill = (totalFill > 100)? 100: totalFill;
-            GenerateMap();
-            if(useRandomSeed)
+            if(useGeneratedMaps)
             {
-                seed = Time.time.ToString();
-            }
-            Random pseudoRandom = new Random(seed.GetHashCode());
-            int random = pseudoRandom.Next(1,10);
-            for(int i = 0; i < random*3+1; i++)
-            {
-                map = Smoothening();
-            }
 
-            AddObstacle();
+            }
+            else
+            {
+                totalFill = randomFillPercent1 + randomFillPercent2;
+                totalFill = (totalFill > 100)? 100: totalFill;
+                GenerateMap();
+                if(useRandomSeed)
+                {
+                    seed = Time.time.ToString();
+                }
+                Random pseudoRandom = new Random(seed.GetHashCode());
+                int random = pseudoRandom.Next(1,10);
+                for(int i = 0; i < random*3+1; i++)
+                {
+                    map = Smoothening();
+                }
+
+                AddObstacle();
+            }
         }
 
         public List<Vector2Int> MovablePostions 
@@ -99,28 +106,8 @@ namespace MD.Map.Core{
         // [SerializeField] RuleTile tileNo1 = null;
         // [SerializeField] RuleTile tileNo2 = null;
         // [SerializeField] RuleTile tileNo3 = null;
-        int[,] map = null; // shouldve have read mirror
-        // int count = 0;
+        int[,] map = null; 
         int totalFill;
-        // int timesRegen=0;
-        void Start()
-        {
-            // totalFill = randomFillPercent1 + randomFillPercent2;
-            // totalFill = (totalFill > 100)? 100: totalFill;
-            // GenerateMap();
-            // if(useRandomSeed)
-            // {
-            //     seed = Time.time.ToString();
-            // }
-            // Random pseudoRandom = new Random(seed.GetHashCode());
-            // int random = pseudoRandom.Next(1,10);
-            // for(int i = 0; i < random*3+1; i++)
-            // {
-            //     map = Smoothening();
-            // }
-
-            // AddObstacle();
-        }
 
         #if UNITY_EDITOR
         void Update()
@@ -143,10 +130,6 @@ namespace MD.Map.Core{
                     map = Smoothening();
                 }
             }
-            // if(Input.GetKeyDown(KeyCode.Space))
-            // {
-            //     ApplyTiles();
-            // }
 
             
             Camera.main.transform.Translate(new Vector3(0,0,Input.GetAxis("Mouse ScrollWheel")*10));
@@ -198,7 +181,6 @@ namespace MD.Map.Core{
                 Array.Clear(map,0,map.Length);
             }
             RandomFillMap();
-            // timesRegen=0;
         }
         void RandomFillMap()
         {
@@ -229,8 +211,6 @@ namespace MD.Map.Core{
         }
         int[,] Smoothening()
         {
-            // timesRegen+=1;
-            // Debug.Log("Times ReGen: " + timesRegen + " State: " + timesRegen%3);
             int[,] newMap = map.Clone() as int[,];
             for(int x = 0; x < width; x++)
             {
@@ -252,10 +232,6 @@ namespace MD.Map.Core{
                         }
                         else
                         {
-                            // if(map[x,y] == 1)
-                            //     newMap[x,y] = 2;
-                            // else
-                            //     newMap[x,y] = 0; 
                             newMap[x,y] = 1;
                         }
                     }
@@ -263,21 +239,8 @@ namespace MD.Map.Core{
                     {
                         if(aliveNeighbor[0] < birthLim)
                         {
-                            // switch(aliveNeighbor[1])
-                            // {
-                            //     case 1:
-                            //         newMap[x,y] = 2;
-                            //         break;
-                            //     case 2:
-                            //         newMap[x,y] = 0;
-                            //         break;
-                            // }
                             newMap[x,y] = aliveNeighbor[1];
                         }
-                        // else
-                        // {
-                        //     newMap[x,y] = 1;
-                        // }
                     }
                     else if( map[x,y] == 1)
                     {
@@ -287,33 +250,6 @@ namespace MD.Map.Core{
                     {
                         newMap[x,y] = 0;
                     }
-
-                    // if(map[x,y] != 0)
-                    // {
-                    //     if(aliveNeighbor[0] >= deathLim)
-                    //     {
-                    //         newMap[x,y] = 0;
-                    //     }
-                    // }
-                    // else 
-                    // {
-                    //     if(aliveNeighbor[0] >= birthLim)
-                    //     {
-                    //         newMap[x,y] = aliveNeighbor[1];
-                    //     }
-                    // }
-                    // if(newMap[x,y] == 0)
-                    // {
-                    //     newMap[x,y] = 1;
-                    // }
-                    // else if(newMap[x,y] == 1)
-                    // {
-                    //     newMap[x,y] = 2;
-                    // }
-                    // else
-                    // {
-                    //     newMap[x,y] =0;
-                    // }
                 }
             }
             
@@ -356,26 +292,6 @@ namespace MD.Map.Core{
                 }
             }
             neighbor[0] = count;
-            // if(numOfNo1 == numOfNo2)
-            // {
-            //     int ran = new Random(seed.GetHashCode()).Next(0,100);
-            //     if(ran < 50)
-            //     {
-            //         neighbor[1] = 1;
-            //     }
-            //     else
-            //     {
-            //         neighbor[1] = 2;
-            //     }
-            // }
-            // else if( numOfNo1 > numOfNo2)
-            // {
-            //     neighbor[1] = 1;
-            // }
-            // else
-            // {
-            //     neighbor[1] = 2;
-            // }
             neighbor[1] = (numOfNo2 > numOfNo1)? 2:1;
             return neighbor;
         }

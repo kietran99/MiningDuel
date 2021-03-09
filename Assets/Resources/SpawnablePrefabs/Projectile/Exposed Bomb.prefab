@@ -143,6 +143,7 @@ MonoBehaviour:
     type: 3}
   explodeSprite: {fileID: 21300044, guid: 7384dec0e667b8643bee02d3ecaf659c, type: 3}
   sparkEffect: {fileID: 6333079786542684399}
+  almostExplosionSparkEmissionMultiplier: 3
   explodeLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295

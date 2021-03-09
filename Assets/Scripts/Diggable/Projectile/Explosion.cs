@@ -42,11 +42,17 @@ namespace MD.Diggable.Projectile
         
         private ITimer timer = null;
         private bool isExploded = false;
+        private bool shouldExplode = true;
 
         public override void OnStartServer()
         {
             timer = GetComponent<ITimer>();
             timer.Activate();
+        }
+        public void StopExplosion()
+        {
+            shouldExplode = false;
+            Debug.Log("Bomb should not expolde");
         }
         
         [ServerCallback]
@@ -86,7 +92,11 @@ namespace MD.Diggable.Projectile
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!isThrown) return;
-
+            if(!shouldExplode)
+            {
+                shouldExplode = true;
+                return;
+            }
             // if (!other.CompareTag(Constants.PLAYER_TAG)) return;
             if (other.GetComponent<IExplodable>() == null) return;
             var launcher = GetComponent<ProjectileLauncher>();

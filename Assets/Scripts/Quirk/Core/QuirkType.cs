@@ -4,6 +4,7 @@
     {
         CAMO_PERSE,
         DRILL_MACHINE,
-        MIGHTY_BLESSING
+        MIGHTY_BLESSING,
+        BARRIER
     }
 }

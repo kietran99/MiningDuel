@@ -41,6 +41,7 @@ namespace MD.Character
         public string PlayerName => playerName;
         public Color PlayerColor => colorPicker.GetColor(colorIdx);
         public bool CanMove => canMove; 
+        public int FinalScore => scoreManager.FinalScore;
         public int CurrentScore => scoreManager.CurrentScore;
 
         public override void OnStartClient()
