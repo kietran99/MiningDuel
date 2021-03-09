@@ -101,6 +101,7 @@ namespace MD.Character
         protected WaitForSecondsRealtime chargeTimeAsWaitForSeconds;  
         protected TargetTracker targetTracker;   
         private IState currentState, handFreeState, freeThrowState, trackState;
+        private Camera mainCamera;
         #endregion
 
         public override void OnStartLocalPlayer()
@@ -200,8 +201,6 @@ namespace MD.Character
             
             holdingProjectile.Launch(basePower, dirX, dirY);
         }
-
-        private Camera mainCamera;
 
         [ClientCallback]
         private void Update()

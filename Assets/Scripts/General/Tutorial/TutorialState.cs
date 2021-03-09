@@ -8,19 +8,21 @@ namespace MD.Tutorial
     {
         private string[] lines;
         private Option<Dictionary<int, string>> maybeFocusDict;
+        private Option<int[]> maskToggleIndices;
         private List<int> impassableLineIndices;
 
         private int curLineIdx;
         
         private string CurLine => lines[curLineIdx];
 
-        public TutorialState(string[] lines, Option<Dictionary<int, string>> maybeFocusDict, List<int> impassableLineIndices)
+        public TutorialState(string[] lines, Option<Dictionary<int, string>> maybeFocusDict, Option<int[]> maskToggleIndices, List<int> impassableLineIndices)
         {
             this.lines = lines;
             this.maybeFocusDict = maybeFocusDict;
+            this.maskToggleIndices = maskToggleIndices;
             this.impassableLineIndices = impassableLineIndices;
             curLineIdx = 0;
-            EventSystems.EventManager.Instance.TriggerEvent(new TutorialStateChangeData(CurLine, lines.Length == 1, TryGetFocusObjName(curLineIdx)));
+            EventSystems.EventManager.Instance.TriggerEvent(new TutorialStateChangeData(CurLine, lines.Length == 1, false, TryGetFocusObjName(curLineIdx)));
         }
 
         private Option<string> TryGetFocusObjName(int idx)
@@ -55,7 +57,13 @@ namespace MD.Tutorial
             }
 
             var nextLineIdx = ++curLineIdx;
-            EventSystems.EventManager.Instance.TriggerEvent(new TutorialStateChangeData(CurLine, nextLineIdx == (lines.Length - 1), TryGetFocusObjName(nextLineIdx)));
+            EventSystems.EventManager.Instance.TriggerEvent(
+                new TutorialStateChangeData(
+                    CurLine, 
+                    nextLineIdx == (lines.Length - 1), 
+                    maskToggleIndices.Match(indices => indices.Find(idx => idx == curLineIdx).HasValue, () => false),
+                    TryGetFocusObjName(nextLineIdx))
+            );
 
             if (ShouldWaitForTrigger)
             {

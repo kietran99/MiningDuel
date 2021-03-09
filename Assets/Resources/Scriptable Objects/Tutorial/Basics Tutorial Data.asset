@@ -30,3 +30,4 @@ MonoBehaviour:
     lineIdx: 3
   - objectName: Joystick
     lineIdx: 8
+  maskToggleIndices: 09000000

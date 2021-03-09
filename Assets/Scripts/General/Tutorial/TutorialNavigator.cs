@@ -25,21 +25,20 @@ namespace MD.Tutorial
         private TutorialNavigateData[] navigateData = null;
         #endregion
 
-        private TutorialNavigateData curNavData;
         private TutorialState curTutorialState;
+        public int loadIdx = 0;
 
         private void Start()
         {
             nextLineButton.onClick.AddListener(ProcessTutorialState);
             gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<TutorialStateChangeData>(UpdateView);
-            LoadData(navigateData[2]);
+            LoadData(navigateData[loadIdx]);
         }
 
         private void OnDestroy() => nextLineButton.onClick.RemoveAllListeners();
 
         private void LoadData(TutorialNavigateData data)
         {
-            curNavData = data;
             curTutorialState = data.SetupEnvironment();
         }
 
@@ -50,7 +49,14 @@ namespace MD.Tutorial
 
         private void UpdateView(TutorialStateChangeData stateChangeData)
         {
-            Unfocus();
+            // Unfocus();
+            transform.SetAsLastSibling();
+
+            if (stateChangeData.shouldToggleMask) 
+            {
+                mask.SetActive(!mask.activeInHierarchy);
+            }
+            
             PrintLine(stateChangeData.line, stateChangeData.isLastLine);
             stateChangeData.maybefocusObjectName.Match(objName => MayFocus(objName), () => {});
         }
@@ -73,6 +79,8 @@ namespace MD.Tutorial
 
             Focus(maybeComponent.item);
         }
+
+        private void ToggleMask() => mask.SetActive(mask.activeInHierarchy);
 
         private void Focus(Transform component)
         {

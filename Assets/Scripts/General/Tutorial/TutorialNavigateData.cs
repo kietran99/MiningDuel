@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MD.Tutorial
 {
-    [CreateAssetMenu(fileName="Tutorial Data", menuName="Generator/Tutorial/Data")]
+    [CreateAssetMenu(fileName="Tutorial Data", menuName="Generator/General/Tutorial Data")]
     public class TutorialNavigateData : ScriptableObject
     {
         [System.Serializable]
@@ -24,6 +24,9 @@ namespace MD.Tutorial
 
         [SerializeField]
         private UIFocus[] focusLines = null;
+
+        [SerializeField]
+        private int[] maskToggleIndices = null;
         #endregion
 
         private Option<AbstractTutorialMaterial> TutorialMaterial => tutorialMaterial != null ? tutorialMaterial : Option<AbstractTutorialMaterial>.None;
@@ -32,7 +35,11 @@ namespace MD.Tutorial
         {
             TutorialMaterial.Match(prefab => Instantiate(prefab), () => Debug.Log("No material prefab was found"));
             // tutorialMaterial.TriggerLineIndices.ForEach(_ => Debug.Log(_));
-            return new TutorialState(lines, MakeMaybeFocusDict(focusLines), tutorialMaterial.TriggerLineIndices);
+            return new TutorialState(
+                lines, 
+                MakeMaybeFocusDict(focusLines), 
+                maskToggleIndices.Length == 0 ? Option<int[]>.None : maskToggleIndices,
+                tutorialMaterial.TriggerLineIndices);
         }
     
         private Option<Dictionary<int, string>> MakeMaybeFocusDict(UIFocus[] focusLines)

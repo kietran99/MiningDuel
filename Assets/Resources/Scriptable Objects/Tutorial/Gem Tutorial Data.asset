@@ -15,7 +15,7 @@ MonoBehaviour:
   tutorialMaterial: {fileID: 7469913954116852591, guid: 796772d12f1da3e459005d4607f3d4b0,
     type: 3}
   lines:
-  - Welcome to the Gem tutorial!
+  - Welcome to Gem tutorial!
   - Let's start with the basics of Gem.
   - As you may know, Gem is the most precious resource in this world.
   - Therefore your prime goal should be mining as much Gem as possible.
@@ -43,3 +43,4 @@ MonoBehaviour:
     lineIdx: 12
   - objectName: Multiplier Canvas
     lineIdx: 17
+  maskToggleIndices: 080000000d00000012000000

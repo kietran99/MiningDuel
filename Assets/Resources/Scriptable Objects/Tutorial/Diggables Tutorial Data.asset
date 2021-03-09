@@ -33,3 +33,4 @@ MonoBehaviour:
   - That's it for the Diggable introduction.
   - See you in the next tutorials.
   focusLines: []
+  maskToggleIndices: 0c000000

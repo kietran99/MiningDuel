@@ -3,49 +3,26 @@ using UnityEngine;
 
 namespace MD.Tutorial
 {
-    [RequireComponent(typeof(CircleCollider2D))]
     [RequireComponent(typeof(GemValue))]
-    public class TutorialGemObtain : MonoBehaviour
+    public class TutorialGemObtain : TutorialDiggableObtain
     {
         private GemValue gemValue;
-        private bool diggable;
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             gemValue = GetComponent<GemValue>();
-            gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<DigInvokeData>(MayDig);
         }
 
-        private void MayDig(DigInvokeData _)
+        protected override void OnTriggerEnter2D(Collider2D other)
         {
-            if (!diggable)
-            {
-                return;
-            }
-
-            EventSystems.EventManager.Instance.TriggerEvent(new Character.ScoreChangeData(gemValue.Value));
-            gameObject.SetActive(false);
-        }
-
-        private void OnTriggerEnter2D(Collider2D other)
-        {
-            if (!other.CompareTag(Constants.PLAYER_TAG))
-            {
-                return;
-            }
-
-            diggable = true;
+            base.OnTriggerEnter2D(other);
             EventSystems.EventManager.Instance.TriggerEvent(new DiggableContactData());
         }
 
-        private void OnTriggerExit2D(Collider2D other)
+        protected override void TriggerObtainEvent()
         {
-            if (!other.CompareTag(Constants.PLAYER_TAG))
-            {
-                return;
-            }
-
-            diggable = false;
+            EventSystems.EventManager.Instance.TriggerEvent(new Character.ScoreChangeData(gemValue.Value));
         }
     }
 }
