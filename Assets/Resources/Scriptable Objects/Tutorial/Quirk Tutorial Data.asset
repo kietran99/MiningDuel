@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d394ec1d265d23e49861cf61e8a4fa17, type: 3}
+  m_Name: Quirk Tutorial Data
+  m_EditorClassIdentifier: 
+  tutorialMaterial: {fileID: 3189619042847183262, guid: f403482d8956bc3439c149db8a605130,
+    type: 3}
+  lines:
+  - Hello! You must be here for the Quirk tutorial.
+  - As the last of the 3 Diggable types, this one is by far the most fascinating!
+  - You see, no one ever knows whoever invented Quirks.
+  - They are advanced technologies that occasionally appears underground.
+  - Fortunately, we can use them to our advantage in game matches.
+  - Collected Quirks can be activated by pressing this button, but currently yours
+    is vacant.
+  - Like other Diggables, you have to dig for this one too.
+  - Luckily, I've supplied you with a Quirk, the Mighty Blessing!
+  - It grants you the power to excavate all gems in a small area around the player.
+  - Here, try it for yourself! Just hit the button real hard.
+  - Hehe awesome right! There are also other types of Quirk but you have to discover
+    by yourself.
+  - So that's all the basics about Quirks! Find you in another tutorials.
+  focusLines:
+  - objectName: Quirk Container
+    lineIdx: 5
+  maskToggleIndices: 09000000

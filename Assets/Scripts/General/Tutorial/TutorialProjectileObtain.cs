@@ -13,7 +13,6 @@ namespace MD.Tutorial
         {
             exposedBomb.gameObject.SetActive(true);
             exposedBomb.Player = collidingPlayer.transform;
-            collidingPlayer.GetComponent<TutorialThrowAction>().SetLauncher(exposedBomb);
             EventSystems.EventManager.Instance.TriggerEvent(new Diggable.Projectile.ProjectileObtainData(null, DiggableType.NORMAL_BOMB));
         }
 

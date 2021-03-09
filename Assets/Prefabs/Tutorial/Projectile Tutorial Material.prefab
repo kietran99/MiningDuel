@@ -128,7 +128,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc783ad88e1737149a1534ca646d9089, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerLineIndices: 0500000006000000
+  triggerLineIndices: 05000000060000000c000000
+  practiceTarget: {fileID: 5867351746632506530}
+  showTargetIndex: 11
+  launcher: {fileID: 4686575348672951204}
+  addThrowActionIndex: 12
 --- !u!1 &5867351746632506530
 GameObject:
   m_ObjectHideFlags: 0
@@ -139,13 +143,15 @@ GameObject:
   m_Component:
   - component: {fileID: 1622576298643452033}
   - component: {fileID: 4963729833530968206}
+  - component: {fileID: 8667609986906720050}
+  - component: {fileID: 1995669543107902305}
   m_Layer: 0
   m_Name: Practice Target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1622576298643452033
 Transform:
   m_ObjectHideFlags: 0
@@ -154,8 +160,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5867351746632506530}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 3, y: 1, z: 0}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_Children: []
   m_Father: {fileID: 5184582003058185717}
   m_RootOrder: 3
@@ -211,6 +217,38 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!58 &8667609986906720050
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5867351746632506530}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 1
+--- !u!114 &1995669543107902305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5867351746632506530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3df168bd56eb3d746a04cb33c03e8222, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  droppingGemPrefab: {fileID: 1190033981630000518, guid: 54cffa4d432e99b418219cadaddbaf79,
+    type: 3}
+  dropAmount: 10
+  maxExplosionForce: 250
 --- !u!114 &454626223579413364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -223,6 +261,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2f1065bb2d50514a97e7619c9a9f2d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 8764504292789981134}
+  explodeSprite: {fileID: 21300044, guid: 7384dec0e667b8643bee02d3ecaf659c, type: 3}
 --- !u!114 &4686575348672951204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -391,6 +431,12 @@ GameObject:
 --- !u!4 &5885652167152140832 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9060201054313328707, guid: 12a10bcf8aa0e404aa2b018caf4f31f0,
+    type: 3}
+  m_PrefabInstance: {fileID: 3175677298685489763}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &8764504292789981134 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 6175424214477684141, guid: 12a10bcf8aa0e404aa2b018caf4f31f0,
     type: 3}
   m_PrefabInstance: {fileID: 3175677298685489763}
   m_PrefabAsset: {fileID: 0}

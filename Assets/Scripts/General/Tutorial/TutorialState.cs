@@ -22,7 +22,7 @@ namespace MD.Tutorial
             this.maskToggleIndices = maskToggleIndices;
             this.impassableLineIndices = impassableLineIndices;
             curLineIdx = 0;
-            EventSystems.EventManager.Instance.TriggerEvent(new TutorialStateChangeData(CurLine, lines.Length == 1, false, TryGetFocusObjName(curLineIdx)));
+            EventSystems.EventManager.Instance.TriggerEvent(new TutorialStateChangeData(curLineIdx, CurLine, lines.Length == 1, false, TryGetFocusObjName(curLineIdx)));
         }
 
         private Option<string> TryGetFocusObjName(int idx)
@@ -59,6 +59,7 @@ namespace MD.Tutorial
             var nextLineIdx = ++curLineIdx;
             EventSystems.EventManager.Instance.TriggerEvent(
                 new TutorialStateChangeData(
+                    curLineIdx,
                     CurLine, 
                     nextLineIdx == (lines.Length - 1), 
                     maskToggleIndices.Match(indices => indices.Find(idx => idx == curLineIdx).HasValue, () => false),

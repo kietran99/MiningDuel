@@ -16,7 +16,7 @@ namespace MD.Tutorial
 
     public class TutorialMaterial<T> : AbstractTutorialMaterial where T : IEventData
     {
-        private void Start()
+        protected virtual void Start()
         {
             if (triggerLineIndices.Length != 1)
             {
@@ -32,7 +32,7 @@ namespace MD.Tutorial
 
     public class TutorialMaterial<T0, T1> : AbstractTutorialMaterial where T0 : IEventData where T1 : IEventData
     {
-        private void Start()
+        protected virtual void Start()
         {
             if (triggerLineIndices.Length != 2)
             {
@@ -52,7 +52,7 @@ namespace MD.Tutorial
 
     public class TutorialMaterial<T0, T1, T2> : AbstractTutorialMaterial where T0 : IEventData where T1 : IEventData where T2 : IEventData
     {
-        private void Start()
+        protected virtual void Start()
         {
             if (triggerLineIndices.Length != 3)
             {

@@ -7,9 +7,13 @@ namespace MD.Tutorial
         [SerializeField]
         private float basePower = 100f;
 
-        [SerializeField]
         private Camera mainCamera = null;
         private TutorialProjectileLauncher launcher;
+
+        private void Start()
+        {
+            mainCamera = Camera.main;
+        }
 
         private void Update()
         {    
@@ -23,9 +27,11 @@ namespace MD.Tutorial
                 return; 
             }
 
-            Vector2 clickPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            // Vector2 clickPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 clickPos = new Vector2(2f, 0f);
             Vector2 throwDir = clickPos - new Vector2(transform.position.x, transform.position.y);
             Throw(basePower, throwDir.x, throwDir.y);
+            EventSystems.EventManager.Instance.TriggerEvent(new UI.ThrowInvokeData());
         }
 
         public void SetLauncher(TutorialProjectileLauncher launcher) 
@@ -33,6 +39,6 @@ namespace MD.Tutorial
             this.launcher = launcher;
         }
 
-        private void Throw(float power, float dirX, float dirY) => launcher?.Launch(power, dirX, dirY);      
+        private void Throw(float power, float dirX, float dirY) => launcher.Launch(power, dirX, dirY);      
     }
 }

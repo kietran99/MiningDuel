@@ -26,15 +26,14 @@ MonoBehaviour:
   - Great! Now you're holding a Normal Bomb, which is a pretty common type of Projectile.
   - Be aware that Projectiles explode after a short amount of time.
   - So if you keep holding it , you'll damage yourself in a couple of seconds!
-  - As you can see as the Projectile has changed colors,
-  - which implies that it's about to go boom, so better throw it quickly!
-  - It's best to throw Projectiles at another player
-  - as they will drop a bunch of gems if they get hit.
+  - Hence it's best to throw Projectiles at another player as they will drop a bunch
+    of gems if hit.
   - Hey, conveniently there's a practicing target over there!
-  - Let's throw a full-force shot at them.
-  - Tap somewhere on the screen to throw at that direction.
-  - 
-  - 
-  - 
-  focusLines: []
-  maskToggleIndices: 0500000007000000
+  - Tap somewhere on the screen to throw at that direction. Let's throw it at them.
+  - Nicely done! As a bonus, some of the target's gems is now yours!
+  - Which means that you can go offensive instead of mining for gems.
+  - That's the end of this tutorial! See ya in another one.
+  focusLines:
+  - objectName: Score Canvas
+    lineIdx: 13
+  maskToggleIndices: 05000000080000000b000000

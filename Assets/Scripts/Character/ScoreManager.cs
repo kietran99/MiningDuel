@@ -32,7 +32,7 @@ namespace MD.Character
 
         public int CurrentScore { get => currentScore; }
 
-        public int FinalScore {get => finalScore; }
+        public int FinalScore { get => finalScore; }
 
         public float CurrentMultiplier { get => currentMultiplier; }
 
