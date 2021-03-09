@@ -43,7 +43,7 @@ namespace MD.Diggable.Projectile
         private ITimer timer = null;
         private bool isExploded = false;
         private bool shouldExplode = true;
-
+        
         public override void OnStartServer()
         {
             timer = GetComponent<ITimer>();

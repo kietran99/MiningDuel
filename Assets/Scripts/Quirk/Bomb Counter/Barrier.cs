@@ -9,16 +9,13 @@ namespace MD.Quirk
         [SerializeField] float expireTime = 120f;
         // private readonly float GRID_OFFSET = .5f;
         private bool shouldDestroy = false;
-        private bool bombFromHolder = false;
         private Transform player = null;
         public override void SyncActivate(NetworkIdentity userIdentity)
         {
             base.SyncActivate(userIdentity);
-            // System.Func<float, float> SnapPosition = val => Mathf.FloorToInt(val) + GRID_OFFSET;
-            transform.position = userIdentity.transform.position;
-            transform.parent = userIdentity.transform;
             player = userIdentity.transform;
-            // BarrierReady();
+            transform.position = player.position;
+            transform.parent = player;
             Debug.Log("Quirk: Barrier Activated");
             Invoke(nameof(ExpireBarrier), expireTime);
         }
@@ -31,18 +28,23 @@ namespace MD.Quirk
                 shouldDestroy = true;
             }
         }
-        void BarrierReady()
+        private void FixedUpdate()
         {
-
+            transform.localPosition = Vector3.zero;
         }
-        // private void Update()
-        // {
-        //     transform.localPosition = Vector3.zero;
-        // }
+        private bool CheckBombThrown(Vector3 bomb, float radius)
+        {
+            float distance = (bomb - transform.position).magnitude;
+            if(distance > (radius + GetComponent<CircleCollider2D>().radius))
+            {
+                return true;
+            }
+            return false;
+        }
         [ServerCallback]
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if(bombFromHolder) return;
+            // if(bombFromHolder) return;
             if(other.gameObject.CompareTag(Constants.PLAYER_TAG))
             {
                 return;
@@ -51,14 +53,23 @@ namespace MD.Quirk
             {
                 return;
             }
+            if(other.GetComponent<MD.Diggable.Projectile.ProjectileLauncher>().BeingHeld)
+            {
+                return;
+            }
+            // if(!other.GetComponent<MD.Diggable.Projectile.ProjectileLauncher>().BeingHeld) 
+            // {
+            //     if(!CheckBombThrown(other.transform.position, other.GetComponent<CircleCollider2D>().radius))
+            //     {
+            //         player.GetComponent<MD.Character.DigAction>().bombDug = false;
+            //         return;
+            //         // this is where a bug will appear when player have barrier and holds a projectile, if he gets hit, barrier will ignore the bomb and disappear after that, causing players to take dmg 
+            //     }
+            // }
             other.GetComponent<MD.Diggable.Projectile.Explosion>().StopExplosion();
-            Debug.Log("Quirk:Barrier_1");
             var rb = other.GetComponent<Rigidbody2D>();
             if(rb == null) return;
-            Debug.Log("Quirk:Barrier_2");
             float speed = rb.velocity.magnitude;
-            // ContactPoint2D[] contacts = new ContactPoint2D[10];
-            // int contactsNum = other.GetContacts(contacts);
             Debug.Log("Incoming"+rb.velocity);
             Vector2 contact = Intersection(transform.position.x,transform.position.y,GetComponent<CircleCollider2D>().radius,rb.velocity);
             Vector2 reflectDirection =  Vector2.Reflect(rb.velocity.normalized, contact.normalized);
@@ -107,11 +118,6 @@ namespace MD.Quirk
             res.x = x2;
             res.y = y2;
             return res;
-        }
-
-        void FixedUpdate()
-        {
-            transform.position = player.position;
         }
     }
 }
