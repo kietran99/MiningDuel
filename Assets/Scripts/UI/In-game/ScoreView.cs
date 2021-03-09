@@ -9,9 +9,12 @@ namespace MD.UI
         [SerializeField]
         private Text scoreText = null;
 
+        [SerializeField]
+        private Text finalScoreText = null;
+
         void Start()
         {
-            UpdateScoreText(0);
+            UpdateScoreText(0,0);
             EventSystems.EventManager.Instance.StartListening<ScoreChangeData>(HandleScoreChange);
         }
 
@@ -20,8 +23,12 @@ namespace MD.UI
             EventSystems.EventManager.Instance.StopListening<ScoreChangeData>(HandleScoreChange);
         }
 
-        private void HandleScoreChange(ScoreChangeData data) => UpdateScoreText(data.newScore);
+        private void HandleScoreChange(ScoreChangeData data) => UpdateScoreText(data.newScore, data.finalScore);
 
-        public void UpdateScoreText(int score) => scoreText.text = score.ToString();
+        public void UpdateScoreText(int score, int finalScore)
+        {
+            finalScoreText.text = finalScore.ToString();
+            scoreText.text = score.ToString();
+        }
     }
 }

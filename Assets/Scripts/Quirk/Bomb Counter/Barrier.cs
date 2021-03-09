@@ -10,12 +10,14 @@ namespace MD.Quirk
         // private readonly float GRID_OFFSET = .5f;
         private bool shouldDestroy = false;
         private bool bombFromHolder = false;
+        private Transform player = null;
         public override void SyncActivate(NetworkIdentity userIdentity)
         {
             base.SyncActivate(userIdentity);
             // System.Func<float, float> SnapPosition = val => Mathf.FloorToInt(val) + GRID_OFFSET;
             transform.position = userIdentity.transform.position;
             transform.parent = userIdentity.transform;
+            player = userIdentity.transform;
             // BarrierReady();
             Debug.Log("Quirk: Barrier Activated");
             Invoke(nameof(ExpireBarrier), expireTime);
@@ -105,6 +107,11 @@ namespace MD.Quirk
             res.x = x2;
             res.y = y2;
             return res;
+        }
+
+        void FixedUpdate()
+        {
+            transform.position = player.position;
         }
     }
 }

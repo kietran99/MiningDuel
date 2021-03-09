@@ -15,7 +15,7 @@ namespace MD.Quirk
         private int power = 9999;
 
         [SerializeField]
-        private float digDelay = .01f;
+        private float delayStartLevel = 2f;
 
         private Vector2Int center;
 
@@ -55,12 +55,13 @@ namespace MD.Quirk
 
         private IEnumerator DigAllInRange(NetworkIdentity userIdentity, Vector2Int[] posToDig)
         {
-            var digDelayAsWFS = new WaitForSeconds(digDelay);
+            float currentDelay = delayStartLevel;
 
             for (int i= 0; i < posToDig.Length; i++)
             {
                 CmdDig(userIdentity, posToDig[i]);
-                yield return digDelayAsWFS;
+                yield return new WaitForSeconds(1/Mathf.Exp(currentDelay));
+                currentDelay +=.2f;  
             }
 
             NetworkServer.Destroy(gameObject);

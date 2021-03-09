@@ -23,7 +23,7 @@ namespace MD.Tutorial
                 return;
             }
 
-            EventSystems.EventManager.Instance.TriggerEvent(new Character.ScoreChangeData(gemValue.Value));
+            EventSystems.EventManager.Instance.TriggerEvent(new Character.ScoreChangeData(gemValue.Value, 0));
             gameObject.SetActive(false);
         }
 

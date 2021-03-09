@@ -41,7 +41,10 @@ namespace MD.UI
         private GameObject botPrefab = null;
 
         [SerializeField]
-        private SpawnPointPicker spawnPointPicker = null;    
+        private SpawnPointPicker spawnPointPicker = null;
+
+        [SerializeField]
+        private Storage gemStorage = null;    
         #endregion
 
         #region FIELDS
@@ -253,9 +256,17 @@ namespace MD.UI
             Players.ForEach(player => SpawnSonar(player.connectionToClient));            
             Players.ForEach(player => SpawnDiggableGeneratorCommunicator(player.connectionToClient));  
             Players.ForEach(player => GenMapRenderer(player.connectionToClient)); 
-
+            Players.ForEach(player => SpawnStorage(player.netIdentity));
             //TODO check if all players loaded scene
             SetupGame();           
+        }
+        private void SpawnStorage(NetworkIdentity id)
+        {
+            //spawn test storage
+            var storage = Instantiate(gemStorage, id.transform.position, Quaternion.identity);
+            storage.Initialize(id);
+            Debug.Log("spawn storage********************************");
+            NetworkServer.Spawn(storage.gameObject);
         }
 
         private void SpawnSonar(NetworkConnection conn)
@@ -325,17 +336,17 @@ namespace MD.UI
             //if play with bot
             if (Bots.Count > 0)
             {
-                Players[0].TargetNotifyEndGame(Players[0].CurrentScore >= Bots[(int)0].CurrentScore);
+                Players[0].TargetNotifyEndGame(Players[0].FinalScore >= Bots[(int)0].CurrentScore);
                 return;
             }
             
             Players.ForEach(player => player.Movable(false));
-            List<Player> orderedPlayers = Players.OrderBy(player => -player.CurrentScore).ToList<Player>();
-            int highestScore = orderedPlayers[0].CurrentScore;
+            List<Player> orderedPlayers = Players.OrderBy(player => -player.FinalScore).ToList<Player>();
+            int highestScore = orderedPlayers[0].FinalScore;
             orderedPlayers[0].TargetNotifyEndGame(true);
             foreach (Player player in orderedPlayers.Skip(1))
             {
-                if (player.CurrentScore == highestScore)
+                if (player.FinalScore == highestScore)
                 {
                     //tied
                     player.TargetNotifyEndGame(true);
