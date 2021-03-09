@@ -4,7 +4,6 @@ using Mirror;
 
 namespace MD.Character
 {
-    [RequireComponent(typeof(Player))]
     public class PlayerExplosionHandler : NetworkBehaviour, IExplodable
     {
         private readonly float PERCENTAGE_MODIFIER = 0.01f;

@@ -5,7 +5,6 @@ using MD.UI;
 
 namespace MD.Character
 {
-    [RequireComponent(typeof(ThrowRaycast))]
     public class ThrowAction : NetworkBehaviour
     {
         #region STATES
@@ -204,7 +203,6 @@ namespace MD.Character
 
         private Camera mainCamera;
 
-        // Cheat control
         [ClientCallback]
         private void Update()
         {           
@@ -215,7 +213,7 @@ namespace MD.Character
                 currentState == null || 
                 currentState.Equals(handFreeState) ||
                 !isLocalPlayer ||
-                !Input.GetMouseButtonDown(1)
+                !Input.GetMouseButtonDown(0)
                 )
             {
                 return; 

@@ -18,6 +18,12 @@ namespace MD.UI
         [SerializeField]
         private Image quirkImage = null; 
 
+        [SerializeField]
+        private GameObject descriptionPanel = null;
+
+        [SerializeField]
+        private Text descriptionText = null;
+
         private void Start()
         {
             EventSystems.EventManager.Instance.StartListening<QuirkObtainData>(HandleQuirkObtainEvent);
@@ -36,17 +42,15 @@ namespace MD.UI
             Remove();
         }
 
-        private void HandleQuirkObtainEvent(QuirkObtainData quirkObtainData)
-        {
-            Insert(quirkObtainData.quirkSprite);
-        }
+        private void HandleQuirkObtainEvent(QuirkObtainData quirkObtainData) => Insert(quirkObtainData.quirkSprite, quirkObtainData.description);
 
-        private void Insert(Sprite quirkSprite)
+        private void Insert(Sprite quirkSprite, string quirkDesc)
         {
             inactiveBorder.SetActive(false);
             activeBorder.SetActive(true);
             quirkButton.gameObject.SetActive(true);
             quirkImage.sprite = quirkSprite;
+            descriptionText.text = quirkDesc;
         }
 
         private void Remove()
@@ -55,6 +59,20 @@ namespace MD.UI
             activeBorder.SetActive(false);
             quirkButton.gameObject.SetActive(false);
             quirkImage.sprite = null;
+            descriptionText.text = string.Empty;
+        }
+    
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                descriptionPanel.SetActive(true);
+            }
+
+            else if (Input.GetKeyUp(KeyCode.Z))
+            {
+                descriptionPanel.SetActive(false);
+            }
         }
     }
 }

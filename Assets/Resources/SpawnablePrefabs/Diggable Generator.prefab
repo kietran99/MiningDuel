@@ -63,27 +63,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  spawnTable:
-  - type: 273
-    weight: 4
-  - type: 1
-    weight: 8
-  - type: 4
-    weight: 4
-  - type: 10
-    weight: 2
-  - type: 11
-    weight: 1
-  - type: -1
-    weight: 4
+  diggableLootTable:
+    entries:
+    - tag: 273
+      weight: 2
+    - tag: 1
+      weight: 8
+    - tag: 4
+      weight: 4
+    - tag: 10
+      weight: 2
+    - tag: 11
+      weight: 1
+    - tag: -1
+      weight: 4
   startSpawnAmount: 50
   generateInterval: 2
+  quirkLootTable:
+    entries:
+    - tag: 0
+      weight: 3
+    - tag: 1
+      weight: 1
+    - tag: 2
+      weight: 3
+    - tag: 3
+      weight: 100
   quirkObtainPrefab: {fileID: 711221842714100812, guid: 231bd0e423307404682396cb5f9ee9cd,
     type: 3}
-  spawnableQuirkPrefabs:
-  - {fileID: 9086475506681265454, guid: d3d86a13f978d544fb1b64d5b58e439a, type: 3}
-  - {fileID: 3136954806002261184, guid: 75ede8a2c6074fc4496ea2678c5977aa, type: 3}
-  - {fileID: 9086475506681265454, guid: ff669b176ebb0cf47b6aca86b0ce4401, type: 3}
 --- !u!114 &611995917156761752
 MonoBehaviour:
   m_ObjectHideFlags: 0

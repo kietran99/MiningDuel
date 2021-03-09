@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-using Mirror;
 
 namespace MD.Diggable.Gem
 {
-    public class GemValue : NetworkBehaviour
+    public class GemValue : MonoBehaviour
     {
         [SerializeField]
         private int value = 1;

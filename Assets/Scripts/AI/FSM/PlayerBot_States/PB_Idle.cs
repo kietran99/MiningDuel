@@ -18,7 +18,7 @@ namespace MD.AI
         {
             base.Update();
             stage = EVENT.EXIT;
-            if (bot.CurrentScore < bot.Target.FinalScore && bot.CurrentScore >= 20)
+            if (bot.CurrentScore < bot.Target.CurrentScore && bot.CurrentScore >= 20)
             {
                 Debug.Log("Bot Score: < Player Score & >= 20");
                 nextState = new PB_FindPlayer(bot);

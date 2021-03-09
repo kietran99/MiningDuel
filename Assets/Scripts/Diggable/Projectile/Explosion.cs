@@ -22,7 +22,16 @@ namespace MD.Diggable.Projectile
         private SpriteRenderer spriteRenderer = null;
 
         [SerializeField]
+        private Sprite almostExplodeSprite = null;
+
+        [SerializeField]
         private Sprite explodeSprite = null;
+
+        [SerializeField]
+        private ParticleSystem sparkEffect = null;
+
+        [SerializeField]
+        private float almostExplosionSparkEmissionMultiplier = 3f;
 
         [SerializeField]
         private LayerMask explodeLayerMask = 1;
@@ -33,11 +42,17 @@ namespace MD.Diggable.Projectile
         
         private ITimer timer = null;
         private bool isExploded = false;
+        private bool shouldExplode = true;
 
         public override void OnStartServer()
         {
             timer = GetComponent<ITimer>();
             timer.Activate();
+        }
+        public void StopExplosion()
+        {
+            shouldExplode = false;
+            Debug.Log("Bomb should not expolde");
         }
         
         [ServerCallback]
@@ -45,7 +60,7 @@ namespace MD.Diggable.Projectile
         {
             if (timeStamp == 2f)
             {
-                RpcChangeSpriteColor();
+                RpcPlayAlmostExplodeEffects();
             }
 
             if (timeStamp == 3f)
@@ -77,7 +92,11 @@ namespace MD.Diggable.Projectile
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!isThrown) return;
-
+            if(!shouldExplode)
+            {
+                shouldExplode = true;
+                return;
+            }
             // if (!other.CompareTag(Constants.PLAYER_TAG)) return;
             if (other.GetComponent<IExplodable>() == null) return;
             var launcher = GetComponent<ProjectileLauncher>();
@@ -131,14 +150,19 @@ namespace MD.Diggable.Projectile
         private void PlayExplodingEffect()
         {
             RpcPlayExplosionEffect();
-            Invoke(nameof(DestroyProjectile), .2f);
+            Invoke(nameof(DestroyProjectile), .2f); 
         }
 
         [ServerCallback]
         private void DestroyProjectile() => Destroy(projectileObject);
 
         [ClientRpc]
-        private void RpcChangeSpriteColor() => spriteRenderer.color = Color.red;
+        private void RpcPlayAlmostExplodeEffects() 
+        {
+            spriteRenderer.sprite = almostExplodeSprite;
+            var emissionModule = sparkEffect.emission;
+            emissionModule.rateOverTimeMultiplier *= almostExplosionSparkEmissionMultiplier;
+        }
 
         [ClientRpc]
         private void RpcPlayExplosionEffect() => spriteRenderer.sprite = explodeSprite;
