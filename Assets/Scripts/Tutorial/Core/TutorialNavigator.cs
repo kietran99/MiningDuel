@@ -7,6 +7,9 @@ namespace MD.Tutorial
     {
         #region SERIALIZE FIELDS
         [SerializeField]
+        private Transform player = null;
+
+        [SerializeField]
         private Button nextLineButton = null;
 
         [SerializeField]
@@ -20,36 +23,37 @@ namespace MD.Tutorial
 
         [SerializeField]
         private Transform[] components = null;
-
-        [SerializeField]
-        private TutorialNavigateData[] navigateData = null;
         #endregion
 
         private TutorialState curTutorialState;
-        public int loadIdx = 0;
 
         private void Start()
         {
             nextLineButton.onClick.AddListener(ProcessTutorialState);
             gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<TutorialStateChangeData>(UpdateView);
-            LoadData(navigateData[loadIdx]);
         }
 
         private void OnDestroy() => nextLineButton.onClick.RemoveAllListeners();
 
-        private void LoadData(TutorialNavigateData data)
+        public void LoadData(TutorialNavigateData data)
         {
+            player.position = new Vector3(0f, .5f, 0f);
             curTutorialState = data.SetupEnvironment();
         }
 
         private void ProcessTutorialState()
-        {      
+        {    
+            if (curTutorialState == null)  
+            {
+                Debug.Log("No Navigate Data was loaded");
+                return;
+            }
+
             curTutorialState.RequestNextState();
         }
 
         private void UpdateView(TutorialStateChangeData stateChangeData)
         {
-            // Unfocus();
             transform.SetAsLastSibling();
 
             if (stateChangeData.shouldToggleMask) 
@@ -59,6 +63,12 @@ namespace MD.Tutorial
             
             PrintLine(stateChangeData.line, stateChangeData.isLastLine);
             stateChangeData.maybefocusObjectName.Match(objName => MayFocus(objName), () => {});
+
+            if (stateChangeData.isLastLine)
+            {
+                // TODO: Retarded line below, replace with something less idiotic
+                Destroy(GameObject.FindObjectOfType<AbstractTutorialMaterial>().gameObject);
+            }
         }
 
         private void PrintLine(string line, bool isLastLine)
@@ -80,18 +90,10 @@ namespace MD.Tutorial
             Focus(maybeComponent.item);
         }
 
-        private void ToggleMask() => mask.SetActive(mask.activeInHierarchy);
-
         private void Focus(Transform component)
         {
             mask.SetActive(true);
             BringToFront(component);
-        }
-
-        private void Unfocus()
-        {
-            mask.SetActive(false);
-            transform.SetAsLastSibling();
         }
 
         private void BringToFront(Transform component)

@@ -55,7 +55,6 @@ namespace MD.Tutorial
                 Debug.Log("Follow the instructions to proceed with the tutorial");
                 return;
             }
-
             var nextLineIdx = ++curLineIdx;
             EventSystems.EventManager.Instance.TriggerEvent(
                 new TutorialStateChangeData(
