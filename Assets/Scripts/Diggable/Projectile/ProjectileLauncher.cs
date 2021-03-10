@@ -12,9 +12,13 @@ namespace MD.Diggable.Projectile
         public NetworkIdentity Thrower { get => thrower; }
 
         public float SourceCollidableTime { get; private set; }
+        private bool beingHeld;
+        public bool BeingHeld => beingHeld;
 
         public override void OnStartClient()
         {
+            // thrower.GetComponent<MD.Character.DigAction>().bombDug = true;
+            beingHeld = true;
             transform.parent = thrower.gameObject.transform;
             transform.localPosition = new Vector3(0, 1f, 0);
         }
@@ -22,6 +26,7 @@ namespace MD.Diggable.Projectile
         [Server]
         public void Launch(float power, float dirX, float dirY)
         {
+            beingHeld = false;
             transform.parent = null;
             SourceCollidableTime = Time.time + 1.5f;
             RpcLauch(dirX, dirY, power);

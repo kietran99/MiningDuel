@@ -14,6 +14,7 @@ namespace MD.Character
 
         protected virtual bool IsPlayer => true;
 
+
         public override void OnStartAuthority()
         {
             StartListeningToEvents();
