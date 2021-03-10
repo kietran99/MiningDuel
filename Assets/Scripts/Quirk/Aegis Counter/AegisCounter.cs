@@ -3,11 +3,9 @@ using UnityEngine;
 
 namespace MD.Quirk
 {
-    // [RequireComponent(typeof(Timer.Timer))]
-    public class Barrier : BaseQuirk
+    public class AegisCounter : BaseQuirk
     {
         [SerializeField] float expireTime = 120f;
-        // private readonly float GRID_OFFSET = .5f;
         private bool shouldDestroy = false;
         private Transform player = null;
         public override void SyncActivate(NetworkIdentity userIdentity)
@@ -44,7 +42,6 @@ namespace MD.Quirk
         [ServerCallback]
         private void OnTriggerEnter2D(Collider2D other)
         {
-            // if(bombFromHolder) return;
             if(other.gameObject.CompareTag(Constants.PLAYER_TAG))
             {
                 return;
@@ -57,15 +54,6 @@ namespace MD.Quirk
             {
                 return;
             }
-            // if(!other.GetComponent<MD.Diggable.Projectile.ProjectileLauncher>().BeingHeld) 
-            // {
-            //     if(!CheckBombThrown(other.transform.position, other.GetComponent<CircleCollider2D>().radius))
-            //     {
-            //         player.GetComponent<MD.Character.DigAction>().bombDug = false;
-            //         return;
-            //         // this is where a bug will appear when player have barrier and holds a projectile, if he gets hit, barrier will ignore the bomb and disappear after that, causing players to take dmg 
-            //     }
-            // }
             other.GetComponent<MD.Diggable.Projectile.Explosion>().StopExplosion();
             var rb = other.GetComponent<Rigidbody2D>();
             if(rb == null) return;

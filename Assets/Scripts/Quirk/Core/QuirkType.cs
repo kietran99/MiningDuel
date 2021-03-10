@@ -5,6 +5,6 @@
         CAMO_PERSE,
         DRILL_MACHINE,
         MIGHTY_BLESSING,
-        BARRIER
+        AEGIS_COUNTER
     }
 }
