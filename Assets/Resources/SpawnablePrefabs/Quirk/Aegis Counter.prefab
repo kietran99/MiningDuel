@@ -66,6 +66,7 @@ MonoBehaviour:
   syncInterval: 0.1
   quirkData: {fileID: 11400000, guid: 1d7ae0487cd9a0b49bdc31cf8e15dffd, type: 2}
   expireTime: 5
+  angleDifference: 15
 --- !u!50 &2390751913264670607
 Rigidbody2D:
   serializedVersion: 4

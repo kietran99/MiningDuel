@@ -6,6 +6,7 @@ namespace MD.Quirk
     public class AegisCounter : BaseQuirk
     {
         [SerializeField] float expireTime = 120f;
+        [SerializeField] [Range(0,90)] float angleDifference = 15;
         private bool shouldDestroy = false;
         private Transform player = null;
         public override void SyncActivate(NetworkIdentity userIdentity)
@@ -59,14 +60,22 @@ namespace MD.Quirk
             if(rb == null) return;
             float speed = rb.velocity.magnitude;
             Debug.Log("Incoming"+rb.velocity);
-            Vector2 contact = Intersection(transform.position.x,transform.position.y,GetComponent<CircleCollider2D>().radius,rb.velocity);
-            Vector2 reflectDirection =  Vector2.Reflect(rb.velocity.normalized, contact.normalized);
-            Debug.Log(contact);
-            rb.velocity = reflectDirection*Mathf.Max(speed,0f);
+            // Vector2 contact = Intersection(transform.position.x,transform.position.y,GetComponent<CircleCollider2D>().radius,rb.velocity);
+            // Vector2 reflectDirection =  Vector2.Reflect(rb.velocity.normalized, contact.normalized);
+            // Debug.Log(contact);
+            // rb.velocity = reflectDirection*Mathf.Max(speed,0f);
+            float angleDiff = DegreeToRadian(Random.Range(-angleDifference,angleDifference));
+            float x1 = -Mathf.Cos(angleDiff)*rb.velocity.x + Mathf.Sin(angleDiff) * rb.velocity.y;
+            float y1 = -Mathf.Sin(angleDiff)*rb.velocity.x - Mathf.Cos(angleDiff) * rb.velocity.y;
+            rb.velocity = new Vector2(x1,y1); 
             Debug.Log("Outcoming" + rb.velocity);
             ExpireBarrier();
         }
 
+        float DegreeToRadian(float degree)
+        {
+            return degree*3.14f/180f;
+        }
         float ApproxSquareRoot(float num)
         {
             float res = 0;
