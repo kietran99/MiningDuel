@@ -19,6 +19,8 @@ namespace MD.UI
         private readonly string MAP_GENERATOR = "Map Generator";
         private readonly string MAP_RENDERER = "Map Renderer";
 
+        private readonly string SCAN_WAVE_SPAWNER = "Scan Wave Spawner";
+
         #region SERIALIZE FIELDS
         [Header("Scene")]
         [Scene] [SerializeField]
@@ -257,9 +259,17 @@ namespace MD.UI
             Players.ForEach(player => SpawnDiggableGeneratorCommunicator(player.connectionToClient));  
             Players.ForEach(player => GenMapRenderer(player.connectionToClient)); 
             Players.ForEach(player => SpawnStorage(player.netIdentity));
+
+            SpawnScanWaveSpawner();
             //TODO check if all players loaded scene
             SetupGame();           
         }
+        private void SpawnScanWaveSpawner()
+        {
+            var scanWaveSpawner = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(SCAN_WAVE_SPAWNER)));
+            NetworkServer.Spawn(scanWaveSpawner);
+        } 
+
         private void SpawnStorage(NetworkIdentity id)
         {
             //spawn test storage
