@@ -266,7 +266,7 @@ namespace MD.Diggable.Core
             else if (Input.GetKeyDown(KeyCode.X))
             {               
                 // SpawnQuirkObtainAt(7, 7, QuirkType.MIGHTY_BLESSING);
-                SpawnQuirkObtainAt(7, 7, QuirkType.DRILL_MACHINE);
+                SpawnQuirkObtainAt(7, 7, QuirkType.CAMO_PERSE);
             }
         }
     }
