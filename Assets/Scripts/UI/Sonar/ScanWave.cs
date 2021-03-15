@@ -6,6 +6,12 @@ using Mirror;
 public class ScanWave : NetworkBehaviour
 {
     [SerializeField]
+    private float maxExistDuration = 20f;
+
+    [SerializeField]
+    private float durationAfterSpread = 3f;
+
+    [SerializeField]
     private float spreadRange = 7f;
 
     [SerializeField]
@@ -32,6 +38,13 @@ public class ScanWave : NetworkBehaviour
             InitializeWithoutAuthority();
         }
         StartCoroutine(nameof(Spread));
+        Invoke(nameof(Destroy),maxExistDuration);
+    }
+
+    void Destroy()
+    {
+        StopAllCoroutines();
+        Destroy(gameObject);
     }
 
     void InitializeWithAuthority()
@@ -57,5 +70,6 @@ public class ScanWave : NetworkBehaviour
             Debug.Log("current range " + currentRange*BASE_SCALE);
             transform.localScale = new Vector3(currentRange*BASE_SCALE,currentRange*BASE_SCALE,1f);
         }
+        Invoke(nameof(Destroy),durationAfterSpread);
     }
 }

@@ -163,6 +163,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  maxExistDuration: 20
+  existDuration: 3
   spreadRange: 7
   spreadSpeed: 0.3
   smoothness: 0.04
