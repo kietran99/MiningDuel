@@ -27,7 +27,7 @@ namespace MD.UI
 
         public void UpdateScoreText(int score, int finalScore)
         {
-            // finalScoreText.text = finalScore.ToString();
+            finalScoreText.text = finalScore.ToString();
             scoreText.text = score.ToString();
         }
     }

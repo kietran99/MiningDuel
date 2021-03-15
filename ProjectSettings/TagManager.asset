@@ -47,6 +47,9 @@ TagManager:
   - name: Ground
     uniqueID: 1628378265
     locked: 0
+  - name: Sonar
+    uniqueID: 1317992529
+    locked: 0
   - name: Character
     uniqueID: 384472861
     locked: 0
