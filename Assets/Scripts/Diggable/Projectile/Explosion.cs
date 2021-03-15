@@ -43,9 +43,12 @@ namespace MD.Diggable.Projectile
         private ITimer timer = null;
         private bool isExploded = false;
         private bool shouldExplode = true;
+        private ProjectileLauncher launcher;
+        private bool canCollideWithThrower = false;
         
         public override void OnStartServer()
         {
+            launcher = GetComponent<ProjectileLauncher>();
             timer = GetComponent<ITimer>();
             timer.Activate();
         }
@@ -99,31 +102,30 @@ namespace MD.Diggable.Projectile
             }
             // if (!other.CompareTag(Constants.PLAYER_TAG)) return;
             if (other.GetComponent<IExplodable>() == null) return;
-            var launcher = GetComponent<ProjectileLauncher>();
             if (launcher)
             {
-                if (other.gameObject == launcher.Thrower && Time.time < launcher.SourceCollidableTime) return;
-
+                if (other.gameObject == launcher.Thrower.gameObject && !canCollideWithThrower) return;
                 launcher.StopOnCollide();
             }
 
             Explode();          
         }
 
-        [ServerCallback]
-        private void OnTriggerExit2D(Collider2D other)
-        {
-            if (!other.CompareTag(Constants.PLAYER_TAG) || isThrown) return;
+        // [ServerCallback]
+        // private void OnTriggerExit2D(Collider2D other)
+        // {
+        //     if (!other.CompareTag(Constants.PLAYER_TAG) || isThrown) return;
 
-            if (other.GetComponent<MD.Character.ThrowAction>().netIdentity == GetComponent<ProjectileLauncher>().Thrower)
-            {
-                isThrown = true;
-            }
-        }
+        //     if (other.GetComponent<MD.Character.ThrowAction>().netIdentity == GetComponent<ProjectileLauncher>().Thrower)
+        //     {
+        //         isThrown = true;
+        //     }
+        // }
 
         [ServerCallback]
         private void Explode()
         {
+            Debug.Log("explode");
             isExploded = true;
             CheckForCollision();
             PlayExplodingEffect();
@@ -166,5 +168,15 @@ namespace MD.Diggable.Projectile
 
         [ClientRpc]
         private void RpcPlayExplosionEffect() => spriteRenderer.sprite = explodeSprite;
+
+        [Server]
+        public void NotifyThrow()
+        {
+            isThrown = true;
+            Invoke(nameof(SetCanCollideWithThrower),1f);
+        }
+
+        [Server]
+        private void SetCanCollideWithThrower() => canCollideWithThrower = true;
     }
 }

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93b58ad7f885713449fe32e348f97bb7, type: 3}
   m_Name: Aegis Counter
   m_EditorClassIdentifier: 
-  obtainSprite: {fileID: 0}
+  obtainSprite: {fileID: 21300000, guid: e1dc196df3a372a439a1387e18d28dd5, type: 3}
   description: Reflect a projectile upon contact, expires after one use

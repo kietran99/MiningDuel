@@ -3,16 +3,13 @@ using Mirror;
 
 namespace MD.Quirk
 {
-    [RequireComponent(typeof(SpriteRenderer), typeof(CircleCollider2D))]
+    [RequireComponent(typeof(CircleCollider2D))]
     public class CamoPerse : BaseQuirk
     {
         private readonly float GRID_OFFSET = .5f;
 
         [SerializeField]
-        private Sprite[] sonarSprites = null;
-
-        [SerializeField]
-        private float armSeconds = 1f;
+        private CamoPerseAnimHandler animHandler = null;
 
         [SerializeField]
         private float gemDropPercentage = 20;
@@ -24,16 +21,16 @@ namespace MD.Quirk
         {
             base.SyncActivate(userIdentity); 
             planter = userIdentity;
-            GetComponent<SpriteRenderer>().sprite = sonarSprites.Random();
             System.Func<float, float> SnapPosition = val => Mathf.FloorToInt(val) + GRID_OFFSET;
             transform.position = new Vector3(SnapPosition(planter.transform.position.x), SnapPosition(planter.transform.position.y), 0f);
-            Invoke(nameof(StartArming), armSeconds);
-            gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<DigInvokeData>(RequestExplosion);
+            gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<CamoPerseAnimEndData>(HandleAnimEndEvent);
+            animHandler.PlayAnimation();
         }
         
-        private void StartArming()
+        private void HandleAnimEndEvent(CamoPerseAnimEndData _)
         {
             GetComponent<CircleCollider2D>().enabled = true;
+            GetComponent<EventSystems.EventConsumer>().StartListening<DigInvokeData>(RequestExplosion);
         }
 
         [ServerCallback]
