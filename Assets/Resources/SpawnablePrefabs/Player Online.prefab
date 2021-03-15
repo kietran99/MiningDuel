@@ -69,7 +69,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 384472861
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 11
   m_Sprite: {fileID: 21300000, guid: 8e63588a93db3c34eb739a2a138ac20d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -4824,7 +4824,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 384472861
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
@@ -5046,7 +5046,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 384472861
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 10
   m_Sprite: {fileID: -522798739330844983, guid: dfc39f382af3df54c865c31cedf22169,
     type: 3}
@@ -5129,6 +5129,7 @@ GameObject:
   - component: {fileID: 1499878171468811934}
   - component: {fileID: 546028043007059227}
   - component: {fileID: 5324336965916199845}
+  - component: {fileID: 1522152400363511722}
   m_Layer: 0
   m_Name: Player Online
   m_TagString: Player
@@ -5372,6 +5373,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b3d0d57c1ed347647bf86c39a816aa12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+--- !u!114 &1522152400363511722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7091697348273341020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 462722fc41cb00f438089edf3862b578, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
