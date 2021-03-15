@@ -1,72 +1,72 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using EventSystems;
-using MD.Character;
 
-public class ScanWaveController : NetworkBehaviour
+namespace MD.Character
 {
-    [SerializeField]
-    private int MAX_USES = 3;
-
-    [SerializeField]
-    private float ReplenishTime = 5f;
-
-    [SerializeField]
-    private float intervalCheckTime = .5f;
-    
-    [SerializeField]
-    private int uses;
-
-    public override void OnStartAuthority()
+    public class ScanWaveController : NetworkBehaviour
     {
-        base.OnStartAuthority();
-        uses = MAX_USES;
-        StartCoroutine(nameof(Replenish));
-    }
+        [SerializeField]
+        private int MAX_USES = 3;
 
-    [Command]
-    private void CmdSpawnScanWave(NetworkIdentity owner)
-    {
-        EventManager.Instance.TriggerEvent(new ScanWaveSpawnData(owner));
-    }
+        [SerializeField]
+        private float ReplenishTime = 5f;
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        [SerializeField]
+        private float intervalCheckTime = .5f;
+        
+        [SerializeField]
+        private int uses = 0;
+
+        public override void OnStartAuthority()
         {
-            if (uses > 0)
-            {
-                CmdSpawnScanWave(netIdentity);
-                uses--;
-            }
-
+            base.OnStartAuthority();
+            uses = MAX_USES;
+            StartCoroutine(nameof(Replenish));
         }
-    }
 
-    private void OnDisable()
-    {
-        StopAllCoroutines();
-    }
-
-    private IEnumerator Replenish()    
-    {
-        WaitForSeconds checkTimeWFS = new WaitForSeconds(intervalCheckTime);
-        int level = 1;
-        while (true)
+        [Command]
+        private void CmdSpawnScanWave(NetworkIdentity owner)
         {
-            yield return checkTimeWFS;
-            if (uses >= MAX_USES) continue;
-            //play animation
+            EventManager.Instance.TriggerEvent(new ScanWaveSpawnData(owner));
+        }
 
-            level++;
-            if (level >=10)
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.LeftControl))
             {
-                level = 0;
-                uses++;
+                if (uses > 0)
+                {
+                    CmdSpawnScanWave(netIdentity);
+                    uses--;
+                }
             }
         }
 
+        private void OnDisable()
+        {
+            StopAllCoroutines();
+        }
+
+        private IEnumerator Replenish()    
+        {
+            WaitForSeconds checkTimeWFS = new WaitForSeconds(intervalCheckTime);
+            int level = 1;
+            while (true)
+            {
+                yield return checkTimeWFS;
+                if (uses >= MAX_USES) continue;
+                //play animation
+
+                level++;
+                if (level >=10)
+                {
+                    level = 0;
+                    uses++;
+                }
+            }
+
+        }
     }
 }

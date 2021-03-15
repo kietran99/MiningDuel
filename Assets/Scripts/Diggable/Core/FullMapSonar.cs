@@ -23,8 +23,8 @@ namespace MD.Diggable.Core
 
         public override void OnStartAuthority()
         {
-            GetComponent<SpriteMask>().enabled = true;
-            GetComponent<SpriteRenderer>().enabled = true;
+            // GetComponent<SpriteMask>().enabled = true;
+            // GetComponent<SpriteRenderer>().enabled = true;
 
             Debug.Log("Log Msg");
             ServiceLocator
@@ -147,11 +147,11 @@ namespace MD.Diggable.Core
             tileDataDict.Add(spawnPos, renderer);
         }
 
-        private void LateUpdate()
-        {
-            if (playerTransform == null) return;  
+        // private void LateUpdate()
+        // {
+        //     if (playerTransform == null) return;  
 
-            transform.position = playerTransform.position;
-        }
+        //     transform.position = playerTransform.position;
+        // }
     }
 }
