@@ -152,8 +152,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0059999824, y: -0.048000008}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -0.000000029802322, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &654257771828128672
 CanvasRenderer:
@@ -280,7 +280,7 @@ GameObject:
   - component: {fileID: 7621537378881549688}
   - component: {fileID: 3711679974860691593}
   m_Layer: 5
-  m_Name: gauge canvas
+  m_Name: Gauge canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
