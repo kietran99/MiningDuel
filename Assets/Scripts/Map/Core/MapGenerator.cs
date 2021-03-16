@@ -27,9 +27,8 @@ namespace MD.Map.Core
 
         public int MapWidth => width;
         public int MapHeight => height;
-
-        [SerializeField] 
-        bool useGeneratedMaps = false;
+        [SerializeField] bool useGeneratedMaps = false;
+        [SerializeField] int noObtacleAreaRadius = 4;
         // public int GetCount{get{return count;}}
 
         public override void OnStartServer()
@@ -163,6 +162,10 @@ namespace MD.Map.Core
             for(int x = 0; x < width; x++)
                 for(int y = 0; y < height; y++)
                 {
+                    if ((x <= width / 2 + noObtacleAreaRadius && x >= width / 2 - noObtacleAreaRadius)&&(y <= height / 2 + noObtacleAreaRadius && y >= height / 2 - noObtacleAreaRadius))
+                    {
+                        continue;
+                    }
                     int chance = random.Next(1,100);
                     if(chance <= 5)
                     {

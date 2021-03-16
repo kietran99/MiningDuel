@@ -20,6 +20,7 @@ namespace MD.UI
         private readonly string MAP_GENERATOR = "Map Generator";
         private readonly string MAP_RENDERER = "Map Renderer";
         private readonly string SCAN_WAVE_SPAWNER = "Scan Wave Spawner";
+        private readonly string OFFSCREEN_INDICATOR = "Offscreen Indicator";
         #endregion
 
         #region SERIALIZE FIELDS
@@ -260,9 +261,12 @@ namespace MD.UI
             Players.ForEach(player => SpawnDiggableGeneratorCommunicator(player.connectionToClient));  
             Players.ForEach(player => GenMapRenderer(player.connectionToClient)); 
             Players.ForEach(player => SpawnStorage(player.netIdentity));
+            // Players.ForEach(player => SpawnOffScreenIndicator(player.connectionToClient));
 
             SpawnScanWaveSpawner();
             //TODO check if all players loaded scene
+            SpawnOffScreenIndicator();
+
             SetupGame();           
         }
         private void SpawnScanWaveSpawner()
@@ -270,6 +274,11 @@ namespace MD.UI
             var scanWaveSpawner = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(SCAN_WAVE_SPAWNER)));
             NetworkServer.Spawn(scanWaveSpawner);
         } 
+        private void SpawnOffScreenIndicator()
+        {
+            var offscreenIndicator = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(OFFSCREEN_INDICATOR)));
+            NetworkServer.Spawn(offscreenIndicator);
+        }
 
         private void SpawnStorage(NetworkIdentity playerId)
         {
@@ -296,6 +305,7 @@ namespace MD.UI
             var mapRenderer = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(MAP_RENDERER)));
             NetworkServer.Spawn(mapRenderer, conn);
         }
+
 
         private void SetupGame()
         {
