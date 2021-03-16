@@ -1,72 +1,73 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-using EventSystems;
-using MD.Character;
 
-public class ScanWaveController : NetworkBehaviour
+namespace MD.Character
 {
-    [SerializeField]
-    private int MAX_USES = 3;
-
-    [SerializeField]
-    private float ReplenishTime = 5f;
-
-    [SerializeField]
-    private float intervalCheckTime = .5f;
-    
-    [SerializeField]
-    private int uses;
-
-    public override void OnStartAuthority()
+    public class ScanWaveController : NetworkBehaviour
     {
-        base.OnStartAuthority();
-        uses = MAX_USES;
-        StartCoroutine(nameof(Replenish));
-    }
+        [SerializeField]
+        private int maxUses = 3;
 
-    [Command]
-    private void CmdSpawnScanWave(NetworkIdentity owner)
-    {
-        EventManager.Instance.TriggerEvent(new ScanWaveSpawnData(owner));
-    }
+        [SerializeField]
+        private float ReplenishTime = 5f;
+        private float intervalCheckTime;
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        [SerializeField]
+        private int currentLevel;
+        private int maxLevel;
+
+        public override void OnStartAuthority()
         {
-            if (uses > 0)
+            base.OnStartAuthority();
+            currentLevel = 1;
+            maxLevel = maxUses*10;
+            intervalCheckTime = ReplenishTime/10f;
+            StartCoroutine(nameof(Replenish));
+            EventSystems.EventManager.Instance.StartListening<ScanInvokeData>(Scan);
+        }
+
+        public override void OnStopAuthority()
+        {
+            base.OnStopAuthority();
+            EventSystems.EventManager.Instance.StopListening<ScanInvokeData>(Scan);
+        }
+
+        private void Scan(ScanInvokeData data) {
+            if (currentLevel > 10)
             {
                 CmdSpawnScanWave(netIdentity);
-                uses--;
+                currentLevel-=10;
+                EventSystems.EventManager.Instance.TriggerEvent(new ScanWaveChangeData(currentLevel, maxLevel));
             }
-
         }
-    }
-
-    private void OnDisable()
-    {
-        StopAllCoroutines();
-    }
-
-    private IEnumerator Replenish()    
-    {
-        WaitForSeconds checkTimeWFS = new WaitForSeconds(intervalCheckTime);
-        int level = 1;
-        while (true)
+        [Command]
+        private void CmdSpawnScanWave(NetworkIdentity owner)
         {
-            yield return checkTimeWFS;
-            if (uses >= MAX_USES) continue;
-            //play animation
-
-            level++;
-            if (level >=10)
-            {
-                level = 0;
-                uses++;
-            }
+            EventSystems.EventManager.Instance.TriggerEvent(new ScanWaveSpawnData(owner));
         }
 
+        private void OnDisable()
+        {
+            StopAllCoroutines();
+        }
+
+        private IEnumerator Replenish()    
+        {
+            WaitForSeconds checkTimeWFS = new WaitForSeconds(intervalCheckTime);
+            currentLevel = maxLevel;
+            while (true)
+            {
+                yield return checkTimeWFS;
+                if (currentLevel >= maxLevel) continue;
+                //play animation
+                currentLevel++;
+                if (currentLevel == 10 || currentLevel == 20 || currentLevel ==30)
+                {
+                    EventSystems.EventManager.Instance.TriggerEvent(new ScanWaveChangeData(currentLevel, maxLevel));
+                }
+            }
+
+        }
     }
 }

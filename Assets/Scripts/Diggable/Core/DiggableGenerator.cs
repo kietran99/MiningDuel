@@ -71,7 +71,6 @@ namespace MD.Diggable.Core
                     mapGenerator => 
                     {
                         var tilePositions = mapGenerator.MovablePostions.ToArray();
-                        Debug.Log(tilePositions.Length);
                         tileGraph = new TileGraph(tilePositions);
                         diggableData = new DiggableData(MakeEmptyTiles(tilePositions));
                         FillInitSonarTileData(tilePositions);
@@ -265,8 +264,7 @@ namespace MD.Diggable.Core
 
             else if (Input.GetKeyDown(KeyCode.X))
             {               
-                // SpawnQuirkObtainAt(7, 7, QuirkType.MIGHTY_BLESSING);
-                SpawnQuirkObtainAt(7, 7, QuirkType.CAMO_PERSE);
+                SpawnQuirkObtainAt(11, 17, QuirkType.CAMO_PERSE);
             }
         }
     }

@@ -73,6 +73,8 @@ MonoBehaviour:
     type: 3}
   spawnPointPicker: {fileID: -5008208810592905108, guid: ef6f40e00172b8549ae0c3d7e98b2fd9,
     type: 3}
+  spawnPositionPicker: {fileID: 11400000, guid: e5aa512adb5d5d0429123b7d7c393553,
+    type: 2}
   gemStorage: {fileID: 266650644458575417, guid: e0fae1b0286fb92418045c20ef3e7f22,
     type: 3}
   DontDestroyOnLoadObjects: []

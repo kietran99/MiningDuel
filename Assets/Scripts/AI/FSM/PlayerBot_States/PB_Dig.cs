@@ -13,7 +13,7 @@ namespace MD.AI
 
         public override void Enter()
         {
-            Debug.Log("Digging");
+            // Debug.Log("Digging");
             base.Enter();
             if (!bot.CanDig(forBomb))
             {
@@ -35,19 +35,19 @@ namespace MD.AI
                 {
                     if (bot.CanSeePlayer)
                     {
-                        Debug.Log("Dig complete - Obtained Projectile - Can see Player");
+                        // Debug.Log("Dig complete - Obtained Projectile - Can see Player");
                         nextState = new PB_ThrowProjectile(bot);
                     }
                     else
                     {
-                        Debug.Log("Dig complete - Obtained Projectile - Cannot see Player");
+                        // Debug.Log("Dig complete - Obtained Projectile - Cannot see Player");
                         nextState = new PB_FindPlayer(bot);
                     }
 
                     return;
                 }
 
-                Debug.Log("Dig complete - No Projectile");
+                // Debug.Log("Dig complete - No Projectile");
                 nextState = new PB_Idle(bot);
                 return;
             }

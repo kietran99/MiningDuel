@@ -2,21 +2,28 @@
 using Mirror;
 using EventSystems;
 
-public class ScanWaveSpawner: NetworkBehaviour
+namespace MD.Character
 {
-    [SerializeField]
-    private GameObject ScanWave = null;
-
-    public override void OnStartServer()
+    public class ScanWaveSpawner: NetworkBehaviour
     {
-        base.OnStartServer();
-        EventManager.Instance.StartListening<ScanWaveSpawnData>(SpawnScanWave);
-    } 
+        [SerializeField]
+        private GameObject ScanWave = null;
 
-    private void SpawnScanWave(ScanWaveSpawnData data)
-    {
-        GameObject scanWave = Instantiate(ScanWave, data.owner.transform.position, Quaternion.identity);
-        NetworkServer.Spawn(scanWave, data.owner.connectionToClient);
+        public override void OnStartServer()
+        {
+            base.OnStartServer();
+            EventManager.Instance.StartListening<ScanWaveSpawnData>(SpawnScanWave);
+        }
+
+        public override void OnStopServer()
+        {
+            EventManager.Instance.StopListening<ScanWaveSpawnData>(SpawnScanWave);
+        } 
+
+        private void SpawnScanWave(ScanWaveSpawnData data)
+        {
+            GameObject scanWave = Instantiate(ScanWave, data.owner.transform.position, Quaternion.identity);
+            NetworkServer.Spawn(scanWave, data.owner.connectionToClient);
+        }
     }
-
 }

@@ -1,9 +1,13 @@
 using Mirror;
-public class ScanWaveSpawnData : EventSystems.IEventData
+
+namespace MD.Character
 {
-    public NetworkIdentity owner;
-    public ScanWaveSpawnData(NetworkIdentity owner)
+    public class ScanWaveSpawnData : EventSystems.IEventData
     {
-        this.owner = owner;
+        public NetworkIdentity owner;
+        public ScanWaveSpawnData(NetworkIdentity owner)
+        {
+            this.owner = owner;
+        }
     }
 }
