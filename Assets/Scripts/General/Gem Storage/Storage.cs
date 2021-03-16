@@ -1,87 +1,112 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using MD.Character;
 using UnityEngine.UI;
-[RequireComponent(typeof(Collider2D))]
-public class Storage : NetworkBehaviour
+
+namespace MD.Diggable.Core
 {
-
-    private const float TIMESCHECK = 20;
-    [SerializeField]
-    private float storeTime = 2f;
-    [SerializeField]    
-    private float checkTime;
-    private NetworkIdentity ownerID;
-    private bool isInside;
-
-    [SerializeField]
-    private GameObject ProcessBar;
-    [SerializeField]
-    private Image ProcessBarImage;
-
-    public override void OnStartServer()
+    [RequireComponent(typeof(BoxCollider2D))]
+    public class Storage : NetworkBehaviour
     {
-        base.OnStartServer();
-        checkTime = storeTime/TIMESCHECK;
-    }
+        private const float TIMES_CHECK = 20;
 
-    public void Initialize(NetworkIdentity ownerID)
-    {
-        this.ownerID = ownerID;
-    }
+        [SerializeField]
+        private float storeTime = 2f;
 
-    [ServerCallback]
-    void OnTriggerEnter2D(Collider2D collide)
-    {
-        if (!collide.CompareTag("Player")) return;
-        Player player = collide.gameObject.GetComponent<Player>();
-        if ( player == null || player.netIdentity != ownerID) return;
-        isInside = true;
-        TargetShowProcessBar(ownerID.connectionToClient);
-        StartCoroutine(nameof(storingScore));
-    }
-    [ServerCallback]
-    void OnTriggerExit2D(Collider2D collide)
-    {
-        if (!collide.CompareTag("Player")) return;
-        Player player = collide.gameObject.GetComponent<Player>();
-        if ( player == null || player.netIdentity != ownerID) return;
-        TargetHideProcessBar(ownerID.connectionToClient);
-        isInside = false;
-    }
+        [SerializeField]    
+        private float checkTime;
 
-    IEnumerator storingScore()
-    {
-        var waitTime = new WaitForSeconds(checkTime);
-        for (int i = 1; i<=TIMESCHECK; i++)
+        [SerializeField]
+        private GameObject ProcessBar = null;
+
+        [SerializeField]
+        private Image ProcessBarImage = null;
+
+        private NetworkIdentity ownerID;
+        private bool isInside;
+
+        public override void OnStartServer()
         {
-            yield return waitTime;
-            if (!isInside) yield break;
-            //play animation in rpc
-            TargetShowProcess(ownerID.connectionToClient, (float)i /TIMESCHECK);
+            base.OnStartServer();
+            checkTime = storeTime/TIMES_CHECK;
         }
-        //storing finished, fire an event
-        EventSystems.EventManager.Instance.TriggerEvent(new StoreFinishedData(ownerID));
-    }
-    [TargetRpc]
-    private void TargetShowProcess(NetworkConnection conn, float amount)
-    {
-        if (!ProcessBar.activeInHierarchy) ProcessBar.SetActive(true);
-        ProcessBarImage.fillAmount = amount;
-    }
 
-    [TargetRpc]
-    private void TargetHideProcessBar(NetworkConnection conn)
-    {
-        ProcessBar.SetActive(false);
-    }
+        public void Initialize(NetworkIdentity ownerID)
+        {
+            this.ownerID = ownerID;
+        }
 
-    [TargetRpc]
-    private void TargetShowProcessBar(NetworkConnection conn)
-    {
-        ProcessBarImage.fillAmount = 0;
-        ProcessBar.SetActive(true);
+        [ServerCallback]
+        void OnTriggerEnter2D(Collider2D collide)
+        {
+            if (!collide.CompareTag(Constants.PLAYER_TAG)) 
+            {
+                return;
+            }
+
+            Player player = collide.gameObject.GetComponent<Player>();
+
+            if (player == null || player.netIdentity != ownerID) 
+            {
+                return;
+            }
+
+            isInside = true;
+            TargetShowProcessBar(ownerID.connectionToClient);
+            StartCoroutine(nameof(StoringScore));
+        }
+
+        [ServerCallback]
+        void OnTriggerExit2D(Collider2D collide)
+        {
+            if (!collide.CompareTag(Constants.PLAYER_TAG)) 
+            {
+                return;
+            }
+
+            Player player = collide.gameObject.GetComponent<Player>();
+            if (player == null || player.netIdentity != ownerID) 
+            {
+                return;
+            }
+
+            TargetHideProcessBar(ownerID.connectionToClient);
+            isInside = false;
+        }
+
+        IEnumerator StoringScore()
+        {
+            var waitTime = new WaitForSeconds(checkTime);
+            for (int i = 1; i <= TIMES_CHECK; i++)
+            {
+                yield return waitTime;
+                if (!isInside) yield break;
+                //play animation in rpc
+                TargetShowProcess(ownerID.connectionToClient, (float)i /TIMES_CHECK);
+            }
+            //storing finished, fire an event
+            EventSystems.EventManager.Instance.TriggerEvent(new StoreFinishedData(ownerID));
+        }
+
+        [TargetRpc]
+        private void TargetShowProcess(NetworkConnection conn, float amount)
+        {
+            if (!ProcessBar.activeInHierarchy) ProcessBar.SetActive(true);
+            ProcessBarImage.fillAmount = amount;
+        }
+
+        [TargetRpc]
+        private void TargetHideProcessBar(NetworkConnection conn)
+        {
+            ProcessBar.SetActive(false);
+        }
+
+        [TargetRpc]
+        private void TargetShowProcessBar(NetworkConnection conn)
+        {
+            ProcessBarImage.fillAmount = 0;
+            ProcessBar.SetActive(true);
+        }
     }
 }

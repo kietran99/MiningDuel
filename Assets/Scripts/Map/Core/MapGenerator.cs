@@ -1,58 +1,61 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using System;
 using Random = System.Random;
-using UnityEngine.Tilemaps;
 
-
-namespace MD.Map.Core{
+namespace MD.Map.Core
+{
     public class MapGenerator : NetworkBehaviour,IMapGenerator
     {
-        
-        public int[] MapData {get{
-            int[] simpleData = new int[width*height];
-            for(int x = 0; x < width; x++)
+        public int[] MapData 
+        {
+            get
             {
-                for(int y = 0; y < height; y++)
+                int[] simpleData = new int[width * height];
+                for(int x = 0; x < width; x++)
                 {
-                    simpleData[x*width + y] = map[x,y];
+                    for(int y = 0; y < height; y++)
+                    {
+                        simpleData[x*width + y] = map[x,y];
+                    }
                 }
+
+                return simpleData;
             }
-            return simpleData;
-        }}
+        }
+
         public int MapWidth => width;
         public int MapHeight => height;
-        [SerializeField] bool useGeneratedMaps = false;
+
+        [SerializeField] 
+        bool useGeneratedMaps = false;
         // public int GetCount{get{return count;}}
 
         public override void OnStartServer()
         {
             // base.OnStartServer();
             ServiceLocator.Register((IMapGenerator)this);  
-            if(useGeneratedMaps)
+            if (useGeneratedMaps)
             {
-
+                return;
             }
-            else
+            
+            totalFill = randomFillPercent1 + randomFillPercent2;
+            totalFill = (totalFill > 100)? 100: totalFill;
+            GenerateMap();
+            if (useRandomSeed)
             {
-                totalFill = randomFillPercent1 + randomFillPercent2;
-                totalFill = (totalFill > 100)? 100: totalFill;
-                GenerateMap();
-                if(useRandomSeed)
-                {
-                    seed = Time.time.ToString();
-                }
-                Random pseudoRandom = new Random(seed.GetHashCode());
-                int random = pseudoRandom.Next(1,10);
-                for(int i = 0; i < random*3+1; i++)
-                {
-                    map = Smoothening();
-                }
-
-                AddObstacle();
+                seed = Time.time.ToString();
             }
+            Random pseudoRandom = new Random(seed.GetHashCode());
+            int random = pseudoRandom.Next(1,10);
+            for(int i = 0; i < random*3+1; i++)
+            {
+                map = Smoothening();
+            }
+
+            AddObstacle();         
         }
 
         public List<Vector2Int> MovablePostions 
@@ -75,7 +78,7 @@ namespace MD.Map.Core{
                 return res;
             }
         }
-        // thats why :V
+        
         public bool IsObstacle(int x, int y)
         {
             if(x < 0 || x>= MapWidth || y < 0 || y >= MapHeight)
