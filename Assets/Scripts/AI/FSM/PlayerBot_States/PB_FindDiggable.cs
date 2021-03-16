@@ -14,19 +14,19 @@ namespace MD.AI
 
         public override void Enter()
         {
-            Debug.Log("Finding: " + (forBomb? "Projectile" : "Gem"));
+            // Debug.Log("Finding: " + (forBomb? "Projectile" : "Gem"));
             base.Enter();
             Vector2 movePos = Vector2.zero;
             foundLocation =  bot.GetClosestDiggable(out movePos, forBomb);
             if(foundLocation)
             {
-                Debug.Log("Founf: " + (forBomb? "Projectile" : "Gem") + movePos);
+                // Debug.Log("Found: " + (forBomb? "Projectile" : "Gem") + movePos);
                 if (!bot.SetMovePosition(movePos))
                 {
                     foundLocation = false;
                     return;
                 }
-                Debug.Log("Found path start moving");
+                // Debug.Log("Found path start moving");
                 bot.StartMoving();
             }
         }
@@ -35,14 +35,14 @@ namespace MD.AI
             base.Update();
             if (!foundLocation)
             {
-                Debug.Log("No " + (forBomb? "Projectile" : "Gem") + " in Scan Range");
+                // Debug.Log("No " + (forBomb? "Projectile" : "Gem") + " in Scan Range");
                 stage = EVENT.EXIT;
                 nextState = new PB_Wander(bot, forBomb);
                 return;
             }
             if (!bot.IsMoving)
             {
-                Debug.Log("Found " + (forBomb? "Projectile" : "Gem") + " in Scan range");
+                // Debug.Log("Found " + (forBomb? "Projectile" : "Gem") + " in Scan range");
                 stage = EVENT.EXIT;
                 nextState = new PB_Dig(bot, forBomb);
             }

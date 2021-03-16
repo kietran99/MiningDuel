@@ -28,7 +28,7 @@ namespace MD.Character
             get
             {
                 idx++;
-                Debug.Log("Spawn at: " + (spawnPositions[idx] + CentreOffset));            
+                // Debug.Log("Spawn at: " + (spawnPositions[idx] + CentreOffset));            
                 return spawnPositions[idx] + CentreOffset;            
             }
         }

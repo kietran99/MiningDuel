@@ -39,14 +39,9 @@ namespace MD.Map.Core
             botMap = grid.transform.GetChild(0).GetComponent<Tilemap>();
             topMap = grid.transform.GetChild(1).GetComponent<Tilemap>();
             obstacleMap = grid.transform.GetChild(2).GetComponent<Tilemap>();
-            if(botMap == null) Debug.Log("U Fucked Up");
-            Debug.Log("My Client: " + netId);
             topMap.ClearAllTiles();
-            Debug.Log("Map: Top cleared");
             botMap.ClearAllTiles();
-            Debug.Log("Map: Bottom cleared");
             obstacleMap.ClearAllTiles();
-            Debug.Log("Map: Obstacle cleared");
 
             if(map!= null)
             {

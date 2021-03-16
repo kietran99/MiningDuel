@@ -275,7 +275,6 @@ namespace MD.UI
         {
             var storage = Instantiate(gemStorage, playerId.transform.position, Quaternion.identity);
             storage.Initialize(playerId);
-            Debug.Log("spawn storage********************************");
             NetworkServer.Spawn(storage.gameObject);
         }
 
