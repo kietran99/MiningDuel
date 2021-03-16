@@ -1760,13 +1760,13 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 5998844006450179028}
-  m_RootOrder: 3
+  m_Father: {fileID: 7645856691537567572}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 400, y: 0}
-  m_SizeDelta: {x: 25, y: -5.9999995}
+  m_AnchoredPosition: {x: 410.8, y: 0}
+  m_SizeDelta: {x: 25, y: -25.999998}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &5683931877301609281
 CanvasRenderer:
@@ -1789,7 +1789,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.32156864, g: 0.32156864, b: 0.32156864, a: 1}
+  m_Color: {r: 1, g: 0.07058824, b: 0.49803922, a: 0.7647059}
   m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1835,7 +1835,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5998844006450179028}
-  m_RootOrder: 5
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
@@ -1907,9 +1907,11 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 8353152969612262555}
+  - {fileID: 5676491601696148997}
   m_Father: {fileID: 5998844006450179028}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -2123,13 +2125,13 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 5998844006450179028}
-  m_RootOrder: 2
+  m_Father: {fileID: 7645856691537567572}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 200, y: 0}
-  m_SizeDelta: {x: 29.365906, y: -6}
+  m_AnchoredPosition: {x: 208.9, y: 0.79999924}
+  m_SizeDelta: {x: 29.365906, y: -26}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &1912713348711527267
 CanvasRenderer:
@@ -2152,7 +2154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.32156864, g: 0.32156864, b: 0.32156864, a: 1}
+  m_Color: {r: 1, g: 0.07075471, b: 0.49610463, a: 0.7647059}
   m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2375,7 +2377,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.3584906, g: 0.33650768, b: 0.33650768, a: 0.5019608}
+  m_Color: {r: 0.122641504, g: 0.11512104, b: 0.11512104, a: 0.8666667}
   m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2511,8 +2513,6 @@ RectTransform:
   m_Children:
   - {fileID: 709337436961659039}
   - {fileID: 7109934645609235523}
-  - {fileID: 8353152969612262555}
-  - {fileID: 5676491601696148997}
   - {fileID: 7645856691537567572}
   - {fileID: 8419583057816875103}
   m_Father: {fileID: 72249921851178022}
@@ -3229,6 +3229,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8d69c45f3f7777941bb2bf6ae9b4392a, type: 3}
+--- !u!224 &4249104013871517027 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4133757774197405085, guid: 8d69c45f3f7777941bb2bf6ae9b4392a,
+    type: 3}
+  m_PrefabInstance: {fileID: 263978850947709182}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3801600435947601146 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3992485229113918468, guid: 8d69c45f3f7777941bb2bf6ae9b4392a,
@@ -3241,12 +3247,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &4249104013871517027 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4133757774197405085, guid: 8d69c45f3f7777941bb2bf6ae9b4392a,
-    type: 3}
-  m_PrefabInstance: {fileID: 263978850947709182}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1665003737433976348
 PrefabInstance:
   m_ObjectHideFlags: 0
