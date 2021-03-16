@@ -24,25 +24,27 @@ namespace MD.Character
             maxLevel = maxUses*10;
             intervalCheckTime = ReplenishTime/10f;
             StartCoroutine(nameof(Replenish));
+            EventSystems.EventManager.Instance.StartListening<ScanInvokeData>(Scan);
         }
 
+        public override void OnStopAuthority()
+        {
+            base.OnStopAuthority();
+            EventSystems.EventManager.Instance.StopListening<ScanInvokeData>(Scan);
+        }
+
+        private void Scan(ScanInvokeData data) {
+            if (currentLevel > 10)
+            {
+                CmdSpawnScanWave(netIdentity);
+                currentLevel-=10;
+                EventSystems.EventManager.Instance.TriggerEvent(new ScanWaveChangeData(currentLevel, maxLevel));
+            }
+        }
         [Command]
         private void CmdSpawnScanWave(NetworkIdentity owner)
         {
             EventSystems.EventManager.Instance.TriggerEvent(new ScanWaveSpawnData(owner));
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.LeftControl))
-            {
-                if (currentLevel > 10)
-                {
-                    CmdSpawnScanWave(netIdentity);
-                    currentLevel-=10;
-                    EventSystems.EventManager.Instance.TriggerEvent(new ScanWaveChangeData(currentLevel, maxLevel));
-                }
-            }
         }
 
         private void OnDisable()
