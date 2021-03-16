@@ -1,45 +1,46 @@
 ﻿using System.Collections;
 using UnityEngine;
 using Mirror;
-using EventSystems;
 
 namespace MD.Character
 {
     public class ScanWaveController : NetworkBehaviour
     {
         [SerializeField]
-        private int MAX_USES = 3;
+        private int maxUses = 3;
 
         [SerializeField]
         private float ReplenishTime = 5f;
+        private float intervalCheckTime;
 
         [SerializeField]
-        private float intervalCheckTime = .5f;
-        
-        [SerializeField]
-        private int uses = 0;
+        private int currentLevel;
+        private int maxLevel;
 
         public override void OnStartAuthority()
         {
             base.OnStartAuthority();
-            uses = MAX_USES;
+            currentLevel = 1;
+            maxLevel = maxUses*10;
+            intervalCheckTime = ReplenishTime/10f;
             StartCoroutine(nameof(Replenish));
         }
 
         [Command]
         private void CmdSpawnScanWave(NetworkIdentity owner)
         {
-            EventManager.Instance.TriggerEvent(new ScanWaveSpawnData(owner));
+            EventSystems.EventManager.Instance.TriggerEvent(new ScanWaveSpawnData(owner));
         }
 
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.LeftControl))
             {
-                if (uses > 0)
+                if (currentLevel > 10)
                 {
                     CmdSpawnScanWave(netIdentity);
-                    uses--;
+                    currentLevel-=10;
+                    EventSystems.EventManager.Instance.TriggerEvent(new ScanWaveChangeData(currentLevel, maxLevel));
                 }
             }
         }
@@ -52,18 +53,16 @@ namespace MD.Character
         private IEnumerator Replenish()    
         {
             WaitForSeconds checkTimeWFS = new WaitForSeconds(intervalCheckTime);
-            int level = 1;
+            currentLevel = maxLevel;
             while (true)
             {
                 yield return checkTimeWFS;
-                if (uses >= MAX_USES) continue;
+                if (currentLevel >= maxLevel) continue;
                 //play animation
-
-                level++;
-                if (level >=10)
+                currentLevel++;
+                if (currentLevel == 10 || currentLevel == 20 || currentLevel ==30)
                 {
-                    level = 0;
-                    uses++;
+                    EventSystems.EventManager.Instance.TriggerEvent(new ScanWaveChangeData(currentLevel, maxLevel));
                 }
             }
 
