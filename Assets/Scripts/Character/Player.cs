@@ -12,6 +12,9 @@ namespace MD.Character
     public class Player : NetworkBehaviour
     {        
         [SerializeField]
+        private PlayerColorPicker colorPicker = null;
+
+        [SerializeField]
         private ScoreManager scoreManager = null;
 
         [SyncVar]
@@ -19,6 +22,11 @@ namespace MD.Character
 
         [SyncVar] 
         private bool canMove = false;
+
+        [SyncVar]
+        public int colorIdx = 0;
+
+        private Color playerColor;
 
         private UI.NetworkManagerLobby room;
         private UI.NetworkManagerLobby Room
@@ -30,11 +38,11 @@ namespace MD.Character
             }
         }
     
-        public string PlayerName { get => playerName; }
-
-        public bool CanMove { get => canMove; }
-
-        public int CurrentScore { get => scoreManager.CurrentScore; }
+        public string PlayerName => playerName;
+        public Color PlayerColor => colorPicker.GetColor(colorIdx);
+        public bool CanMove => canMove; 
+        public int FinalScore => scoreManager.FinalScore;
+        public int CurrentScore => scoreManager.CurrentScore;
 
         public override void OnStartClient()
         {
@@ -54,9 +62,10 @@ namespace MD.Character
         }
         
         [Server]
-        public void SetPlayerName(string name)
+        public void SetPlayerNameAndColor(string name)
         {
             playerName = name;
+            colorIdx = colorPicker.NextIndex;
         }
 
         [Server]
@@ -84,7 +93,6 @@ namespace MD.Character
                 Debug.Log("Quit match on server");
                 NetworkServer.DisconnectAllConnections();
                 NetworkManager.singleton.StopHost();
-                // (NetworkManager.singleton as NetworkManagerLobby).CleanObjectsWhenDisconnect();
                 return;
             }
             

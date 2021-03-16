@@ -1,5 +1,4 @@
-﻿using Mirror.Discovery;
-using UnityEngine;
+﻿using UnityEngine;
 using Mirror;
 using MD.Network.GameMode;
 
@@ -12,6 +11,10 @@ namespace MD.UI.MainMenu
 
         [SerializeField]
         private RoomController joinRoomWindow = null;
+
+        [Scene]
+        [SerializeField]
+        private string tutorialScene = null;
 
         private NetworkManagerLobby netManager;
         private NetworkManagerLobby NetManager
@@ -40,6 +43,11 @@ namespace MD.UI.MainMenu
         private void OpenRoomWindow(RoomController window)
         {
             window.ShowWindow();            
+        }
+
+        public void EnterTutorial()
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(tutorialScene);
         }
     }
 }

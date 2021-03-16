@@ -22,7 +22,16 @@ namespace MD.Diggable.Projectile
         private SpriteRenderer spriteRenderer = null;
 
         [SerializeField]
+        private Sprite almostExplodeSprite = null;
+
+        [SerializeField]
         private Sprite explodeSprite = null;
+
+        [SerializeField]
+        private ParticleSystem sparkEffect = null;
+
+        [SerializeField]
+        private float almostExplosionSparkEmissionMultiplier = 3f;
 
         [SerializeField]
         private LayerMask explodeLayerMask = 1;
@@ -33,11 +42,20 @@ namespace MD.Diggable.Projectile
         
         private ITimer timer = null;
         private bool isExploded = false;
-
+        private bool shouldExplode = true;
+        private ProjectileLauncher launcher;
+        private bool canCollideWithThrower = false;
+        
         public override void OnStartServer()
         {
+            launcher = GetComponent<ProjectileLauncher>();
             timer = GetComponent<ITimer>();
             timer.Activate();
+        }
+        public void StopExplosion()
+        {
+            shouldExplode = false;
+            Debug.Log("Bomb should not expolde");
         }
         
         [ServerCallback]
@@ -45,7 +63,7 @@ namespace MD.Diggable.Projectile
         {
             if (timeStamp == 2f)
             {
-                RpcChangeSpriteColor();
+                RpcPlayAlmostExplodeEffects();
             }
 
             if (timeStamp == 3f)
@@ -77,34 +95,37 @@ namespace MD.Diggable.Projectile
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!isThrown) return;
-
-            if (!other.CompareTag(Constants.PLAYER_TAG)) return;
-            
-            var launcher = GetComponent<ProjectileLauncher>();
+            if(!shouldExplode)
+            {
+                shouldExplode = true;
+                return;
+            }
+            // if (!other.CompareTag(Constants.PLAYER_TAG)) return;
+            if (other.GetComponent<IExplodable>() == null) return;
             if (launcher)
             {
-                if (other.gameObject == launcher.Thrower && Time.time < launcher.SourceCollidableTime) return;
-
+                if (other.gameObject == launcher.Thrower.gameObject && !canCollideWithThrower) return;
                 launcher.StopOnCollide();
             }
 
             Explode();          
         }
 
-        [ServerCallback]
-        private void OnTriggerExit2D(Collider2D other)
-        {
-            if (!other.CompareTag(Constants.PLAYER_TAG)) return;
+        // [ServerCallback]
+        // private void OnTriggerExit2D(Collider2D other)
+        // {
+        //     if (!other.CompareTag(Constants.PLAYER_TAG) || isThrown) return;
 
-            if (other.GetComponent<MD.Character.ThrowAction>().netIdentity == GetComponent<ProjectileLauncher>().Thrower)
-            {
-                isThrown = true;
-            }
-        }
+        //     if (other.GetComponent<MD.Character.ThrowAction>().netIdentity == GetComponent<ProjectileLauncher>().Thrower)
+        //     {
+        //         isThrown = true;
+        //     }
+        // }
 
         [ServerCallback]
         private void Explode()
         {
+            Debug.Log("explode");
             isExploded = true;
             CheckForCollision();
             PlayExplodingEffect();
@@ -118,11 +139,12 @@ namespace MD.Diggable.Projectile
 
             foreach (Collider2D collide in colliders)
             {
-                if (!collide.CompareTag(Constants.PLAYER_TAG)) continue;  
+                // if (!collide.CompareTag(Constants.PLAYER_TAG)) continue;  
 
                 IExplodable target = collide.transform.GetComponent<IExplodable>();
+                if (target == null) continue;
                 var thrower = GetComponent<ProjectileLauncher>().Thrower;
-                target?.HandleExplosion(thrower.transform, thrower.netId, stats.GemDropPercentage, -1);
+                target?.HandleExplosion(thrower.transform, thrower.netId, stats.GemDropPercentage);
             }
         }
         
@@ -130,16 +152,31 @@ namespace MD.Diggable.Projectile
         private void PlayExplodingEffect()
         {
             RpcPlayExplosionEffect();
-            Invoke(nameof(DestroyProjectile), .2f);
+            Invoke(nameof(DestroyProjectile), .2f); 
         }
 
         [ServerCallback]
         private void DestroyProjectile() => Destroy(projectileObject);
 
         [ClientRpc]
-        private void RpcChangeSpriteColor() => spriteRenderer.color = Color.red;
+        private void RpcPlayAlmostExplodeEffects() 
+        {
+            spriteRenderer.sprite = almostExplodeSprite;
+            var emissionModule = sparkEffect.emission;
+            emissionModule.rateOverTimeMultiplier *= almostExplosionSparkEmissionMultiplier;
+        }
 
         [ClientRpc]
         private void RpcPlayExplosionEffect() => spriteRenderer.sprite = explodeSprite;
+
+        [Server]
+        public void NotifyThrow()
+        {
+            isThrown = true;
+            Invoke(nameof(SetCanCollideWithThrower),1f);
+        }
+
+        [Server]
+        private void SetCanCollideWithThrower() => canCollideWithThrower = true;
     }
 }

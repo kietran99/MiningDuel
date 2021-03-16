@@ -5,7 +5,6 @@ using MD.UI;
 
 namespace MD.Character
 {
-    [RequireComponent(typeof(ThrowRaycast))]
     public class ThrowAction : NetworkBehaviour
     {
         #region STATES
@@ -102,6 +101,7 @@ namespace MD.Character
         protected WaitForSecondsRealtime chargeTimeAsWaitForSeconds;  
         protected TargetTracker targetTracker;   
         private IState currentState, handFreeState, freeThrowState, trackState;
+        private Camera mainCamera;
         #endregion
 
         public override void OnStartLocalPlayer()
@@ -202,9 +202,6 @@ namespace MD.Character
             holdingProjectile.Launch(basePower, dirX, dirY);
         }
 
-        private Camera mainCamera;
-
-        // Cheat control
         [ClientCallback]
         private void Update()
         {           
@@ -215,7 +212,7 @@ namespace MD.Character
                 currentState == null || 
                 currentState.Equals(handFreeState) ||
                 !isLocalPlayer ||
-                !Input.GetMouseButtonDown(1)
+                !Input.GetMouseButtonDown(0)
                 )
             {
                 return; 

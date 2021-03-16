@@ -62,8 +62,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  width: 50
-  height: 50
+  width: 30
+  height: 30
   seed: 
   useRandomSeed: 1
   randomFillPercent1: 10

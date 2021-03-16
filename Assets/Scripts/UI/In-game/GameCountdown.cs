@@ -1,5 +1,4 @@
-﻿using MD.Character;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace MD.UI

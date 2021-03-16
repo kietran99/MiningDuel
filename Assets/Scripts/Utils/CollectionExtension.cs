@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Functional.Type;
 
 public static class CollectionExtension
 {
@@ -20,6 +21,19 @@ public static class CollectionExtension
         }
 
         return (default(T), Constants.INVALID);
+    }
+
+    public static Option<T> Find<T>(this T[] arr, Predicate<T> condition)
+    {
+        for (int i = 0; i < arr.Length; i++)
+        {
+            if (condition(arr[i]))
+            {
+                return arr[i];
+            }
+        }
+
+        return Option<T>.None;
     }
 
     public static (T item, int idx) LookUp<T>(this T[] arr, Func<T, int, bool> conditions)
@@ -150,5 +164,10 @@ public static class CollectionExtension
         }
 
         return result.ToArray();
+    }
+
+    public static T Random<T>(this T[] arr)
+    {
+        return arr[UnityEngine.Random.Range(0, arr.Length)];
     }
 }

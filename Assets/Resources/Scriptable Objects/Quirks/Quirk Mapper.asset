@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bad17ce35be26f4b96dd3a7c926606f, type: 3}
+  m_Name: Quirk Mapper
+  m_EditorClassIdentifier: 
+  quirkTable:
+  - type: 0
+    prefab: {fileID: 3136954806002261184, guid: 75ede8a2c6074fc4496ea2678c5977aa,
+      type: 3}
+  - type: 1
+    prefab: {fileID: 9086475506681265454, guid: d3d86a13f978d544fb1b64d5b58e439a,
+      type: 3}
+  - type: 2
+    prefab: {fileID: 9086475506681265454, guid: ff669b176ebb0cf47b6aca86b0ce4401,
+      type: 3}
+  - type: 3
+    prefab: {fileID: 6758433996475316001, guid: 84ed190a922b6fb4793ac88d8cab95c1,
+      type: 3}

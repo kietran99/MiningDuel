@@ -16,8 +16,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Bomb Only
+  - Bomb
   - 
   - 
   - 
@@ -46,6 +46,9 @@ TagManager:
     locked: 0
   - name: Ground
     uniqueID: 1628378265
+    locked: 0
+  - name: Sonar
+    uniqueID: 1317992529
     locked: 0
   - name: Character
     uniqueID: 384472861

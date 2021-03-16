@@ -7,8 +7,8 @@ namespace MD.Diggable.Core
 {
     public static class DiggableTypeConverter
     {
-        private readonly static string GEM_PATH = "Gem/";
-        private readonly static string PROJECTILE_PATH = "Projectile/";
+        private readonly static string GEM_PATH = "Scriptable Objects/Gems/";
+        private readonly static string PROJECTILE_PATH = "Scriptable Objects/Projectiles/";
 
         private readonly static string NAME_COMMON_GEM = "Common Gem Stats";
         private readonly static string NAME_UNCOMMON_GEM = "Uncommon Gem Stats";

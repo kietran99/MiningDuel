@@ -14,6 +14,7 @@ namespace MD.Character
 
         protected virtual bool IsPlayer => true;
 
+
         public override void OnStartAuthority()
         {
             StartListeningToEvents();
@@ -34,7 +35,7 @@ namespace MD.Character
             EventSystems.EventManager.Instance.StopListening<DigAnimEndData>(HandleDigAnimEnd);
         }
 
-        protected void HandleDigAnimEnd(DigAnimEndData data) => CmdDig();
+        protected void HandleDigAnimEnd(DigAnimEndData _) => CmdDig();
 
         [Command]
         protected virtual void CmdDig()
@@ -49,7 +50,7 @@ namespace MD.Character
                             Mathf.FloorToInt(transform.position.x), 
                             Mathf.FloorToInt(transform.position.y), 
                             power)                
-                );       
+                );
         }
 
         // Cheat control

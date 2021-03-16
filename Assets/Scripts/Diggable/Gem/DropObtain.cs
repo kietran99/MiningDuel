@@ -19,9 +19,9 @@ namespace MD.Diggable.Gem
                 return;
             }
 
-            if (!ThrowerID.Equals(other.GetComponent<NetworkIdentity>().netId)) return;
-
             if (!other.CompareTag(Constants.PLAYER_TAG)) return;
+
+            if (!ThrowerID.Equals(other.GetComponent<NetworkIdentity>().netId)) return;
 
             if (other.GetComponent<MD.Character.ScoreManager>() != null)
             {

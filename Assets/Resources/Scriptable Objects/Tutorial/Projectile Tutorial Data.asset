@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d394ec1d265d23e49861cf61e8a4fa17, type: 3}
+  m_Name: Projectile Tutorial Data
+  m_EditorClassIdentifier: 
+  tutorialMaterial: {fileID: 2444472095549426728, guid: 9d884246dfc574849ac20487436ed1d4,
+    type: 3}
+  lines:
+  - Welcome to Projectile tutorial!
+  - As one of the popular Diggable types in this world,
+  - Projectiles play essential roles in supporting players
+  - as well as offensive play style.
+  - Similar to Gems, Projectiles are hidden, thus they can only be found using the
+    Sonar.
+  - Let's try to look for one, It should look like a bomb.
+  - There it is, come over and dig it up.
+  - Great! Now you're holding a Normal Bomb, which is a pretty common type of Projectile.
+  - Be aware that Projectiles explode after a short amount of time.
+  - So if you keep holding it , you'll damage yourself in a couple of seconds!
+  - Hence it's best to throw Projectiles at another player as they will drop a bunch
+    of gems if hit.
+  - Hey, conveniently there's a practicing target over there!
+  - Tap somewhere on the screen to throw at that direction. Let's throw it at them.
+  - Nicely done! As a bonus, some of the target's gems is now yours!
+  - Which means that you can go offensive instead of mining for gems.
+  - That's the end of this tutorial! See ya in another one.
+  focusLines:
+  - objectName: Score Canvas
+    lineIdx: 13
+  maskToggleIndices: 05000000080000000b000000

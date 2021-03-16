@@ -25,17 +25,29 @@ namespace MD.Character
         [SyncVar(hook=nameof(SyncScore))]
         private int currentScore;
 
+        private int finalScore;
+
         [SyncVar(hook=nameof(SyncMultiplier))]
         private float currentMultiplier;
 
         public int CurrentScore { get => currentScore; }
 
+        public int FinalScore { get => finalScore; }
+
         public float CurrentMultiplier { get => currentMultiplier; }
+
+        private Player player;
 
         public override void OnStartServer()
         {
             currentScore = 0;
             currentMultiplier = 1f;
+            EventSystems.EventManager.Instance.StartListening<StoreFinishedData>(StoreGem);
+            player = GetComponent<Player>();
+        }
+        public override void OnStopServer()
+        {
+            EventSystems.EventManager.Instance.StartListening<StoreFinishedData>(StoreGem);
         }
 
         public override void OnStartClient()
@@ -96,7 +108,7 @@ namespace MD.Character
             UpdateMultiplier(currentScore);
             if (!hasAuthority) return;
             
-            EventSystems.EventManager.Instance.TriggerEvent(new ScoreChangeData(newValue));
+            EventSystems.EventManager.Instance.TriggerEvent(new ScoreChangeData(newValue, finalScore));
         }
 
         private void UpdateMultiplier(int currentScore)
@@ -130,5 +142,13 @@ namespace MD.Character
             }
             #endif
         }
+
+        [Server]
+        void StoreGem(StoreFinishedData data)
+        {
+            if (data.player != player.netIdentity) return;
+            finalScore += currentScore;
+            currentScore = 0;
+        } 
     }
 }
