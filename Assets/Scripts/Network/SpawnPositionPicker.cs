@@ -8,19 +8,18 @@ namespace MD.Character
         [SerializeField]
         private Vector2[] spawnPositions = null;
 
+        public Vector2[] SpawnPositions => spawnPositions;
+    }
+
+    public struct SpawnPositionsData
+    {
         private int idx;
+        private Vector2[] spawnPositions;
 
-        public Vector2 CentreOffset 
-        { 
-            get => centreOffset;
-            set => centreOffset = value;
-        }
-
-        private Vector2 centreOffset = new Vector2(0f, 0f);
-
-        private void OnEnable()
+        public SpawnPositionsData(Vector2[] spawnPositions)
         {
-            idx = -1;
+            this.idx = -1;
+            this.spawnPositions = spawnPositions;
         }
 
         public Vector2 NextSpawnPoint
@@ -29,7 +28,7 @@ namespace MD.Character
             {
                 idx++;
                 // Debug.Log("Spawn at: " + (spawnPositions[idx] + CentreOffset));            
-                return spawnPositions[idx] + CentreOffset;            
+                return spawnPositions[idx];            
             }
         }
     }

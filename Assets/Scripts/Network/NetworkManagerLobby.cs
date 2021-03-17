@@ -59,6 +59,7 @@ namespace MD.UI
         public List<PlayerBot> Bots { get; } = new List<PlayerBot>();
         public bool isBotTraining;
         private IGameModeManager gameModeManager;
+        private SpawnPositionsData spawnPositionsData;
         #endregion
 
         public static event Action OnClientConnected;
@@ -167,9 +168,10 @@ namespace MD.UI
             gameModeManager.HandleOnServerAddPlayer(conn);    
         }
 
-        public Player SpawnNetworkPlayer(NetworkConnection conn)
+        public Player SpawnBotTrainingPlayer(NetworkConnection conn)
         {
-            var player = Instantiate(NetworkPlayerPrefab, spawnPositionPicker.NextSpawnPoint, Quaternion.identity);
+            // var player = Instantiate(NetworkPlayerPrefab, spawnPositionsData.NextSpawnPoint, Quaternion.identity);
+            var player = Instantiate(NetworkPlayerPrefab);
             player.SetPlayerNameAndColor(PlayerPrefs.GetString(PlayerNameInput.PLAYER_PREF_NAME_KEY));
             NetworkServer.AddPlayerForConnection(conn, player.gameObject); 
             return player;        
@@ -215,7 +217,9 @@ namespace MD.UI
 
         private void InitEnv()
         {
-            SpawnMapGenerator();  
+            var mapGenerator = SpawnMapGenerator();  
+            var spawnOffset = spawnPositionPicker.SpawnPositions;
+            spawnPositionsData = new SpawnPositionsData(spawnOffset.Map(pos => pos + new Vector2(mapGenerator.MapWidth / 2, mapGenerator.MapHeight / 2)));
             SpawnDiggableGenerator();            
         }
 
@@ -227,21 +231,20 @@ namespace MD.UI
             DontDestroyOnLoadObjects.Add(diggableGeneratorGO);
         }
 
-        private void SpawnMapGenerator()
+        private Map.Core.IMapGenerator SpawnMapGenerator()
         {
             var mapGeneratorGO = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(MAP_GENERATOR)));
-            var mapGenerator = mapGeneratorGO.GetComponent<Map.Core.IMapGenerator>();
-            spawnPositionPicker.CentreOffset = new Vector2(mapGenerator.MapWidth / 2, mapGenerator.MapHeight / 2);
             NetworkServer.Spawn(mapGeneratorGO);
             DontDestroyOnLoad(mapGeneratorGO);
             DontDestroyOnLoadObjects.Add(mapGeneratorGO);
+            return mapGeneratorGO.GetComponent<Map.Core.IMapGenerator>();
         }
 
         public void SpawnPvPPlayers()
         {
             RoomPlayers.ToArray().ForEach(roomPlayer =>
             {
-                var player = Instantiate(NetworkPlayerPrefab, spawnPositionPicker.NextSpawnPoint, Quaternion.identity);
+                var player = Instantiate(NetworkPlayerPrefab, spawnPositionsData.NextSpawnPoint, Quaternion.identity);
                 player.SetPlayerNameAndColor(roomPlayer.DisplayName);
                 var conn = roomPlayer.netIdentity.connectionToClient;
                 NetworkServer.Destroy(conn.identity.gameObject);
@@ -265,6 +268,7 @@ namespace MD.UI
             //TODO check if all players loaded scene
             SetupGame();           
         }
+
         private void SpawnScanWaveSpawner()
         {
             var scanWaveSpawner = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(SCAN_WAVE_SPAWNER)));
@@ -313,10 +317,10 @@ namespace MD.UI
             }
         }
 
-        public void SetupBotState()
+        public void SetupBotAndPlayerState(Transform player)
         {
-            // var bot = Instantiate(botPrefab, spawnPointPicker.NextSpawnPoint, Quaternion.identity);
-            var bot = Instantiate(botPrefab, spawnPositionPicker.NextSpawnPoint, Quaternion.identity);
+            player.position = spawnPositionsData.NextSpawnPoint;
+            var bot = Instantiate(botPrefab, spawnPositionsData.NextSpawnPoint, Quaternion.identity);
             Bots.Add(bot.GetComponent<PlayerBot>());
             NetworkServer.Spawn(bot, Players[0].connectionToClient);
         }
@@ -340,10 +344,14 @@ namespace MD.UI
         private void EndGame()
         {
             Debug.Log("Player count: " + Players.Count);
-            //stop game on server
-            if (Players.Count <= 0) return;
+            
+            if (Players.Count <= 0) 
+            {
+                return;
+            }
+
             Time.timeScale = 0f;
-            //if play with bot
+            
             if (Bots.Count > 0)
             {
                 Players[0].TargetNotifyEndGame(Players[0].FinalScore >= Bots[(int)0].CurrentScore);

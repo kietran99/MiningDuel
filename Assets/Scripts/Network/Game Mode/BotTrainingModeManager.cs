@@ -1,5 +1,6 @@
 ﻿using MD.Character;
 using Mirror;
+using UnityEngine;
 
 namespace MD.Network.GameMode
 {
@@ -12,16 +13,20 @@ namespace MD.Network.GameMode
             networkManager.isBotTraining = true;
         }
 
-        // public override void StartHost()
-        // {
-        //     networkManager.RegisterGameModeManager(this);
-        //     networkManager.StartHost();
-        // }
-
         public override void HandleOnServerAddPlayer(NetworkConnection conn)
         {
-            this.player = networkManager.SpawnNetworkPlayer(conn);
+            player = networkManager.SpawnBotTrainingPlayer(conn);
             networkManager.StartGame();
+        }
+
+        public override void HandleServerChangeScene()
+        {
+            ServiceLocator
+                .Resolve<Map.Core.IMapGenerator>()
+                .Match(
+                    err => Debug.LogError(err.Message),
+                    mapGenerator => player.transform.position += new Vector3(mapGenerator.MapWidth / 2, mapGenerator.MapHeight / 2, 0f)
+                );
         }
 
         public override bool IsReadyToStart()
@@ -32,7 +37,7 @@ namespace MD.Network.GameMode
         public override void SetupGame()
         {
             base.SetupGame();
-            networkManager.SetupBotState();
+            networkManager.SetupBotAndPlayerState(player.transform);
         }
     }
 }
