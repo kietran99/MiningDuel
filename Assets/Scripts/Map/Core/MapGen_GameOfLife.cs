@@ -33,6 +33,8 @@ namespace MD.Map.Core{
 
         public int[] MapData{get;}
 
+        public SpawnPositionsData SpawnPositionsData => throw new NotImplementedException();
+
         public bool IsObstacle(int x, int y)
         {
             if(map[x,y] == Constants.OBSTACLE)

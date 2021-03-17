@@ -44,9 +44,6 @@ namespace MD.UI
         private GameObject botPrefab = null;
 
         [SerializeField]
-        private SpawnPositionPicker spawnPositionPicker = null;
-
-        [SerializeField]
         private Diggable.Core.Storage gemStorage = null;    
         #endregion
 
@@ -59,7 +56,7 @@ namespace MD.UI
         public List<PlayerBot> Bots { get; } = new List<PlayerBot>();
         public bool isBotTraining;
         private IGameModeManager gameModeManager;
-        private SpawnPositionsData spawnPositionsData;
+        private Map.Core.SpawnPositionsData spawnPositionsData;
         #endregion
 
         public static event Action OnClientConnected;
@@ -218,8 +215,9 @@ namespace MD.UI
         private void InitEnv()
         {
             var mapGenerator = SpawnMapGenerator();  
-            var spawnOffset = spawnPositionPicker.SpawnPositions;
-            spawnPositionsData = new SpawnPositionsData(spawnOffset.Map(pos => pos + new Vector2(mapGenerator.MapWidth / 2, mapGenerator.MapHeight / 2)));
+            // var spawnOffset = spawnPositionPicker.SpawnPositions;
+            // spawnPositionsData = new Map.Core.SpawnPositionsData(spawnOffset.Map(pos => pos + new Vector2(mapGenerator.MapWidth / 2, mapGenerator.MapHeight / 2)));
+            spawnPositionsData = mapGenerator.SpawnPositionsData;
             SpawnDiggableGenerator();            
         }
 
