@@ -14,9 +14,10 @@ namespace MD.Diggable.Core
             CmdSubscribeDiggableEvents();
         }
 
-        public override void OnStopAuthority()
+        void Destroy()
         {
-            CmdUnsubscribeDiggableEvents();
+            if (hasAuthority)
+                CmdUnsubscribeDiggableEvents();
         }
 
         // TargetRpc callbacks without NetworkConnection as an arg are invoked on every authoritative DigGenComm.

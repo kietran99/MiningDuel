@@ -4729,7 +4729,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 384472861
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
@@ -4824,7 +4824,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 384472861
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 10
   m_Sprite: {fileID: -522798739330844983, guid: dfc39f382af3df54c865c31cedf22169,
     type: 3}
@@ -4879,7 +4879,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6069472638469910096}
   - component: {fileID: 1651827054384013500}
-  - component: {fileID: 6958029120804089697}
   - component: {fileID: 1336424594404950585}
   - component: {fileID: 3704824660759751096}
   - component: {fileID: 102619972807231682}
@@ -4887,6 +4886,7 @@ GameObject:
   - component: {fileID: 4095583940505003281}
   - component: {fileID: 5339483725538874892}
   - component: {fileID: 2659648287536106052}
+  - component: {fileID: 6773149020054984751}
   m_Layer: 0
   m_Name: bot
   m_TagString: Player
@@ -4922,31 +4922,15 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
+  m_Mass: 80
+  m_LinearDrag: 70
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
---- !u!70 &6958029120804089697
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5063567480658151164}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.02}
-  m_Size: {x: 0.66, y: 0.92}
-  m_Direction: 0
 --- !u!114 &1336424594404950585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5069,3 +5053,19 @@ MonoBehaviour:
   syncInterval: 0.1
   power: 1
   bot: {fileID: 0}
+--- !u!58 &6773149020054984751
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5063567480658151164}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.4

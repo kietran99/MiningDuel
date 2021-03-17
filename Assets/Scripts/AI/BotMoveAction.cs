@@ -45,8 +45,12 @@ namespace MD.AI
         private Vector2Int mapRoot;
 
         private float halfTileSize = .5f;
+
+        private Rigidbody2D rigidbody;
         void Start()
         {
+
+            rigidbody = GetComponent<Rigidbody2D>();
             ServiceLocator.Resolve(out mapGenerator);
             mapWidth = mapGenerator.MapWidth;
             mapHeight = mapGenerator.MapHeight;
@@ -133,13 +137,14 @@ namespace MD.AI
 
                 Vector2 moveDir = currentGoal - (Vector2)transform.position;
                 animator.SetMovementState(moveDir);
-                transform.Translate(moveDir.normalized*speed*Time.fixedDeltaTime);
+                rigidbody.MovePosition(rigidbody.position + moveDir.normalized*speed*Time.fixedDeltaTime);
             }
         }
 
         private bool IsInRightPath()
         {
             Vector2Int playerIndex= WorldToIndex(transform.position);
+            if (currentNode >= path.Count || currentNode < 0) return false;
             if (playerIndex == path[currentNode].index || playerIndex == path[currentNode + 1].index ) return true;
             return false;
         }

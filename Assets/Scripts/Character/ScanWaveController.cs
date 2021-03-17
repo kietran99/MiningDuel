@@ -27,10 +27,10 @@ namespace MD.Character
             EventSystems.EventManager.Instance.StartListening<ScanInvokeData>(Scan);
         }
 
-        public override void OnStopAuthority()
+        void OnDestroy()
         {
-            base.OnStopAuthority();
-            EventSystems.EventManager.Instance.StopListening<ScanInvokeData>(Scan);
+            if (hasAuthority)
+                EventSystems.EventManager.Instance.StopListening<ScanInvokeData>(Scan);
         }
 
         private void Scan(ScanInvokeData data) {
