@@ -16,7 +16,7 @@ namespace MD.UI
         private Camera cam =null;
 
 
-        public override void OnStartAuthority()
+        public override void OnStartClient()
         {
             StartUp();
         }
@@ -72,20 +72,21 @@ namespace MD.UI
         {
             if(allPlayers == null)
             {
-                Debug.Log("No player found");
+                Debug.Log("No player found, trying to rerun script!");
                 StartUp();
                 return;
             }
             int j = 0;
-            // float zRotation = 0;
+            // float[] zRotation = new float[allPlayers.Length];
             Debug.Log("Num of Player tag found: "+ allPlayers.Length);
+            Debug.Log("Num of Indicator found: "+ indicators.Count);
             for(int i = 0; i < allPlayers.Length; i++)
             {
-                
-                if(true) // Change this with check if object is enemy condition
+                float zRotation = indicators[j].transform.rotation.z;
+                if(allPlayers[i].GetComponent<NetworkIdentity>().hasAuthority)
                 {
                     Vector3 screenPos = cam.WorldToScreenPoint(allPlayers[i].transform.position);
-                    if((screenPos.x > 0&& screenPos.x < Screen.width) && (screenPos.y > 0 && screenPos.y < Screen.height))      // ONSCREEN
+                    if((screenPos.x > 0 && screenPos.x < Screen.width) && (screenPos.y > 0 && screenPos.y < Screen.height))      // ONSCREEN
                     {
                         indicators[j].SetActive(false);
                     }
@@ -94,13 +95,13 @@ namespace MD.UI
                         indicators[j].SetActive(true);
                         indicators[j].transform.position = cam.ScreenToWorldPoint(new Vector3(Mathf.Clamp(screenPos.x,0,Screen.width),Mathf.Clamp(screenPos.y,0,Screen.height),screenPos.z));
                         Vector3 direction = indicators[j].transform.position - playerClient.transform.position;
-                        float angle = Mathf.Atan2(direction.y,direction.x) * 180f / 3.14f - 90f; //- zRotation; // Use this if arrow sprite pointing up
+                        float angle = Mathf.Atan2(direction.y,direction.x) * 180f / 3.14f - 90f- zRotation; // Use this if arrow sprite pointing up
                         // float angle = Mathf.Atan2(direction.y,direction.x) * 180f / 3.14f - zRotation // Use this if arrow sprite pointing to the right  
-                        indicators[j].transform.Rotate(0f,0f,angle);
-                        // zRotation = indicators[j].transform.rotation.z;
-                    }
+                        // indicators[j].transform.Rotate(0f,0f,angle);
+                        indicators[j].transform.rotation = Quaternion.Euler(0f,0f,angle);
+                    }   
                     j++;
-                }
+                }         
             }
         }
     }
