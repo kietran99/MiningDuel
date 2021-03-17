@@ -82,6 +82,7 @@ namespace MD.UI
             Debug.Log("Num of Indicator found: "+ indicators.Count);
             for(int i = 0; i < allPlayers.Length; i++)
             {
+                if(j >= indicators.Count) return;
                 float zRotation = indicators[j].transform.rotation.z;
                 if(allPlayers[i].GetComponent<NetworkIdentity>().hasAuthority)
                 {
