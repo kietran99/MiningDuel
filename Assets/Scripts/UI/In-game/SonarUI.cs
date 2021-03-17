@@ -77,7 +77,6 @@ public class SonarUI : MonoBehaviour
         }
         if (currentTargetLevel != targetLevel)
         {
-            Debug.Log("target level != current level");
             StartCoroutine(nameof(SimulateChange));
         }
         isSimulating = false;

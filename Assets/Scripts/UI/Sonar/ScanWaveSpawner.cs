@@ -15,9 +15,10 @@ namespace MD.Character
             EventManager.Instance.StartListening<ScanWaveSpawnData>(SpawnScanWave);
         }
 
-        public override void OnStopServer()
+        void OnDestroy()
         {
-            EventManager.Instance.StopListening<ScanWaveSpawnData>(SpawnScanWave);
+            if (isServer)
+                EventManager.Instance.StopListening<ScanWaveSpawnData>(SpawnScanWave);
         } 
 
         private void SpawnScanWave(ScanWaveSpawnData data)

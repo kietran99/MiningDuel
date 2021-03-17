@@ -114,11 +114,10 @@ namespace MD.Character
             EventSystems.EventManager.Instance.StartListening<MD.UI.ThrowInvokeData>(HandleThrowInvokeData);        
         }
 
-        public override void OnStopAuthority()
+        void OnDestroy()
         {
-            if (!isLocalPlayer) return;
-
-            EventSystems.EventManager.Instance.StopListening<MD.UI.ThrowInvokeData>(HandleThrowInvokeData);
+            if (hasAuthority)
+                EventSystems.EventManager.Instance.StopListening<MD.UI.ThrowInvokeData>(HandleThrowInvokeData);
         }
 
         private System.Collections.IEnumerator HandleGameplaySceneLoaded()
