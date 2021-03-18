@@ -46,11 +46,12 @@ namespace MD.AI
 
         private float halfTileSize = .5f;
 
-        private Rigidbody2D rigidbody;
+        private Rigidbody2D theRigidbody;
+
         void Start()
         {
 
-            rigidbody = GetComponent<Rigidbody2D>();
+            theRigidbody = GetComponent<Rigidbody2D>();
             ServiceLocator.Resolve(out mapGenerator);
             mapWidth = mapGenerator.MapWidth;
             mapHeight = mapGenerator.MapHeight;
@@ -137,7 +138,7 @@ namespace MD.AI
 
                 Vector2 moveDir = currentGoal - (Vector2)transform.position;
                 animator.SetMovementState(moveDir);
-                rigidbody.MovePosition(rigidbody.position + moveDir.normalized*speed*Time.fixedDeltaTime);
+                theRigidbody.MovePosition(theRigidbody.position + moveDir.normalized*speed*Time.fixedDeltaTime);
             }
         }
 
