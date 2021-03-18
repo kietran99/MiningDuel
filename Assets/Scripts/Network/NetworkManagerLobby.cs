@@ -215,8 +215,6 @@ namespace MD.UI
         private void InitEnv()
         {
             var mapGenerator = SpawnMapGenerator();  
-            // var spawnOffset = spawnPositionPicker.SpawnPositions;
-            // spawnPositionsData = new Map.Core.SpawnPositionsData(spawnOffset.Map(pos => pos + new Vector2(mapGenerator.MapWidth / 2, mapGenerator.MapHeight / 2)));
             spawnPositionsData = mapGenerator.SpawnPositionsData;
             SpawnDiggableGenerator();            
         }
@@ -260,7 +258,7 @@ namespace MD.UI
             Players.ForEach(player => SpawnSonar(player.connectionToClient));            
             Players.ForEach(player => SpawnDiggableGeneratorCommunicator(player.connectionToClient));  
             Players.ForEach(player => GenMapRenderer(player.connectionToClient)); 
-            Players.ForEach(player => SpawnStorage(player.netIdentity));
+            Players.ForEach(player => SpawnStorage(player.netIdentity, player.PlayerColor));
 
             SpawnScanWaveSpawner();
             //TODO check if all players loaded scene
@@ -273,10 +271,10 @@ namespace MD.UI
             NetworkServer.Spawn(scanWaveSpawner);
         } 
 
-        private void SpawnStorage(NetworkIdentity playerId)
+        private void SpawnStorage(NetworkIdentity playerId, Color flagColor)
         {
             var storage = Instantiate(gemStorage, playerId.transform.position, Quaternion.identity);
-            storage.Initialize(playerId);
+            storage.Initialize(playerId, flagColor);
             NetworkServer.Spawn(storage.gameObject);
         }
 
