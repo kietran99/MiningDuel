@@ -255,8 +255,8 @@ namespace MD.UI
                 return;
             }
             
-            Players.ForEach(player => SpawnSonar(player.connectionToClient));            
-            Players.ForEach(player => SpawnDiggableGeneratorCommunicator(player.connectionToClient));  
+            SpawnSonar();            
+            SpawnDiggableGeneratorCommunicator();  
             Players.ForEach(player => GenMapRenderer(player.connectionToClient)); 
             Players.ForEach(player => SpawnStorage(player.netIdentity, player.PlayerColor));
 
@@ -278,16 +278,16 @@ namespace MD.UI
             NetworkServer.Spawn(storage.gameObject);
         }
 
-        private void SpawnSonar(NetworkConnection conn)
+        private void SpawnSonar()
         {
             var sonar = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(SONAR)));
-            NetworkServer.Spawn(sonar, conn);
+            NetworkServer.Spawn(sonar);
         }
 
-        private void SpawnDiggableGeneratorCommunicator(NetworkConnection conn)
+        private void SpawnDiggableGeneratorCommunicator()
         {
             var digGenComm = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(DIGGABLE_GENERATOR_COMMUNICATOR)));
-            NetworkServer.Spawn(digGenComm, conn);
+            NetworkServer.Spawn(digGenComm);
         }
 
         private void GenMapRenderer(NetworkConnection conn)

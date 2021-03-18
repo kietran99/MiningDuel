@@ -19,7 +19,7 @@ namespace MD.Tutorial
         public void MightyBlessingDig(UI.QuirkInvokeData _)
         {
             finalScore += gemValue.Value;
-            EventSystems.EventManager.Instance.TriggerEvent(new Character.ScoreChangeData(finalScore, finalScore));
+            EventSystems.EventManager.Instance.TriggerEvent(new Character.FinalScoreChangeData(finalScore));
             gameObject.SetActive(false);
         }
     }
