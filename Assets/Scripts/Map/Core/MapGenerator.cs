@@ -28,6 +28,7 @@ namespace MD.Map.Core
         public int MapWidth => width;
         public int MapHeight => height;
         [SerializeField] bool useGeneratedMaps = false;
+        [SerializeField] string[] allMapsName;
         [SerializeField] int noObtacleAreaRadius = 4;
         // public int GetCount{get{return count;}}
 
@@ -35,8 +36,20 @@ namespace MD.Map.Core
         {
             // base.OnStartServer();
             ServiceLocator.Register((IMapGenerator)this);  
-            if (useGeneratedMaps)
+            if (useGeneratedMaps && allMapsName.Length > 0)
             {
+                int rd = UnityEngine.Random.Range(0, allMapsName.Length);
+                MapData mapData = SaveMapData.LoadMap(allMapsName[rd]);
+                width = mapData.width;
+                height = mapData.height;
+                map = new int[width,height];
+                for(int x = 0; x < width; x++)
+                {
+                    for(int y =0; y < height; y++)
+                    {
+                        map[x,y] = mapData.GetElement(x,y);
+                    }
+                }
                 return;
             }
             
@@ -103,11 +116,7 @@ namespace MD.Map.Core
         [Range(0,100)] public int randomFillPercent2 = 0;
         [Range(1,8)] [SerializeField] int deathLim = 1;
         [Range(1,8)] [SerializeField] int birthLim = 1;
-        // [SerializeField] Tilemap topMap = null;
-        // [SerializeField] Tilemap botMap = null;
-        // [SerializeField] RuleTile tileNo1 = null;
-        // [SerializeField] RuleTile tileNo2 = null;
-        // [SerializeField] RuleTile tileNo3 = null;
+        
         int[,] map = null; 
         int totalFill;
 

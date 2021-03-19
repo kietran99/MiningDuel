@@ -78,8 +78,8 @@ namespace MD.UI
             }
             int j = 0;
             // float[] zRotation = new float[allPlayers.Length];
-            Debug.Log("Num of Player tag found: "+ allPlayers.Length);
-            Debug.Log("Num of Indicator found: "+ indicators.Count);
+            Debug.Log("Indicator: Num of Player tag found: "+ allPlayers.Length);
+            Debug.Log("Indicator: Num of Indicator created: "+ indicators.Count);
             for(int i = 0; i < allPlayers.Length; i++)
             {
                 if(j >= indicators.Count) return;
