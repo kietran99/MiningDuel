@@ -31,7 +31,6 @@ namespace MD.Diggable.Core
         public override void OnStartClient()
         {
             base.OnStartClient();
-            Debug.Log("im ready");
             NetworkClient.Send<FullMapSonarReady>(new FullMapSonarReady());
         }
 
@@ -50,7 +49,7 @@ namespace MD.Diggable.Core
 
 
         [ServerCallback]
-        private void OnDestroy()
+        private void OnDiasble()
         {
             UnsubscribeDiggableEvents();
         }
@@ -60,7 +59,6 @@ namespace MD.Diggable.Core
             // GetComponent<SpriteMask>().enabled = true;
             // GetComponent<SpriteRenderer>().enabled = true;
 
-            Debug.Log("Log Msg");
             ServiceLocator
                 .Resolve<MD.Character.Player>()
                 .Match(
@@ -84,29 +82,37 @@ namespace MD.Diggable.Core
                     err => Debug.Log(err.Message),
                     diggableGenerator => 
                     {
-                        TargetSetupSonarData(conn, diggableGenerator.InitSonarTileData);
+                        Vector3Int[] datas = ConvertToSerializableData(diggableGenerator.InitSonarTileData);
+                        TargetSetupSonarData(conn, datas);
                     }
                 );
         }
 
-        [TargetRpc]
-        private void TargetSetupSonarData(NetworkConnection conn,SonarTileData[] sonarTileData)
+        private Vector3Int[] ConvertToSerializableData(SonarTileData[] sonarTileDatas)
         {
-
-            Debug.Log("client rpc called");
+            Vector3Int[] datas = new Vector3Int[sonarTileDatas.Length];
+            for (int i = 0; i< sonarTileDatas.Length; i++)
+            {
+                datas[i] = new Vector3Int(sonarTileDatas[i].x,sonarTileDatas[i].y, (int) sonarTileDatas[i].type);
+            }
+            return datas;
+        }
+        [TargetRpc]
+        private void TargetSetupSonarData(NetworkConnection conn,Vector3Int[] sonarTileData)
+        {
             tileDataDict = new System.Collections.Generic.Dictionary<Vector2Int, SpriteRenderer>(sonarTileData.Length);
 
             sonarTileData
                 .ForEach(
                     tileData =>
                     {    
-                        var renderer = SetTileDataFromPool(tileData.x, tileData.y, tileData.type);                      
+                        var renderer = SetTileDataFromPool(tileData.x, tileData.y, (int) tileData.z);                      
                         tileDataDict.Add(new Vector2Int(tileData.x, tileData.y), renderer);                       
                     }
                 );
         }
 
-        private SpriteRenderer SetTileDataFromPool(int x, int y, DiggableType type)
+        private SpriteRenderer SetTileDataFromPool(int x, int y, int type)
         {
             var tile = tilePool.Pop();
             tile.transform.position = new Vector3(x + GRID_MAP_OFFSET, y + GRID_MAP_OFFSET, 0f);
@@ -115,9 +121,16 @@ namespace MD.Diggable.Core
             return renderer;
         }
 
-        private Sprite GetSonarSprite(DiggableType type)
+        private Sprite GetSonarSprite(int type)
         {
-            return type.Equals(DiggableType.EMPTY) ? emptyTileSprite : DiggableTypeConverter.Convert(type).SonarSprite;
+            if (type.Equals(0))
+            {
+                return emptyTileSprite;
+            }
+            else
+            {   
+                return DiggableTypeConverter.Convert((DiggableType) type).SonarSprite;
+            }
         }
 
         [Server]
@@ -130,7 +143,7 @@ namespace MD.Diggable.Core
                     digGen => 
                     {
                         digGen.DiggableDestroyEvent     += RpcHandleDiggableDestroyEvent;
-                        digGen.DiggableSpawnEvent       += RpcHandleDiggableSpawnEvent;
+                        digGen.DiggableSpawnEvent       += HandleSpawnData;
                     }
                 );
         }
@@ -145,10 +158,13 @@ namespace MD.Diggable.Core
                     digGen => 
                     {
                         digGen.DiggableDestroyEvent     -= RpcHandleDiggableDestroyEvent;
-                        digGen.DiggableSpawnEvent       -= RpcHandleDiggableSpawnEvent;
+                        digGen.DiggableSpawnEvent       -= HandleSpawnData;
                     }
                 );
         }
+
+        [Server]
+        private  void HandleSpawnData (DiggableSpawnData data) => RpcHandleDiggableSpawnEvent(new Vector3Int(data.x,data.y,(int) data.type));
 
         [ClientRpc]
         private void RpcHandleDiggableDestroyEvent(DiggableRemoveData diggableRemoveData)
@@ -161,15 +177,15 @@ namespace MD.Diggable.Core
                 return;
             }
 
-            var renderer = SetTileDataFromPool(diggableRemoveData.x, diggableRemoveData.y, DiggableType.EMPTY);
+            var renderer = SetTileDataFromPool(diggableRemoveData.x, diggableRemoveData.y, (int)DiggableType.EMPTY);
             tileDataDict.Add(spawnPos, renderer);
         }
 
         [ClientRpc]
-        private void RpcHandleDiggableSpawnEvent(DiggableSpawnData diggableSpawnData)
+        private void RpcHandleDiggableSpawnEvent(Vector3Int diggableSpawnData)
         {
             var spawnPos = new Vector2Int(diggableSpawnData.x, diggableSpawnData.y);
-            var sprite = GetSonarSprite(diggableSpawnData.type);
+            var sprite = GetSonarSprite(diggableSpawnData.z);
 
             if (tileDataDict.TryGetValue(spawnPos, out SpriteRenderer _))
             {
@@ -177,15 +193,8 @@ namespace MD.Diggable.Core
                 return;
             }
             
-            var renderer = SetTileDataFromPool(diggableSpawnData.x, diggableSpawnData.y, diggableSpawnData.type);
+            var renderer = SetTileDataFromPool(diggableSpawnData.x, diggableSpawnData.y,diggableSpawnData.z);
             tileDataDict.Add(spawnPos, renderer);
         }
-
-        // private void LateUpdate()
-        // {
-        //     if (playerTransform == null) return;  
-
-        //     transform.position = playerTransform.position;
-        // }
     }
 }

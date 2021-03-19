@@ -77,7 +77,7 @@ namespace MD.Character
         [TargetRpc]
         public void TargetNotifyEndGame(bool hasWon)
         {
-            EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(hasWon, scoreManager.CurrentScore));
+            EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(hasWon, scoreManager.FinalScore));
         }
 
         public void ExitGame()

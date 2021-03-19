@@ -13,19 +13,18 @@ namespace MD.Diggable.Core
         public override void OnStartServer()
         {
             // ServiceLocator.Register(this);
-            CmdSubscribeDiggableEvents();
+            SubscribeDiggableEvents();
         }
-
         [ServerCallback]
-        public void OnDestroy()
+        private void OnDisable()
         {
-            CmdUnsubscribeDiggableEvents();
+            UnsubscribeDiggableEvents();
         }
 
         // TargetRpc callbacks without NetworkConnection as an arg are invoked on every authoritative DigGenComm.
         // TargetRpc callbacks with NetworkConnection as an arg are invoked on the same DigGenComm on each client regardless of its authority.
         [Server]
-        private void CmdSubscribeDiggableEvents()
+        private void SubscribeDiggableEvents()
         {
             ServiceLocator
                 .Resolve<IDiggableGenerator>()
@@ -43,12 +42,12 @@ namespace MD.Diggable.Core
         }
 
         [Server]
-        private void CmdUnsubscribeDiggableEvents()
+        private void UnsubscribeDiggableEvents()
         {
             ServiceLocator
                 .Resolve<IDiggableGenerator>()
                 .Match(
-                    unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
+                    unavailServiceErr => {},
                     digGen => 
                     {
                         digGen.DigProgressEvent         -= TargetHandleDigProgressEvent;
@@ -80,7 +79,6 @@ namespace MD.Diggable.Core
         private void TargetHandleProjectileObtainEvent(NetworkConnection target, ProjectileObtainData projectileObtainData)
         {
             // if (!hasAuthority) return;
-            Debug.Log("got called");
             EventManager.Instance.TriggerEvent(projectileObtainData);
         }
 
