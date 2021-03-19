@@ -20,4 +20,8 @@ public class MapData
             }
         }
     }
+    public int GetElement (int x, int y)
+    {
+        return map[x*width + y];
+    }
 }

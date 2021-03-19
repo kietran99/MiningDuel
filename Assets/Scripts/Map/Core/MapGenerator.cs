@@ -33,6 +33,9 @@ namespace MD.Map.Core
         
         [SerializeField] 
         bool useGeneratedMaps = false;
+        [SerializeField] 
+        string[] allMapsName;
+
 
         [SerializeField] 
         int noObstacleAreaRadius = 4;
@@ -59,16 +62,28 @@ namespace MD.Map.Core
 
         public int MapWidth => width;
         public int MapHeight => height;
-
         public SpawnPositionsData SpawnPositionsData => new SpawnPositionsData(spawnOffset.Map(pos => pos + new Vector2(width / 2, height / 2)));
-
+        // [SerializeField] bool useGeneratedMaps = false;
+        // [SerializeField] int noObtacleAreaRadius = 4;
         // public int GetCount{get{return count;}}
 
         public override void OnStartServer()
         {
             ServiceLocator.Register((IMapGenerator)this);  
-            if (useGeneratedMaps)
+            if (useGeneratedMaps && allMapsName.Length > 0)
             {
+                int rd = UnityEngine.Random.Range(0, allMapsName.Length);
+                MapData mapData = SaveMapData.LoadMap(allMapsName[rd]);
+                width = mapData.width;
+                height = mapData.height;
+                map = new int[width,height];
+                for(int x = 0; x < width; x++)
+                {
+                    for(int y =0; y < height; y++)
+                    {
+                        map[x,y] = mapData.GetElement(x,y);
+                    }
+                }
                 return;
             }
             
@@ -135,11 +150,7 @@ namespace MD.Map.Core
         [Range(0,100)] public int randomFillPercent2 = 0;
         [Range(1,8)] [SerializeField] int deathLim = 1;
         [Range(1,8)] [SerializeField] int birthLim = 1;
-        // [SerializeField] Tilemap topMap = null;
-        // [SerializeField] Tilemap botMap = null;
-        // [SerializeField] RuleTile tileNo1 = null;
-        // [SerializeField] RuleTile tileNo2 = null;
-        // [SerializeField] RuleTile tileNo3 = null;
+        
         int[,] map = null; 
         int totalFill;
 
@@ -194,7 +205,7 @@ namespace MD.Map.Core
             for(int x = 0; x < width; x++)
                 for(int y = 0; y < height; y++)
                 {
-                    if((x >= width / 2 - noObstacleAreaRadius&& x <= width / 2 + noObstacleAreaRadius)&&(y >= height / 2 - noObstacleAreaRadius&& y <= height / 2 + noObstacleAreaRadius))
+                    if ((x <= width / 2 + noObstacleAreaRadius && x >= width / 2 - noObstacleAreaRadius)&&(y <= height / 2 + noObstacleAreaRadius && y >= height / 2 - noObstacleAreaRadius))
                     {
                         continue;
                     }

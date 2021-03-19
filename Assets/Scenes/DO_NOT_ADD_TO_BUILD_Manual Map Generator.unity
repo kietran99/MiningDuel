@@ -233,14 +233,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2bbf0fa65a03244b873216852e475de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 0
-  height: 0
+  width: 30
+  height: 30
+  myName: map
   botMap: {fileID: 1796263150}
   topMap: {fileID: 1819624727}
-  obstacleMap: {fileID: 0}
-  tileNo1: {fileID: 0}
-  tileNo2: {fileID: 0}
+  obstacleMap: {fileID: 1778653030}
+  tileNo1: {fileID: 11400000, guid: dd60eac33a7ea714ab56b208f6e650c2, type: 2}
+  tileNo2: {fileID: 11400000, guid: a3433020993e44b458901000993fe8b5, type: 2}
   tileNo3: {fileID: 0}
+  obstacleTile: {fileID: 11400000, guid: 5835e723cbe260e40b0a98f97c2d44a5, type: 2}
 --- !u!4 &1711365860
 Transform:
   m_ObjectHideFlags: 0
