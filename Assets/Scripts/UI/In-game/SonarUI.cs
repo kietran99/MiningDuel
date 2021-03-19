@@ -23,23 +23,20 @@ public class SonarUI : MonoBehaviour
 
     private Vector2 barMaskSizeDelta;
 
-    private WaitForSeconds synctimeWait;
+    // private WaitForSeconds synctimeWait;
 
     void Start()
     {
         EventSystems.EventManager.Instance.StartListening<ScanWaveChangeData>(UpdateUI);
         barMaskUnitWidth = BarMask.sizeDelta.x/30f;
-        // StartCoroutine(nameof(SimulateRePlenish));
         barMaskMaxWidth = BarMask.sizeDelta.x;
         barMaskSizeDelta = BarMask.sizeDelta;
-        synctimeWait = new WaitForSeconds(syncTime/10f);
     }
     void OnDestroy()
     {
         EventSystems.EventManager.Instance.StopListening<ScanWaveChangeData>(UpdateUI);
     }
 
-    // Update is called once per frame
     void Update()
     {
         Rect fillAreaRect = fillArea.uvRect;
@@ -66,14 +63,24 @@ public class SonarUI : MonoBehaviour
     private IEnumerator SimulateChange()
     {
         isSimulating = true;
-        float delta = targetLevel*barMaskUnitWidth-barMaskSizeDelta.x;
-        float deltaUnit = delta/10f;
+        float targetWidth = targetLevel*barMaskUnitWidth;
+        float delta = targetWidth-barMaskSizeDelta.x; 
         int currentTargetLevel = targetLevel;
-        for (int i= 0; i<10; i++)
+        float speed = delta/syncTime;
+        float elapsedTime = 0f;
+        while (elapsedTime < syncTime)
         {
-            barMaskSizeDelta.x = barMaskSizeDelta.x + deltaUnit;
+            barMaskSizeDelta.x = barMaskSizeDelta.x + speed*Time.deltaTime;
+            if ((delta >= 0 && barMaskSizeDelta.x >= targetWidth) 
+            || (delta < 0 && barMaskSizeDelta.x <= targetWidth))
+            {
+                barMaskSizeDelta.x = targetWidth;
+                BarMask.sizeDelta = barMaskSizeDelta;
+                break;
+            }
             BarMask.sizeDelta = barMaskSizeDelta;
-            yield return synctimeWait;
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
         if (currentTargetLevel != targetLevel)
         {

@@ -1,10 +1,12 @@
 ﻿using Mirror;
 using UnityEngine;
-
+using System.Collections;
 namespace MD.Diggable.Core
 {
     public class FullMapSonar : NetworkBehaviour
     {
+        public class FullMapSonarReady: NetworkMessage {}; 
+        const short FULL_MAP_SONAR_CHANNEL = 1001; 
         private float GRID_MAP_OFFSET = .5f;
 
         #region SERIALIZE FIELDS
@@ -21,7 +23,39 @@ namespace MD.Diggable.Core
         private System.Collections.Generic.Dictionary<Vector2Int, SpriteRenderer> tileDataDict;
         #endregion
 
-        public override void OnStartAuthority()
+        private void Awake()
+        {
+            InitializePool();
+        }
+
+        public override void OnStartClient()
+        {
+            base.OnStartClient();
+            Debug.Log("im ready");
+            NetworkClient.Send<FullMapSonarReady>(new FullMapSonarReady());
+        }
+
+        public override void OnStartServer()
+        {
+            base.OnStartServer();
+            NetworkServer.RegisterHandler<FullMapSonarReady>(HandleReadymessage);
+            SubscribeDiggableEvents();
+        }
+
+        [Server]
+        private void HandleReadymessage(NetworkConnection conn, NetworkMessage mess)
+        {
+            SendScanData(conn);
+        }
+
+
+        [ServerCallback]
+        private void OnDestroy()
+        {
+            UnsubscribeDiggableEvents();
+        }
+
+        private void InitializePool()
         {
             // GetComponent<SpriteMask>().enabled = true;
             // GetComponent<SpriteRenderer>().enabled = true;
@@ -35,16 +69,14 @@ namespace MD.Diggable.Core
                     {
                         playerTransform = player.transform;
                         tilePool = Instantiate(tilePoolPrefab).GetComponent<IObjectPool>();                                   
-                        CmdRequestScanData();   // Bug: something about NetworkWriter that can be fixed by modify the script then save it
-                        CmdSubscribeDiggableEvents();
+                        // CmdRequestScanData();   // Bug: something about NetworkWriter that can be fixed by modify the script then save it
+                        // CmdSubscribeDiggableEvents();
                     }
                 );
         }
 
-        public override void OnStopAuthority() => CmdUnsubscribeDiggableEvents();
-
-        [Command]
-        private void CmdRequestScanData()
+        [Server]
+        private void SendScanData(NetworkConnection conn)
         {
             ServiceLocator
                 .Resolve<IDiggableGenerator>()
@@ -52,14 +84,16 @@ namespace MD.Diggable.Core
                     err => Debug.Log(err.Message),
                     diggableGenerator => 
                     {
-                        TargetSetupSonarData(diggableGenerator.InitSonarTileData);
+                        TargetSetupSonarData(conn, diggableGenerator.InitSonarTileData);
                     }
                 );
         }
 
         [TargetRpc]
-        private void TargetSetupSonarData(SonarTileData[] sonarTileData)
+        private void TargetSetupSonarData(NetworkConnection conn,SonarTileData[] sonarTileData)
         {
+
+            Debug.Log("client rpc called");
             tileDataDict = new System.Collections.Generic.Dictionary<Vector2Int, SpriteRenderer>(sonarTileData.Length);
 
             sonarTileData
@@ -86,8 +120,8 @@ namespace MD.Diggable.Core
             return type.Equals(DiggableType.EMPTY) ? emptyTileSprite : DiggableTypeConverter.Convert(type).SonarSprite;
         }
 
-        [Command]
-        private void CmdSubscribeDiggableEvents()
+        [Server]
+        private void SubscribeDiggableEvents()
         {
             ServiceLocator
                 .Resolve<IDiggableGenerator>()
@@ -95,14 +129,14 @@ namespace MD.Diggable.Core
                     unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
                     digGen => 
                     {
-                        digGen.DiggableDestroyEvent     += TargetHandleDiggableDestroyEvent;
-                        digGen.DiggableSpawnEvent       += TargetHandleDiggableSpawnEvent;
+                        digGen.DiggableDestroyEvent     += RpcHandleDiggableDestroyEvent;
+                        digGen.DiggableSpawnEvent       += RpcHandleDiggableSpawnEvent;
                     }
                 );
         }
 
-        [Command]
-        private void CmdUnsubscribeDiggableEvents()
+        [Server]
+        private void UnsubscribeDiggableEvents()
         {
             ServiceLocator
                 .Resolve<IDiggableGenerator>()
@@ -110,14 +144,14 @@ namespace MD.Diggable.Core
                     unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
                     digGen => 
                     {
-                        digGen.DiggableDestroyEvent     -= TargetHandleDiggableDestroyEvent;
-                        digGen.DiggableSpawnEvent       -= TargetHandleDiggableSpawnEvent;
+                        digGen.DiggableDestroyEvent     -= RpcHandleDiggableDestroyEvent;
+                        digGen.DiggableSpawnEvent       -= RpcHandleDiggableSpawnEvent;
                     }
                 );
         }
 
-        [TargetRpc]
-        private void TargetHandleDiggableDestroyEvent(DiggableRemoveData diggableRemoveData)
+        [ClientRpc]
+        private void RpcHandleDiggableDestroyEvent(DiggableRemoveData diggableRemoveData)
         {
             var spawnPos = new Vector2Int(diggableRemoveData.x, diggableRemoveData.y);
 
@@ -131,8 +165,8 @@ namespace MD.Diggable.Core
             tileDataDict.Add(spawnPos, renderer);
         }
 
-        [TargetRpc]
-        private void TargetHandleDiggableSpawnEvent(DiggableSpawnData diggableSpawnData)
+        [ClientRpc]
+        private void RpcHandleDiggableSpawnEvent(DiggableSpawnData diggableSpawnData)
         {
             var spawnPos = new Vector2Int(diggableSpawnData.x, diggableSpawnData.y);
             var sprite = GetSonarSprite(diggableSpawnData.type);
