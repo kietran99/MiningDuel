@@ -34,6 +34,9 @@ MonoBehaviour:
   - Moreover, the higher your score is the faster it increases,
   - Indicated by the number over here.
   - Amazing, right?
+  - However, your current score is only temporary until
+  - you all collected gems are deposited into the storage in the middle of the map.
+  - Stand next to the storage to try it out!
   - Well that's all the basics about Gems.
   - I'll find you in another tutorial.
   focusLines:

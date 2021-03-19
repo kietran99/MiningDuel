@@ -14,8 +14,6 @@ namespace MD.Diggable.Core
         [SerializeField]
         private float storeTime = 2f;
 
-        [SerializeField]    
-        private float checkTime;
 
         [SerializeField]
         private GameObject ProcessBar = null;
@@ -26,6 +24,7 @@ namespace MD.Diggable.Core
         [SerializeField]
         private SpriteRenderer flag = null;
 
+        private float checkTime;
         private NetworkIdentity ownerID;
         private bool isInside;
         
