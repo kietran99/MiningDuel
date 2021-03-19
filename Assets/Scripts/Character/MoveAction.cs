@@ -11,6 +11,7 @@ namespace MD.Character
         private float speed = 1f;
 
         private Rigidbody2D rigidBody;
+        [SerializeField]
         private Vector2 moveVect, minMoveBound, maxMoveBound;
         private Vector2 offset = new Vector2(.5f, .5f);
 
@@ -53,10 +54,12 @@ namespace MD.Character
         private void MoveCharacter(float moveX, float moveY)
         {
             var movePos = new Vector2(moveX, moveY).normalized * speed;
-            transform.Translate(movePos * Time.fixedDeltaTime);
-            transform.position = new Vector2(Mathf.Clamp(transform.position.x, minMoveBound.x + offset.x, maxMoveBound.x - offset.x),
-                                Mathf.Clamp(transform.position.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));
-            // rigidBody.MovePosition(movePos*Time.fixedDeltaTime);
+            // transform.Translate(movePos * Time.fixedDeltaTime);
+            // transform.position = new Vector2(Mathf.Clamp(transform.position.x, minMoveBound.x + offset.x, maxMoveBound.x - offset.x),
+            //                     Mathf.Clamp(transform.position.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));
+           rigidBody.MovePosition(rigidBody.position + movePos*Time.fixedDeltaTime);
+        //    rigidBody.position = new Vector2(Mathf.Clamp(rigidBody.position.x, minMoveBound.x + offset.x, maxMoveBound.x - offset.x),
+        //                         Mathf.Clamp(rigidBody.position.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));
         } 
 
         private void LateUpdate()

@@ -126,7 +126,7 @@ namespace PathFinding
 
         public List<Node> FindPath(Vector2Int start, Vector2Int end)
         {
-            Debug.Log("finding path for index start" +start + " end" + end);
+            // Debug.Log("finding path for index start" +start + " end" + end);
             grid.ResetGrid();
             if (!grid.IsIndexValid(start) || !grid.IsIndexValid(end)) return null;
             Node startNode = grid.GetNode(start);

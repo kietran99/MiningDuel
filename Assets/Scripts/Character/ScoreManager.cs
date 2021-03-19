@@ -22,9 +22,11 @@ namespace MD.Character
         [SerializeField]
         private MultiplierThreshold[] multiplierThresholds = null;
 
+        [SerializeField]
         [SyncVar(hook=nameof(SyncScore))]
         private int currentScore;
-
+        [SerializeField]
+        [SyncVar(hook=nameof(SyncFinalScore))]
         private int finalScore;
 
         [SyncVar(hook=nameof(SyncMultiplier))]
@@ -89,26 +91,32 @@ namespace MD.Character
         private bool IsLocalTarget(uint targetID) => targetID.Equals(netId);
 
         [Server]
-        private void IncreaseScore(int amount) => SyncScore(currentScore, currentScore + Mathf.FloorToInt(amount * currentMultiplier));       
+        private void IncreaseScore(int amount) => currentScore +=Mathf.FloorToInt(amount * currentMultiplier);       
 
         [Command]
-        private void CmdIncreaseScore(int amount) => SyncScore(currentScore, currentScore + Mathf.FloorToInt(amount * currentMultiplier));        
+        private void CmdIncreaseScore(int amount) => currentScore += Mathf.FloorToInt(amount * currentMultiplier);        
 
         [Server]
         private void DecreaseScore(int amount)
         {
             var newScore = currentScore - amount;
-            newScore = newScore < 0 ? 0 : newScore;
-            SyncScore(currentScore, newScore);
+            currentScore = newScore < 0 ? 0 : newScore;
         }
 
         private void SyncScore(int oldValue, int newValue)
         {
-            currentScore = newValue;
+            if (!isServer)
+                currentScore = newValue;
             UpdateMultiplier(currentScore);
-            if (!hasAuthority) return;
-            
-            EventSystems.EventManager.Instance.TriggerEvent(new ScoreChangeData(newValue, finalScore));
+            if (hasAuthority)
+                EventSystems.EventManager.Instance.TriggerEvent(new ScoreChangeData(currentScore));
+        }
+        private void SyncFinalScore(int oldValue, int newValue)
+        {
+            if (!isServer)
+                finalScore = newValue;
+            if (hasAuthority)
+                EventSystems.EventManager.Instance.TriggerEvent(new FinalScoreChangeData(finalScore));
         }
 
         private void UpdateMultiplier(int currentScore)

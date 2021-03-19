@@ -67,7 +67,6 @@ public class ScanWave : NetworkBehaviour
             yield return delayWFS;
             currentRange += (1/currentRange)*spreadSpeed;
             if (currentRange > spreadRange) currentRange = spreadRange;
-            Debug.Log("current range " + currentRange*BASE_SCALE);
             transform.localScale = new Vector3(currentRange*BASE_SCALE,currentRange*BASE_SCALE,1f);
         }
         Invoke(nameof(Destroy),durationAfterSpread);

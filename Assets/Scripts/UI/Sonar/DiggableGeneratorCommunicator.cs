@@ -4,24 +4,27 @@ using MD.Diggable.Projectile;
 using Mirror;
 using UnityEngine;
 
+
 namespace MD.Diggable.Core
 {
     public class DiggableGeneratorCommunicator : NetworkBehaviour
     {
-        public override void OnStartAuthority()
+
+        public override void OnStartServer()
         {
-            ServiceLocator.Register(this);
+            // ServiceLocator.Register(this);
             CmdSubscribeDiggableEvents();
         }
 
-        public override void OnStopAuthority()
+        [ServerCallback]
+        public void OnDestroy()
         {
             CmdUnsubscribeDiggableEvents();
         }
 
         // TargetRpc callbacks without NetworkConnection as an arg are invoked on every authoritative DigGenComm.
         // TargetRpc callbacks with NetworkConnection as an arg are invoked on the same DigGenComm on each client regardless of its authority.
-        [Command]
+        [Server]
         private void CmdSubscribeDiggableEvents()
         {
             ServiceLocator
@@ -39,7 +42,7 @@ namespace MD.Diggable.Core
                 );
         }
 
-        [Command]
+        [Server]
         private void CmdUnsubscribeDiggableEvents()
         {
             ServiceLocator
@@ -60,7 +63,7 @@ namespace MD.Diggable.Core
         [TargetRpc]
         private void TargetHandleDigProgressEvent(NetworkConnection target, Diggable.Gem.DigProgressData digProgressData)
         {
-            if (!hasAuthority) return;
+            // if (!hasAuthority) return;
 
             EventManager.Instance.TriggerEvent(digProgressData);
         }
@@ -68,7 +71,7 @@ namespace MD.Diggable.Core
         [TargetRpc]
         private void TargetHandleGemObtainEvent(NetworkConnection target, GemObtainData gemObtainData)
         {
-            if (!hasAuthority) return;
+            // if (!hasAuthority) return;
 
             EventManager.Instance.TriggerEvent(gemObtainData);
         }
@@ -76,8 +79,8 @@ namespace MD.Diggable.Core
         [TargetRpc]
         private void TargetHandleProjectileObtainEvent(NetworkConnection target, ProjectileObtainData projectileObtainData)
         {
-            if (!hasAuthority) return;
-
+            // if (!hasAuthority) return;
+            Debug.Log("got called");
             EventManager.Instance.TriggerEvent(projectileObtainData);
         }
 

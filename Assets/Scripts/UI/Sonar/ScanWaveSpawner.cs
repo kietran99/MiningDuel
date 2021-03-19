@@ -13,6 +13,12 @@ namespace MD.Character
         {
             base.OnStartServer();
             EventManager.Instance.StartListening<ScanWaveSpawnData>(SpawnScanWave);
+        }
+
+        void OnDestroy()
+        {
+            if (isServer)
+                EventManager.Instance.StopListening<ScanWaveSpawnData>(SpawnScanWave);
         } 
 
         private void SpawnScanWave(ScanWaveSpawnData data)

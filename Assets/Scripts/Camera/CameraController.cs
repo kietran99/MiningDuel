@@ -14,8 +14,8 @@ public class CameraController : MonoBehaviour
         map = tilemap;
         MapConstants.MapMinBound = map.localBounds.min;
         MapConstants.MapMaxBound = map.localBounds.max;
-        Debug.Log("Local Bounds min:" + MapConstants.MapMinBound); 
-        Debug.Log("Local Bounds max:" + MapConstants.MapMaxBound); 
+        // Debug.Log("Local Bounds min:" + MapConstants.MapMinBound); 
+        // Debug.Log("Local Bounds max:" + MapConstants.MapMaxBound); 
         Init(map.localBounds.min, map.localBounds.max);
     }
 
