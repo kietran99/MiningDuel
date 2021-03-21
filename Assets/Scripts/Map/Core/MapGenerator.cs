@@ -27,6 +27,32 @@ namespace MD.Map.Core
             }
         }
     }
+    public struct ChunkObstacle
+    {
+        private int[,] obstaPositions;
+        private int size;
+        public ChunkObstacle(int[,] pos)
+        {
+            obstaPositions = pos;
+            size = obstaPositions.GetLength(0);
+        }
+        public bool Available(int rootX, int rootY, int[,] map)
+        {
+            if (map == null || rootX < 0 || rootY < 0) return false;
+            // int size = obstaPositions.GetLength(0);
+            for(int i = 0; i < size; i++)
+            {
+                int xPos = rootX + obstaPositions[i,0];
+                int yPos = rootY + obstaPositions[i,1];
+                if(xPos >= map.GetLength(0) || yPos >= map.GetLength(1)) return false;
+                if(map[xPos,yPos] == -1)
+                    return false;
+            }
+            return true;
+        }
+        public int[,] Positions => obstaPositions;
+        public int Size => size;
+    }
 
     public class MapGenerator : NetworkBehaviour, IMapGenerator
     {
@@ -43,29 +69,27 @@ namespace MD.Map.Core
         [SerializeField]
         private Vector2[] spawnOffset = null;
 
-        public int[] MapData 
-        {
-            get
-            {
-                int[] simpleData = new int[width * height];
-                for(int x = 0; x < width; x++)
-                {
-                    for(int y = 0; y < height; y++)
-                    {
-                        simpleData[x*width + y] = map[x,y];
-                    }
-                }
-
-                return simpleData;
-            }
-        }
-
         public int MapWidth => width;
         public int MapHeight => height;
         public SpawnPositionsData SpawnPositionsData => new SpawnPositionsData(spawnOffset.Map(pos => pos + new Vector2(width / 2, height / 2)));
         // [SerializeField] bool useGeneratedMaps = false;
         // [SerializeField] int noObtacleAreaRadius = 4;
         // public int GetCount{get{return count;}}
+        [SerializeField] int width = 0;
+        [SerializeField] int height =  0;
+        [SerializeField] string seed = "";
+        [SerializeField] bool useRandomSeed = true;
+        // [SerializeField] int reGenTimes = 0;
+        [Range(0,100)] public int randomFillPercent1 = 0;
+        [Range(0,100)] public int randomFillPercent2 = 0;
+        [Range(1,8)] [SerializeField] int deathLim = 1;
+        [Range(1,8)] [SerializeField] int birthLim = 1;
+        
+        int[,] map = null; 
+        int totalFill;
+
+        ChunkObstacle chunksT = new ChunkObstacle(new int[,]{{0,0},{1,0},{2,0},{1,1}});
+
 
         public override void OnStartServer()
         {
@@ -104,6 +128,43 @@ namespace MD.Map.Core
             AddObstacle();         
         }
 
+
+
+
+
+        public int[] MapData 
+        {
+            get
+            {
+                int[] simpleData = new int[width * height];
+                for(int x = 0; x < width; x++)
+                {
+                    for(int y = 0; y < height; y++)
+                    {
+                        simpleData[x*width + y] = map[x,y];
+                    }
+                }
+
+                return simpleData;
+            }
+        }
+
+        public bool IsObstacle(int x, int y)
+        {
+            if(x < 0 || x>= MapWidth || y < 0 || y >= MapHeight)
+            {
+                // Debug.LogError("Negative index on Obstacle check! x= " + x + " y= " + y);
+                return true;
+            }
+            // if(map[x,y] == Constants.BLOCK)
+            if(map == null) return true;
+            if(map[x,y] < 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public List<Vector2Int> MovablePostions 
         {
             get
@@ -124,35 +185,6 @@ namespace MD.Map.Core
                 return res;
             }
         }
-        
-        public bool IsObstacle(int x, int y)
-        {
-            if(x < 0 || x>= MapWidth || y < 0 || y >= MapHeight)
-            {
-                // Debug.LogError("Negative index on Obstacle check! x= " + x + " y= " + y);
-                return true;
-            }
-            // if(map[x,y] == Constants.BLOCK)
-            if(map == null) return true;
-            if(map[x,y] < 0)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        [SerializeField] int width = 0;
-        [SerializeField] int height =  0;
-        [SerializeField] string seed = "";
-        [SerializeField] bool useRandomSeed = true;
-        // [SerializeField] int reGenTimes = 0;
-        [Range(0,100)] public int randomFillPercent1 = 0;
-        [Range(0,100)] public int randomFillPercent2 = 0;
-        [Range(1,8)] [SerializeField] int deathLim = 1;
-        [Range(1,8)] [SerializeField] int birthLim = 1;
-        
-        int[,] map = null; 
-        int totalFill;
 
         #if UNITY_EDITOR
         void Update()
@@ -212,9 +244,22 @@ namespace MD.Map.Core
                     int chance = random.Next(1,100);
                     if(chance <= 5)
                     {
-                        map[x,y] = -1;
+                        // map[x,y] = -1;
+                        AddChunkObstacle(x,y);
                     }
                 }
+        }
+
+        void AddChunkObstacle(int x, int y)
+        {
+            if(chunksT.Available(x,y,map))
+            {
+                int size = chunksT.Size;
+                for(int i = 0; i < size; i++)
+                {
+                    map[x + chunksT.Positions[i,0], y + chunksT.Positions[i,1]] = -1;
+                }
+            }
         }
 
         void GenerateMap()
