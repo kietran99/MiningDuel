@@ -22,7 +22,7 @@ namespace MD.Tutorial
 
         protected override void TriggerObtainEvent()
         {
-            EventSystems.EventManager.Instance.TriggerEvent(new Character.FinalScoreChangeData(gemValue.Value));
+            EventSystems.EventManager.Instance.TriggerEvent(new Character.ScoreChangeData(gemValue.Value));
         }
     }
 }
