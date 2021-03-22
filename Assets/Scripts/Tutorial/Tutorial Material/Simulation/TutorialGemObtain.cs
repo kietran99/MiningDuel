@@ -17,7 +17,10 @@ namespace MD.Tutorial
         protected override void OnTriggerEnter2D(Collider2D other)
         {
             base.OnTriggerEnter2D(other);
-            EventSystems.EventManager.Instance.TriggerEvent(new DiggableContactData());
+            if (other.CompareTag(Constants.PLAYER_TAG))
+            {
+                EventSystems.EventManager.Instance.TriggerEvent(new DiggableContactData());
+            }
         }
 
         protected override void TriggerObtainEvent()
