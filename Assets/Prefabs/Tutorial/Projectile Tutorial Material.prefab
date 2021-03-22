@@ -360,6 +360,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8224449205885954025, guid: 12a10bcf8aa0e404aa2b018caf4f31f0,
+        type: 3}
+      propertyPath: m_Simulated
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9060201054313328707, guid: 12a10bcf8aa0e404aa2b018caf4f31f0,
         type: 3}
       propertyPath: m_LocalPosition.x
