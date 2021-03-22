@@ -14,6 +14,7 @@ namespace MD.Character
             base.OnStartServer();
             EventManager.Instance.StartListening<ScanWaveSpawnData>(SpawnScanWave);
         }
+        
         [ServerCallback]
         private void OnDisable()
         {

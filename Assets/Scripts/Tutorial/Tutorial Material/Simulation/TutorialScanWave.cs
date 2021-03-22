@@ -1,11 +1,9 @@
 ﻿using System.Collections;
 using UnityEngine;
-using Mirror;
 
-namespace MD.Character
+namespace MD.Tutorial
 {
-    [RequireComponent(typeof(SpriteRenderer))]
-    public class ScanWave : NetworkBehaviour
+    public class TutorialScanWave : MonoBehaviour
     {
         [SerializeField]
         private float maxExistDuration = 20f;
@@ -30,30 +28,10 @@ namespace MD.Character
         {
             waveSprite = GetComponent<SpriteRenderer>();
             spriteMask = GetComponent<SpriteMask>();
-
-            if (hasAuthority)
-            {
-                InitializeWithAuthority();
-            }
-            else
-            {
-                InitializeWithoutAuthority();
-            }
-
-            StartCoroutine(nameof(Spread));
-            Invoke(nameof(Destroy), maxExistDuration);
-        }
-
-        void InitializeWithAuthority()
-        {
             spriteMask.enabled = true;
             waveSprite.material.SetColor("_Color", new Color(waveSprite.color.r, waveSprite.color.g, waveSprite.color.b, .5f));
-        }
-
-        void InitializeWithoutAuthority()
-        {
-            spriteMask.enabled = false;
-            waveSprite.material.SetColor("_Color", new Color(waveSprite.color.r, waveSprite.color.g, waveSprite.color.b, 1f));
+            StartCoroutine(nameof(Spread));
+            Invoke(nameof(Destroy), maxExistDuration);
         }
 
         private IEnumerator Spread()

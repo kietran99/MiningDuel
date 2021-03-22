@@ -5125,7 +5125,6 @@ GameObject:
   - component: {fileID: 7091697348273341027}
   - component: {fileID: 7091697348273341030}
   - component: {fileID: 223839035}
-  - component: {fileID: 1733297702038592431}
   - component: {fileID: 1499878171468811934}
   - component: {fileID: 546028043007059227}
   - component: {fileID: 5324336965916199845}
@@ -5258,7 +5257,6 @@ MonoBehaviour:
   syncInterval: 0.1
   colorPicker: {fileID: 11400000, guid: a9877fe161cc7fa4084ab91bd2bd5de0, type: 2}
   scoreManager: {fileID: 546028043007059227}
-  colorIdx: 0
 --- !u!114 &7091697348273341027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5311,20 +5309,6 @@ MonoBehaviour:
   throwChargeIndicator: {fileID: 6249333315781111877}
   basePower: 150
   chargeTime: 0.5
---- !u!114 &1733297702038592431
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7091697348273341020}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b42ef326cefac0648ad6f6466882e7ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
 --- !u!114 &1499878171468811934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5366,6 +5350,8 @@ MonoBehaviour:
     multiplier: 1.5
   - score: 10
     multiplier: 2
+  currentScore: 0
+  finalScore: 0
 --- !u!114 &5324336965916199845
 MonoBehaviour:
   m_ObjectHideFlags: 0
