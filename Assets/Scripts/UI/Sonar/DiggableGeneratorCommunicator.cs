@@ -4,25 +4,27 @@ using MD.Diggable.Projectile;
 using Mirror;
 using UnityEngine;
 
+
 namespace MD.Diggable.Core
 {
     public class DiggableGeneratorCommunicator : NetworkBehaviour
     {
-        public override void OnStartAuthority()
-        {
-            ServiceLocator.Register(this);
-            CmdSubscribeDiggableEvents();
-        }
 
-        public override void OnStopAuthority()
+        public override void OnStartServer()
         {
-            CmdUnsubscribeDiggableEvents();
+            // ServiceLocator.Register(this);
+            SubscribeDiggableEvents();
+        }
+        [ServerCallback]
+        private void OnDisable()
+        {
+            UnsubscribeDiggableEvents();
         }
 
         // TargetRpc callbacks without NetworkConnection as an arg are invoked on every authoritative DigGenComm.
         // TargetRpc callbacks with NetworkConnection as an arg are invoked on the same DigGenComm on each client regardless of its authority.
-        [Command]
-        private void CmdSubscribeDiggableEvents()
+        [Server]
+        private void SubscribeDiggableEvents()
         {
             ServiceLocator
                 .Resolve<IDiggableGenerator>()
@@ -39,13 +41,13 @@ namespace MD.Diggable.Core
                 );
         }
 
-        [Command]
-        private void CmdUnsubscribeDiggableEvents()
+        [Server]
+        private void UnsubscribeDiggableEvents()
         {
             ServiceLocator
                 .Resolve<IDiggableGenerator>()
                 .Match(
-                    unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
+                    unavailServiceErr => {},
                     digGen => 
                     {
                         digGen.DigProgressEvent         -= TargetHandleDigProgressEvent;
@@ -60,7 +62,7 @@ namespace MD.Diggable.Core
         [TargetRpc]
         private void TargetHandleDigProgressEvent(NetworkConnection target, Diggable.Gem.DigProgressData digProgressData)
         {
-            if (!hasAuthority) return;
+            // if (!hasAuthority) return;
 
             EventManager.Instance.TriggerEvent(digProgressData);
         }
@@ -68,7 +70,7 @@ namespace MD.Diggable.Core
         [TargetRpc]
         private void TargetHandleGemObtainEvent(NetworkConnection target, GemObtainData gemObtainData)
         {
-            if (!hasAuthority) return;
+            // if (!hasAuthority) return;
 
             EventManager.Instance.TriggerEvent(gemObtainData);
         }
@@ -76,8 +78,7 @@ namespace MD.Diggable.Core
         [TargetRpc]
         private void TargetHandleProjectileObtainEvent(NetworkConnection target, ProjectileObtainData projectileObtainData)
         {
-            if (!hasAuthority) return;
-
+            // if (!hasAuthority) return;
             EventManager.Instance.TriggerEvent(projectileObtainData);
         }
 

@@ -16,9 +16,10 @@ namespace MD.Quirk
             EventSystems.EventManager.Instance.StartListening<UI.QuirkInvokeData>(HandleQuirkInvokeEvent);
         }
 
-        public override void OnStopAuthority()
+        void OnDestroy()
         {
-            EventSystems.EventManager.Instance.StopListening<UI.QuirkInvokeData>(HandleQuirkInvokeEvent);
+            if (hasAuthority)
+                EventSystems.EventManager.Instance.StopListening<UI.QuirkInvokeData>(HandleQuirkInvokeEvent);
         }
 
         private void HandleQuirkInvokeEvent(QuirkInvokeData quirkInvokeData)

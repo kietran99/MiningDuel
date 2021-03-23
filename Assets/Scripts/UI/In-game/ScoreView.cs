@@ -14,21 +14,24 @@ namespace MD.UI
 
         void Start()
         {
-            UpdateScoreText(0,0);
-            EventSystems.EventManager.Instance.StartListening<ScoreChangeData>(HandleScoreChange);
+            EventSystems.EventManager.Instance.StartListening<ScoreChangeData>(UpdateScoreText);
+            EventSystems.EventManager.Instance.StartListening<FinalScoreChangeData>(UpdateFinalScoreText);
         }
 
         private void OnDestroy()
         {
-            EventSystems.EventManager.Instance.StopListening<ScoreChangeData>(HandleScoreChange);
+            EventSystems.EventManager.Instance.StopListening<ScoreChangeData>(UpdateScoreText);
+            EventSystems.EventManager.Instance.StopListening<FinalScoreChangeData>(UpdateFinalScoreText);
         }
 
-        private void HandleScoreChange(ScoreChangeData data) => UpdateScoreText(data.newScore, data.finalScore);
-
-        public void UpdateScoreText(int score, int finalScore)
+        public void UpdateScoreText(ScoreChangeData data)
         {
-            finalScoreText.text = finalScore.ToString();
-            scoreText.text = score.ToString();
+            scoreText.text = data.newScore.ToString();
         }
+        public void UpdateFinalScoreText(FinalScoreChangeData data)
+        {
+            finalScoreText.text = data.finalScore.ToString();
+        }
+
     }
 }

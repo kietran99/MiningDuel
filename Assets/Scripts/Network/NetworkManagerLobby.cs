@@ -44,9 +44,6 @@ namespace MD.UI
         private GameObject botPrefab = null;
 
         [SerializeField]
-        private SpawnPositionPicker spawnPositionPicker = null;
-
-        [SerializeField]
         private Diggable.Core.Storage gemStorage = null;    
         #endregion
 
@@ -59,6 +56,7 @@ namespace MD.UI
         public List<PlayerBot> Bots { get; } = new List<PlayerBot>();
         public bool isBotTraining;
         private IGameModeManager gameModeManager;
+        private Map.Core.SpawnPositionsData spawnPositionsData;
         #endregion
 
         public static event Action OnClientConnected;
@@ -167,9 +165,10 @@ namespace MD.UI
             gameModeManager.HandleOnServerAddPlayer(conn);    
         }
 
-        public Player SpawnNetworkPlayer(NetworkConnection conn)
+        public Player SpawnBotTrainingPlayer(NetworkConnection conn)
         {
-            var player = Instantiate(NetworkPlayerPrefab, spawnPositionPicker.NextSpawnPoint, Quaternion.identity);
+            // var player = Instantiate(NetworkPlayerPrefab, spawnPositionsData.NextSpawnPoint, Quaternion.identity);
+            var player = Instantiate(NetworkPlayerPrefab);
             player.SetPlayerNameAndColor(PlayerPrefs.GetString(PlayerNameInput.PLAYER_PREF_NAME_KEY));
             NetworkServer.AddPlayerForConnection(conn, player.gameObject); 
             return player;        
@@ -215,7 +214,8 @@ namespace MD.UI
 
         private void InitEnv()
         {
-            SpawnMapGenerator();  
+            var mapGenerator = SpawnMapGenerator();  
+            spawnPositionsData = mapGenerator.SpawnPositionsData;
             SpawnDiggableGenerator();            
         }
 
@@ -227,21 +227,20 @@ namespace MD.UI
             DontDestroyOnLoadObjects.Add(diggableGeneratorGO);
         }
 
-        private void SpawnMapGenerator()
+        private Map.Core.IMapGenerator SpawnMapGenerator()
         {
             var mapGeneratorGO = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(MAP_GENERATOR)));
-            var mapGenerator = mapGeneratorGO.GetComponent<Map.Core.IMapGenerator>();
-            spawnPositionPicker.CentreOffset = new Vector2(mapGenerator.MapWidth / 2, mapGenerator.MapHeight / 2);
             NetworkServer.Spawn(mapGeneratorGO);
             DontDestroyOnLoad(mapGeneratorGO);
             DontDestroyOnLoadObjects.Add(mapGeneratorGO);
+            return mapGeneratorGO.GetComponent<Map.Core.IMapGenerator>();
         }
 
         public void SpawnPvPPlayers()
         {
             RoomPlayers.ToArray().ForEach(roomPlayer =>
             {
-                var player = Instantiate(NetworkPlayerPrefab, spawnPositionPicker.NextSpawnPoint, Quaternion.identity);
+                var player = Instantiate(NetworkPlayerPrefab, spawnPositionsData.NextSpawnPoint, Quaternion.identity);
                 player.SetPlayerNameAndColor(roomPlayer.DisplayName);
                 var conn = roomPlayer.netIdentity.connectionToClient;
                 NetworkServer.Destroy(conn.identity.gameObject);
@@ -256,38 +255,39 @@ namespace MD.UI
                 return;
             }
             
-            Players.ForEach(player => SpawnSonar(player.connectionToClient));            
-            Players.ForEach(player => SpawnDiggableGeneratorCommunicator(player.connectionToClient));  
+            SpawnSonar();            
+            SpawnDiggableGeneratorCommunicator();  
             Players.ForEach(player => GenMapRenderer(player.connectionToClient)); 
-            Players.ForEach(player => SpawnStorage(player.netIdentity));
+            Players.ForEach(player => SpawnStorage(player.netIdentity, player.PlayerColor));
 
             SpawnScanWaveSpawner();
             //TODO check if all players loaded scene
             SetupGame();           
         }
+
         private void SpawnScanWaveSpawner()
         {
             var scanWaveSpawner = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(SCAN_WAVE_SPAWNER)));
             NetworkServer.Spawn(scanWaveSpawner);
         } 
 
-        private void SpawnStorage(NetworkIdentity playerId)
+        private void SpawnStorage(NetworkIdentity playerId, Color flagColor)
         {
             var storage = Instantiate(gemStorage, playerId.transform.position, Quaternion.identity);
-            storage.Initialize(playerId);
+            storage.Initialize(playerId, flagColor);
             NetworkServer.Spawn(storage.gameObject);
         }
 
-        private void SpawnSonar(NetworkConnection conn)
+        private void SpawnSonar()
         {
             var sonar = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(SONAR)));
-            NetworkServer.Spawn(sonar, conn);
+            NetworkServer.Spawn(sonar);
         }
 
-        private void SpawnDiggableGeneratorCommunicator(NetworkConnection conn)
+        private void SpawnDiggableGeneratorCommunicator()
         {
             var digGenComm = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(DIGGABLE_GENERATOR_COMMUNICATOR)));
-            NetworkServer.Spawn(digGenComm, conn);
+            NetworkServer.Spawn(digGenComm);
         }
 
         private void GenMapRenderer(NetworkConnection conn)
@@ -313,10 +313,10 @@ namespace MD.UI
             }
         }
 
-        public void SetupBotState()
+        public void SetupBotAndPlayerState(Transform player)
         {
-            // var bot = Instantiate(botPrefab, spawnPointPicker.NextSpawnPoint, Quaternion.identity);
-            var bot = Instantiate(botPrefab, spawnPositionPicker.NextSpawnPoint, Quaternion.identity);
+            player.position = spawnPositionsData.NextSpawnPoint;
+            var bot = Instantiate(botPrefab, spawnPositionsData.NextSpawnPoint, Quaternion.identity);
             Bots.Add(bot.GetComponent<PlayerBot>());
             NetworkServer.Spawn(bot, Players[0].connectionToClient);
         }
@@ -340,10 +340,14 @@ namespace MD.UI
         private void EndGame()
         {
             Debug.Log("Player count: " + Players.Count);
-            //stop game on server
-            if (Players.Count <= 0) return;
+            
+            if (Players.Count <= 0) 
+            {
+                return;
+            }
+
             Time.timeScale = 0f;
-            //if play with bot
+            
             if (Bots.Count > 0)
             {
                 Players[0].TargetNotifyEndGame(Players[0].FinalScore >= Bots[(int)0].CurrentScore);

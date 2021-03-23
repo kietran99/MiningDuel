@@ -34,7 +34,7 @@ namespace MD.Tutorial
             }
          
             finalScore += dropValue;
-            EventSystems.EventManager.Instance.TriggerEvent(new Character.ScoreChangeData(finalScore, finalScore));
+            EventSystems.EventManager.Instance.TriggerEvent(new Character.ScoreChangeData(finalScore));
             Destroy(gameObject);
         }
     }

@@ -60,7 +60,7 @@ namespace MD.Tutorial
                 return;
             }
             
-             var eventConsumer = gameObject.AddComponent<EventConsumer>();
+            var eventConsumer = gameObject.AddComponent<EventConsumer>();
             eventConsumer.StartListening<T0>(HandleEventT0);
             eventConsumer.StartListening<T1>(HandleEventT1);
             eventConsumer.StartListening<T2>(HandleEventT2);
@@ -71,5 +71,32 @@ namespace MD.Tutorial
         protected virtual void HandleEventT1(T1 _) => TriggerEvent(1);
 
         protected virtual void HandleEventT2(T2 _) => TriggerEvent(2);
+    }
+
+    public class TutorialMaterial<T0, T1, T2, T3> : AbstractTutorialMaterial 
+        where T0 : IEventData 
+        where T1 : IEventData 
+        where T2 : IEventData
+        where T3 : IEventData
+    {
+        protected virtual void Start()
+        {
+            if (triggerLineIndices.Length != 4)
+            {
+                Debug.LogError("There must be exactly " + 4 + " trigger indices");
+                return;
+            }
+            
+            var eventConsumer = gameObject.AddComponent<EventConsumer>();
+            eventConsumer.StartListening<T0>(HandleEventT0);
+            eventConsumer.StartListening<T1>(HandleEventT1);
+            eventConsumer.StartListening<T2>(HandleEventT2);
+            eventConsumer.StartListening<T3>(HandleEventT3);
+        }
+
+        protected virtual void HandleEventT0(T0 _) => TriggerEvent(0);
+        protected virtual void HandleEventT1(T1 _) => TriggerEvent(1);
+        protected virtual void HandleEventT2(T2 _) => TriggerEvent(2);
+        protected virtual void HandleEventT3(T3 _) => TriggerEvent(3);
     }
 }
