@@ -89,6 +89,11 @@ namespace MD.Map.Core
         int totalFill;
 
         ChunkObstacle chunksT = new ChunkObstacle(new int[,]{{0,0},{1,0},{2,0},{1,1}});
+        ChunkObstacle[] chunks = new ChunkObstacle[] {  new ChunkObstacle(new int[,] {{0,0},{1,0},{2,0},{1,1}}),
+                                                        new ChunkObstacle(new int[,] {{0,0},{1,0},{2,0},{2,1}}),
+                                                        new ChunkObstacle(new int[,] {{0,0},{1,0},{2,0},{0,1}}),
+                                                        new ChunkObstacle(new int[,] {{0,0},{2,0},{1,1},{0,2},{2,2}}),
+                                                        new ChunkObstacle(new int[,] {{1,0},{0,1},{1,1},{2,1},{1,2}})};
 
 
         public override void OnStartServer()
@@ -242,7 +247,7 @@ namespace MD.Map.Core
                         continue;
                     }
                     int chance = random.Next(1,100);
-                    if(chance <= 5)
+                    if(chance <= 3)
                     {
                         // map[x,y] = -1;
                         AddChunkObstacle(x,y);
@@ -252,12 +257,13 @@ namespace MD.Map.Core
 
         void AddChunkObstacle(int x, int y)
         {
-            if(chunksT.Available(x,y,map))
+            ChunkObstacle theChosenOne = chunks[UnityEngine.Random.Range(0,chunks.Length)];
+            if(theChosenOne.Available(x,y,map))
             {
-                int size = chunksT.Size;
+                int size = theChosenOne.Size;
                 for(int i = 0; i < size; i++)
                 {
-                    map[x + chunksT.Positions[i,0], y + chunksT.Positions[i,1]] = -1;
+                    map[x + theChosenOne.Positions[i,0], y + theChosenOne.Positions[i,1]] = -1;
                 }
             }
         }
