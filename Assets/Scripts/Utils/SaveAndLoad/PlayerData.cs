@@ -17,7 +17,7 @@ public class PlayerData
         totalWin = 0;
         matchScore = new int[2,10];
     }
-    void AddToMatchHistory(bool Win,int playerScore)
+    public void AddToMatchHistory(bool Win,int playerScore)
     {
         int status;
         if(Win) 

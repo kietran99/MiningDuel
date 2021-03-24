@@ -4,7 +4,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine.Networking;
 public static class SavePlayerData 
 {
-    public static void SaveHistory(PlayerData player)
+    public static void Save(PlayerData player)
     {
         BinaryFormatter formatter = new BinaryFormatter();
         string path = Application.persistentDataPath + "player.bruh";
@@ -27,7 +27,7 @@ public static class SavePlayerData
         {
             string fakeName = "KEKW";
             PlayerData player = new PlayerData(fakeName);
-            SaveHistory(player);
+            Save(player);
             Debug.LogError("I havent thought this through, no file found at: " +path);
             return player;
         }
