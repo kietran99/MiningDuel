@@ -9,8 +9,11 @@ namespace MD.UI
         [SerializeField]
         private float offset = 1f;
 
+        [SerializeField]
+        private Image joystickImage = null;
+
         private Vector2 inputDirection;
-        private Image backgroundImage, joystickImage;
+        private Image backgroundImage;
 
         private bool firstStop = true;
 
@@ -39,7 +42,6 @@ namespace MD.UI
         void Awake()
         {
             backgroundImage = GetComponent<Image>();
-            joystickImage = transform.GetChild(0).GetComponent<Image>();
         }
 
         void Start()

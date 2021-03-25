@@ -46,9 +46,8 @@ namespace MD.Character
             {
                 return;
             }
-            #endif
 
-            #if UNITY_ANDROID
+            #elif UNITY_ANDROID
             if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
             {
                 return;
