@@ -88,7 +88,7 @@ MonoBehaviour:
     - tag: 2
       weight: 3
     - tag: 3
-      weight: 100
+      weight: 3
   quirkObtainPrefab: {fileID: 711221842714100812, guid: 231bd0e423307404682396cb5f9ee9cd,
     type: 3}
 --- !u!114 &611995917156761752
