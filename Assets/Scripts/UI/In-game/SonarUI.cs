@@ -11,14 +11,18 @@ public class SonarUI : MonoBehaviour
 
     [SerializeField]
     float syncTime = .5f;
-    
-    float barMaskUnitWidth;
-    float barMaskMaxWidth;
 
     [SerializeField]
     private int targetLevel;
 
+    [SerializeField]
+    private Gradient batteryColor;
+    
+    float barMaskUnitWidth;
+    float barMaskMaxWidth;
+
     private float speedDivide = 1.9f;
+    
     bool isSimulating;
 
     private Vector2 barMaskSizeDelta;
@@ -50,6 +54,8 @@ public class SonarUI : MonoBehaviour
             barMaskSizeDelta.x = barMaskSizeDelta.x + speedDivide*Time.deltaTime*barMaskUnitWidth;
             if(barMaskSizeDelta.x > barMaskMaxWidth) barMaskSizeDelta.x = barMaskMaxWidth;
             BarMask.sizeDelta = barMaskSizeDelta;
+
+            fillArea.color = batteryColor.Evaluate(barMaskSizeDelta.x/barMaskMaxWidth);
         }       
     }
 
@@ -76,10 +82,14 @@ public class SonarUI : MonoBehaviour
             {
                 barMaskSizeDelta.x = targetWidth;
                 BarMask.sizeDelta = barMaskSizeDelta;
+
+                fillArea.color = batteryColor.Evaluate(barMaskSizeDelta.x/barMaskMaxWidth);
                 break;
             }
             BarMask.sizeDelta = barMaskSizeDelta;
             elapsedTime += Time.deltaTime;
+
+            fillArea.color = batteryColor.Evaluate(barMaskSizeDelta.x/barMaskMaxWidth);
             yield return null;
         }
         if (currentTargetLevel != targetLevel)
