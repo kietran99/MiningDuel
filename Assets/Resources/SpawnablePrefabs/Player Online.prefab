@@ -5304,8 +5304,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  targetTrackerPrefab: {fileID: 6908083211440036209, guid: f4b21361329e5d2439975b1d563f79d5,
-    type: 3}
   throwChargeIndicator: {fileID: 6249333315781111877}
   basePower: 150
   chargeTime: 0.5
@@ -5346,12 +5344,16 @@ MonoBehaviour:
   multiplierThresholds:
   - score: 0
     multiplier: 1
-  - score: 5
+  - score: 12
+    multiplier: 1.3
+  - score: 25
     multiplier: 1.5
-  - score: 10
+  - score: 42
+    multiplier: 1.7
+  - score: 74
     multiplier: 2
-  currentScore: 0
-  finalScore: 0
+  - score: 220
+    multiplier: 3
 --- !u!114 &5324336965916199845
 MonoBehaviour:
   m_ObjectHideFlags: 0
