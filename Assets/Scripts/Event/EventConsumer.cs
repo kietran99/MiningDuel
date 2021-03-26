@@ -29,7 +29,9 @@ namespace EventSystems
 
         private List<IEventConnection> connections = new List<IEventConnection>();
 
-        void OnDestroy()
+        public static EventConsumer Attach(GameObject listenerGO) => listenerGO.AddComponent<EventConsumer>();
+
+        protected virtual void OnDestroy()
         {
             connections.ForEach(conn => conn.Disconnect());
         }

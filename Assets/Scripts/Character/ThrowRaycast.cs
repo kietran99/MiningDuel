@@ -44,7 +44,7 @@ namespace MD.Character
                 return;
             }
 
-            throwAction.StartTracking(target.transform);
+            // throwAction.StartTracking(target.transform);
         }        
     }
 }

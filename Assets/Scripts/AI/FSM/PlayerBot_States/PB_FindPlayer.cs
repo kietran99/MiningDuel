@@ -56,7 +56,8 @@ namespace MD.AI
                     currentIndex++;
                     if (currentIndex > bot.checkPoints.Count -1) currentIndex = 0;
                 }
-                bot.SetMovePosition(bot.checkPoints[currentIndex].transform.position);
+                //hard coded middle of the map
+                bot.SetMovePosition(new Vector2(18f,15f));
                 bot.StartMoving();
             }
             elapsedTime += Time.deltaTime;

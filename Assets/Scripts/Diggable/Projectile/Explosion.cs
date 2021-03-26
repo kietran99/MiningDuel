@@ -125,7 +125,6 @@ namespace MD.Diggable.Projectile
         [ServerCallback]
         private void Explode()
         {
-            Debug.Log("explode");
             isExploded = true;
             CheckForCollision();
             PlayExplodingEffect();
