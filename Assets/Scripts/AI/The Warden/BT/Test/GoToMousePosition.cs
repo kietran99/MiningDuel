@@ -13,7 +13,8 @@ namespace MD.AI.BehaviourTree
             Vector2 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);        
             Vector2 moveDir = (mousePos - new Vector2(actor.transform.position.x, actor.transform.position.y)).normalized * 5 * Time.deltaTime;
             actor.transform.Translate(moveDir);
-            return BTNodeState.SUCCESS;
+
+            return Vector3.Distance(actor.transform.position, mousePos) <= 1f ? BTNodeState.SUCCESS : BTNodeState.RUNNING;
         }
     }
 }

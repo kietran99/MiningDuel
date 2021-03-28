@@ -11,7 +11,7 @@ namespace MD.AI.BehaviourTree
                 return;
             }
 
-            Debug.LogError("Behaviour Tree: Leaf " + name + " can not have any child.");
+            Debug.LogError("Behaviour Tree: Leaf " + name + " can not have any child");
             gameObject.SetActive(false);
         }
 
