@@ -65,7 +65,6 @@ namespace MD.Character
                 return; 
             }
 
-            Debug.Log("Throw");
             Vector2 clickPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
             Vector2 throwDir = clickPos - new Vector2(transform.position.x, transform.position.y);
             HandleThrowCommand(throwDir.normalized);
