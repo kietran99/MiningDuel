@@ -15,13 +15,13 @@ namespace MD.AI.BehaviourTree
             gameObject.SetActive(false);
         }
 
-        public BTNodeState Tick(GameObject actor)
+        public BTNodeState Tick(GameObject actor, BTBlackboard blackboard)
         {
-            var res = DecoratedTick(actor);
+            var res = DecoratedTick(actor, blackboard);
             Debug.Log(name + " - " + res);
             return res;
         }
 
-        protected abstract BTNodeState DecoratedTick(GameObject actor);
+        protected abstract BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard);
     }
 }

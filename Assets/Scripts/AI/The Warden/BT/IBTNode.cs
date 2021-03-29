@@ -2,6 +2,6 @@
 {
     public interface IBTNode
     {
-        BTNodeState Tick(UnityEngine.GameObject actor);
+        BTNodeState Tick(UnityEngine.GameObject actor, BTBlackboard blackboard);
     }
 }

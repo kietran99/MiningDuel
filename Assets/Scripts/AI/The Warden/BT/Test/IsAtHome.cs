@@ -7,7 +7,7 @@ namespace MD.AI.BehaviourTree
         [SerializeField]
         private Transform[] homes = null;
 
-        protected override BTNodeState DecoratedTick(GameObject actor)
+        protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
             foreach (var home in homes)
             {

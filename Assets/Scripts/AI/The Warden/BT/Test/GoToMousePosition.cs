@@ -4,17 +4,21 @@ namespace MD.AI.BehaviourTree
 {
     public class GoToMousePosition : BTLeaf
     {
-        private Camera mainCamera;
-
-        protected override BTNodeState DecoratedTick(GameObject actor)
+        protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
-            if (mainCamera == null) mainCamera = Camera.main;
+            var maybeMousePos = blackboard.Get<Vector2>("MousePos"); 
 
-            Vector2 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);        
-            Vector2 moveDir = (mousePos - new Vector2(actor.transform.position.x, actor.transform.position.y)).normalized * 5 * Time.deltaTime;
-            actor.transform.Translate(moveDir);
+            return maybeMousePos
+                .Match(
+                    mousePos => 
+                    {
+                        Vector2 moveDir = (mousePos - new Vector2(actor.transform.position.x, actor.transform.position.y)).normalized * 5 * Time.deltaTime;
+                        actor.transform.Translate(moveDir);
 
-            return Vector3.Distance(actor.transform.position, mousePos) <= 1f ? BTNodeState.SUCCESS : BTNodeState.RUNNING;
+                        return Vector3.Distance(actor.transform.position, mousePos) <= 1f ? BTNodeState.SUCCESS : BTNodeState.RUNNING;
+                    },
+                    () => BTNodeState.FAILURE
+                );
         }
     }
 }

@@ -9,6 +9,10 @@ namespace MD.AI.BehaviourTree
         [SerializeField]
         private GameObject actor = null;
 
+        [SerializeField]
+        private int blackboardCapacity = 1;
+
+        private BTBlackboard blackboard;
         private IBTNode child;
 
         private void Start()
@@ -23,6 +27,7 @@ namespace MD.AI.BehaviourTree
                     gameObject.SetActive(false);
                 }
 
+                blackboard = new BTBlackboard(blackboardCapacity);
                 return;
             }
                 
@@ -32,7 +37,7 @@ namespace MD.AI.BehaviourTree
 
         private void Update()
         {
-            child.Tick(actor);
+            child.Tick(actor, blackboard);
         }
     }
 }

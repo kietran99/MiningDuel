@@ -14,7 +14,6 @@ namespace MD.AI.BehaviourTree
             {
                 children = new IBTNode[transform.childCount];
                 for (int i = 0; i < childCount; i++) children[i] = transform.GetChild(i).GetComponent<IBTNode>();
-                Debug.Log(children.Length);
                 return;
             }
                       
@@ -22,6 +21,6 @@ namespace MD.AI.BehaviourTree
             gameObject.SetActive(false);
         }
 
-        public abstract BTNodeState Tick(GameObject actor);
+        public abstract BTNodeState Tick(GameObject actor, BTBlackboard blackboard);
     }
 }
