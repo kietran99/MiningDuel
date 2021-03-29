@@ -254,7 +254,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 310ad0fcd0a81064382b997a1c18c5b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shouldLog: 1
   actor: {fileID: 1192132991}
+  blackboardCapacity: 1
 --- !u!1 &504923393
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,7 +272,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &504923394
 Transform:
   m_ObjectHideFlags: 0

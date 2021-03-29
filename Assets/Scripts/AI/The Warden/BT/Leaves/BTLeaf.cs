@@ -18,7 +18,7 @@ namespace MD.AI.BehaviourTree
         public BTNodeState Tick(GameObject actor, BTBlackboard blackboard)
         {
             var res = DecoratedTick(actor, blackboard);
-            Debug.Log(name + " - " + res);
+            BTLogger.Log(name + " - " + res);
             return res;
         }
 

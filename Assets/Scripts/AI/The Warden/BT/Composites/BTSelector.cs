@@ -12,12 +12,12 @@ namespace MD.AI.BehaviourTree
 
                 if (!res.Equals(BTNodeState.FAILURE))
                 {
-                    Debug.Log(name + " - " + res);
+                    BTLogger.Log(name + " - " + res);
                     return res;
                 }
             }
 
-            Debug.Log(name + " - FAILURE");
+            BTLogger.Log(name + " - FAILURE");
             return BTNodeState.FAILURE;
         }
     }

@@ -7,6 +7,9 @@ namespace MD.AI.BehaviourTree
         private readonly int ROOT_CHILD_COUNT = 1;
 
         [SerializeField]
+        private bool shouldLog = true;
+
+        [SerializeField]
         private GameObject actor = null;
 
         [SerializeField]
@@ -17,6 +20,8 @@ namespace MD.AI.BehaviourTree
 
         private void Start()
         {
+            BTLogger.active = shouldLog;
+
             if (transform.childCount == ROOT_CHILD_COUNT)
             {
                 child = transform.GetChild(0).GetComponent<IBTNode>();
