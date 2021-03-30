@@ -10,7 +10,7 @@ namespace MD.UI
         private int quirkSlotIndex = 0;
 
         [SerializeField]
-        private GameObject activeBorder = null, inactiveBorder = null;
+        private GameObject activeBorder = null;// inactiveBorder = null;
         
         [SerializeField]
         private Button quirkButton = null;

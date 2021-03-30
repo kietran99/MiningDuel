@@ -15,7 +15,7 @@ namespace MD.AI.BehaviourTree
         [SerializeField]
         private int blackboardCapacity = 1;
 
-        private BTBlackboard blackboard;
+        protected BTBlackboard blackboard;
         private IBTNode child;
 
         private void Start()
@@ -33,6 +33,7 @@ namespace MD.AI.BehaviourTree
                 }
 
                 blackboard = new BTBlackboard(blackboardCapacity);
+                SetupAdditionalStates();
                 return;
             }
                 
@@ -44,5 +45,7 @@ namespace MD.AI.BehaviourTree
         {
             child.Tick(actor, blackboard);
         }
+
+        protected virtual void SetupAdditionalStates() {}
     }
 }
