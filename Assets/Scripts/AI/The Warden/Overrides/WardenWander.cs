@@ -79,16 +79,13 @@ namespace MD.AI.TheWarden
             var randAngle = RandomAngle(actorPos, moveDist, lastAngle);
             lastAngle = randAngle;
             var radianRandAngle = randAngle * Mathf.Deg2Rad;
-            var newGoal = new Vector2(distanceToNextDecision * Mathf.Cos(radianRandAngle) + curGoal.x, distanceToNextDecision * Mathf.Sin(radianRandAngle) + curGoal.y);
-            Debug.DrawLine(curGoal, newGoal);
-            return newGoal;
+            return new Vector2(distanceToNextDecision * Mathf.Cos(radianRandAngle) + curGoal.x, distanceToNextDecision * Mathf.Sin(radianRandAngle) + curGoal.y);
         }
 
         private int RandomAngle(Vector2 actorPos, float moveDist, int lastAngle)
         {
             var movableQuadrants = quadrants.Filter(quadrant => quadrant.Movable(actorPos, moveDist) && !quadrant.IsIn(lastAngle));
-            var nextAngle = movableQuadrants.Random().Random();
-            return nextAngle;      
+            return movableQuadrants.Random().Random();   
         }
 
         void OnDrawGizmos()
