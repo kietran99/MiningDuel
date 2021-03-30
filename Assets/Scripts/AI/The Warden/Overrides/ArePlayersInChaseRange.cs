@@ -4,7 +4,7 @@ using Functional.Type;
 
 namespace MD.AI.TheWarden
 {
-    public class ArePlayersInScanRange : BTLeaf
+    public class ArePlayersInChaseRange : BTLeaf
     {
         private class ChaseTarget
         {
@@ -43,8 +43,10 @@ namespace MD.AI.TheWarden
         private Transform[] players = null; // For testing targets
 
         private bool hasSetup = false;
-
+        
         private ChaseTarget[] targets;
+
+        private float chaseRange;
 
         private void Start()
         {
@@ -57,6 +59,7 @@ namespace MD.AI.TheWarden
             var targets = new System.Collections.Generic.List<ChaseTarget>();
             maybeValidTargets.ForEach(maybeTarget => maybeTarget.Match(target => targets.Add(target), () => {}));
             this.targets = targets.ToArray();
+            chaseRange = baseChaseRange;
         }
 
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
@@ -82,6 +85,7 @@ namespace MD.AI.TheWarden
                         var chaseTarget = chasables.Reduce((target_0 , target_1) => target_0.Score > target_1.Score ? target_0 : target_1);
                         blackboard.Set<Transform>(WardenMacros.CHASE_TARGET, chaseTarget.Transform);              
                         BTLogger.Log("Number of Chasable Players: " + chasables.Length);
+                        this.chaseRange = chaseRange;
                         return BTNodeState.SUCCESS;
                     },
                     () => BTNodeState.FAILURE
@@ -91,7 +95,7 @@ namespace MD.AI.TheWarden
         void OnDrawGizmos()
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, baseChaseRange);
+            Gizmos.DrawWireSphere(transform.position, chaseRange);
         }
     }
 }

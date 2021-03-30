@@ -2,7 +2,7 @@
 
 namespace MD.AI.BehaviourTree
 {
-    public abstract class BTDecorator : MonoBehaviour
+    public abstract class BTDecorator : MonoBehaviour, IBTNode
     {
         protected IBTNode child;
 

@@ -29,8 +29,10 @@ namespace MD.AI.TheWarden
         [SerializeField]
         private float distanceToNextDecision = 10f;
 
-        private Vector2 topRightLimit, botLeftLimit;
+        [SerializeField]
         private float moveSpeed = 5f;
+
+        private Vector2 topRightLimit, botLeftLimit;
 
         private WardenMove moveAssist;
         private Vector2 curGoal = new Vector2(0f, 0f);
