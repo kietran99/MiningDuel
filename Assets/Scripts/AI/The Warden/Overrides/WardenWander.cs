@@ -25,8 +25,6 @@ namespace MD.AI.TheWarden
         }
 
         public UnityEngine.Tilemaps.Tilemap map; // Used as a temporary to assign values to topRightLimit & botLeftLimit
-
-        private readonly float ACCEPTABLE_GOAL_DIST = 0.2f;
         
         [SerializeField]
         private float distanceToNextDecision = 10f;
@@ -34,6 +32,7 @@ namespace MD.AI.TheWarden
         private Vector2 topRightLimit, botLeftLimit;
         private float moveSpeed = 5f;
 
+        private WardenMove moveAssist;
         private Vector2 curGoal = new Vector2(0f, 0f);
         private int lastAngle = 0;
         private Quadrant[] quadrants;
@@ -55,24 +54,20 @@ namespace MD.AI.TheWarden
                 new Quadrant(180, 270, new System.Func<Vector2, float, bool>[2] { IsNearBotLimit, IsNearLeftLimit }),
                 new Quadrant(270, 360, new System.Func<Vector2, float, bool>[2] { IsNearBotLimit, IsNearRightLimit })
             };
+
+            moveAssist = new WardenMove();
         }
 
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
-            var actorPos = actor.transform.position;
-            if (IsAtGoal(actorPos, curGoal))
+            var res = moveAssist.Move(actor.transform, curGoal, moveSpeed);
+            if (res.Equals(BTNodeState.SUCCESS))
             {
-                curGoal = PickNewGoal(actorPos, distanceToNextDecision, curGoal);
-                return BTNodeState.SUCCESS;
+                curGoal = PickNewGoal(actor.transform.position, distanceToNextDecision, curGoal);
             }
 
-            Vector2 moveDir = (curGoal - new Vector2(actorPos.x, actorPos.y)).normalized * moveSpeed * Time.deltaTime;
-            actor.transform.Translate(moveDir);        
-
-            return BTNodeState.RUNNING;
+            return res;
         }
-
-        private bool IsAtGoal(Vector2 curPos, Vector2 goal) => Mathf.Pow(curPos.x - goal.x, 2) + Mathf.Pow(curPos.y - goal.y, 2) <= ACCEPTABLE_GOAL_DIST;
 
         private Vector2 PickNewGoal(Vector2 actorPos, float moveDist, Vector2 curGoal)
         {

@@ -365,6 +365,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3028a3007a9f8ee42a96adddbef077e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chaseSpeed: 5
 --- !u!1 &525500789
 GameObject:
   m_ObjectHideFlags: 0
@@ -488,8 +489,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1628378265
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300076, guid: 9589500635eeaef4fa211db6fa452780, type: 3}
   m_Color: {r: 0.8301887, g: 0.26237094, b: 0.682866, a: 1}
@@ -994,6 +995,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Sequencer
       objectReference: {fileID: 0}
+    - target: {fileID: 334233623061329522, guid: eaf5dfc7d3ddd1444b6bd76b3ab35800,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eaf5dfc7d3ddd1444b6bd76b3ab35800, type: 3}
 --- !u!1 &616915981
@@ -1072,7 +1078,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c728c2230dd79c346b48fedab696b244, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  score: 10
+  score: 12
 --- !u!212 &717355072
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1113,7 +1119,7 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: e0ddba6d3fcf21f49949fcc95c849aac, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.9198222, b: 0.3443396, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1131,7 +1137,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 717355070}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.4, y: 6.3, z: 0}
+  m_LocalPosition: {x: 1.4, y: 9.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1378,7 +1384,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1192132992}
   m_Layer: 0
-  m_Name: The Warden
+  m_Name: Test Actor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1567,8 +1573,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1628378265
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300076, guid: 9589500635eeaef4fa211db6fa452780, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -13671,7 +13677,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c728c2230dd79c346b48fedab696b244, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  score: 0
+  score: 11
 --- !u!212 &2003946481
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -13730,7 +13736,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2003946479}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.8, y: 7.7, z: 0}
+  m_LocalPosition: {x: -2.2, y: 8.900001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -13747,6 +13753,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Selector
+      objectReference: {fileID: 0}
+    - target: {fileID: 6864505179916636100, guid: 8382887fbde2a734cac2f6cb0e4d46ae,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6864505179916636103, guid: 8382887fbde2a734cac2f6cb0e4d46ae,
         type: 3}

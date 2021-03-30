@@ -24,7 +24,15 @@ namespace MD.AI.BehaviourTree
 
             if (transform.childCount == ROOT_CHILD_COUNT)
             {
-                child = transform.GetChild(0).GetComponent<IBTNode>();
+                var childTransform = transform.GetChild(0);
+
+                if (!childTransform.gameObject.activeInHierarchy)
+                {
+                    Debug.LogError("Behaviour Tree: " + childTransform.name + " must be active");
+                    gameObject.SetActive(false);
+                }
+
+                child = childTransform.GetComponent<IBTNode>();
 
                 if (child == null)
                 {

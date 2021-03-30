@@ -10,15 +10,28 @@ namespace MD.AI.BehaviourTree
         {
             var childCount = transform.childCount;
 
-            if (childCount >= 1)
+            if (childCount < 1)
             {
-                children = new IBTNode[transform.childCount];
-                for (int i = 0; i < childCount; i++) children[i] = transform.GetChild(i).GetComponent<IBTNode>();
+                Debug.LogError("Behaviour Tree: Composite " + name + " must have at least 1 child.");
+                gameObject.SetActive(false);
                 return;
             }
                       
-            Debug.LogError("Behaviour Tree: Composite " + name + " must have at least 1 child.");
-            gameObject.SetActive(false);
+            var children = new System.Collections.Generic.List<IBTNode>();
+
+            for (int i = 0; i < childCount; i++) 
+            {
+                var childTransform = transform.GetChild(i);
+
+                if (!childTransform.gameObject.activeInHierarchy)
+                {          
+                    continue;
+                }
+
+                children.Add(childTransform.GetComponent<IBTNode>());
+            }   
+
+            this.children = children.ToArray();    
         }
 
         public abstract BTNodeState Tick(GameObject actor, BTBlackboard blackboard);
