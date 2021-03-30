@@ -32,6 +32,14 @@ namespace MD.AI.BehaviourTree
 
             UnityEngine.Debug.LogError("Behaviour Tree: Key " + key + " was not found");
             return Option<T>.None;
-        }      
+        }   
+
+        public void Log()
+        {
+            foreach (var pair in dict)
+            {
+                UnityEngine.Debug.Log(pair.Key + ": " + pair.Value);
+            }
+        }   
     }
 }

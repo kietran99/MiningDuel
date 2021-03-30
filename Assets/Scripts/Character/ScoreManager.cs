@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace MD.Character
 {
-    public class ScoreManager : NetworkBehaviour
+    public class ScoreManager : NetworkBehaviour, IScoreManager
     {
         [System.Serializable]
         public struct MultiplierThreshold

@@ -44,6 +44,10 @@ namespace MD.AI.BehaviourTree
         private void Update()
         {
             child.Tick(actor, blackboard);
+
+            #if UNITY_EDITOR
+                if (Input.GetKeyDown(KeyCode.LeftShift)) blackboard.Log();
+            #endif
         }
 
         protected virtual void SetupAdditionalStates() {}
