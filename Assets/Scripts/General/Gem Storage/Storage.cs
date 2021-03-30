@@ -14,8 +14,6 @@ namespace MD.Diggable.Core
         [SerializeField]
         private float storeTime = 2f;
 
-        [SerializeField]    
-        private float checkTime;
 
         [SerializeField]
         private GameObject ProcessBar = null;
@@ -23,18 +21,30 @@ namespace MD.Diggable.Core
         [SerializeField]
         private Image ProcessBarImage = null;
 
+        [SerializeField]
+        private SpriteRenderer flag = null;
+
+        private float checkTime;
         private NetworkIdentity ownerID;
         private bool isInside;
+        
+        [SyncVar]
+        private Color flagColor;
 
         public override void OnStartServer()
         {
-            base.OnStartServer();
-            checkTime = storeTime/TIMES_CHECK;
+            checkTime = storeTime / TIMES_CHECK;
         }
 
-        public void Initialize(NetworkIdentity ownerID)
+        public void Initialize(NetworkIdentity ownerID, Color flagColor)
         {
             this.ownerID = ownerID;
+            this.flagColor = flagColor;
+        }
+
+        public override void OnStartClient()
+        {
+            flag.color = flagColor;
         }
 
         [ServerCallback]

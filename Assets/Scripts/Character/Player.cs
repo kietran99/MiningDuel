@@ -6,7 +6,6 @@ namespace MD.Character
 {
     [RequireComponent(typeof(MoveAction))]
     [RequireComponent(typeof(DigAction))]
-    [RequireComponent(typeof(NetworkIdentity))]
     [RequireComponent(typeof(PlayerExplosionHandler))]
     [RequireComponent(typeof(ScoreManager))]
     public class Player : NetworkBehaviour
@@ -24,9 +23,7 @@ namespace MD.Character
         private bool canMove = false;
 
         [SyncVar]
-        public int colorIdx = 0;
-
-        private Color playerColor;
+        private int colorIdx = 0;
 
         private UI.NetworkManagerLobby room;
         private UI.NetworkManagerLobby Room
@@ -80,7 +77,7 @@ namespace MD.Character
         [TargetRpc]
         public void TargetNotifyEndGame(bool hasWon)
         {
-            EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(hasWon, scoreManager.CurrentScore));
+            EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(hasWon, scoreManager.FinalScore));
         }
 
         public void ExitGame()

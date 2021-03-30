@@ -62,10 +62,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  useGeneratedMaps: 1
+  useGeneratedMaps: 0
   allMapsName:
   - map2
-  noObtacleAreaRadius: 4
+  noObstacleAreaRadius: 4
+  spawnOffset:
+  - {x: -3, y: 3}
+  - {x: 3, y: 3}
+  - {x: -3, y: -3}
+  - {x: 3, y: -3}
   width: 30
   height: 30
   seed: 

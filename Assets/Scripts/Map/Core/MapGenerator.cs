@@ -6,8 +6,40 @@ using Random = System.Random;
 
 namespace MD.Map.Core
 {
-    public class MapGenerator : NetworkBehaviour,IMapGenerator
+    public struct SpawnPositionsData
     {
+        private int idx;
+        private Vector2[] spawnPositions;
+
+        public SpawnPositionsData(Vector2[] spawnPositions)
+        {
+            this.idx = -1;
+            this.spawnPositions = spawnPositions;
+        }
+
+        public Vector2 NextSpawnPoint
+        {
+            get
+            {
+                idx++;
+                // Debug.Log("Spawn at: " + (spawnPositions[idx] + CentreOffset));            
+                return spawnPositions[idx];            
+            }
+        }
+    }
+
+    public class MapGenerator : NetworkBehaviour, IMapGenerator
+    {
+        
+        [SerializeField] 
+        bool useGeneratedMaps = false;
+
+        [SerializeField] 
+        int noObstacleAreaRadius = 4;
+
+        [SerializeField]
+        private Vector2[] spawnOffset = null;
+
         public int[] MapData 
         {
             get
@@ -27,14 +59,12 @@ namespace MD.Map.Core
 
         public int MapWidth => width;
         public int MapHeight => height;
-        [SerializeField] bool useGeneratedMaps = false;
         [SerializeField] string[] allMapsName;
-        [SerializeField] int noObtacleAreaRadius = 4;
+        public SpawnPositionsData SpawnPositionsData => new SpawnPositionsData(spawnOffset.Map(pos => pos + new Vector2(width / 2, height / 2)));
         // public int GetCount{get{return count;}}
 
         public override void OnStartServer()
         {
-            // base.OnStartServer();
             ServiceLocator.Register((IMapGenerator)this);  
             if (useGeneratedMaps && allMapsName.Length > 0)
             {
@@ -171,7 +201,7 @@ namespace MD.Map.Core
             for(int x = 0; x < width; x++)
                 for(int y = 0; y < height; y++)
                 {
-                    if ((x <= width / 2 + noObtacleAreaRadius && x >= width / 2 - noObtacleAreaRadius)&&(y <= height / 2 + noObtacleAreaRadius && y >= height / 2 - noObtacleAreaRadius))
+                    if((x >= width / 2 - noObstacleAreaRadius&& x <= width / 2 + noObstacleAreaRadius)&&(y >= height / 2 - noObstacleAreaRadius&& y <= height / 2 + noObstacleAreaRadius))
                     {
                         continue;
                     }

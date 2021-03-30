@@ -15,7 +15,7 @@ namespace MD.AI
 
     public override void Enter()
     {
-        Debug.Log("Wandering");
+        // Debug.Log("Wandering");
         base.Enter();
         currentIndex =  bot.GetClosestWayPointIndex();
         // if(bot.SetMovePosition(bot.checkPoints[currentIndex].transform.position))
@@ -29,7 +29,7 @@ namespace MD.AI
         {
             if (bot.GetClosestDiggable(out _,forBomb))
             {
-                Debug.Log("Found a " + (forBomb ? "Projectile" : "Gem"));
+                // Debug.Log("Found a " + (forBomb ? "Projectile" : "Gem"));
                 stage = EVENT.EXIT;
                 nextState = new PB_FindDiggable(bot, forBomb);
             }

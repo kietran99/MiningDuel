@@ -1,7 +1,5 @@
-﻿using UnityEngine;
-
-namespace MD.Tutorial
+﻿namespace MD.Tutorial
 {
-    public class DiggablesTutorialMaterial : AbstractTutorialMaterial
+    public class DiggablesTutorialMaterial : TutorialMaterial<ScanInvokeData>
     {}
 }

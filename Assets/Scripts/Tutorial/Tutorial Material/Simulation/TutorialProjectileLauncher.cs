@@ -26,6 +26,7 @@ namespace MD.Tutorial
 
         public void Launch(float power, float dirX, float dirY)
         {
+            Debug.Log("Launch");
             shouldFollowPlayer = false;
             // transform.parent = null;
             SourceCollidableTime = Time.time + 1.5f;

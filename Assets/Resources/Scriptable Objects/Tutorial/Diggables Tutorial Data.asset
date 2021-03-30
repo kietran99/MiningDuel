@@ -26,11 +26,16 @@ MonoBehaviour:
   - You see, these Diggables are not exposed to the naked eye
   - so you probably can't see any of them.
   - (Unless you freakin' cheat and that's not nice at all!)
-  - Fortunately, the mechanics brilliantly invented a nice little tool
-  - which is the circle zone around below the character called the Sonar!
+  - Fortunately, the mechanics brilliantly invented a nice little tool - the Sonar!
+  - Blast a scan wave by pressing this button!
   - Every single Diggable is visible inside the Sonar scan zone.
-  - Hence using the Sonar wisely is the key to victory!
+  - Every scan costs a portion of the battery bar, but don't worry, it fills itself
+    up over time.
   - That's it for the Diggable introduction.
   - See you in the next tutorials.
-  focusLines: []
-  maskToggleIndices: 0c000000
+  focusLines:
+  - objectName: Scan Button Container
+    lineIdx: 12
+  - objectName: Sonar Battery Canvas
+    lineIdx: 14
+  maskToggleIndices: 0d000000

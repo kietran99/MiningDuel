@@ -11,38 +11,44 @@ namespace MD.Character
 
         [SerializeField]
         private float ReplenishTime = 5f;
-        private float intervalCheckTime;
 
         [SerializeField]
         private int currentLevel;
+
+        private float intervalCheckTime;
         private int maxLevel;
 
         public override void OnStartAuthority()
         {
-            base.OnStartAuthority();
             currentLevel = 1;
-            maxLevel = maxUses*10;
-            intervalCheckTime = ReplenishTime/10f;
+            maxLevel = maxUses * 10;
+            intervalCheckTime = ReplenishTime / 10f;
             StartCoroutine(nameof(Replenish));
+            EventSystems.EventManager.Instance.StartListening<ScanInvokeData>(Scan);
+        }
+
+        void OnDestroy()
+        {
+            if (hasAuthority)
+                EventSystems.EventManager.Instance.StopListening<ScanInvokeData>(Scan);
+        }
+
+        private void Scan(ScanInvokeData data) 
+        {
+            if (currentLevel <= 10)
+            {
+                return;
+            }
+            
+            CmdSpawnScanWave(netIdentity);
+            currentLevel -= 10;
+            EventSystems.EventManager.Instance.TriggerEvent(new ScanWaveChangeData(currentLevel, maxLevel));          
         }
 
         [Command]
         private void CmdSpawnScanWave(NetworkIdentity owner)
         {
             EventSystems.EventManager.Instance.TriggerEvent(new ScanWaveSpawnData(owner));
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.LeftControl))
-            {
-                if (currentLevel > 10)
-                {
-                    CmdSpawnScanWave(netIdentity);
-                    currentLevel-=10;
-                    EventSystems.EventManager.Instance.TriggerEvent(new ScanWaveChangeData(currentLevel, maxLevel));
-                }
-            }
         }
 
         private void OnDisable()
@@ -57,15 +63,17 @@ namespace MD.Character
             while (true)
             {
                 yield return checkTimeWFS;
+
                 if (currentLevel >= maxLevel) continue;
+
                 //play animation
                 currentLevel++;
-                if (currentLevel == 10 || currentLevel == 20 || currentLevel ==30)
+
+                if (currentLevel == 10 || currentLevel == 20 || currentLevel == 30)
                 {
                     EventSystems.EventManager.Instance.TriggerEvent(new ScanWaveChangeData(currentLevel, maxLevel));
                 }
             }
-
         }
     }
 }

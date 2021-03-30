@@ -45,8 +45,13 @@ namespace MD.AI
         private Vector2Int mapRoot;
 
         private float halfTileSize = .5f;
+
+        private Rigidbody2D theRigidbody;
+
         void Start()
         {
+
+            theRigidbody = GetComponent<Rigidbody2D>();
             ServiceLocator.Resolve(out mapGenerator);
             mapWidth = mapGenerator.MapWidth;
             mapHeight = mapGenerator.MapHeight;
@@ -111,14 +116,14 @@ namespace MD.AI
                             if (i + 1 < path.Count)
                             {
                                 currentNode = i;
-                                Debug.Log("pos is " +i);
+                                // Debug.Log("pos is " +i);
                                 currentGoal = IndexToWorldMiddleSquare(path[i+1].index);
                                 found = true;
                                 break;
                             }
                             else
                             {
-                                Debug.Log("arrive goal " + i );
+                                // Debug.Log("arrive goal " + i );
                                 isMoving = false;
                                 return;
                             }
@@ -133,13 +138,14 @@ namespace MD.AI
 
                 Vector2 moveDir = currentGoal - (Vector2)transform.position;
                 animator.SetMovementState(moveDir);
-                transform.Translate(moveDir.normalized*speed*Time.fixedDeltaTime);
+                theRigidbody.MovePosition(theRigidbody.position + moveDir.normalized*speed*Time.fixedDeltaTime);
             }
         }
 
         private bool IsInRightPath()
         {
             Vector2Int playerIndex= WorldToIndex(transform.position);
+            if (currentNode >= path.Count || currentNode < 0) return false;
             if (playerIndex == path[currentNode].index || playerIndex == path[currentNode + 1].index ) return true;
             return false;
         }
@@ -172,23 +178,23 @@ namespace MD.AI
 
         public bool SetMovePos(Vector2 movePos) 
         {         
-            Debug.Log("find path for pos " + movePos);
+            // Debug.Log("find path for pos " + movePos);
             path = aStar.FindPath(WorldToIndex(transform.position),WorldToIndex(movePos));
             if (path != null)
             {
-                Debug.Log("found path ");
+                // Debug.Log("found path ");
                 length = path.Count;
-                foreach (PathFinding.Node node in path)
-                {
-                    Debug.Log("->"+ IndexToWorld(node.index));
-                }
+                // foreach (PathFinding.Node node in path)
+                // {
+                //     Debug.Log("->"+ IndexToWorld(node.index));
+                // }
                 currentNode = 0;
                 currentGoal = IndexToWorldMiddleSquare(path[currentNode].index);
                 hasPath = true;
                 return true;
             }
             hasPath = false;
-            Debug.Log("not found path");
+            // Debug.Log("not found path");
             return false;
         }
 
@@ -198,7 +204,7 @@ namespace MD.AI
         {
             Vector2Int ranDomIndex = Vector2Int.zero;
             Vector2Int currentPos = WorldToIndex(transform.position);
-            tried =0;
+            tried = 0;
             while (tried < MAXTRY)
             {   
                 ranDomIndex.x = Random.Range(0, mapWidth);

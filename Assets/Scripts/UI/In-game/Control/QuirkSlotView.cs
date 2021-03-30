@@ -46,7 +46,7 @@ namespace MD.UI
 
         private void Insert(Sprite quirkSprite, string quirkDesc)
         {
-            inactiveBorder.SetActive(false);
+            // inactiveBorder.SetActive(false);
             activeBorder.SetActive(true);
             quirkButton.gameObject.SetActive(true);
             quirkImage.sprite = quirkSprite;
@@ -55,7 +55,7 @@ namespace MD.UI
 
         private void Remove()
         {
-            inactiveBorder.SetActive(true);
+            // inactiveBorder.SetActive(true);
             activeBorder.SetActive(false);
             quirkButton.gameObject.SetActive(false);
             quirkImage.sprite = null;

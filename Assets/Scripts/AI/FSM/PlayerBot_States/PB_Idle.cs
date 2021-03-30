@@ -11,7 +11,7 @@ namespace MD.AI
 
         public override void Enter()
         {
-            Debug.Log("Idling");
+            // Debug.Log("Idling");
             base.Enter();
         }
         public override void Update()
@@ -20,12 +20,12 @@ namespace MD.AI
             stage = EVENT.EXIT;
             if (bot.CurrentScore < bot.Target.CurrentScore && bot.CurrentScore >= 20)
             {
-                Debug.Log("Bot Score: < Player Score & >= 20");
+                // Debug.Log("Bot Score: < Player Score & >= 20");
                 nextState = new PB_FindPlayer(bot);
             }
             else
             {
-                Debug.Log("Bot Score: >= Player Score or < 20");
+                // Debug.Log("Bot Score: >= Player Score or < 20");
                 nextState = new PB_FindDiggable(bot, false);
             }
         }
