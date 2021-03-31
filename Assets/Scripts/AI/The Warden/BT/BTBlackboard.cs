@@ -17,7 +17,7 @@ namespace MD.AI.BehaviourTree
             dict[key] = val;
         }  
 
-        public Option<T> Get<T>(string key)
+        public Option<T> Get<T>(string key, bool ignoreKeyNotFound = false)
         {
             if (dict.TryGetValue(key, out var val))
             {
@@ -30,7 +30,7 @@ namespace MD.AI.BehaviourTree
                 return Option<T>.None;
             }
 
-            UnityEngine.Debug.LogError("Behaviour Tree: Key " + key + " was not found");
+            if (!ignoreKeyNotFound) UnityEngine.Debug.LogError("Behaviour Tree: Key " + key + " was not found");
             return Option<T>.None;
         }   
 

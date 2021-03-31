@@ -63,7 +63,7 @@ namespace MD.AI.TheWarden
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
             var chaseRange = blackboard
-                .Get<float>(WardenMacros.DELTA_CHASE_RANGE)
+                .Get<float>(WardenMacros.DELTA_CHASE_RANGE, true)
                 .Match(
                     deltaChaseRange => baseChaseRange + deltaChaseRange,
                     () => baseChaseRange
@@ -71,7 +71,7 @@ namespace MD.AI.TheWarden
 
             gizmosChaseRange = chaseRange;
 
-            var maybeTarget = CheckTargetsInRange(actor.transform.position, chaseRange);   
+            var maybeTarget = CheckTargetsInRange(actor.transform.position, targets, chaseRange);   
 
             return 
                 maybeTarget
@@ -85,18 +85,18 @@ namespace MD.AI.TheWarden
                     );              
         }
 
-        private Option<Transform> CheckTargetsInRange(Vector3 actorPos, float chaseRange)
+        private Option<Transform> CheckTargetsInRange(Vector3 actorPos, ChaseTarget[] targets, float range)
         {
-            var chasables = targets.Filter(target => (actorPos - target.Position).sqrMagnitude <= chaseRange * chaseRange);
+            var possibleTargets = targets.Filter(target => (actorPos - target.Position).sqrMagnitude <= range * range);
 
-            if (chasables.Length == 0)
+            if (possibleTargets.Length == 0)
             {
                 return Option<Transform>.None;
             }
 
-            var chaseTarget = chasables.Reduce((target_0 , target_1) => target_0.Score > target_1.Score ? target_0 : target_1);                        
-            BTLogger.Log("Number of Chasable Players: " + chasables.Length);          
-            return chaseTarget.Transform;
+            var chosenTarget = possibleTargets.Reduce((target_0 , target_1) => target_0.Score > target_1.Score ? target_0 : target_1);                        
+            BTLogger.Log("Number of Chasable Players: " + possibleTargets.Length);          
+            return chosenTarget.Transform;
         }
 
         void OnDrawGizmos()
