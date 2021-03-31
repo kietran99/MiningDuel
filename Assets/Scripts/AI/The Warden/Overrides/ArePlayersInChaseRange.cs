@@ -41,12 +41,10 @@ namespace MD.AI.TheWarden
 
         [SerializeField]
         private Transform[] players = null; // For testing targets
-
-        private bool hasSetup = false;
         
         private ChaseTarget[] targets;
 
-        private float chaseRange;
+        private float gizmosChaseRange;
 
         private void Start()
         {
@@ -59,43 +57,52 @@ namespace MD.AI.TheWarden
             var targets = new System.Collections.Generic.List<ChaseTarget>();
             maybeValidTargets.ForEach(maybeTarget => maybeTarget.Match(target => targets.Add(target), () => {}));
             this.targets = targets.ToArray();
-            chaseRange = baseChaseRange;
+            gizmosChaseRange = baseChaseRange;
         }
 
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
-            if (!hasSetup)
+            var chaseRange = blackboard
+                .Get<float>(WardenMacros.DELTA_CHASE_RANGE)
+                .Match(
+                    deltaChaseRange => baseChaseRange + deltaChaseRange,
+                    () => baseChaseRange
+                ); 
+
+            gizmosChaseRange = chaseRange;
+
+            var maybeTarget = CheckTargetsInRange(actor.transform.position, chaseRange);   
+
+            return 
+                maybeTarget
+                    .Match(
+                        chaseTarget =>
+                        {
+                            blackboard.Set<Transform>(WardenMacros.CHASE_TARGET, chaseTarget);
+                            return BTNodeState.SUCCESS;
+                        },
+                        () => BTNodeState.FAILURE
+                    );              
+        }
+
+        private Option<Transform> CheckTargetsInRange(Vector3 actorPos, float chaseRange)
+        {
+            var chasables = targets.Filter(target => (actorPos - target.Position).sqrMagnitude <= chaseRange * chaseRange);
+
+            if (chasables.Length == 0)
             {
-                blackboard.Set<float>(WardenMacros.CHASE_RANGE, baseChaseRange);
-                hasSetup = true;
+                return Option<Transform>.None;
             }
 
-            return blackboard
-                .Get<float>(WardenMacros.CHASE_RANGE)
-                .Match(
-                    chaseRange => 
-                    {
-                        var chasables = targets.Filter(target => (actor.transform.position - target.Position).sqrMagnitude <= chaseRange * chaseRange);
-
-                        if (chasables.Length == 0)
-                        {
-                            return BTNodeState.FAILURE;
-                        }
-
-                        var chaseTarget = chasables.Reduce((target_0 , target_1) => target_0.Score > target_1.Score ? target_0 : target_1);
-                        blackboard.Set<Transform>(WardenMacros.CHASE_TARGET, chaseTarget.Transform);              
-                        BTLogger.Log("Number of Chasable Players: " + chasables.Length);
-                        this.chaseRange = chaseRange;
-                        return BTNodeState.SUCCESS;
-                    },
-                    () => BTNodeState.FAILURE
-                );
+            var chaseTarget = chasables.Reduce((target_0 , target_1) => target_0.Score > target_1.Score ? target_0 : target_1);                        
+            BTLogger.Log("Number of Chasable Players: " + chasables.Length);          
+            return chaseTarget.Transform;
         }
 
         void OnDrawGizmos()
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, chaseRange);
+            Gizmos.DrawWireSphere(transform.position, gizmosChaseRange);
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class WardenMacros
     {
-        public const string CHASE_RANGE = "ChaseRange";
+        public const string DELTA_CHASE_RANGE = "DeltaChaseRange";
         public const string CHASE_TARGET = "ChaseTarget";
     }
 }

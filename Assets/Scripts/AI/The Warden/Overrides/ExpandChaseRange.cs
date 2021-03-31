@@ -10,16 +10,8 @@ namespace MD.AI.TheWarden
 
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
-            return blackboard
-                .Get<float>(WardenMacros.CHASE_RANGE)
-                .Match(
-                    chaseRange => 
-                    {
-                        blackboard.Set<float>(WardenMacros.CHASE_RANGE, chaseRange + expansionLength);
-                        return BTNodeState.SUCCESS;
-                    },
-                    () => BTNodeState.FAILURE
-                );         
+            blackboard.Set<float>(WardenMacros.DELTA_CHASE_RANGE, expansionLength);
+            return BTNodeState.SUCCESS;      
         }
     }
 }
