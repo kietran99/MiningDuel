@@ -4,11 +4,20 @@ using UnityEngine;
 namespace MD.AI.TheWarden
 {
     public class ShowDustParticles : BTLeaf
-    {
+    {       
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
-            actor.GetComponentInChildren<ParticleSystem>().Play();
-            return BTNodeState.SUCCESS;
+            return 
+                blackboard
+                    .Get<ParticleSystem>(WardenMacros.DUST_PARTICLES)
+                    .Match(
+                        dustParticles => 
+                        {
+                            dustParticles.Play();
+                            return BTNodeState.SUCCESS;
+                        },
+                        () => BTNodeState.FAILURE
+                    );
         }
     }
 }

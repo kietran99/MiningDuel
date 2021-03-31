@@ -6320,6 +6320,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Attack Sequencer
       objectReference: {fileID: 0}
+    - target: {fileID: 334233623061329522, guid: eaf5dfc7d3ddd1444b6bd76b3ab35800,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eaf5dfc7d3ddd1444b6bd76b3ab35800, type: 3}
 --- !u!4 &721710118 stripped

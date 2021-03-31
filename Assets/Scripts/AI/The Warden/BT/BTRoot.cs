@@ -10,7 +10,7 @@ namespace MD.AI.BehaviourTree
         private bool shouldLog = true;
 
         [SerializeField]
-        private GameObject actor = null;
+        protected GameObject actor = null;
 
         [SerializeField]
         private int blackboardCapacity = 1;

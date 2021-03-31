@@ -7,8 +7,17 @@ namespace MD.AI.TheWarden
     {
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
-            actor.GetComponentInChildren<ParticleSystem>().Stop();
-            return BTNodeState.SUCCESS;
+            return 
+                blackboard
+                    .Get<ParticleSystem>(WardenMacros.DUST_PARTICLES)
+                    .Match(
+                        dustParticles => 
+                        {
+                            dustParticles.Stop();
+                            return BTNodeState.SUCCESS;
+                        },
+                        () => BTNodeState.FAILURE
+                    );
         }
     }
 }

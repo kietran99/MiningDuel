@@ -10,7 +10,8 @@ namespace MD.AI.TheWarden
 
         protected override void SetupAdditionalStates(BTBlackboard blackboard)
         {
-            blackboard.Set<Transform[]>(WardenMacros.PLAYERS, players);           
+            blackboard.Set<Transform[]>(WardenMacros.PLAYERS, players);
+            blackboard.Set<ParticleSystem>(WardenMacros.DUST_PARTICLES, actor.GetComponentInChildren<ParticleSystem>());         
         }
     }
 }
