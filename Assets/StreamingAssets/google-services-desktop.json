@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "267727663315",
+    "project_id": "mining-duel",
+    "storage_bucket": "mining-duel.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:267727663315:android:acb7b706c3b8b1b9ff6426",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.MiningDuel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "267727663315-e29e1juean5avi966hbkie14q8uj2jkp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVIwMEI9a91sOg9OVvYOQJkWptMI2nn-4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "267727663315-e29e1juean5avi966hbkie14q8uj2jkp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
