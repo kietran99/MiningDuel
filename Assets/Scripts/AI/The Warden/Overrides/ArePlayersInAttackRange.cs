@@ -37,24 +37,29 @@ namespace MD.AI.TheWarden
         }
 
         [SerializeField]
-        private Transform[] players = null; // For testing targets
-
-        [SerializeField]
         private float baseAttackRange = 2f;
 
         private AttackTarget[] allTargets;
 
-        private void Start()
+        public override void OnRootInit(BTBlackboard blackboard)
         {
-            var maybeValidTargets = players.Map(player => AttackTarget.New(player));
-            if (maybeValidTargets.Length != players.Length)
-            {
-                return;
-            }
+            blackboard
+                .Get<Transform[]>(WardenMacros.PLAYERS)
+                .Match(
+                    players => 
+                    {
+                        var maybeValidTargets = players.Map(player => AttackTarget.New(player));
+                        if (maybeValidTargets.Length != players.Length)
+                        {
+                            return;
+                        }
 
-            var targets = new System.Collections.Generic.List<AttackTarget>();
-            maybeValidTargets.ForEach(maybeTarget => maybeTarget.Match(target => targets.Add(target), () => {}));
-            allTargets = targets.ToArray();
+                        var targets = new System.Collections.Generic.List<AttackTarget>();
+                        maybeValidTargets.ForEach(maybeTarget => maybeTarget.Match(target => targets.Add(target), () => {}));
+                        allTargets = targets.ToArray();
+                    },
+                    () => gameObject.SetActive(false)
+                );
         }
 
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)

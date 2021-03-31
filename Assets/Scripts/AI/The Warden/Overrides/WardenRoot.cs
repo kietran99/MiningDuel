@@ -1,13 +1,16 @@
 ﻿using MD.AI.BehaviourTree;
+using UnityEngine;
 
 namespace MD.AI.TheWarden
 {
     public class WardenRoot : BTRoot
     {
-        
-        protected override void SetupAdditionalStates()
+        [SerializeField]
+        private Transform[] players = null; // FOR TESTING ONLY
+
+        protected override void SetupAdditionalStates(BTBlackboard blackboard)
         {
-            // blackboard.Set           
+            blackboard.Set<Transform[]>(WardenMacros.PLAYERS, players);           
         }
     }
 }

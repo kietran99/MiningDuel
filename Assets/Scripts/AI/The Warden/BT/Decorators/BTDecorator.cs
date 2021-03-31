@@ -20,6 +20,11 @@ namespace MD.AI.BehaviourTree
             gameObject.SetActive(false);
         }
 
-        public abstract BTNodeState Tick(GameObject actor, BTBlackboard blackboard);
+        public void OnRootInit(BTBlackboard blackboard) 
+        {
+            child.OnRootInit(blackboard);
+        }
+
+        public abstract BTNodeState Tick(GameObject actor, BTBlackboard blackboard);       
     }
 }

@@ -22,31 +22,32 @@ namespace MD.AI.BehaviourTree
         {
             BTLogger.active = shouldLog;
 
-            if (transform.childCount == ROOT_CHILD_COUNT)
+            if (transform.childCount != ROOT_CHILD_COUNT)
             {
-                var childTransform = transform.GetChild(0);
-
-                if (!childTransform.gameObject.activeInHierarchy)
-                {
-                    Debug.LogError("Behaviour Tree: " + childTransform.name + " must be active");
-                    gameObject.SetActive(false);
-                }
-
-                child = childTransform.GetComponent<IBTNode>();
-
-                if (child == null)
-                {
-                    Debug.LogError("Behaviour Tree: " + name + " must have a child with IBTNode script attached");
-                    gameObject.SetActive(false);
-                }
-
-                blackboard = new BTBlackboard(blackboardCapacity);
-                SetupAdditionalStates();
+                Debug.LogError("Behaviour Tree: Root " + name + " can only has 1 child");
+                gameObject.SetActive(false);
                 return;
             }
-                
-            Debug.LogError("Behaviour Tree: Root " + name + " can only has 1 child");
-            gameObject.SetActive(false);
+                           
+            var childTransform = transform.GetChild(0);
+
+            if (!childTransform.gameObject.activeInHierarchy)
+            {
+                Debug.LogError("Behaviour Tree: " + childTransform.name + " must be active");
+                gameObject.SetActive(false);
+            }
+
+            child = childTransform.GetComponent<IBTNode>();
+
+            if (child == null)
+            {
+                Debug.LogError("Behaviour Tree: " + name + " must have a child with IBTNode script attached");
+                gameObject.SetActive(false);
+            }
+
+            blackboard = new BTBlackboard(blackboardCapacity);
+            SetupAdditionalStates(blackboard);
+            child.OnRootInit(blackboard);
         }
 
         private void Update()
@@ -58,6 +59,6 @@ namespace MD.AI.BehaviourTree
             #endif
         }
 
-        protected virtual void SetupAdditionalStates() {}
+        protected virtual void SetupAdditionalStates(BTBlackboard blackboard) {}
     }
 }

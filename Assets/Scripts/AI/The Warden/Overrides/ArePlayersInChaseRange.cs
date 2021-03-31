@@ -38,26 +38,31 @@ namespace MD.AI.TheWarden
 
         [SerializeField]
         private float baseChaseRange = 7f;
-
-        [SerializeField]
-        private Transform[] players = null; // For testing targets
         
         private ChaseTarget[] targets;
 
         private float gizmosChaseRange;
 
-        private void Start()
+        public override void OnRootInit(BTBlackboard blackboard)
         {
-            var maybeValidTargets = players.Map(player => ChaseTarget.New(player));
-            if (maybeValidTargets.Length != players.Length)
-            {
-                return;
-            }
+            blackboard
+                .Get<Transform[]>(WardenMacros.PLAYERS)
+                .Match(
+                    players => 
+                    {
+                        var maybeValidTargets = players.Map(player => ChaseTarget.New(player));
+                        if (maybeValidTargets.Length != players.Length)
+                        {
+                            return;
+                        }
 
-            var targets = new System.Collections.Generic.List<ChaseTarget>();
-            maybeValidTargets.ForEach(maybeTarget => maybeTarget.Match(target => targets.Add(target), () => {}));
-            this.targets = targets.ToArray();
-            gizmosChaseRange = baseChaseRange;
+                        var targets = new System.Collections.Generic.List<ChaseTarget>();
+                        maybeValidTargets.ForEach(maybeTarget => maybeTarget.Match(target => targets.Add(target), () => {}));
+                        this.targets = targets.ToArray();
+                        gizmosChaseRange = baseChaseRange;
+                    },
+                    () => gameObject.SetActive(false)
+                );
         }
 
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)

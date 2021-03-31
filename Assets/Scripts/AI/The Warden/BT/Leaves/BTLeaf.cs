@@ -22,6 +22,8 @@ namespace MD.AI.BehaviourTree
             return res;
         }
 
+        public virtual void OnRootInit(BTBlackboard blackboard) {}
+
         protected abstract BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard);
     }
 }

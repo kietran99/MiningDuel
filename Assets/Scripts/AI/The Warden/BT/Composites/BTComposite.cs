@@ -34,6 +34,11 @@ namespace MD.AI.BehaviourTree
             this.children = children.ToArray();    
         }
 
+        public void OnRootInit(BTBlackboard blackboard)
+        {
+            children.ForEach(child => child.OnRootInit(blackboard));
+        }
+
         public abstract BTNodeState Tick(GameObject actor, BTBlackboard blackboard);
     }
 }
