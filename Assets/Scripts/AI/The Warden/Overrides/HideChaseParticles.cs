@@ -3,17 +3,17 @@ using UnityEngine;
 
 namespace MD.AI.TheWarden
 {
-    public class ShowDustParticles : BTLeaf
-    {       
+    public class HideChaseParticles : BTLeaf
+    {
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
             return 
                 blackboard
-                    .Get<ParticleSystem>(WardenMacros.DUST_PARTICLES)
+                    .Get<ParticleSystem>(WardenMacros.CHASE_PARTICLES)
                     .Match(
                         dustParticles => 
                         {
-                            dustParticles.Play();
+                            dustParticles.Stop();
                             return BTNodeState.SUCCESS;
                         },
                         () => BTNodeState.FAILURE
