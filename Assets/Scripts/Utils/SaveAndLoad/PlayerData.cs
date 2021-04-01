@@ -48,3 +48,14 @@ public class PlayerData
         }
     }
 }
+
+[System.Serializable]
+public class PlayerID
+{
+    public string ID => id;
+    string id;
+    public PlayerID(string ident)
+    {
+        id = ident;
+    }
+}

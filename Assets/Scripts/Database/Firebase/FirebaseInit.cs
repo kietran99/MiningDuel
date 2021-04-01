@@ -16,6 +16,7 @@ namespace MD.Database
         FirebaseFirestore db;
         bool firebaseAppInitialized = false;
         public static FirebaseInit instance = null;
+        Dictionary<string, object> playerDoc = null;
         private void Awake()
         {
             if(instance == null)
@@ -42,8 +43,9 @@ namespace MD.Database
                 "Could not resolve all Firebase dependencies: {0}", dependencyStatus));
             }
             });
-
+            TryGetData();
             // StartReadAllUsersName();
+            TryGetPlayerInfo();
         }
 
 
@@ -57,14 +59,67 @@ namespace MD.Database
             action();
         }
 
-        void StartReadAllUsersName()
+        void TryGetData()
+        {
+            StartCoroutine(WaitForFirebaseAppInitThenExec(GetData));
+        }
+
+        void GetData()
+        {
+            db = FirebaseFirestore.DefaultInstance;
+        }
+
+        
+
+        void TryGetPlayerInfo()
+        {
+            StartCoroutine(WaitForFirebaseAppInitThenExec(GetPlayerInfo));
+        }
+
+        void GetPlayerInfo()
+        {
+            bool check;
+            string id = SavePlayerData.GetPlayerID(out check);
+            if(!check)
+            {
+                Debug.Log("Firebase: Create new Document!");
+                string name = SavePlayerData.LoadPlayerData().Name;
+                Dictionary<string, object> user =new Dictionary<string, object>
+                {
+                    {"name", name},
+                    {"totalWin", 0},
+                };
+                playerDoc = user;
+                db.Collection("players").AddAsync(user).ContinueWithOnMainThread(task =>
+                {
+                    DocumentReference addedDocRef = task.Result;
+                    SavePlayerData.SaveId(new PlayerID(addedDocRef.Id));
+                });
+                Debug.Log(String.Format("Firebase: Player Info \n Name : {0} \n TotalWin :{1} \n",playerDoc["name"],playerDoc["totalWin"]));
+                return;
+            }
+            CollectionReference userRef = db.Collection("players");
+            userRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            {
+                QuerySnapshot snapshots = task.Result;
+                foreach (DocumentSnapshot doc in snapshots.Documents)
+                {
+                    if(doc.Id == id)
+                    {
+                        playerDoc = doc.ToDictionary();
+                    }
+                }
+                Debug.Log(String.Format("Firebase: Player Info \n Name : {0} \n TotalWin :{1} \n",playerDoc["name"],playerDoc["totalWin"]));
+            });
+        }
+
+        void TryReadAllUsersName()
         {
             StartCoroutine(WaitForFirebaseAppInitThenExec(ReadAllUsersName));
         }
 
         void ReadAllUsersName()
         {
-            db = FirebaseFirestore.DefaultInstance;
             CollectionReference usersRef = db.Collection("players");
             usersRef
                 .GetSnapshotAsync()
@@ -76,7 +131,6 @@ namespace MD.Database
                         {
                             Dictionary<string, object> doc = document.ToDictionary();
                             Debug.Log(String.Format("Database => User name: {0}", doc["name"]));
-                            // text.text += String.Format("User: {0}\n", document.Id);
                         }
                     });
         }

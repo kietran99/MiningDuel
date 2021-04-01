@@ -12,6 +12,15 @@ public static class SavePlayerData
         formatter.Serialize(stream, player);
         stream.Close();
     }
+
+    public static void SaveId(PlayerID player)
+    {
+        BinaryFormatter formatter = new BinaryFormatter();
+        string path = Application.persistentDataPath + "player.id";
+        FileStream stream = new FileStream(path, FileMode.Create);
+        formatter.Serialize(stream, player);
+        stream.Close();
+    }
     public static PlayerData LoadPlayerData()
     {
         string path = Application.persistentDataPath + "player.bruh";
@@ -31,6 +40,24 @@ public static class SavePlayerData
             Debug.LogError("I havent thought this through, no file found at: " +path);
             return player;
         }
+    }
 
+    public static string GetPlayerID(out bool exist)
+    {
+        string path = Application.persistentDataPath + "player.id";
+        if(File.Exists(path))
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path,FileMode.Open);
+            PlayerID data = formatter.Deserialize(stream) as PlayerID;
+            stream.Close();
+            exist =true;
+            return data.ID;
+        }
+        else
+        {
+            exist = false;
+            return "";
+        }
     }
 }
