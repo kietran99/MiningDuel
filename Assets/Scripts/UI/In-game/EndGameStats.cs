@@ -44,6 +44,9 @@ public class EndGameStats : MonoBehaviour
         score = endGameData.score;
         winText.text = endGameData.hasWon ? "Victory" : "Defeated";
         ShowScore(endGameData.score);
+        PlayerData player = SavePlayerData.LoadPlayerData();
+        player.AddToMatchHistory(endGameData.hasWon,score);
+        SavePlayerData.Save(player);
     }
     
     private void ShowScore(int score)

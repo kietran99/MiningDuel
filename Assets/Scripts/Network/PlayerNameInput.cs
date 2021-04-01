@@ -56,5 +56,7 @@ public class PlayerNameInput : MonoBehaviour
         PlayerPrefs.SetString(PLAYER_PREF_NAME_KEY, DisplayName);
         gameObject.SetActive(false);
         shownPlayerNameText.text = DisplayName;
+        PlayerData player = new PlayerData(DisplayName);
+        SavePlayerData.Save(player);
     }
 }
