@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MD.AI.TheWarden
 {
-    public class ResetScanRange : BTLeaf
+    public class ResetChaseRange : BTLeaf
     {
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
