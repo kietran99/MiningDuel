@@ -15,6 +15,9 @@ namespace MD.CraftingSystem
 
         [SerializeField]
         private int StackSize = 15;
+
+        private int stackSize = 0;
+
         [SerializeField]
         private DiggableType[] gemStack;
         [SerializeField]
@@ -30,7 +33,8 @@ namespace MD.CraftingSystem
             base.OnStartClient();
             gemStack = new DiggableType[StackSize];
             head = 0;
-            tail = -1;
+            tail = 0;
+            stackSize = 0;
             //just in case
             for (int i=0; i< gemStack.Length; i++) gemStack[i] = DiggableType.EMPTY;
 
@@ -48,10 +52,11 @@ namespace MD.CraftingSystem
         private void AddToStack(DiggableType type)
         {
             //empty stack
-            if (tail == -1)
+            if (stackSize == 0)
             {
                 gemStack[head] = type;            
                 tail = head;
+                stackSize++;
                 return;
             }
 
@@ -66,6 +71,7 @@ namespace MD.CraftingSystem
             }
 
             gemStack[tail] = type;
+            stackSize++;
         }
 
         private void RemoveFromStack(int index, int length)
@@ -89,8 +95,22 @@ namespace MD.CraftingSystem
                 if (currentIndex >= gemStack.Length) currentIndex -= gemStack.Length;
             }
             tail = fillIndex -1;
-            //empty stack
-            if (tail == head) tail =-1;
+
+            stackSize-=length;
+
+            canCraftItemList.Clear();
+            for (int i=0 ; i< gemStack.Length; i++)
+            {
+                List<CraftItemName> res = CanCraft(i);
+                canCraftItemList.AddRange(res);
+            }
+        }
+
+        private int GetIndex(int position)
+        {
+            int res = head + position;
+            if (res >= gemStack.Length) res-= gemStack.Length;
+            return res;
         }
 
 
@@ -99,9 +119,10 @@ namespace MD.CraftingSystem
             // Debug.Log("receive gem obtain data " + data.type);
             AddToStack(data.type);
             canCraftItemList.Clear();
-            for (int i=0 ; i< gemStack.Length; i++)
+            if (stackSize <3) return;
+            for (int i = 0; i<= stackSize - 2 ; i++) // ignore 2 last gems
             {
-                List<CraftItemName> res = CanCraft(i);
+                List<CraftItemName> res = CanCraft(GetIndex(i));
                 canCraftItemList.AddRange(res);
             }
         }
