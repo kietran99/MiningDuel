@@ -108,6 +108,7 @@ namespace MD.CraftingSystem
                 List<CraftItemName> res = CanCraft(i);
                 canCraftItemList.AddRange(res);
             }
+            EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(canCraftItemList));
 
             EventSystems.EventManager.Instance.TriggerEvent<GemStackUsedData>(new GemStackUsedData(GetPos(index),length));
         }
@@ -116,21 +117,25 @@ namespace MD.CraftingSystem
         {
             int res = head + position;
             if (res >= gemStack.Length) res-= gemStack.Length;
-            Debug.Log("pos is " + position + " res is" + res);
             return res;
         }
 
         private void HandleGemObtain(GemObtainData data)
         {
             if (!recipeSO.IsGemCraftable(data.type)) return;
-            // Debug.Log("receive gem obtain data " + data.type);
+            Debug.Log("receive gem obtain data " + data.type);
             AddToStack(data.type);
-            canCraftItemList.Clear();
             if (stackSize <3) return;
+            List<CraftItemName> tempList = new List<CraftItemName>();
             for (int i = 0; i<= stackSize - 2 ; i++) // ignore 2 last gems
             {
                 List<CraftItemName> res = CanCraft(GetIndex(i));
-                canCraftItemList.AddRange(res);
+                tempList.AddRange(res);
+            }
+            if (!canCraftItemList.Equals(tempList))
+            {
+                canCraftItemList = tempList;
+                EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(canCraftItemList));
             }
         }
 
@@ -170,7 +175,6 @@ namespace MD.CraftingSystem
             {
                 int currentIndex = index  + i;
                 if (currentIndex >= gemStack.Length) currentIndex -= gemStack.Length;
-                Debug.Log("index is " + index + " i " + i + " current index " + currentIndex);
                 materials[i] = gemStack[currentIndex]; 
                 //if end of stack fill the rest with empty
                 if (currentIndex == tail)

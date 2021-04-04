@@ -49,8 +49,9 @@ public class GemStackUI : MonoBehaviour
 
     private void Start()
     {
-        GetComponent<EventSystems.EventConsumer>().StartListening<GemObtainData>(AddNewGem);
-        GetComponent<EventSystems.EventConsumer>().StartListening<GemStackUsedData>(RemoveGem);
+        var consumer = GetComponent<EventSystems.EventConsumer>();
+        consumer.StartListening<GemObtainData>(AddNewGem);
+        consumer.StartListening<GemStackUsedData>(RemoveGem);
         count = 0;
     }
 
