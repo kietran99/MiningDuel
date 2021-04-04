@@ -6,6 +6,7 @@ namespace MD.Quirk
     ///<remarks>
     /// GameObjects that attached any inherited <c>BaseQuirk</c> are disabled on spawn by default
     ///</remarks>
+    [System.Serializable]
     public abstract class BaseQuirk : NetworkBehaviour
     {
         [SerializeField]

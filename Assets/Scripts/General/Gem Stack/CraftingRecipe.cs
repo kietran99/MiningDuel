@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MD.Diggable;
-
+using MD.Quirk;
 namespace MD.CraftingSystem
 {
     [System.Serializable]
-    public abstract class CraftedItem
+    public struct CraftedItem
     {
-
+        public CraftItemName name;
+        public BaseQuirk quirk;
     }
     public enum CraftItemName
     {
@@ -43,7 +44,12 @@ namespace MD.CraftingSystem
     {
         public List<Recipe> Recipes;
 
+        public List<CraftedItem> Craftitems;
+
         public int MAX_NO_MATERIALS = 5;
+
+        public bool IsGemCraftable(DiggableType type) => type.IsGem();
+        
     }
 }
 

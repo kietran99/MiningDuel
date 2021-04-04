@@ -56,15 +56,17 @@ public class GemStackUI : MonoBehaviour
 
     private void InitializePool()
     {
-        SuperRareGemPool = Instantiate(SuperRareGemObjectPoolPrefab).GetComponent<IObjectPool>();
-        RareGemPool = Instantiate(RareGemObjectPoolPrefab).GetComponent<IObjectPool>();
-        UncommonGemPool = Instantiate(UncommonGemObjectPoolPrefab).GetComponent<IObjectPool>();
-        CommonGemPool = Instantiate(CommonGemObjectPoolPrefab).GetComponent<IObjectPool>();
+        SuperRareGemPool = Instantiate(SuperRareGemObjectPoolPrefab,Vector3.zero,Quaternion.identity,gameObject.transform).GetComponent<IObjectPool>();
+        RareGemPool = Instantiate(RareGemObjectPoolPrefab,Vector3.zero,Quaternion.identity,gameObject.transform).GetComponent<IObjectPool>();
+        UncommonGemPool = Instantiate(UncommonGemObjectPoolPrefab,Vector3.zero,Quaternion.identity,gameObject.transform).GetComponent<IObjectPool>();
+        CommonGemPool = Instantiate(CommonGemObjectPoolPrefab,Vector3.zero,Quaternion.identity,gameObject.transform).GetComponent<IObjectPool>();
     }
 
     private void AddNewGem(GemObtainData data)
     {
+        Debug.Log("added new gem" + data.type);
         GameObject newGem = GetSlotObject(data.type);
+        Debug.Log("get new gem" + newGem);
         if (newGem == null) return; 
         if (count < MAX_NO_SLOTS)
         {

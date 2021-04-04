@@ -146,7 +146,7 @@ namespace MD.AI
         {
             Vector2Int playerIndex= WorldToIndex(transform.position);
             if (currentNode >= path.Count || currentNode < 0) return false;
-            if (playerIndex == path[currentNode].index || playerIndex == path[currentNode + 1].index ) return true;
+            if (playerIndex == path[currentNode].index || (currentNode + 1 < path.Count && playerIndex == path[currentNode + 1].index) ) return true;
             return false;
         }
 

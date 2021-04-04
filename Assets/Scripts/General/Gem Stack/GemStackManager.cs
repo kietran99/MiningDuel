@@ -14,8 +14,9 @@ namespace MD.CraftingSystem
         private CraftingRecipe recipeSO;
 
         [SerializeField]
-        private int StackSize = 15;
+        private int MAX_NO_SLOTS = 15;
 
+        [SerializeField]
         private int stackSize = 0;
 
         [SerializeField]
@@ -23,7 +24,7 @@ namespace MD.CraftingSystem
         [SerializeField]
         private int head; //start index of the stack
         [SerializeField]
-        private int tail; //last index of the stack ; empty stack tail = -1;
+        private int tail; //last index of the stack ;
 
         [SerializeField]
         List<CraftItemName> canCraftItemList;
@@ -31,7 +32,7 @@ namespace MD.CraftingSystem
         public override void OnStartAuthority()
         {
             base.OnStartClient();
-            gemStack = new DiggableType[StackSize];
+            gemStack = new DiggableType[MAX_NO_SLOTS];
             head = 0;
             tail = 0;
             stackSize = 0;
@@ -69,53 +70,59 @@ namespace MD.CraftingSystem
                 head++;
                 if (head >= gemStack.Length) head = 0;
             }
+            else
+            {
+                stackSize++;
+            }
 
             gemStack[tail] = type;
-            stackSize++;
         }
 
         private void RemoveFromStack(int index, int length)
         {
-            int fillIndex = index;
-            int currentIndex = index + length;
-            if (currentIndex >= gemStack.Length) currentIndex-= gemStack.Length;
             for (int i = index; i < index + length; i++)
             {
                 int j = i;
                 if (j >= gemStack.Length) j-= gemStack.Length;
                 gemStack[j] = DiggableType.EMPTY;
             }
-            while (currentIndex != (tail + 1))
+            int currentIndex = 0, fillIndex = 0;
+            for (int i = 0; i< stackSize - (GetPos(index) + length) ; i++)    
             {
+                currentIndex = i + index + length;
+                fillIndex = i + index; 
+                if (fillIndex >= gemStack.Length) fillIndex -= gemStack.Length;
+                if (currentIndex >= gemStack.Length) currentIndex -= gemStack.Length;
+
                 gemStack[fillIndex] = gemStack[currentIndex];
                 gemStack[currentIndex] = DiggableType.EMPTY;
-                fillIndex++;
-                if (fillIndex >= gemStack.Length) fillIndex -= gemStack.Length;
-                currentIndex++;
-                if (currentIndex >= gemStack.Length) currentIndex -= gemStack.Length;
-            }
-            tail = fillIndex -1;
 
+            }
+
+            tail = fillIndex;
             stackSize-=length;
 
             canCraftItemList.Clear();
-            for (int i=0 ; i< gemStack.Length; i++)
+            for (int i=0 ; i<= stackSize - 2; i++)
             {
                 List<CraftItemName> res = CanCraft(i);
                 canCraftItemList.AddRange(res);
             }
+
+            EventSystems.EventManager.Instance.TriggerEvent<GemStackUsedData>(new GemStackUsedData(GetPos(index),length));
         }
 
         private int GetIndex(int position)
         {
             int res = head + position;
             if (res >= gemStack.Length) res-= gemStack.Length;
+            Debug.Log("pos is " + position + " res is" + res);
             return res;
         }
 
-
         private void HandleGemObtain(GemObtainData data)
         {
+            if (!recipeSO.IsGemCraftable(data.type)) return;
             // Debug.Log("receive gem obtain data " + data.type);
             AddToStack(data.type);
             canCraftItemList.Clear();
@@ -146,6 +153,13 @@ namespace MD.CraftingSystem
         }
         #endif
 
+        private int GetPos(int index)
+        {
+            int pos = index-= head;
+            if (pos < 0) pos += gemStack.Length;
+            return pos;
+        }
+
 
         private List<CraftItemName> CanCraft(int index)
         {
@@ -156,6 +170,7 @@ namespace MD.CraftingSystem
             {
                 int currentIndex = index  + i;
                 if (currentIndex >= gemStack.Length) currentIndex -= gemStack.Length;
+                Debug.Log("index is " + index + " i " + i + " current index " + currentIndex);
                 materials[i] = gemStack[currentIndex]; 
                 //if end of stack fill the rest with empty
                 if (currentIndex == tail)
