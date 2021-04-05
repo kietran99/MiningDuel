@@ -51,9 +51,9 @@ MonoBehaviour:
     quirk: {fileID: -340574861393307268, guid: 4ab427837e3ddfd40b6c5f6c8a568e35, type: 3}
     UISprite: {fileID: 21300000, guid: b2b1f4f1674a10644a54814815daa928, type: 3}
   - name: 8
-    quirk: {fileID: 0}
+    quirk: {fileID: 3520053942578419180, guid: af76e9757b8384540bc6149832c84146, type: 3}
     UISprite: {fileID: 21300000, guid: 26b1f708ad1bee24e94f3d668cc19a8e, type: 3}
   - name: 9
-    quirk: {fileID: 0}
+    quirk: {fileID: 3520053942578419180, guid: 801f7b7cda7f3de4ab5f60697704481e, type: 3}
     UISprite: {fileID: 21300000, guid: b3e7e022f9313404eb32fd9654bc72cf, type: 3}
   MAX_NO_MATERIALS: 5

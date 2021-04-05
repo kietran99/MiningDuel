@@ -63,6 +63,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   quirkData: {fileID: 0}
-  addDigPower: 2
+  addDigPower: 5
   speedPercentage: 0.3
   time: 10
