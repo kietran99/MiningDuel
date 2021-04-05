@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6198926327365011699}
   - component: {fileID: -340574861393307268}
   m_Layer: 8
-  m_Name: Mighty Blessing
+  m_Name: Mighty Blessing 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63,6 +63,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   quirkData: {fileID: 11400000, guid: 4b9548452b5805842b40ac63240c37e6, type: 2}
-  radius: 4
+  radius: 7
   power: 9999
   delayStartLevel: 2

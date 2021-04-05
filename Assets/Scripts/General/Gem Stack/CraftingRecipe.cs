@@ -59,6 +59,15 @@ namespace MD.CraftingSystem
             }
             return null;
         }
+
+        public BaseQuirk GetItem(CraftItemName name)
+        {
+            foreach (CraftedItem item in CrafteditemsList)
+            {
+                if (item.name.Equals(name)) return item.quirk;
+            }
+            return null;
+        }
         
     }
 }

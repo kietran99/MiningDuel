@@ -31,22 +31,24 @@ MonoBehaviour:
     craftItemName: 9
   CrafteditemsList:
   - name: 0
-    quirk: {fileID: 0}
+    quirk: {fileID: -1094164381378787549, guid: 43f9e416aeef7fa4e9606072d227354a,
+      type: 3}
     UISprite: {fileID: 21300000, guid: 05ae9389f0f574a40aa9d14ce19a9785, type: 3}
   - name: 1
-    quirk: {fileID: 0}
+    quirk: {fileID: -1094164381378787549, guid: c021d2ab626f62147bd46b4c7df64878,
+      type: 3}
     UISprite: {fileID: 21300000, guid: b9286666edf88ac4b80761fe847ae2ac, type: 3}
   - name: 2
-    quirk: {fileID: 0}
+    quirk: {fileID: 2546628773844665902, guid: 84ed190a922b6fb4793ac88d8cab95c1, type: 3}
     UISprite: {fileID: 21300000, guid: e41b2b144be710b4f9b07453260f78df, type: 3}
   - name: 3
-    quirk: {fileID: 0}
+    quirk: {fileID: 2546628773844665902, guid: 84ed190a922b6fb4793ac88d8cab95c1, type: 3}
     UISprite: {fileID: 21300000, guid: ff59100b66d634941a0814e1b2c9570c, type: 3}
   - name: 6
-    quirk: {fileID: 0}
+    quirk: {fileID: -340574861393307268, guid: ff669b176ebb0cf47b6aca86b0ce4401, type: 3}
     UISprite: {fileID: 21300000, guid: 7181120dece3daf45be8163f6745dd08, type: 3}
   - name: 7
-    quirk: {fileID: 0}
+    quirk: {fileID: -340574861393307268, guid: 4ab427837e3ddfd40b6c5f6c8a568e35, type: 3}
     UISprite: {fileID: 21300000, guid: b2b1f4f1674a10644a54814815daa928, type: 3}
   - name: 8
     quirk: {fileID: 0}

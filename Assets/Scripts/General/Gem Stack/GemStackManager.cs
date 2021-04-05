@@ -49,8 +49,9 @@ namespace MD.CraftingSystem
 
         [SerializeField]
         List<CraftableItemsData> craftableItemsList;
-
-        int currentIndex = 0;
+        
+        [SerializeField]
+        int SelectedIndex = 0;
 
         public override void OnStartAuthority()
         {
@@ -268,17 +269,25 @@ namespace MD.CraftingSystem
             return itemNames;
         }
 
-        private void HandleChangeIndex(CraftMenuChangeIndexData data) => currentIndex = data.index;
+        private void HandleChangeIndex(CraftMenuChangeIndexData data) => SelectedIndex = data.index;
         private void HandleUseItemInvoke(UseItemInvokeData data)
         {
             if (craftableItemsList.Count < 1) return;
-            if (currentIndex < 0 || currentIndex >= craftableItemsList.Count)
+            if (SelectedIndex < 0 || SelectedIndex >= craftableItemsList.Count)
             {
-                Debug.Log("index out of bound lengh " + craftableItemsList.Count + " index " + currentIndex);
+                Debug.Log("index out of bound lengh " + craftableItemsList.Count + " index " + SelectedIndex);
                 return;
             }
-             Debug.Log("use item  " + craftableItemsList[currentIndex].name + " index " + craftableItemsList[currentIndex].index + " length " + craftableItemsList[currentIndex].length);
-            RemoveFromStack(craftableItemsList[currentIndex].index,craftableItemsList[currentIndex].length);
+            Debug.Log("use item  " + craftableItemsList[SelectedIndex].name + " index " + craftableItemsList[SelectedIndex].index + " length " + craftableItemsList[SelectedIndex].length);
+            var name = craftableItemsList[SelectedIndex].name;
+            RemoveFromStack(craftableItemsList[SelectedIndex].index,craftableItemsList[SelectedIndex].length);
+            CmdRequestUse(name);
+        }
+
+        [Command]
+        private void CmdRequestUse(CraftItemName name)
+        {
+            EventSystems.EventManager.Instance.TriggerEvent<CraftItemData>(new CraftItemData(netIdentity,name));
         }
 
     }

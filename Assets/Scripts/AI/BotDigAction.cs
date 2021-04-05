@@ -29,12 +29,12 @@ namespace MD.AI
             if (bot != null)
             {
                 bot.isDigging = false;
-                CmdDig();
+                CmdDig(power);
             }
         }
 
         [Command]
-        protected override void CmdDig()
+        protected override void CmdDig(int power)
         {
             ServiceLocator
                 .Resolve<Diggable.Core.IDiggableGenerator>()

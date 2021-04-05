@@ -21,6 +21,19 @@ namespace MD.Quirk
             gameObject.SetActive(false);
         }
 
+        public virtual void Activate(NetworkIdentity user)
+        {
+            TargetActivate(user);
+            RpcActivate(user);
+        }
+
+        [TargetRpc]
+        private void TargetActivate(NetworkIdentity user) => SingleActivate(user);
+        
+        [ClientRpc]
+        private void RpcActivate(NetworkIdentity user) => SyncActivate(user);
+
+
         public virtual void SingleActivate(NetworkIdentity user) {}
 
         public virtual void SyncActivate(NetworkIdentity user) => gameObject.SetActive(true);

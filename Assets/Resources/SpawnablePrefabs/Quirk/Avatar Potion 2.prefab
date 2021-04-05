@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3728911073481921151}
   - component: {fileID: 6198926327365011699}
-  - component: {fileID: -340574861393307268}
+  - component: {fileID: 3520053942578419180}
   m_Layer: 8
-  m_Name: Mighty Blessing
+  m_Name: Avatar Potion 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48,7 +48,7 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
---- !u!114 &-340574861393307268
+--- !u!114 &3520053942578419180
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -57,12 +57,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 9086475506681265454}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4dd9e19dcdf72bc4f8e6fdafc33fbcb2, type: 3}
+  m_Script: {fileID: 11500000, guid: 43434289d7ffd344ba30bd40b68cadb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  quirkData: {fileID: 11400000, guid: 4b9548452b5805842b40ac63240c37e6, type: 2}
-  radius: 4
-  power: 9999
-  delayStartLevel: 2
+  quirkData: {fileID: 0}
+  addDigPower: 4
+  speedPercentage: 0.5
+  time: 10
