@@ -3,6 +3,14 @@ using Functional.Type;
 
 namespace MD.AI.BehaviourTree
 {
+    public static class OptionExtension
+    {
+        public static BTNodeState Map<T>(this Option<T> option, System.Func<T, BTNodeState> fn)
+        {
+            return option.Match(fn, () => BTNodeState.FAILURE);
+        }
+    }
+
     public class BTBlackboard
     {
         private IDictionary<string, object> dict;

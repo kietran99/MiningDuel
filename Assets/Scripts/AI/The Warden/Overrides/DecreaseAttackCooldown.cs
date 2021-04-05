@@ -9,13 +9,12 @@ namespace MD.AI.TheWarden
         {
             return blackboard
                 .Get<float>(WardenMacros.ATTACK_COOLDOWN)
-                .Match(
+                .Map(
                     cooldown => 
                     {
                         blackboard.Set<float>(WardenMacros.ATTACK_COOLDOWN, cooldown - Time.deltaTime);
                         return BTNodeState.SUCCESS;
-                    },
-                    () => BTNodeState.FAILURE
+                    }
                 );          
         }
     }

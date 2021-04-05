@@ -10,10 +10,7 @@ namespace MD.AI.TheWarden
             return 
                 blackboard
                     .Get<float>(WardenMacros.ATTACK_COOLDOWN)
-                    .Match(
-                        cooldown => cooldown <= 0f ? BTNodeState.FAILURE : BTNodeState.SUCCESS,
-                        () => BTNodeState.FAILURE
-                    );
+                    .Map(cooldown => cooldown <= 0f ? BTNodeState.FAILURE : BTNodeState.SUCCESS);
         }
     }
 }
