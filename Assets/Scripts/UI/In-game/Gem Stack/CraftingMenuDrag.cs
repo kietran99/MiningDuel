@@ -56,11 +56,13 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
             {
                 newLocation += new Vector3(-swipeLength,0,0);
                 index ++;
+                TriggerIndexChangeEvent();
             }
             else if (percentage < 0 && index > 0)
             {
                 newLocation += new Vector3(swipeLength,0,0);
                 index--;
+                TriggerIndexChangeEvent();
             }
             StartCoroutine(SmoothMove(transform.localPosition,newLocation));
             location = newLocation;
@@ -93,7 +95,7 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
         cellSize = glg.cellSize.x;
         cellSpacing = glg.spacing.x;
         index =0;
-
+        TriggerIndexChangeEvent();
         Initialize();
         SetSelectedIndex(0);
 
@@ -109,7 +111,7 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
     private void SetSelectedIndex(int index)
     {
         if (index <= 0) transform.localPosition = new Vector3(-cellSize/2f,0,0);
-        else transform.localPosition = new Vector3(-cellSize/2f + index*cellSize + (index-1)*cellSpacing,0,0);
+        else transform.localPosition = new Vector3(-cellSize/2f - index*(cellSize + cellSpacing),0,0);
         location = transform.localPosition;
     }
 
@@ -117,8 +119,14 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
     {
         count = data.numOfItems;
         Initialize();
-        if (index >= count) index = count -1;
+        if (index >= count) index = Mathf.Max(0,count-1);
+        TriggerIndexChangeEvent();
         SetSelectedIndex(index);
+    }
+
+    public void TriggerIndexChangeEvent()
+    {
+        EventSystems.EventManager.Instance.TriggerEvent<CraftMenuChangeIndexData>(new CraftMenuChangeIndexData(index));
     }
 
 }

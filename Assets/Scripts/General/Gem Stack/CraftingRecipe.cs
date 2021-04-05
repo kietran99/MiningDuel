@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MD.Diggable;
+using UnityEngine.UI;
 using MD.Quirk;
 namespace MD.CraftingSystem
 {
@@ -10,6 +10,7 @@ namespace MD.CraftingSystem
     {
         public CraftItemName name;
         public BaseQuirk quirk;
+        public Sprite UISprite;
     }
     public enum CraftItemName
     {
@@ -44,11 +45,20 @@ namespace MD.CraftingSystem
     {
         public List<Recipe> Recipes;
 
-        public List<CraftedItem> Craftitems;
+        public List<CraftedItem> CrafteditemsList;
 
         public int MAX_NO_MATERIALS = 5;
 
         public bool IsGemCraftable(DiggableType type) => type.IsGem();
+
+        public Sprite GetImage(CraftItemName name)
+        {
+            foreach (CraftedItem item in CrafteditemsList)
+            {
+                if (item.name.Equals(name)) return item.UISprite;
+            }
+            return null;
+        }
         
     }
 }

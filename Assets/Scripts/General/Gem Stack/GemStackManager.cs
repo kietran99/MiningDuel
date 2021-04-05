@@ -10,6 +10,27 @@ namespace MD.CraftingSystem
 
     public class GemStackManager : NetworkBehaviour
     {
+        [System.Serializable]
+        public class CraftableItemsData
+        {
+            public  CraftItemName name;
+            public  int index;
+            public  int length;
+
+            public CraftableItemsData(CraftItemName name, int index, int length)
+            {
+                this.name = name;
+                this.index = index;
+                this.length = length;
+            }
+
+            public bool Equals (CraftableItemsData other)
+            {
+                if (name.Equals(other.name) && index.Equals(other.index) && length.Equals(other.length)) return true;
+                return false;
+            }
+        }
+
         [SerializeField]
         private CraftingRecipe recipeSO;
 
@@ -27,12 +48,15 @@ namespace MD.CraftingSystem
         private int tail; //last index of the stack ;
 
         [SerializeField]
-        List<CraftItemName> canCraftItemList;
+        List<CraftableItemsData> craftableItemsList;
+
+        int currentIndex = 0;
 
         public override void OnStartAuthority()
         {
             base.OnStartClient();
             gemStack = new DiggableType[MAX_NO_SLOTS];
+            craftableItemsList = new List<CraftableItemsData>();
             head = 0;
             tail = 0;
             stackSize = 0;
@@ -41,6 +65,8 @@ namespace MD.CraftingSystem
 
 
             EventSystems.EventManager.Instance.StartListening<GemObtainData>(HandleGemObtain);
+            EventSystems.EventManager.Instance.StartListening<CraftMenuChangeIndexData>(HandleChangeIndex);
+            EventSystems.EventManager.Instance.StartListening<UseItemInvokeData>(HandleUseItemInvoke);
 
         }
 
@@ -48,6 +74,8 @@ namespace MD.CraftingSystem
         {
             base.OnStopAuthority();
             EventSystems.EventManager.Instance.StopListening<GemObtainData>(HandleGemObtain);
+            EventSystems.EventManager.Instance.StopListening<CraftMenuChangeIndexData>(HandleChangeIndex);
+            EventSystems.EventManager.Instance.StopListening<UseItemInvokeData>(HandleUseItemInvoke);
         }
 
         private void AddToStack(DiggableType type)
@@ -80,13 +108,17 @@ namespace MD.CraftingSystem
 
         private void RemoveFromStack(int index, int length)
         {
+
+            //remove gems used;
             for (int i = index; i < index + length; i++)
             {
                 int j = i;
                 if (j >= gemStack.Length) j-= gemStack.Length;
                 gemStack[j] = DiggableType.EMPTY;
             }
-            int currentIndex = 0, fillIndex = 0;
+            int currentIndex = 0, fillIndex = -1;
+
+            //update stack
             for (int i = 0; i< stackSize - (GetPos(index) + length) ; i++)    
             {
                 currentIndex = i + index + length;
@@ -98,19 +130,40 @@ namespace MD.CraftingSystem
                 gemStack[currentIndex] = DiggableType.EMPTY;
 
             }
+            stackSize-=length;
+            
+            //no update stack done
+            if (fillIndex == -1)
+            {
+                if (stackSize <=0) fillIndex =0;
+                else
+                {
+                    fillIndex = index-1;
+                    if (fillIndex < 0) fillIndex += gemStack.Length;
+                }
+            }  
 
             tail = fillIndex;
-            stackSize-=length;
 
-            canCraftItemList.Clear();
-            for (int i=0 ; i<= stackSize - 2; i++)
+            craftableItemsList.Clear();
+            for (int i=0 ; i< stackSize - 2; i++)
             {
-                List<CraftItemName> res = CanCraft(i);
-                canCraftItemList.AddRange(res);
+                List<CraftableItemsData> res = CanCraft(GetIndex(i));
+                craftableItemsList.AddRange(res);
             }
-            EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(canCraftItemList));
+            EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(GetItemListData()));
 
             EventSystems.EventManager.Instance.TriggerEvent<GemStackUsedData>(new GemStackUsedData(GetPos(index),length));
+        }
+
+        private List<CraftItemName> GetItemListData()
+        {
+            List<CraftItemName> res = new List<CraftItemName>();
+            foreach (CraftableItemsData data in craftableItemsList)
+            {
+                res.Add(data.name);
+            }
+            return res;
         }
 
         private int GetIndex(int position)
@@ -123,20 +176,29 @@ namespace MD.CraftingSystem
         private void HandleGemObtain(GemObtainData data)
         {
             if (!recipeSO.IsGemCraftable(data.type)) return;
-            Debug.Log("receive gem obtain data " + data.type);
             AddToStack(data.type);
             if (stackSize <3) return;
-            List<CraftItemName> tempList = new List<CraftItemName>();
-            for (int i = 0; i<= stackSize - 2 ; i++) // ignore 2 last gems
+            List<CraftableItemsData> tempList = new List<CraftableItemsData>();
+            for (int i = 0; i< stackSize - 2 ; i++) // ignore 2 last gems
             {
-                List<CraftItemName> res = CanCraft(GetIndex(i));
+                List<CraftableItemsData> res = CanCraft(GetIndex(i));
                 tempList.AddRange(res);
             }
-            if (!canCraftItemList.Equals(tempList))
+            if (!IsEqual(craftableItemsList,tempList))
             {
-                canCraftItemList = tempList;
-                EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(canCraftItemList));
+                craftableItemsList = tempList;
+                EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(GetItemListData()));
             }
+        }
+
+        private bool IsEqual(List<CraftableItemsData> list1, List<CraftableItemsData> list2)
+        {
+            if (list1.Count != list2.Count) return false;
+            for (int i=0; i< list1.Count ; i++)
+            {
+                if (!list1[i].Equals(list2[i])) return false;
+            }
+            return true;
         }
 
         #if UNITY_EDITOR
@@ -160,15 +222,16 @@ namespace MD.CraftingSystem
 
         private int GetPos(int index)
         {
-            int pos = index-= head;
+            int pos = index - head;
             if (pos < 0) pos += gemStack.Length;
+            Debug.Log("pos is " + pos + " index  is " + index);
             return pos;
         }
 
 
-        private List<CraftItemName> CanCraft(int index)
+        private List<CraftableItemsData> CanCraft(int index)
         {
-            List<CraftItemName> itemNames = new List<CraftItemName>();
+            List<CraftableItemsData> itemNames = new List<CraftableItemsData>();
             DiggableType[] materials = new DiggableType[recipeSO.MAX_NO_MATERIALS];
             //get materials
             for (int i = 0; i < recipeSO.MAX_NO_MATERIALS; i++)
@@ -195,7 +258,7 @@ namespace MD.CraftingSystem
                 {
                     if (i == recipe.Materials.Length)
                     {
-                        itemNames.Add(recipe.craftItemName);
+                        itemNames.Add(new CraftableItemsData(recipe.craftItemName,index,recipe.Materials.Length));
                         break;
                     }
                     if (materials[i] == DiggableType.EMPTY || materials[i] != (DiggableType )recipe.Materials[i]) break;
@@ -203,6 +266,19 @@ namespace MD.CraftingSystem
             }
 
             return itemNames;
+        }
+
+        private void HandleChangeIndex(CraftMenuChangeIndexData data) => currentIndex = data.index;
+        private void HandleUseItemInvoke(UseItemInvokeData data)
+        {
+            if (craftableItemsList.Count < 1) return;
+            if (currentIndex < 0 || currentIndex >= craftableItemsList.Count)
+            {
+                Debug.Log("index out of bound lengh " + craftableItemsList.Count + " index " + currentIndex);
+                return;
+            }
+             Debug.Log("use item  " + craftableItemsList[currentIndex].name + " index " + craftableItemsList[currentIndex].index + " length " + craftableItemsList[currentIndex].length);
+            RemoveFromStack(craftableItemsList[currentIndex].index,craftableItemsList[currentIndex].length);
         }
 
     }

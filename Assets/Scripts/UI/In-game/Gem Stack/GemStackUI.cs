@@ -65,9 +65,7 @@ public class GemStackUI : MonoBehaviour
 
     private void AddNewGem(GemObtainData data)
     {
-        Debug.Log("added new gem" + data.type);
         GameObject newGem = GetSlotObject(data.type);
-        Debug.Log("get new gem" + newGem);
         if (newGem == null) return; 
         if (count < MAX_NO_SLOTS)
         {

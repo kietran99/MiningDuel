@@ -6,16 +6,28 @@ public class CraftItemUI : MonoBehaviour
     [SerializeField]
     private Image image;
 
-    private CraftItemName itemName = CraftItemName.SpeedPotion1;
+    [SerializeField]
+    private CraftingRecipe recipeSO;
+
+    [SerializeField]
+    private CraftItemName itemName;
 
     public void SetItem(CraftItemName name) 
     {
+        Debug.Log("Setitem image " + name);
         this.itemName = name;
-        Initialize();
+        Setup();
     }
-    public CraftItemName Name() => itemName;   
-    private void Initialize()
+
+    private void Awake()
     {
-        // this.image = image;
+        itemName = CraftItemName.SpeedPotion1;
+        Setup();
+    }
+
+    public CraftItemName Name() => itemName;   
+    private void Setup()
+    {
+        image.sprite = recipeSO.GetImage(itemName);
     }
 }

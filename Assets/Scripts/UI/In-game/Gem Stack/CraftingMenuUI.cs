@@ -8,6 +8,8 @@ public class CraftingMenuUI : MonoBehaviour
     private Transform container;
     [SerializeField]
     private CraftItemUI itemUI;
+    
+    [SerializeField]
     private List<CraftItemUI> ItemUIObjectsList;
 
     void Start()
