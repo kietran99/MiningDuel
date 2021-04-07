@@ -39,6 +39,8 @@ namespace MD.AI.TheWarden
         [SerializeField]
         private float baseAttackRange = 2f;
 
+        private readonly float ATTACKABLE_DIST = .2f;
+
         private AttackTarget[] allTargets;
 
         public override void OnRootInit(BTBlackboard blackboard)
@@ -64,12 +66,14 @@ namespace MD.AI.TheWarden
 
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
-            var attackableTargets = allTargets.Filter(target => (actor.transform.position - target.Position).sqrMagnitude <= baseAttackRange * baseAttackRange);
+            var attackable = allTargets.Find(target => (actor.transform.position - target.Position).sqrMagnitude <= ATTACKABLE_DIST);
             
-            if (attackableTargets.Length == 0)
+            if (!attackable.HasValue)
             {
                 return BTNodeState.FAILURE;
             }
+
+            var attackableTargets = allTargets.Filter(target => (actor.transform.position - target.Position).sqrMagnitude <= baseAttackRange * baseAttackRange);
 
             blackboard.Set<IWardenDamagable[]>(WardenMacros.DAMAGABLES, attackableTargets.Map(target => target.Damagable));
             return BTNodeState.SUCCESS;
