@@ -236,6 +236,7 @@ Transform:
   m_Children:
   - {fileID: 1269899039}
   - {fileID: 151961128}
+  - {fileID: 773379802}
   - {fileID: 2144871505}
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -251,6 +252,7 @@ GameObject:
   - component: {fileID: 151961128}
   - component: {fileID: 151961130}
   - component: {fileID: 151961129}
+  - component: {fileID: 151961131}
   m_Layer: 0
   m_Name: Dust Chase Effect
   m_TagString: Untagged
@@ -4994,6 +4996,18 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &151961131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 151961127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1dcd221add5bdc4d9c7ca1cc37d4f17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &243064739
 GameObject:
   m_ObjectHideFlags: 0
@@ -6730,13 +6744,14 @@ GameObject:
   - component: {fileID: 773379802}
   - component: {fileID: 773379804}
   - component: {fileID: 773379803}
+  - component: {fileID: 773379805}
   m_Layer: 0
   m_Name: Dust Attack Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &773379802
 Transform:
   m_ObjectHideFlags: 0
@@ -6748,8 +6763,8 @@ Transform:
   m_LocalPosition: {x: 0, y: -0.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_Father: {fileID: 72069130}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!199 &773379803
 ParticleSystemRenderer:
@@ -6951,7 +6966,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 30
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -7383,7 +7398,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 1000
+    maxNumParticles: 2000
     size3D: 0
     rotation3D: 0
     gravityModifier:
@@ -7449,7 +7464,7 @@ ParticleSystem:
     radiusThickness: 1
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
-    m_Rotation: {x: -150, y: 0, z: 0}
+    m_Rotation: {x: -135, y: 0, z: 0}
     m_Scale: {x: 1, y: 0.5, z: 1}
     placementMode: 0
     m_MeshMaterialIndex: 0
@@ -7648,7 +7663,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1000
+      scalar: 2000
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -8324,7 +8339,7 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 2
+      scalar: 3
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -11473,6 +11488,18 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!114 &773379805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773379801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a5ad77b9c99c94898fd462af6dcb6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &782455847
 GameObject:
   m_ObjectHideFlags: 0
@@ -12243,7 +12270,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1628378265
   m_SortingLayer: 1
-  m_SortingOrder: 21
+  m_SortingOrder: 19
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -25218,7 +25245,7 @@ Transform:
   m_Children:
   - {fileID: 912386658}
   m_Father: {fileID: 72069130}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2144871506
 MonoBehaviour:
