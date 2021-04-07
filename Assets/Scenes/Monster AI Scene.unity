@@ -12183,6 +12183,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1269899039}
   - component: {fileID: 1269899040}
+  - component: {fileID: 1269899041}
   m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
@@ -12211,7 +12212,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1269899038}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -12243,7 +12244,7 @@ SpriteRenderer:
   m_SortingLayerID: 1628378265
   m_SortingLayer: 1
   m_SortingOrder: 21
-  m_Sprite: {fileID: 21300000, guid: 988d560df8d322a468c97243cbfd76e8, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -12251,9 +12252,28 @@ SpriteRenderer:
   m_Size: {x: 1.875, y: 1.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &1269899041
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1269899038}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 15d9f220922b4b54583691aa96f45ab0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!4 &1328293282 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 334233623061329521, guid: eaf5dfc7d3ddd1444b6bd76b3ab35800,
@@ -24695,7 +24715,7 @@ PrefabInstance:
     - target: {fileID: 1404747077058479693, guid: a48fb6e6840955d49bce523c2136280f,
         type: 3}
       propertyPath: m_Name
-      value: Failer
+      value: Hide Chase Particles Failer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a48fb6e6840955d49bce523c2136280f, type: 3}

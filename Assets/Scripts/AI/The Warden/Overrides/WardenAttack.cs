@@ -10,13 +10,13 @@ namespace MD.AI.TheWarden
             return 
                 blackboard
                     .Get<IWardenDamagable[]>(WardenMacros.DAMAGABLES)
-                    .Match(
+                    .Map(
                         damagables => 
                         {
+                            blackboard.Get<Animator>(WardenMacros.ANIMATOR).Match(animator => animator.SetTrigger("ShouldAttack"), () => {});
                             damagables.ForEach(damagable => damagable.TakeDamage());
                             return BTNodeState.SUCCESS;
-                        },
-                        () => BTNodeState.FAILURE
+                        }
                     );
         }
     }
