@@ -8,6 +8,7 @@
         public const string CHASE_TARGET = "ChaseTarget";
         public const string CHASE_PARTICLES = "DustParticles";
         public const string ANIMATOR = "Animator";
+        public const string SHOULD_ATTACK_TRIGGER = "ShouldAttack";
         public const string DAMAGABLES = "Damagables";
         public const string ATTACK_COOLDOWN = "AttackCooldown";
     }

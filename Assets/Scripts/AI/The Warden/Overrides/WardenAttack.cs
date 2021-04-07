@@ -13,7 +13,7 @@ namespace MD.AI.TheWarden
                     .Map(
                         damagables => 
                         {
-                            blackboard.Get<Animator>(WardenMacros.ANIMATOR).Match(animator => animator.SetTrigger("ShouldAttack"), () => {});
+                            blackboard.Get<Animator>(WardenMacros.ANIMATOR).Match(animator => animator.SetTrigger(WardenMacros.SHOULD_ATTACK_TRIGGER), () => {});
                             damagables.ForEach(damagable => damagable.TakeDamage());
                             return BTNodeState.SUCCESS;
                         }
