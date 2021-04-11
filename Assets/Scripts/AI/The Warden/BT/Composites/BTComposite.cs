@@ -6,8 +6,8 @@ namespace MD.AI.BehaviourTree
     {
         protected IBTNode[] children;
 
-        private void Start()
-        {
+        public void OnRootInit(BTBlackboard blackboard)
+        {     
             var childCount = transform.childCount;
 
             if (childCount < 1)
@@ -32,10 +32,7 @@ namespace MD.AI.BehaviourTree
             }   
 
             this.children = children.ToArray();    
-        }
 
-        public void OnRootInit(BTBlackboard blackboard)
-        {
             children.ForEach(child => child.OnRootInit(blackboard));
         }
 

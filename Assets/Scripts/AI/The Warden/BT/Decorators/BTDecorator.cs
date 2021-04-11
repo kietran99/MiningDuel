@@ -6,22 +6,18 @@ namespace MD.AI.BehaviourTree
     {
         protected IBTNode child;
 
-        private void Start()
+        public void OnRootInit(BTBlackboard blackboard) 
         {
             var childCount = transform.childCount;
 
-            if (childCount == 1)
+            if (childCount != 1)
             {
-                child = transform.GetChild(0).GetComponent<IBTNode>();
+                Debug.LogError("Behaviour Tree: Decorator " + name + " must have exactly 1 child.");
+                gameObject.SetActive(false);
                 return;
             }
-                      
-            Debug.LogError("Behaviour Tree: Decorator " + name + " must have exactly 1 child.");
-            gameObject.SetActive(false);
-        }
-
-        public void OnRootInit(BTBlackboard blackboard) 
-        {
+                            
+            child = transform.GetChild(0).GetComponent<IBTNode>();
             child.OnRootInit(blackboard);
         }
 

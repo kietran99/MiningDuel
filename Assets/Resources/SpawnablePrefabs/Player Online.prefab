@@ -5129,6 +5129,7 @@ GameObject:
   - component: {fileID: 546028043007059227}
   - component: {fileID: 5324336965916199845}
   - component: {fileID: 1522152400363511722}
+  - component: {fileID: 3972079693530807722}
   m_Layer: 0
   m_Name: Player Online
   m_TagString: Player
@@ -5385,6 +5386,18 @@ MonoBehaviour:
   maxUses: 3
   ReplenishTime: 5
   currentLevel: 0
+--- !u!114 &3972079693530807722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7091697348273341020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59eec61a610e0504db24ceb8db62b157, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5430411515488753426
 PrefabInstance:
   m_ObjectHideFlags: 0
