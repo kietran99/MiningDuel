@@ -1,12 +1,20 @@
 ﻿using UnityEngine;
+using Mirror;
 
 namespace MD.AI.TheWarden
 {
-    public class DefaultWardenDamagable : MonoBehaviour, IWardenDamagable
+    public class DefaultWardenDamagable : NetworkBehaviour, IWardenDamagable
     {
+        [Server]
         public void TakeDamage()
         {
-            Debug.Log("DAMAGABLE");
+            RpcTakeDamage();
+        }
+
+        [ClientRpc]
+        private void RpcTakeDamage()
+        {
+            Debug.Log("Damagable Client: " + netId);
         }
     }
 }

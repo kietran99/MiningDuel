@@ -43,6 +43,8 @@ namespace MD.AI.TheWarden
 
         private AttackTarget[] allTargets;
 
+        private Vector3 gzmLastActorPos;
+
         public override void OnRootInit(BTBlackboard blackboard)
         {
             blackboard
@@ -68,6 +70,8 @@ namespace MD.AI.TheWarden
         {
             var attackable = allTargets.Find(target => (actor.transform.position - target.Position).sqrMagnitude <= ATTACKABLE_DIST);
             
+            gzmLastActorPos = actor.transform.position;
+
             if (!attackable.HasValue)
             {
                 return BTNodeState.FAILURE;
@@ -82,7 +86,7 @@ namespace MD.AI.TheWarden
         void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, baseAttackRange);
+            Gizmos.DrawWireSphere(gzmLastActorPos, baseAttackRange);
         }
     }
 }

@@ -9,15 +9,12 @@ namespace MD.AI.TheWarden
         {
             return 
                 blackboard
-                    .Get<ParticleSystem>(WardenMacros.CHASE_PARTICLES)
-                    .Match(
-                        dustParticles => 
-                        {
-                            dustParticles.Stop();
-                            return BTNodeState.SUCCESS;
-                        },
-                        () => BTNodeState.FAILURE
-                    );
+                    .Get<IWardenParticleController>(WardenMacros.PARTICLE_CONTROLLER)
+                    .Map(particleController => 
+                    {
+                        particleController.HideChaseEffect();
+                        return BTNodeState.SUCCESS;
+                    });
         }
     }
 }

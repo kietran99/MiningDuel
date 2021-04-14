@@ -18,6 +18,8 @@ namespace MD.AI.TheWarden
         private int lastAngle = 0;
         private Quadrant[] quadrants;
 
+        private Vector3 gLastActorPos;
+
         public override void OnRootInit(BTBlackboard blackboard)
         {
             quadrants = blackboard.Get<Quadrant[]>(WardenMacros.QUADRANTS).Match(quadrants => quadrants, () => null);
@@ -43,6 +45,7 @@ namespace MD.AI.TheWarden
                 (lastAngle, lastGoal) = FindNextGoal(actor.transform.position, lastAngle, lastGoal);
             }
 
+            gLastActorPos = actor.transform.position;
             return res;
         }
 
@@ -58,7 +61,7 @@ namespace MD.AI.TheWarden
         void OnDrawGizmos()
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, distanceToNextDecision);
+            Gizmos.DrawWireSphere(gLastActorPos, distanceToNextDecision);
         }
     }
 }

@@ -9,17 +9,16 @@ namespace MD.AI.TheWarden
 
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
-            Play(actor);
+            Play(blackboard);
             return BTNodeState.SUCCESS;
         }
 
-        private void Play(GameObject actor)
+        private void Play(BTBlackboard blackboard)
         {
-            if (spriteRenderer == null) spriteRenderer = actor.GetComponentInChildren<SpriteRenderer>();
-            spriteRenderer.enabled = true;
-            Invoke(nameof(HideSprite), .5f);
+            blackboard.Get<Animator>(WardenMacros.ANIMATOR).Match(animator => animator.SetTrigger(WardenMacros.SHOULD_ATTACK_TRIGGER), () => {});
+            blackboard
+                .Get<IWardenParticleController>(WardenMacros.PARTICLE_CONTROLLER)
+                .Match(particleController => particleController.PlayAttackEffect(), () => {});
         }
-
-        private void HideSprite() => spriteRenderer.enabled = false;
     }
 }

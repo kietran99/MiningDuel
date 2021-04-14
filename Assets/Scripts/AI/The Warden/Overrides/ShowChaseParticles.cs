@@ -9,10 +9,10 @@ namespace MD.AI.TheWarden
         {
             return 
                 blackboard
-                    .Get<ParticleSystem>(WardenMacros.CHASE_PARTICLES)
-                    .Map(dustParticles => 
+                    .Get<IWardenParticleController>(WardenMacros.PARTICLE_CONTROLLER)
+                    .Map(particleController => 
                     {
-                        dustParticles.Play();
+                        particleController.PlayChaseEffect();
                         return BTNodeState.SUCCESS;
                     });
         }

@@ -15,8 +15,7 @@ namespace MD.AI.TheWarden
             blackboard.Set<Transform[]>(WardenMacros.PLAYERS, Players); 
             blackboard.Set<float>(WardenMacros.ATTACK_COOLDOWN, 0f);
             blackboard.Set<Quadrant[]>(WardenMacros.QUADRANTS, MakeQuadrant(MapBounds.Item1, MapBounds.Item2));
-            blackboard.Set<ParticleSystem>(WardenMacros.CHASE_PARTICLES, actor.GetComponentInChildren<ChaseParticleTag>().GetComponent<ParticleSystem>());
-            blackboard.Set<ParticleSystem>(WardenMacros.ATTACK_PARTICLES, actor.GetComponentInChildren<AttackParticleTag>().GetComponent<ParticleSystem>());
+            blackboard.Set<IWardenParticleController>(WardenMacros.PARTICLE_CONTROLLER, actor.GetComponent<IWardenParticleController>());
             blackboard.Set<Animator>(WardenMacros.ANIMATOR, actor.GetComponentInChildren<Animator>());
             blackboard.Set<float>(WardenMacros.DELTA_CHASE_RANGE, 0);   
         }

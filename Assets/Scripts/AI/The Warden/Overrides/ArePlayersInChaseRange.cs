@@ -41,7 +41,8 @@ namespace MD.AI.TheWarden
         
         private ChaseTarget[] targets;
 
-        private float gizmosChaseRange;
+        private Vector3 gzmLastActorPos;
+        private float gzmChaseRange;
 
         public override void OnRootInit(BTBlackboard blackboard)
         {
@@ -59,7 +60,7 @@ namespace MD.AI.TheWarden
                         var targets = new System.Collections.Generic.List<ChaseTarget>();
                         maybeValidTargets.ForEach(maybeTarget => maybeTarget.Match(target => targets.Add(target), () => {}));
                         this.targets = targets.ToArray();
-                        gizmosChaseRange = baseChaseRange;
+                        gzmChaseRange = baseChaseRange;
                     },
                     () => gameObject.SetActive(false)
                 );
@@ -74,7 +75,8 @@ namespace MD.AI.TheWarden
                     () => baseChaseRange
                 ); 
 
-            gizmosChaseRange = chaseRange;
+            gzmChaseRange = chaseRange;
+            gzmLastActorPos = actor.transform.position;
 
             var maybeTarget = CheckTargetsInRange(actor.transform.position, targets, chaseRange);   
 
@@ -114,7 +116,7 @@ namespace MD.AI.TheWarden
         void OnDrawGizmos()
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, gizmosChaseRange);
+            Gizmos.DrawWireSphere(gzmLastActorPos, gzmChaseRange);
         }
     }
 }
