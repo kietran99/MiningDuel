@@ -71,12 +71,12 @@ namespace MD.CraftingSystem
 
         }
 
-        public override void OnStopAuthority()
+        private void OnDisable()
         {
-            base.OnStopAuthority();
             EventSystems.EventManager.Instance.StopListening<GemObtainData>(HandleGemObtain);
             EventSystems.EventManager.Instance.StopListening<CraftMenuChangeIndexData>(HandleChangeIndex);
             EventSystems.EventManager.Instance.StopListening<UseItemInvokeData>(HandleUseItemInvoke);
+            craftableItemsList.Clear();
         }
 
         private void AddToStack(DiggableType type)
@@ -152,6 +152,7 @@ namespace MD.CraftingSystem
                 List<CraftableItemsData> res = CanCraft(GetIndex(i));
                 craftableItemsList.AddRange(res);
             }
+            PostProcessCraftableItem();
             EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(GetItemListData()));
 
             EventSystems.EventManager.Instance.TriggerEvent<GemStackUsedData>(new GemStackUsedData(GetPos(index),length));
@@ -237,6 +238,7 @@ namespace MD.CraftingSystem
 
             if (isChanged)
             {
+                PostProcessCraftableItem();
                 EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(GetItemListData()));
             }
         }
@@ -259,6 +261,22 @@ namespace MD.CraftingSystem
             return pos;
         }
 
+        private void PostProcessCraftableItem()
+        {
+            if (craftableItemsList.Count <= 1) return;
+            CraftItemName lastItem = craftableItemsList[0].name;
+            List<int> removeList = new List<int>();
+            for (int i =1; i < craftableItemsList.Count; i++)
+            {
+                if (craftableItemsList[i].name.Equals(lastItem)) removeList.Add(i);
+                else lastItem = craftableItemsList[i].name;
+            }
+            removeList.Reverse();
+            foreach (int i in removeList)
+            {
+                craftableItemsList.RemoveAt(i);
+            }
+        }
 
         private List<CraftableItemsData> CanCraft(int index)
         {
