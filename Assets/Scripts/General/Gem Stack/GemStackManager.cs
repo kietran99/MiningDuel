@@ -147,7 +147,7 @@ namespace MD.CraftingSystem
             tail = fillIndex;
 
             craftableItemsList.Clear();
-            for (int i=0 ; i< stackSize - 2; i++)
+            for (int i=0 ; i< stackSize - (recipeSO.MIN_NO_MATERIALS -1); i++)
             {
                 List<CraftableItemsData> res = CanCraft(GetIndex(i));
                 craftableItemsList.AddRange(res);
@@ -176,18 +176,67 @@ namespace MD.CraftingSystem
 
         private void HandleGemObtain(GemObtainData data)
         {
+            bool isRemovingfirstGem = false, isChanged = false;
+            if (stackSize == MAX_NO_SLOTS) isRemovingfirstGem = true;
+            
             if (!recipeSO.IsGemCraftable(data.type)) return;
             AddToStack(data.type);
-            if (stackSize <3) return;
-            List<CraftableItemsData> tempList = new List<CraftableItemsData>();
-            for (int i = 0; i< stackSize - 2 ; i++) // ignore 2 last gems
+            if (stackSize <recipeSO.MIN_NO_MATERIALS) return;
+
+            // List<CraftableItemsData> tempList = new List<CraftableItemsData>();
+            // for (int i = 0; i< stackSize - 2 ; i++) // ignore 2 last gems
+            // {
+            //     List<CraftableItemsData> res = CanCraft(GetIndex(i));
+            //     tempList.AddRange(res);
+            // }
+            // if (!IsEqual(craftableItemsList,tempList))
+            // {
+            //     craftableItemsList = tempList;
+            //     EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(GetItemListData()));
+            // }
+
+            if (isRemovingfirstGem)   //check first two recipes = maximum number of recipes can be affected by removing the first gem
+            {
+                if (craftableItemsList.Count > 0 && craftableItemsList[0].index == 0)
+                {
+                    if(craftableItemsList.Count > 1 && craftableItemsList[1].index == 0)
+                    {
+                        craftableItemsList.RemoveRange(0,2);
+                        isChanged = true;
+                    }
+                    else
+                    {
+                        craftableItemsList.RemoveRange(0,1);
+                        isChanged = true;
+                    }
+                }
+            }
+
+            int startPos = 0; //recheck recipes from upto last recipeSO.MIN_NO_MATERIALS gems
+            for (int i = recipeSO.MIN_NO_MATERIALS; i <= recipeSO.MAX_NO_MATERIALS; i++) //min no_materials is 3
+            {
+                if (stackSize >= i) startPos = stackSize - i;
+            }
+            int removeCount = 0;
+            for (int i= craftableItemsList.Count-1; i>=0; i--) // remove old recipes from gems start at startPos
+            {
+                if (GetPos(craftableItemsList[i].index) < startPos) break;
+                removeCount++;
+            }
+            craftableItemsList.RemoveRange( craftableItemsList.Count - removeCount, removeCount);
+            
+            for (int i = startPos; i < stackSize -(recipeSO.MIN_NO_MATERIALS -1); i++) //add new recipes from gems start at startPos
             {
                 List<CraftableItemsData> res = CanCraft(GetIndex(i));
-                tempList.AddRange(res);
+                if (res.Count > 0)
+                {
+                    craftableItemsList.AddRange(res);
+                    isChanged = true;
+                }
             }
-            if (!IsEqual(craftableItemsList,tempList))
+
+            if (isChanged)
             {
-                craftableItemsList = tempList;
                 EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(GetItemListData()));
             }
         }
@@ -201,25 +250,6 @@ namespace MD.CraftingSystem
             }
             return true;
         }
-
-        #if UNITY_EDITOR
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                int length = 3;
-                // if (Random.Range(0,2) == 1) length +=2;
-                int max = tail;
-                if (tail < head) max += gemStack.Length;
-                max -= length;
-                int randomIndex = Random.Range(head, max + 1);
-                // Debug.Log("random from index " + head + " length " + (max + 1));
-                if (randomIndex >= gemStack.Length) randomIndex -= gemStack.Length;
-                // Debug.Log("remove at index " + randomIndex + " length " + length);
-                RemoveFromStack(randomIndex,length);
-            }
-        }
-        #endif
 
         private int GetPos(int index)
         {
@@ -249,8 +279,6 @@ namespace MD.CraftingSystem
                     }
                     break;
                 }
-
-
             }
 
             foreach(Recipe recipe in recipeSO.Recipes)

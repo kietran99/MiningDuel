@@ -49,6 +49,8 @@ namespace MD.CraftingSystem
 
         public int MAX_NO_MATERIALS = 5;
 
+        public int MIN_NO_MATERIALS = 3;
+
         public bool IsGemCraftable(DiggableType type) => type.IsGem();
 
         public Sprite GetImage(CraftItemName name)
