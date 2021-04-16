@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEditor;
 using MD.Quirk;
+using System;
 namespace MD.CraftingSystem
 {
+
     [System.Serializable]
     public struct CraftedItem
     {
@@ -12,9 +14,11 @@ namespace MD.CraftingSystem
         public BaseQuirk quirk;
         public Sprite UISprite;
     }
+    [Serializable]
     public enum CraftItemName
     {
-        SpeedPotion1 = 0,
+        None = 0,
+        SpeedPotion1 = 1,
         SpeedPotion2,
         Shield1,
         Shield2,
@@ -52,6 +56,9 @@ namespace MD.CraftingSystem
         public int MIN_NO_MATERIALS = 3;
 
         public bool IsGemCraftable(DiggableType type) => type.IsGem();
+        
+        
+        public Trie trie;
 
         public Sprite GetImage(CraftItemName name)
         {
@@ -70,7 +77,26 @@ namespace MD.CraftingSystem
             }
             return null;
         }
+
+
+        public void SaveRecipes()
+        {
+            int numberOfValue = Enum.GetNames(typeof(CraftableGem)).Length;
+            trie = new Trie(numberOfValue);
+            foreach (Recipe recipe in Recipes)
+            {
+                trie.Insert(recipe.Materials,recipe.craftItemName);
+            }
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("Save done!");
+        }
         
+        public CraftItemName Search(CraftableGem[] gems)
+        {
+            return trie.Search(gems);
+        }
     }
 }
 

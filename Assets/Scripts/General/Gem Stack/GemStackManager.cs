@@ -280,39 +280,59 @@ namespace MD.CraftingSystem
 
         private List<CraftableItemsData> CanCraft(int index)
         {
-            List<CraftableItemsData> itemNames = new List<CraftableItemsData>();
-            DiggableType[] materials = new DiggableType[recipeSO.MAX_NO_MATERIALS];
+            List<CraftableItemsData> res = new List<CraftableItemsData>();
+            // DiggableType[] materials = new DiggableType[recipeSO.MAX_NO_MATERIALS];
             //get materials
-            for (int i = 0; i < recipeSO.MAX_NO_MATERIALS; i++)
+            // for (int i = 0; i < recipeSO.MAX_NO_MATERIALS; i++)
+            // {
+            //     int currentIndex = index  + i;
+            //     if (currentIndex >= gemStack.Length) currentIndex -= gemStack.Length;
+            //     materials[i] = gemStack[currentIndex]; 
+            //     //if end of stack fill the rest with empty
+            //     if (currentIndex == tail)
+            //     {
+            //         for (int j = i+1; j< materials.Length; j++)
+            //         {
+            //             materials[j] = DiggableType.EMPTY;
+            //         }
+            //         break;
+            //     }
+            // }
+
+            // foreach(Recipe recipe in recipeSO.Recipes)
+            // {
+            //     for (int i = 0; i<= recipe.Materials.Length; i++)
+            //     {
+            //         if (i == recipe.Materials.Length)
+            //         {
+            //             itemNames.Add(new CraftableItemsData(recipe.craftItemName,index,recipe.Materials.Length));
+            //             break;
+            //         }
+            //         if (materials[i] == DiggableType.EMPTY || materials[i] != (DiggableType )recipe.Materials[i]) break;
+            //     }
+            // }
+            List<CraftableGem> materials = new List<CraftableGem>();
+            int pos = GetPos(index);
+            if (pos  <= stackSize - recipeSO.MIN_NO_MATERIALS) //check min recipes
             {
-                int currentIndex = index  + i;
-                if (currentIndex >= gemStack.Length) currentIndex -= gemStack.Length;
-                materials[i] = gemStack[currentIndex]; 
-                //if end of stack fill the rest with empty
-                if (currentIndex == tail)
+                for (int i = 0; i < recipeSO.MIN_NO_MATERIALS; i++)
                 {
-                    for (int j = i+1; j< materials.Length; j++)
-                    {
-                        materials[j] = DiggableType.EMPTY;
-                    }
-                    break;
+                    materials.Add((CraftableGem) gemStack[GetIndex(pos + i)]);
                 }
+                CraftItemName item = recipeSO.Search(materials.ToArray());
+                if (item != CraftItemName.None) res.Add(new CraftableItemsData(item,index,recipeSO.MIN_NO_MATERIALS));
             }
 
-            foreach(Recipe recipe in recipeSO.Recipes)
+            if (pos  <= stackSize - recipeSO.MAX_NO_MATERIALS) //check min recipes
             {
-                for (int i = 0; i<= recipe.Materials.Length; i++)
+                for (int i = recipeSO.MIN_NO_MATERIALS; i < recipeSO.MAX_NO_MATERIALS; i++)
                 {
-                    if (i == recipe.Materials.Length)
-                    {
-                        itemNames.Add(new CraftableItemsData(recipe.craftItemName,index,recipe.Materials.Length));
-                        break;
-                    }
-                    if (materials[i] == DiggableType.EMPTY || materials[i] != (DiggableType )recipe.Materials[i]) break;
+                    materials.Add((CraftableGem) gemStack[GetIndex(pos + i)]);
                 }
+                CraftItemName item = recipeSO.Search(materials.ToArray());
+                if (item != CraftItemName.None) res.Add(new CraftableItemsData(item,index,recipeSO.MAX_NO_MATERIALS));
             }
-
-            return itemNames;
+            return res;
         }
 
         private void HandleChangeIndex(CraftMenuChangeIndexData data) => SelectedIndex = data.index;
