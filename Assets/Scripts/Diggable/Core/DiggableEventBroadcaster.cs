@@ -5,25 +5,25 @@ namespace MD.Diggable.Core
 {
     public class DiggableEventBroadcaster
     {
-        private Dictionary<DiggableType, System.Action<NetworkIdentity, int, int>> eventTriggerDict;
+        private Dictionary<DiggableType, System.Action<NetworkIdentity, int, int, DiggableType>> eventTriggerDict;
         private DiggableType lastDugType = DiggableType.EMPTY;
         private IDiggableGenerator diggableGenerator;
 
         public DiggableEventBroadcaster(IDiggableGenerator diggableGenerator)
         {
             this.diggableGenerator = diggableGenerator;
-            eventTriggerDict = new Dictionary<DiggableType, System.Action<NetworkIdentity, int, int>>()
+            eventTriggerDict = new Dictionary<DiggableType, System.Action<NetworkIdentity, int, int, DiggableType>>()
             {
                 { DiggableType.COMMON_GEM, TriggerGemDugEvent },
                 { DiggableType.UNCOMMON_GEM, TriggerGemDugEvent },
                 { DiggableType.RARE_GEM, TriggerGemDugEvent },
                 { DiggableType.SUPER_RARE_GEM, TriggerGemDugEvent },
                 { DiggableType.NORMAL_BOMB, TriggerProjectileDugEvent },
-                { DiggableType.EMPTY, (digger, cur, max) => { UnityEngine.Debug.Log("Dug Empty Tile"); } }
+                { DiggableType.EMPTY, (id, cur, max, type) => { UnityEngine.Debug.Log("Dug Empty Tile"); } }
             };
         }
 
-        private void TriggerGemDugEvent(NetworkIdentity digger, int cur, int max)
+        private void TriggerGemDugEvent(NetworkIdentity digger, int cur, int max, DiggableType type)
         {
             diggableGenerator
                 .DigProgressEvent?
@@ -32,11 +32,11 @@ namespace MD.Diggable.Core
             if (cur <= 0) 
             {
                 diggableGenerator.GemObtainEvent?
-                    .Invoke(digger.connectionToClient, new MD.Diggable.Gem.GemObtainData(digger.netId, max));
+                    .Invoke(digger.connectionToClient, new MD.Diggable.Gem.GemObtainData(digger.netId, max, type));
             }         
         }
 
-        private void TriggerProjectileDugEvent(NetworkIdentity digger, int cur, int max)
+        private void TriggerProjectileDugEvent(NetworkIdentity digger, int cur, int max, DiggableType type)
         {
             diggableGenerator.ProjectileObtainEvent?
                 .Invoke(digger.connectionToClient, new MD.Diggable.Projectile.ProjectileObtainData(digger, lastDugType));
@@ -45,7 +45,7 @@ namespace MD.Diggable.Core
         public void TriggerDiggableDugEvent(NetworkIdentity digger, ReducedData reducedData)
         {     
             lastDugType = reducedData.type;     
-            eventTriggerDict[lastDugType](digger, reducedData.current, reducedData.max);            
+            eventTriggerDict[lastDugType](digger, reducedData.current, reducedData.max, reducedData.type);            
         } 
 
         public void TriggerDiggableSpawnEvent(int x, int y, DiggableType type)

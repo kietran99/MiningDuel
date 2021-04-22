@@ -5129,6 +5129,7 @@ GameObject:
   - component: {fileID: 546028043007059227}
   - component: {fileID: 5324336965916199845}
   - component: {fileID: 1522152400363511722}
+  - component: {fileID: -6714743465730451488}
   m_Layer: 0
   m_Name: Player Online
   m_TagString: Player
@@ -5385,6 +5386,26 @@ MonoBehaviour:
   maxUses: 3
   ReplenishTime: 5
   currentLevel: 0
+--- !u!114 &-6714743465730451488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7091697348273341020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a23ab50bba9f9c94a8ec22360887e05d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  recipeSO: {fileID: 11400000, guid: deff49a5303b1a94bbd47ae38b282830, type: 2}
+  StackSize: 15
+  gemStack: 
+  head: 0
+  tail: 0
+  canCraftItemList: 
 --- !u!1001 &5430411515488753426
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -2,7 +2,7 @@
 using Mirror;
 using MD.Character.Animation;
 using MD.Diggable.Core;
-
+using System.Collections;
 namespace MD.Character
 {
     public class DigAction : NetworkBehaviour
@@ -35,10 +35,10 @@ namespace MD.Character
             EventSystems.EventManager.Instance.StopListening<DigAnimEndData>(HandleDigAnimEnd);
         }
 
-        protected void HandleDigAnimEnd(DigAnimEndData _) => CmdDig();
+        protected void HandleDigAnimEnd(DigAnimEndData _) => CmdDig(power);
 
         [Command]
-        protected virtual void CmdDig()
+        protected virtual void CmdDig(int digPower)
         {
             ServiceLocator
                 .Resolve<IDiggableGenerator>()
@@ -49,7 +49,7 @@ namespace MD.Character
                             connectionToClient.identity, 
                             Mathf.FloorToInt(transform.position.x), 
                             Mathf.FloorToInt(transform.position.y), 
-                            power)                
+                            digPower)                
                 );
         }
 
@@ -65,6 +65,22 @@ namespace MD.Character
             if (Input.GetKeyDown(KeyCode.E))
             {
                 EventSystems.EventManager.Instance.TriggerEvent(new DigInvokeData());            
+            }
+        }
+
+        public void IncreaseDigPower(int amount, float time)
+        {
+            StartCoroutine(IncreaseDidPowerCoroutine(amount,time));
+        }
+        private IEnumerator IncreaseDidPowerCoroutine(int amount, float time)
+        {
+            power+= amount;
+            yield return new WaitForSeconds(time);
+            power-= amount;
+
+            if (power <=0)
+            {
+                Debug.LogError("something went wrong");
             }
         }
     }
