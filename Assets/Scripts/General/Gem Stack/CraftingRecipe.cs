@@ -51,9 +51,9 @@ namespace MD.CraftingSystem
 
         public List<CraftedItem> CrafteditemsList;
 
-        public int MAX_NO_MATERIALS = 5;
+        public int LONG_RECIPE_LENGTH = 5;
 
-        public int MIN_NO_MATERIALS = 3;
+        public int SHORT_RECIPE_LENGTH = 3;
 
         public bool IsGemCraftable(DiggableType type) => type.IsGem();
         
