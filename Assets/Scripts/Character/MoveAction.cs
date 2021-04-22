@@ -1,7 +1,7 @@
 ﻿using MD.UI;
 using UnityEngine;
 using Mirror;
-
+using System.Collections;
 namespace MD.Character
 {
     [RequireComponent(typeof(Rigidbody2D))]
@@ -11,9 +11,11 @@ namespace MD.Character
         private float speed = 1f;
 
         private Rigidbody2D rigidBody;
-        [SerializeField]
         private Vector2 moveVect, minMoveBound, maxMoveBound;
         private Vector2 offset = new Vector2(.5f, .5f);
+        
+        [SerializeField]
+        private float speedModifier =1f;
 
         private Player player = null;
         private Player Player
@@ -27,6 +29,7 @@ namespace MD.Character
 
         private void Start()
         {
+            speedModifier = 1f;
             rigidBody = GetComponent<Rigidbody2D>();
             EventSystems.EventManager.Instance.StartListening<JoystickDragData>(BindMoveVector);
         }
@@ -53,7 +56,7 @@ namespace MD.Character
         
         private void MoveCharacter(float moveX, float moveY)
         {
-            var movePos = new Vector2(moveX, moveY).normalized * speed;
+            var movePos = new Vector2(moveX, moveY).normalized * speed*speedModifier;
             // transform.Translate(movePos * Time.fixedDeltaTime);
             // transform.position = new Vector2(Mathf.Clamp(transform.position.x, minMoveBound.x + offset.x, maxMoveBound.x - offset.x),
             //                     Mathf.Clamp(transform.position.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));
@@ -75,6 +78,17 @@ namespace MD.Character
         {
             this.minMoveBound = minMoveBound;
             this.maxMoveBound = maxMoveBound;
+        }
+        public void IncreaseSpeed(float percentage, float time)
+        {
+            StartCoroutine(IncreaseSpeedCoroutine(percentage,time));
+        }
+        private IEnumerator IncreaseSpeedCoroutine(float percentage, float time)
+        {
+            Debug.Log("increase speed by " + percentage);
+            speedModifier += percentage;
+            yield return new WaitForSeconds(time);
+            speedModifier -= percentage;
         }
     }
 }
