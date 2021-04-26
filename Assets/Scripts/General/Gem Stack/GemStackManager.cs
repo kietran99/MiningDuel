@@ -147,12 +147,12 @@ namespace MD.CraftingSystem
             tail = fillIndex;
 
             craftableItemsList.Clear();
-            for (int i=0 ; i< stackSize - (recipeSO.MIN_NO_MATERIALS -1); i++)
+            for (int i=0 ; i< stackSize - (recipeSO.SHORT_RECIPE_LENGTH -1); i++)
             {
-                List<CraftableItemsData> res = CanCraft(GetIndex(i));
+                List<CraftableItemsData> res = CanCraft(GetIndex(i), out bool skipCheck);
                 craftableItemsList.AddRange(res);
+                if (skipCheck) i+= recipeSO.LONG_RECIPE_LENGTH -1;
             }
-            PostProcessCraftableItem();
             EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(GetItemListData()));
 
             EventSystems.EventManager.Instance.TriggerEvent<GemStackUsedData>(new GemStackUsedData(GetPos(index),length));
@@ -177,70 +177,72 @@ namespace MD.CraftingSystem
 
         private void HandleGemObtain(GemObtainData data)
         {
-            bool isRemovingfirstGem = false, isChanged = false;
-            if (stackSize == MAX_NO_SLOTS) isRemovingfirstGem = true;
+            // bool isRemovingfirstGem = false; isChanged = false;
+            // if (stackSize == MAX_NO_SLOTS) isRemovingfirstGem = true;
             
             if (!recipeSO.IsGemCraftable(data.type)) return;
             AddToStack(data.type);
-            if (stackSize <recipeSO.MIN_NO_MATERIALS) return;
+            if (stackSize <recipeSO.SHORT_RECIPE_LENGTH) return;
 
-            // List<CraftableItemsData> tempList = new List<CraftableItemsData>();
-            // for (int i = 0; i< stackSize - 2 ; i++) // ignore 2 last gems
-            // {
-            //     List<CraftableItemsData> res = CanCraft(GetIndex(i));
-            //     tempList.AddRange(res);
-            // }
-            // if (!IsEqual(craftableItemsList,tempList))
-            // {
-            //     craftableItemsList = tempList;
-            //     EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(GetItemListData()));
-            // }
-
-            if (isRemovingfirstGem)   //check first two recipes = maximum number of recipes can be affected by removing the first gem
+            List<CraftableItemsData> tempList = new List<CraftableItemsData>();
+            for (int i = 0; i< stackSize - (recipeSO.SHORT_RECIPE_LENGTH -1) ; i++) // ignore 2 last gems
             {
-                if (craftableItemsList.Count > 0 && craftableItemsList[0].index == 0)
-                {
-                    if(craftableItemsList.Count > 1 && craftableItemsList[1].index == 0)
-                    {
-                        craftableItemsList.RemoveRange(0,2);
-                        isChanged = true;
-                    }
-                    else
-                    {
-                        craftableItemsList.RemoveRange(0,1);
-                        isChanged = true;
-                    }
-                }
+                List<CraftableItemsData> res = CanCraft(GetIndex(i), out bool skipCheck);
+                if (skipCheck) i+= recipeSO.LONG_RECIPE_LENGTH -1;
+                tempList.AddRange(res);
             }
-
-            int startPos = 0; //recheck recipes from upto last recipeSO.MIN_NO_MATERIALS gems
-            for (int i = recipeSO.MIN_NO_MATERIALS; i <= recipeSO.MAX_NO_MATERIALS; i++) //min no_materials is 3
+            if (!IsEqual(craftableItemsList,tempList))
             {
-                if (stackSize >= i) startPos = stackSize - i;
-            }
-            int removeCount = 0;
-            for (int i= craftableItemsList.Count-1; i>=0; i--) // remove old recipes from gems start at startPos
-            {
-                if (GetPos(craftableItemsList[i].index) < startPos) break;
-                removeCount++;
-            }
-            craftableItemsList.RemoveRange( craftableItemsList.Count - removeCount, removeCount);
-            
-            for (int i = startPos; i < stackSize -(recipeSO.MIN_NO_MATERIALS -1); i++) //add new recipes from gems start at startPos
-            {
-                List<CraftableItemsData> res = CanCraft(GetIndex(i));
-                if (res.Count > 0)
-                {
-                    craftableItemsList.AddRange(res);
-                    isChanged = true;
-                }
-            }
-
-            if (isChanged)
-            {
-                PostProcessCraftableItem();
+                craftableItemsList = tempList;
                 EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(GetItemListData()));
             }
+
+            // if (isRemovingfirstGem)   //check first two recipes = maximum number of recipes can be affected by removing the first gem
+            // {
+            //     if (craftableItemsList.Count > 0 && craftableItemsList[0].index == 0)
+            //     {
+            //         if(craftableItemsList.Count > 1 && craftableItemsList[1].index == 0)
+            //         {
+            //             craftableItemsList.RemoveRange(0,2);
+            //             isChanged = true;
+            //         }
+            //         else
+            //         {
+            //             craftableItemsList.RemoveRange(0,1);
+            //             isChanged = true;
+            //         }
+            //     }
+            // }
+
+            // int startPos = 0; //find start positions to recheck recipes
+            // for (int i = recipeSO.SHORT_RECIPE_LENGTH; i <= recipeSO.LONG_RECIPE_LENGTH; i++)
+            // {
+            //     if (stackSize >= i) startPos = stackSize - i;
+            //     else break;
+            // }
+            // int removeCount = 0;
+            // for (int i= craftableItemsList.Count-1; i>=0; i--) // remove old recipes
+            // {
+            //     if (GetPos(craftableItemsList[i].index) < startPos) break;
+            //     removeCount++;
+            // }
+            // craftableItemsList.RemoveRange( craftableItemsList.Count - removeCount, removeCount);
+            
+            // for (int i = startPos; i < stackSize -(recipeSO.SHORT_RECIPE_LENGTH -1); i++) //add new recipes from gems start at startPos
+            // {
+            //     List<CraftableItemsData> res = CanCraft(GetIndex(i), out bool skipCheck);
+            //     if (res.Count > 0)
+            //     {
+            //         craftableItemsList.AddRange(res);
+            //         isChanged = true;
+            //     }
+            //     if (skipCheck) i+= recipeSO.LONG_RECIPE_LENGTH;
+            // }
+
+            // if (isChanged)
+            // {
+            //     EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(GetItemListData()));
+            // }
         }
 
         private bool IsEqual(List<CraftableItemsData> list1, List<CraftableItemsData> list2)
@@ -261,24 +263,7 @@ namespace MD.CraftingSystem
             return pos;
         }
 
-        private void PostProcessCraftableItem()
-        {
-            if (craftableItemsList.Count <= 1) return;
-            CraftItemName lastItem = craftableItemsList[0].name;
-            List<int> removeList = new List<int>();
-            for (int i =1; i < craftableItemsList.Count; i++)
-            {
-                if (craftableItemsList[i].name.Equals(lastItem)) removeList.Add(i);
-                else lastItem = craftableItemsList[i].name;
-            }
-            removeList.Reverse();
-            foreach (int i in removeList)
-            {
-                craftableItemsList.RemoveAt(i);
-            }
-        }
-
-        private List<CraftableItemsData> CanCraft(int index)
+        private List<CraftableItemsData> CanCraft(int index, out bool skipCheck)
         {
             List<CraftableItemsData> res = new List<CraftableItemsData>();
             // DiggableType[] materials = new DiggableType[recipeSO.MAX_NO_MATERIALS];
@@ -313,24 +298,36 @@ namespace MD.CraftingSystem
             // }
             List<CraftableGem> materials = new List<CraftableGem>();
             int pos = GetPos(index);
-            if (pos  <= stackSize - recipeSO.MIN_NO_MATERIALS) //check min recipes
+            if (pos  <= stackSize - recipeSO.SHORT_RECIPE_LENGTH) //check min recipes
             {
-                for (int i = 0; i < recipeSO.MIN_NO_MATERIALS; i++)
+                for (int i = 0; i < recipeSO.SHORT_RECIPE_LENGTH; i++)
                 {
                     materials.Add((CraftableGem) gemStack[GetIndex(pos + i)]);
                 }
                 CraftItemName item = recipeSO.Search(materials.ToArray());
-                if (item != CraftItemName.None) res.Add(new CraftableItemsData(item,index,recipeSO.MIN_NO_MATERIALS));
+                if (item != CraftItemName.None) res.Add(new CraftableItemsData(item,index,recipeSO.SHORT_RECIPE_LENGTH));
             }
-
-            if (pos  <= stackSize - recipeSO.MAX_NO_MATERIALS) //check min recipes
+            skipCheck = false;
+            if (pos  <= stackSize - recipeSO.LONG_RECIPE_LENGTH) //check min recipes
             {
-                for (int i = recipeSO.MIN_NO_MATERIALS; i < recipeSO.MAX_NO_MATERIALS; i++)
+                for (int i = recipeSO.SHORT_RECIPE_LENGTH; i < recipeSO.LONG_RECIPE_LENGTH; i++)
                 {
                     materials.Add((CraftableGem) gemStack[GetIndex(pos + i)]);
                 }
+
+                //check if all gem are the same type
+                skipCheck = true;
+                CraftableGem gem = materials[0];
+                for (int i=1; i< materials.Count; i++)
+                {
+                    if (gem != materials[i])
+                    {
+                        skipCheck = false;
+                        break;
+                    }
+                } 
                 CraftItemName item = recipeSO.Search(materials.ToArray());
-                if (item != CraftItemName.None) res.Add(new CraftableItemsData(item,index,recipeSO.MAX_NO_MATERIALS));
+                if (item != CraftItemName.None) res.Add(new CraftableItemsData(item,index,recipeSO.LONG_RECIPE_LENGTH));
             }
             return res;
         }
