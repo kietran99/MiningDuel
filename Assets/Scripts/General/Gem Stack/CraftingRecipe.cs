@@ -78,7 +78,7 @@ namespace MD.CraftingSystem
             return null;
         }
 
-
+        #if UNITY_EDITOR
         public void SaveRecipes()
         {
             int numberOfValue = Enum.GetNames(typeof(CraftableGem)).Length;
@@ -92,6 +92,7 @@ namespace MD.CraftingSystem
             AssetDatabase.Refresh();
             Debug.Log("Save done!");
         }
+        #endif
         
         public CraftItemName Search(CraftableGem[] gems)
         {
