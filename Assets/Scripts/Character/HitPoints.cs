@@ -15,6 +15,7 @@ namespace MD.Character
         [SyncVar(hook = nameof(OnCurrentHPSync))]
         private int currentHP = 100;
 
+        [Server]
         public void TakeDamage(int dmg)
         {
             currentHP = Mathf.Clamp(currentHP - dmg, minHP, maxHP);
@@ -24,13 +25,18 @@ namespace MD.Character
         {
             if (hasAuthority)
             {
-                EventSystems.EventManager.Instance.TriggerEvent(new HPChangeData(newCurHP, maxHP));
+                OnAuthorityCurrentHPSync(oldCurHP, newCurHP);
             }
         }
 
-#region TEST_TAKE_DMG
-#if UNITY_EDITOR
-        [Client]
+        protected virtual void OnAuthorityCurrentHPSync(int oldCurHP, int newCurHP)
+        {
+            EventSystems.EventManager.Instance.TriggerEvent(new HPChangeData(newCurHP, maxHP));
+        }
+
+    #region TEST_TAKE_DMG
+    #if UNITY_EDITOR
+        [ClientCallback]
         void Update()
         {
             if (!hasAuthority)
@@ -46,7 +52,7 @@ namespace MD.Character
 
         [Command]
         void CmdTakeDamage() => TakeDamage(20);
-#endif
-#endregion
+    #endif
+    #endregion
     }
 }

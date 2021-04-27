@@ -9,5 +9,6 @@
         public const string LAST_Y = "LastY";
         public const string IS_DIGGING = "IsDigging";
         public const string IS_HOLDING = "IsHolding";
+        public const string SWING = "Swing";
     }
 }
