@@ -5120,6 +5120,7 @@ GameObject:
   - component: {fileID: 9079084059549055238}
   - component: {fileID: 5437590496780789211}
   - component: {fileID: 7448684852553097615}
+  - component: {fileID: 4639249340357379130}
   m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
@@ -5224,6 +5225,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   networkAnimator: {fileID: 2133106330430454662}
+--- !u!114 &4639249340357379130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6068277045544607805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cf5461124ba8e14abab3f28ed2b503a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerRenderer: {fileID: 9079084059549055238}
+  numberOfFlashes: 3
+  flashDelay: 0.075
 --- !u!114 &5430411515488753438
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5559,6 +5575,7 @@ MonoBehaviour:
   maxHP: 100
   minHP: 0
   currentHP: 100
+  damagedVFX: {fileID: 4639249340357379130}
 --- !u!114 &995740549010693815
 MonoBehaviour:
   m_ObjectHideFlags: 0

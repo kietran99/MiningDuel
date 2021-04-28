@@ -15,10 +15,20 @@ namespace MD.Character
         [SyncVar(hook = nameof(OnCurrentHPSync))]
         private int currentHP = 100;
 
+        [SerializeField]
+        private VisualEffects.DamagedVFX damagedVFX = null;
+
         [Server]
         public void TakeDamage(int dmg)
         {
             currentHP = Mathf.Clamp(currentHP - dmg, minHP, maxHP);
+            RpcPlayDamagedEffects();
+        }
+
+        [ClientRpc]
+        private void RpcPlayDamagedEffects()
+        {
+            damagedVFX.Play();
         }
 
         private void OnCurrentHPSync(int oldCurHP, int newCurHP)

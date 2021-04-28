@@ -91,14 +91,5 @@ namespace MD.Character
             randomDir.y = Random.Range(-1f, 1f);
             return randomDir.normalized;
         }
-    
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.B))
-            {
-                StopAllCoroutines();
-                StartCoroutine(PlayDamagingEffect());
-            }
-        }
     }
 }
