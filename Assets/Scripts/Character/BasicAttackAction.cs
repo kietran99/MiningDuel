@@ -48,12 +48,20 @@ namespace MD.Character
         {
             damagableList.Add(damagable);
             // Debug.Log("Damagable List Size: " + damagableList.Count);
+            if (damagableList.Count.Equals(1)) 
+            {
+                EventSystems.EventManager.Instance.TriggerEvent(new Character.MainActionToggleData(MainActionType.ATTACK));
+            }
         }
 
         private void RemoveFromDamagableList(NetworkIdentity damagable)
         {
             damagableList.Remove(damagable);
             // Debug.Log("Damagable List Size: " + damagableList.Count);
+            if (damagableList.Count.Equals(0)) 
+            {
+                EventSystems.EventManager.Instance.TriggerEvent(new Character.MainActionToggleData(MainActionType.DIG));
+            }
         }
 
     #if UNITY_EDITOR
