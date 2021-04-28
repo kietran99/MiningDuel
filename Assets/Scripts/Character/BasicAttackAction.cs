@@ -37,7 +37,7 @@ namespace MD.Character
                 return;
             }
 
-            pickaxeController.Play(power);
+            pickaxeController.Play(damagableList.Random().transform.position - transform.position);
             CmdAttack(damagableList);
         }
           

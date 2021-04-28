@@ -11,8 +11,9 @@ namespace MD.Character
         public System.Action<NetworkIdentity> OnDamagableEnter { get; set; }
         public System.Action<NetworkIdentity> OnDamagableExit { get; set; }
 
-        public void Play(int power)
+        public void Play(Vector2 targetDir)
         {
+            transform.Rotate(0f, 0f, Vector2.SignedAngle(-transform.up, targetDir));
             animator.SetTrigger(AnimatorConstants.SWING);
         }
 

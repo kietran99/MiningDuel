@@ -16,15 +16,16 @@ namespace MD.UI
             EventSystems.EventManager.Instance.StartListening<ThrowInvokeData>(ShowButton);
         }
 
+        private void OnDestroy()
+        {
+            button.onClick.RemoveListener(Invoke);
+            EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(HideButton);
+            EventSystems.EventManager.Instance.StopListening<ThrowInvokeData>(ShowButton);
+        }
+
         public void Invoke()
         {
             EventSystems.EventManager.Instance.TriggerEvent(new DigInvokeData());
-        }
-
-        private void OnDestroy()
-        {
-            EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(HideButton);
-            EventSystems.EventManager.Instance.StopListening<ThrowInvokeData>(ShowButton);
         }
 
         private void ShowButton(ThrowInvokeData obj)
