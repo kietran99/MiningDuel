@@ -11,6 +11,9 @@ namespace MD.Character
         private int power = 2;
 
         [SerializeField]
+        private float knockbackForce = .2f;
+
+        [SerializeField]
         private PickaxeAnimatorController pickaxeController = null;
 
         private List<NetworkIdentity> damagableList = new List<NetworkIdentity>(4);
@@ -42,7 +45,14 @@ namespace MD.Character
         }
           
         [Command]
-        private void CmdAttack(List<NetworkIdentity> damagableList) => damagableList.ForEach(damagable => damagable.GetComponent<IDamagable>().TakeDamage(power));
+        private void CmdAttack(List<NetworkIdentity> damagableList) 
+        {
+            damagableList.ForEach(damagable => 
+            {
+                damagable.GetComponent<IDamagable>().TakeDamage(power);
+                damagable.transform.Translate((damagable.transform.position - transform.position) * knockbackForce);
+            });
+        }
 
         private void AddToDamagableList(NetworkIdentity damagable)
         {

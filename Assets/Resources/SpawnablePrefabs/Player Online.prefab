@@ -5591,6 +5591,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   power: 30
+  knockbackForce: 0.2
   pickaxeController: {fileID: 6604778957448688463}
 --- !u!114 &1468447230279493274
 MonoBehaviour:
