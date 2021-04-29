@@ -23,8 +23,8 @@ public class TrapExplodeRangeControl : MonoBehaviour
                 LinkedTrap otherTrap = trapCollider.GetTrap();
                 if (otherTrap.GetOwner().Equals(trap.GetOwner())) //  only link traps of the same owner
                 {
-                    otherTrap.RegistLinkedTrap(trap);
-                    trap.RegistLinkedTrap(otherTrap);
+                    otherTrap.RegistLinkedTrap(trap, false);
+                    trap.RegistLinkedTrap(otherTrap, true); //create wire on new trap
                 }
                 else
                 {

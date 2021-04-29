@@ -24,7 +24,6 @@ public class TrapSpawner : NetworkBehaviour
     {
         var obj = Instantiate(LinkedTrapPrefab, new Vector3(data.x,data.y,0),Quaternion.identity);
         NetworkServer.Spawn(obj,data.owner.connectionToClient);
-        Debug.Log("assign owner " + data.owner);
         obj.GetComponent<LinkedTrap>().RpcAssignOwnerAndLinkTraps(data.owner);
     }
 

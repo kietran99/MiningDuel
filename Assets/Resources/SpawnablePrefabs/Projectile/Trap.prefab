@@ -359,6 +359,9 @@ MonoBehaviour:
   linkedTrapsList: []
   owner: {fileID: 0}
   rangeControl: {fileID: 2559538637866694821}
+  WirePrefab: {fileID: 5758539721120645229, guid: 23c6ca9b04b957b42a8b0d415b0567d6,
+    type: 3}
+  WireLenghPadding: 1
 --- !u!114 &6163613605608616368
 MonoBehaviour:
   m_ObjectHideFlags: 0

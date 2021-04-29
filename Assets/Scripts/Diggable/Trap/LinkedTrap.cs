@@ -7,17 +7,34 @@ public class LinkedTrap : NetworkBehaviour
 {
     [SerializeField]
     List<LinkedTrap> linkedTrapsList;
-    private bool isExploding;
+
     [SerializeField]
     private NetworkIdentity owner ;
 
     [SerializeField]
     private TrapExplodeRangeControl rangeControl;
 
+    [SerializeField]
+    GameObject WirePrefab;
+
+    [SerializeField]
+    private float WireLenghPadding = .8f;
+
+
+    private Vector2 HALF_CELL_OFFSET = Vector2.one/2f;
+    private bool isExploding;
+
+    private Dictionary<LinkedTrap,GameObject> WireDict;
+    private Vector3 BaseWireScale;
+
+
+
     void Start()
     {
         linkedTrapsList = new List<LinkedTrap>();
         isExploding = false;
+        WireDict = new Dictionary<LinkedTrap, GameObject>();
+        BaseWireScale = WirePrefab.transform.localScale;
     }
 
     public override void OnStartAuthority()
@@ -28,22 +45,6 @@ public class LinkedTrap : NetworkBehaviour
         {
             spriteRenderers[i].maskInteraction = SpriteMaskInteraction.None;
         }
-    }
-
-    [ClientRpc]
-    public void RpcAssignOwnerAndLinkTraps(NetworkIdentity owner)
-    {
-        this.owner = owner;
-        Debug.Log("assign authority + " + owner);
-        Debug.Log("after assign authority + " + this.owner);
-        rangeControl.LinkNearbyTraps();
-    }
-
-    public NetworkIdentity GetOwner() => owner;
-
-    public void RegistLinkedTrap(LinkedTrap trap)
-    {
-        linkedTrapsList.Add(trap);
     }
 
     public void Detonate()
@@ -59,6 +60,7 @@ public class LinkedTrap : NetworkBehaviour
         if (index != -1)
         {
             linkedTrapsList.RemoveAt(index);
+            RemoveWire(from);
             Detonate();
         }
         else
@@ -77,8 +79,58 @@ public class LinkedTrap : NetworkBehaviour
             {
                 Debug.Break();
             }
+            RemoveWire(linkedTrapsList[i]);
             linkedTrapsList[i].SpreadExplode(this);
         }
         Destroy(gameObject);
+    }
+    
+    [ClientRpc]
+    public void RpcAssignOwnerAndLinkTraps(NetworkIdentity owner)
+    {
+        this.owner = owner;
+        rangeControl.LinkNearbyTraps();
+    }
+
+    public NetworkIdentity GetOwner() => owner;
+
+    public void RegistLinkedTrap(LinkedTrap trap, bool createWire)
+    {
+        linkedTrapsList.Add(trap);
+        if (createWire)
+        {
+            GameObject wire = CreateWire(this.transform.position , trap.transform.position );
+            WireDict.Add(trap, wire);
+        }
+    }
+
+    private GameObject CreateWire(Vector2 from, Vector2 to)
+    {
+        Vector2 centeredFrom = from + HALF_CELL_OFFSET;
+        Vector2 centeredTo = to + HALF_CELL_OFFSET;
+
+        Debug.DrawLine(centeredFrom,centeredTo,Color.red,100f);
+        float length = Vector2.Distance(centeredFrom,centeredTo);
+        float angle = Vector2.SignedAngle(Vector2.right, centeredTo-centeredFrom);
+
+        GameObject wire = Instantiate(WirePrefab,Vector2.Lerp(centeredFrom,centeredTo,.5f),Quaternion.identity);
+        Vector3 scale = new Vector3(BaseWireScale.x*length - BaseWireScale.x*WireLenghPadding,BaseWireScale.y,BaseWireScale.z);
+        wire.transform.localScale = scale;
+        wire.transform.Rotate(Vector3.forward*angle,Space.Self);
+
+        if (hasAuthority)
+        {
+            wire.GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.None;
+        }
+
+        return wire;
+    }
+
+    private void RemoveWire(LinkedTrap trap)
+    {   
+        if(WireDict.TryGetValue(trap,out GameObject wire))
+        {
+            Destroy(wire);
+        }
     }
 }
