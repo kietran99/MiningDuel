@@ -10,7 +10,7 @@ namespace MD.UI
 
         private void Start()
         {
-            EventSystems.EventConsumer.Attach(gameObject).StartListening<Character.HPChangeData>(UpdateView);
+            EventSystems.EventConsumer.GetOrAttach(gameObject).StartListening<Character.HPChangeData>(UpdateView);
         }
 
         private void UpdateView(Character.HPChangeData data)

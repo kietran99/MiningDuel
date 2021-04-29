@@ -2,10 +2,11 @@
 {
     public struct HPChangeData: EventSystems.IEventData
     {
-        public int curHP, maxHP;
+        public int lastHP, curHP, maxHP;
 
-        public HPChangeData(int curHP, int maxHP)
+        public HPChangeData(int lastHP, int curHP, int maxHP)
         {
+            this.lastHP = lastHP;
             this.curHP = curHP;
             this.maxHP = maxHP;
         }

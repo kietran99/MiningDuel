@@ -22,17 +22,12 @@ namespace MD.Character
         public void TakeDamage(int dmg)
         {
             currentHP = Mathf.Clamp(currentHP - dmg, minHP, maxHP);
-            RpcPlayDamagedEffects();
-        }
-
-        [ClientRpc]
-        private void RpcPlayDamagedEffects()
-        {
-            damagedVFX.Play();
         }
 
         private void OnCurrentHPSync(int oldCurHP, int newCurHP)
         {
+            damagedVFX.Play();
+
             if (hasAuthority)
             {
                 OnAuthorityCurrentHPSync(oldCurHP, newCurHP);
@@ -41,7 +36,7 @@ namespace MD.Character
 
         protected virtual void OnAuthorityCurrentHPSync(int oldCurHP, int newCurHP)
         {
-            EventSystems.EventManager.Instance.TriggerEvent(new HPChangeData(newCurHP, maxHP));
+            EventSystems.EventManager.Instance.TriggerEvent(new HPChangeData(oldCurHP, newCurHP, maxHP));
         }
 
     #region TEST_TAKE_DMG

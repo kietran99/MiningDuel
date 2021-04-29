@@ -14,22 +14,20 @@ namespace MD.VisualEffects
         private float flashDelay = .075f;
 
         private Color originalPlayerColor;
-        private WaitForSecondsRealtime flashDelayAsWaitForSeconds;
+        private WaitForSecondsRealtime flashDelayWFS;
 
         void Start()
         {
             originalPlayerColor = playerRenderer.color;
-            flashDelayAsWaitForSeconds = new WaitForSecondsRealtime(flashDelay);
+            flashDelayWFS = new WaitForSecondsRealtime(flashDelay);
         }
 
-        // [ClientRpc]
         public void Play()
         {
             StopAllCoroutines();
             StartCoroutine(PlayDamagingEffect());
         }
 
-        // [Client]
         private System.Collections.IEnumerator PlayDamagingEffect()
         {
             int flashCnt = 0;
@@ -37,11 +35,11 @@ namespace MD.VisualEffects
             while (flashCnt < numberOfFlashes)
             {               
                 playerRenderer.color = Color.red;
-                yield return flashDelayAsWaitForSeconds;
+                yield return flashDelayWFS;
                 playerRenderer.color = originalPlayerColor;
                 flashCnt++;
 
-                yield return flashDelayAsWaitForSeconds;
+                yield return flashDelayWFS;
             }
         }
     }
