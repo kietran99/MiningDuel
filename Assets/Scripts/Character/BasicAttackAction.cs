@@ -14,22 +14,25 @@ namespace MD.Character
         private float knockbackForce = .2f;
 
         [SerializeField]
-        private PickaxeAnimatorController pickaxeController = null;
+        private AttackableDataGatherer attackableDataGatherer = null;
+
+        [SerializeField]
+        private PickaxeAnimatorController pickaxeAnimatorController = null;
 
         private List<NetworkIdentity> damagableList = new List<NetworkIdentity>(4);
 
         public override void OnStartAuthority()
         {
             EventSystems.EventManager.Instance.StartListening<AttackInvokeData>(HandleAttackInvoke);
-            pickaxeController.OnDamagableEnter += AddToDamagableList;
-            pickaxeController.OnDamagableExit += RemoveFromDamagableList;
+            attackableDataGatherer.OnDamagableEnter += AddToDamagableList;
+            attackableDataGatherer.OnDamagableExit += RemoveFromDamagableList;
         }
 
         public override void OnStopClient()
         {
             EventSystems.EventManager.Instance.StopListening<AttackInvokeData>(HandleAttackInvoke);
-            pickaxeController.OnDamagableEnter -= AddToDamagableList;
-            pickaxeController.OnDamagableExit -= RemoveFromDamagableList;
+            attackableDataGatherer.OnDamagableEnter -= AddToDamagableList;
+            attackableDataGatherer.OnDamagableExit -= RemoveFromDamagableList;
         }
 
         [Client]
@@ -40,7 +43,7 @@ namespace MD.Character
                 return;
             }
 
-            pickaxeController.Play(damagableList.Random().transform.position - transform.position);
+            pickaxeAnimatorController.Play();
             CmdAttack(damagableList);
         }
           
