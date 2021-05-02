@@ -18,10 +18,20 @@ namespace MD.Character
         [SerializeField]
         private VisualEffects.DamagedVFX damagedVFX = null;
 
+        public System.Action<uint> OnOutOfHP { get; set; }
+
         [Server]
         public void TakeDamage(int dmg)
         {
             currentHP = Mathf.Clamp(currentHP - dmg, minHP, maxHP);
+            
+            if (!currentHP.Equals(minHP))
+            {
+                return;
+            }
+
+            OnOutOfHP?.Invoke(netId);
+            gameObject.SetActive(false);
         }
 
         private void OnCurrentHPSync(int oldCurHP, int newCurHP)
@@ -45,6 +55,11 @@ namespace MD.Character
         void Update()
         {
             if (!hasAuthority)
+            {
+                return;
+            }
+
+            if (GetComponent<AI.PlayerBot>() != null)
             {
                 return;
             }

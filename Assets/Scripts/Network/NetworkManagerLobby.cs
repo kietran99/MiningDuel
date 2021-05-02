@@ -57,6 +57,8 @@ namespace MD.UI
         public bool isBotTraining;
         private IGameModeManager gameModeManager;
         private Map.Core.SpawnPositionsData spawnPositionsData;
+        private bool timeOut = true;
+        private List<uint> EliminatedBots { get; set; } = new List<uint>();
         #endregion
 
         public static event Action OnClientConnected;
@@ -298,9 +300,9 @@ namespace MD.UI
 
         private void SetupGame()
         {
-            float matchTime = 120f;
+            float matchTime = 120f; // Starts a 2-min match
             Time.timeScale = 1f;   
-            gameModeManager.SetupGame();      
+            gameModeManager.SetupGame(); 
             Invoke(nameof(EndGame), matchTime);
         }
 
@@ -316,9 +318,50 @@ namespace MD.UI
         public void SetupBotAndPlayerState(Transform player)
         {
             player.position = spawnPositionsData.NextSpawnPoint;
+            player.GetComponent<HitPoints>().OnOutOfHP += LoseBotTrainingByElimination;
             var bot = Instantiate(botPrefab, spawnPositionsData.NextSpawnPoint, Quaternion.identity);
             Bots.Add(bot.GetComponent<PlayerBot>());
+            bot.GetComponent<BotHitPoints>().OnOutOfHP += HandleBotEliminated;
             NetworkServer.Spawn(bot, Players[0].connectionToClient);
+        }
+
+        private void HandleBotEliminated(uint botId)
+        {
+            EliminatedBots.Add(Bots.Find(bot => bot.netId.Equals(botId)).netId);
+
+            if (EliminatedBots.Count.Equals(Bots.Count))
+            {
+                foreach (var eliminated in EliminatedBots)
+                {
+                    if (!Bots.Count(bot => bot.netId.Equals(eliminated)).Equals(1)) // If there are duplicates (Impossible unless 2 bots own the same netId) 
+                    {
+                        Debug.LogError("Duplicates in eliminated IDs");
+                        return;
+                    }
+                }
+
+                WinBotTrainingByElimination();
+            }
+        }
+
+        private void WinBotTrainingByElimination()
+        {
+            EliminationEndCleanUp();
+            Time.timeScale = 0f;           
+            Players[0].TargetNotifyEndGame(true);          
+        }
+
+        private void LoseBotTrainingByElimination(uint playerId)
+        {
+            EliminationEndCleanUp();
+            Time.timeScale = 0f;           
+            Players[0].TargetNotifyEndGame(false);          
+        }
+
+        private void EliminationEndCleanUp()
+        {
+            CancelInvoke();
+            timeOut = false;
         }
 
         public void StartGame()

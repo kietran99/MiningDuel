@@ -17,10 +17,12 @@ namespace MD.UI
         private float magnitudeY = 1f;
 
         private Vector3 originalPos;
+        private float deltaTime;
 
         private void Start()
         {
             originalPos = simulatingGO.transform.position;
+            deltaTime = Time.deltaTime;
             EventSystems.EventConsumer.GetOrAttach(gameObject).StartListening<Character.HPChangeData>(PlayIfTakingDamage);           
         }
 
@@ -44,7 +46,7 @@ namespace MD.UI
                 float y = UnityEngine.Random.Range(-1f, 1f) * magnitudeY;
                 simulatingGO.transform.position += new Vector3(x, y, 0f);
 
-                elapsed += Time.deltaTime;
+                elapsed += deltaTime;
 
                 yield return null;
             }
