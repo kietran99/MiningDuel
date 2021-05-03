@@ -20,6 +20,7 @@ namespace MD.UI
         private readonly string MAP_GENERATOR = "Map Generator";
         private readonly string MAP_RENDERER = "Map Renderer";
         private readonly string SCAN_WAVE_SPAWNER = "Scan Wave Spawner";
+        private readonly string STORAGE = "Storage";
         #endregion
 
         #region SERIALIZE FIELDS
@@ -29,6 +30,9 @@ namespace MD.UI
 
         [Scene] [SerializeField]
         private string gamePlayScene = string.Empty;
+
+        [SerializeField]
+        private float matchTime = 240f;
 
         [Header("Room")]
         [SerializeField]
@@ -42,9 +46,6 @@ namespace MD.UI
 
         [SerializeField]
         private GameObject botPrefab = null;
-
-        [SerializeField]
-        private Diggable.Core.Storage gemStorage = null;    
         #endregion
 
         #region FIELDS
@@ -57,14 +58,14 @@ namespace MD.UI
         public bool isBotTraining;
         private IGameModeManager gameModeManager;
         private Map.Core.SpawnPositionsData spawnPositionsData;
-        private bool timeOut = true;
-        private List<uint> EliminatedBots { get; set; } = new List<uint>();
+        private List<uint> aliveBots = new List<uint>();
         #endregion
 
         public static event Action OnClientConnected;
         public static event Action OnClientDisconnnected;
 
         public int MinNumPlayers => minimumPlayers; 
+        public Vector2 NextSpawnPoint => spawnPositionsData.NextSpawnPoint;
         private Player NetworkPlayerPrefab
         {
             set => networkPlayerPrefab = value;
@@ -169,7 +170,6 @@ namespace MD.UI
 
         public Player SpawnBotTrainingPlayer(NetworkConnection conn)
         {
-            // var player = Instantiate(NetworkPlayerPrefab, spawnPositionsData.NextSpawnPoint, Quaternion.identity);
             var player = Instantiate(NetworkPlayerPrefab);
             player.SetPlayerNameAndColor(PlayerPrefs.GetString(PlayerNameInput.PLAYER_PREF_NAME_KEY));
             NetworkServer.AddPlayerForConnection(conn, player.gameObject); 
@@ -194,6 +194,7 @@ namespace MD.UI
             Time.timeScale = 1f;
             ServerChangeScene(menuScene);
             CleanObjectsOnDisconnect();
+            GetComponent<CustomNetworkDiscovery>().StopAdvertisingServer();
             base.OnStopServer();
         }
 
@@ -275,8 +276,8 @@ namespace MD.UI
 
         private void SpawnStorage(NetworkIdentity playerId, Color flagColor)
         {
-            var storage = Instantiate(gemStorage, playerId.transform.position, Quaternion.identity);
-            storage.Initialize(playerId, flagColor);
+            var storage = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(STORAGE)), playerId.transform.position, Quaternion.identity);
+            storage.GetComponent<Diggable.Core.Storage>().Initialize(playerId, flagColor);
             NetworkServer.Spawn(storage.gameObject);
         }
 
@@ -298,72 +299,6 @@ namespace MD.UI
             NetworkServer.Spawn(mapRenderer, conn);
         }
 
-        private void SetupGame()
-        {
-            float matchTime = 120f; // Starts a 2-min match
-            Time.timeScale = 1f;   
-            gameModeManager.SetupGame(); 
-            Invoke(nameof(EndGame), matchTime);
-        }
-
-        public void SetupPlayerState(float matchTime)
-        {
-            foreach (Player player in Players)
-            {
-                player.Movable(true);
-                player.TargetNotifyGameReady(matchTime);
-            }
-        }
-
-        public void SetupBotAndPlayerState(Transform player)
-        {
-            player.position = spawnPositionsData.NextSpawnPoint;
-            player.GetComponent<HitPoints>().OnOutOfHP += LoseBotTrainingByElimination;
-            var bot = Instantiate(botPrefab, spawnPositionsData.NextSpawnPoint, Quaternion.identity);
-            Bots.Add(bot.GetComponent<PlayerBot>());
-            bot.GetComponent<BotHitPoints>().OnOutOfHP += HandleBotEliminated;
-            NetworkServer.Spawn(bot, Players[0].connectionToClient);
-        }
-
-        private void HandleBotEliminated(uint botId)
-        {
-            EliminatedBots.Add(Bots.Find(bot => bot.netId.Equals(botId)).netId);
-
-            if (EliminatedBots.Count.Equals(Bots.Count))
-            {
-                foreach (var eliminated in EliminatedBots)
-                {
-                    if (!Bots.Count(bot => bot.netId.Equals(eliminated)).Equals(1)) // If there are duplicates (Impossible unless 2 bots own the same netId) 
-                    {
-                        Debug.LogError("Duplicates in eliminated IDs");
-                        return;
-                    }
-                }
-
-                WinBotTrainingByElimination();
-            }
-        }
-
-        private void WinBotTrainingByElimination()
-        {
-            EliminationEndCleanUp();
-            Time.timeScale = 0f;           
-            Players[0].TargetNotifyEndGame(true);          
-        }
-
-        private void LoseBotTrainingByElimination(uint playerId)
-        {
-            EliminationEndCleanUp();
-            Time.timeScale = 0f;           
-            Players[0].TargetNotifyEndGame(false);          
-        }
-
-        private void EliminationEndCleanUp()
-        {
-            CancelInvoke();
-            timeOut = false;
-        }
-
         public void StartGame()
         {
             if (SceneManager.GetActiveScene().path == menuScene && IsReadyToStart())
@@ -380,7 +315,21 @@ namespace MD.UI
 
         public bool IsReadyToStart() => gameModeManager.IsReadyToStart();
 
-        private void EndGame()
+        private void SetupGame()
+        {  
+            gameModeManager.SetupGame(matchTime, Players); 
+            Invoke(nameof(EndGameByTimeOut), matchTime);
+        }
+
+        public GameObject SpawnBot(Vector2 spawnPos)
+        {
+            var bot = Instantiate(botPrefab, spawnPos, Quaternion.identity);
+            Bots.Add(bot.GetComponent<PlayerBot>());
+            NetworkServer.Spawn(bot, Players[0].connectionToClient);
+            return bot;
+        }
+
+        private void EndGameByTimeOut()
         {
             Debug.Log("Player count: " + Players.Count);
             
@@ -413,15 +362,15 @@ namespace MD.UI
             }
         }
 
+    #if UNITY_EDITOR
         void Update()
         {
-    #if UNITY_EDITOR
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 CancelInvoke();
-                EndGame();
+                EndGameByTimeOut();
             }
-    #endif
         }   
+    #endif
     }
 }    

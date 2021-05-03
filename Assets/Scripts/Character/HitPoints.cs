@@ -31,7 +31,7 @@ namespace MD.Character
             }
 
             OnOutOfHP?.Invoke(netId);
-            gameObject.SetActive(false);
+            // gameObject.SetActive(false);
         }
 
         private void OnCurrentHPSync(int oldCurHP, int newCurHP)

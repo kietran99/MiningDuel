@@ -65,16 +65,13 @@ MonoBehaviour:
   spawnPrefabs: []
   menuScene: Assets/Scenes/Main Menu Scene.unity
   gamePlayScene: Assets/Scenes/Multiplayer.unity
+  matchTime: 240
   maximumPlayers: 4
   minimumPlayers: 2
   roomPlayerPrefab: {fileID: 9037775071047316419, guid: c0e7ecaf0d50b5748919f41920282256,
     type: 3}
   botPrefab: {fileID: 5063567480658151164, guid: 54a0943568201224faf9e9135bbfdd04,
     type: 3}
-  spawnPointPicker: {fileID: -5008208810592905108, guid: ef6f40e00172b8549ae0c3d7e98b2fd9,
-    type: 3}
-  spawnPositionPicker: {fileID: 11400000, guid: e5aa512adb5d5d0429123b7d7c393553,
-    type: 2}
   gemStorage: {fileID: 266650644458575417, guid: e0fae1b0286fb92418045c20ef3e7f22,
     type: 3}
   DontDestroyOnLoadObjects: []
