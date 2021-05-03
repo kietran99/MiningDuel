@@ -18,7 +18,7 @@ public class SpeedPotion : BaseQuirk
         MoveAction moveAction = user.GetComponent<MoveAction>();
         if (moveAction != null)
         {
-            moveAction.IncreaseSpeed(speedPercentage,time);
+            moveAction.CmdModifySpeed(speedPercentage,time);
         }
 
         CmdRequestDestroy();

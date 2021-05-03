@@ -44,6 +44,16 @@ namespace MD.AI
             }
         }
 
+        [Server]
+        public void HandleTrapExplode(float slowDownTime) 
+        {
+            BotMoveAction moveAction = GetComponent<BotMoveAction>();
+            if (moveAction != null)
+            {
+                moveAction.SlowDown(slowDownTime);
+            }
+        }
+
         private float GetExplosionForce()
         {
             return Random.Range(100f, maxExplosionForce);

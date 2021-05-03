@@ -8,7 +8,7 @@ namespace MD.Character
     [RequireComponent(typeof(DigAction))]
     [RequireComponent(typeof(PlayerExplosionHandler))]
     [RequireComponent(typeof(ScoreManager))]
-    public class Player : NetworkBehaviour
+    public class Player : NetworkBehaviour, IPlayer
     {        
         [SerializeField]
         private PlayerColorPicker colorPicker = null;
@@ -108,6 +108,11 @@ namespace MD.Character
             {
                 CmdRequestSpawnLinkedTrap(netIdentity,Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
             }
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                Debug.Log("slow down");
+                GetComponent<MoveAction>().SlowDown(3f);
+            }
         }
 
         [Command]
@@ -115,6 +120,8 @@ namespace MD.Character
         {
                 LinkedTrapSpawnData data = new LinkedTrapSpawnData(owner,x,y);
                 EventSystems.EventManager.Instance.TriggerEvent<LinkedTrapSpawnData>(data);
-        }      
+        }
+
+        public NetworkIdentity GetNetworkIdentity() => netIdentity;      
     }
 }

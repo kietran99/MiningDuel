@@ -56,6 +56,16 @@ namespace MD.Character
             }
         }
 
+        [Server]
+        public void HandleTrapExplode(float slowDownTime)
+        {
+            MoveAction player = GetComponent<MoveAction>();
+            if (player)
+            {
+                player.SlowDown(slowDownTime);
+            }
+        }
+
         [ClientRpc]
         private void RpcPlayDamagingEffect()
         {

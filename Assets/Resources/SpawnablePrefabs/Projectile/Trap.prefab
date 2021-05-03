@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2559538637866694821}
   m_Layer: 10
   m_Name: Explode Range
-  m_TagString: Untagged
+  m_TagString: Linked Trap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -356,7 +356,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  linkedTrapsList: []
   owner: {fileID: 0}
   rangeControl: {fileID: 2559538637866694821}
   WirePrefab: {fileID: 5758539721120645229, guid: 23c6ca9b04b957b42a8b0d415b0567d6,

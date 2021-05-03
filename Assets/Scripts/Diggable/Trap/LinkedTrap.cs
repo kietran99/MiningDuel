@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-
+using MD.Character;
 public class LinkedTrap : NetworkBehaviour
 {
+    [SerializeField]
+    float slowDownTime = 1.5f;
     [SerializeField]
     List<LinkedTrap> linkedTrapsList;
 
@@ -20,6 +22,8 @@ public class LinkedTrap : NetworkBehaviour
     [SerializeField]
     private float WireLenghPadding = .8f;
 
+    [SerializeField]
+    private ContactFilter2D explodeFilter;
 
     private Vector2 HALF_CELL_OFFSET = Vector2.one/2f;
     private bool isExploding;
@@ -47,6 +51,13 @@ public class LinkedTrap : NetworkBehaviour
         }
     }
 
+    [Command]
+    public void CmdRequestDetonate()
+    {
+        Detonate();
+    }
+
+    [Server]
     public void Detonate()
     {
         if (isExploding) return;
@@ -54,6 +65,7 @@ public class LinkedTrap : NetworkBehaviour
         Explode();
     }
 
+    [Server]
     public void SpreadExplode(LinkedTrap from)
     {
         int index = linkedTrapsList.IndexOf(from);
@@ -67,12 +79,40 @@ public class LinkedTrap : NetworkBehaviour
         {
             Debug.LogError("explode triggered from out of range trap from " + from.transform.position + " this" + transform.position );
         }
+        RemoveWire(from);
+        Detonate();
     }
 
+    [Server]
     private void Explode()
     {
         //animate
         Debug.Log("explode");
+        Collider2D collider = rangeControl.GetComponent<Collider2D>();
+        if (collider != null)
+        {
+            List<Collider2D> results = new List<Collider2D>();
+            collider.OverlapCollider(explodeFilter, results);
+            for (int i=0; i< results.Count; i++)
+            {
+                if (results[i].CompareTag(Constants.PLAYER_TAG))
+                {
+                    IPlayer player = GetComponent<IPlayer>();
+                    if (player == null || player.GetNetworkIdentity().Equals(owner)) continue;
+                    MD.Diggable.Projectile.IExplodable explodable = results[i].GetComponent<MD.Diggable.Projectile.IExplodable>();
+                    if (explodable != null)
+                    {
+                        explodable.HandleTrapExplode(slowDownTime);
+                    }
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError("cant find collider of range control");
+        }
+
+
         for (int i=0; i<linkedTrapsList.Count; i++)
         {
             if (linkedTrapsList[i].gameObject == null) 
@@ -82,7 +122,7 @@ public class LinkedTrap : NetworkBehaviour
             RemoveWire(linkedTrapsList[i]);
             linkedTrapsList[i].SpreadExplode(this);
         }
-        Destroy(gameObject);
+        NetworkServer.Destroy(gameObject);
     }
     
     [ClientRpc]

@@ -7,7 +7,7 @@ using MD.Diggable.Core;
 
 namespace MD.AI
 {
-    public class PlayerBot : NetworkBehaviour
+    public class PlayerBot : NetworkBehaviour, IPlayer
     {
         #region SERIALIZE FIELDS
         [SerializeField]
@@ -403,5 +403,6 @@ namespace MD.AI
 
             return res;
         }
+        public NetworkIdentity GetNetworkIdentity() => netIdentity;  
     }
 }

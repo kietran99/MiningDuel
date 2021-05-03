@@ -21,15 +21,8 @@ public class TrapExplodeRangeControl : MonoBehaviour
             if (trapCollider != null)
             {
                 LinkedTrap otherTrap = trapCollider.GetTrap();
-                if (otherTrap.GetOwner().Equals(trap.GetOwner())) //  only link traps of the same owner
-                {
-                    otherTrap.RegistLinkedTrap(trap, false);
-                    trap.RegistLinkedTrap(otherTrap, true); //create wire on new trap
-                }
-                else
-                {
-                    Debug.Log(this.trap.GetOwner());
-                }
+                otherTrap.RegistLinkedTrap(trap, false);
+                trap.RegistLinkedTrap(otherTrap, otherTrap.GetOwner().Equals(trap.GetOwner())); //create wire on traps of the same owner
             }
             else
             {
@@ -37,6 +30,7 @@ public class TrapExplodeRangeControl : MonoBehaviour
             }
         }
     }
+
     public LinkedTrap GetTrap() => trap;
 
 }

@@ -14,8 +14,11 @@ namespace MD.Character
         private Vector2 moveVect, minMoveBound, maxMoveBound;
         private Vector2 offset = new Vector2(.5f, .5f);
         
-        [SerializeField]
+        [SerializeField] [SyncVar]
         private float speedModifier =1f;
+        [SyncVar]
+        private int slowedDownCount = 0;
+        private float SlowDownPercentage = .8f;
 
         private Player player = null;
         private Player Player
@@ -57,6 +60,7 @@ namespace MD.Character
         private void MoveCharacter(float moveX, float moveY)
         {
             var movePos = new Vector2(moveX, moveY).normalized * speed*speedModifier;
+            if (slowedDownCount > 0) movePos*=(1f-SlowDownPercentage);
             // transform.Translate(movePos * Time.fixedDeltaTime);
             // transform.position = new Vector2(Mathf.Clamp(transform.position.x, minMoveBound.x + offset.x, maxMoveBound.x - offset.x),
             //                     Mathf.Clamp(transform.position.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));
@@ -79,10 +83,24 @@ namespace MD.Character
             this.minMoveBound = minMoveBound;
             this.maxMoveBound = maxMoveBound;
         }
-        public void IncreaseSpeed(float percentage, float time)
+        [Command]
+        public void CmdModifySpeed(float percentage, float time)
         {
             StartCoroutine(IncreaseSpeedCoroutine(percentage,time));
         }
+
+        public void SlowDown(float time)
+        {
+            StartCoroutine(SlowDownCoroutine(time));
+        }
+
+        private IEnumerator SlowDownCoroutine(float time)
+        {
+            slowedDownCount += 1;
+            yield return new WaitForSeconds(time);
+            slowedDownCount -= 1;
+        }
+
         private IEnumerator IncreaseSpeedCoroutine(float percentage, float time)
         {
             Debug.Log("increase speed by " + percentage);

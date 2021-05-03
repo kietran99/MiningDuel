@@ -2,6 +2,7 @@ using UnityEngine;
 using Mirror;
 using PathFinding;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace MD.AI
 {
@@ -16,7 +17,8 @@ namespace MD.AI
 
         // private float collideRightDistance = 0f;
         // private bool collideAhead = false;
-
+        [SerializeField]
+        private float SlowDownPercentage = .8f;
         [SerializeField]
         private int length;
         [SerializeField]
@@ -32,6 +34,8 @@ namespace MD.AI
 
         [SerializeField]
         private bool hasPath = false;
+
+        private int slowDownCount = 0;
 
         private BotAnimator animator;
 
@@ -138,7 +142,8 @@ namespace MD.AI
 
                 Vector2 moveDir = currentGoal - (Vector2)transform.position;
                 animator.SetMovementState(moveDir);
-                theRigidbody.MovePosition(theRigidbody.position + moveDir.normalized*speed*Time.fixedDeltaTime);
+                theRigidbody.MovePosition(theRigidbody.position + 
+                moveDir.normalized*speed*Time.fixedDeltaTime * (slowDownCount>0?(1- SlowDownPercentage):1));
             }
         }
 
@@ -223,6 +228,18 @@ namespace MD.AI
                 tried++;
             }
             hasPath = false;
+        }
+
+        public void SlowDown(float time)
+        {
+            StartCoroutine(SlowDownCoroutine(time));
+        }
+
+        private IEnumerator SlowDownCoroutine(float time)
+        {
+            slowDownCount += 1;
+            yield return new WaitForSeconds(time);
+            slowDownCount -= 1;
         }
     }
 }

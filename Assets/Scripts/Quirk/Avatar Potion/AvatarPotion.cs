@@ -21,7 +21,7 @@ public class AvatarPotion : BaseQuirk
         MoveAction moveAction = user.GetComponent<MoveAction>();
         if (moveAction != null)
         {
-            moveAction.IncreaseSpeed(speedPercentage,time);
+            moveAction.CmdModifySpeed(speedPercentage,time);
         }
         DigAction digAction = user.GetComponent<DigAction>();
         if (digAction != null)
