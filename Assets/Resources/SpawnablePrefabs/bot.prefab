@@ -4766,6 +4766,7 @@ GameObject:
   - component: {fileID: 4782119594220669090}
   - component: {fileID: 6541206941868605103}
   - component: {fileID: 6551515679009645056}
+  - component: {fileID: 7958351659384862809}
   m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
@@ -4869,6 +4870,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95960653db271c04ca3666df8f48a5c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7958351659384862809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4844660683178531978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cf5461124ba8e14abab3f28ed2b503a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerRenderer: {fileID: 4782119594220669090}
+  numberOfFlashes: 3
+  flashDelay: 0.075
 --- !u!1 &5063567480658151164
 GameObject:
   m_ObjectHideFlags: 0
@@ -4887,6 +4903,7 @@ GameObject:
   - component: {fileID: 5339483725538874892}
   - component: {fileID: 2659648287536106052}
   - component: {fileID: 6773149020054984751}
+  - component: {fileID: -7577764714199087779}
   m_Layer: 0
   m_Name: bot
   m_TagString: Player
@@ -5013,7 +5030,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  targetTrackerPrefab: {fileID: 0}
   throwChargeIndicator: {fileID: 0}
   basePower: 100
   chargeTime: 0.5
@@ -5069,3 +5085,21 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.4
+--- !u!114 &-7577764714199087779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5063567480658151164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f3fc6b95c12c1746bd56aaa4e16b92a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  maxHP: 100
+  minHP: 0
+  currentHP: 100
+  damagedVFX: {fileID: 7958351659384862809}

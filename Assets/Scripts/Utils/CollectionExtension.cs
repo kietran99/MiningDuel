@@ -170,4 +170,9 @@ public static class CollectionExtension
     {
         return arr[UnityEngine.Random.Range(0, arr.Length)];
     }
+
+    public static T Random<T>(this List<T> arr)
+    {
+        return arr[UnityEngine.Random.Range(0, arr.Count)];
+    }
 }
