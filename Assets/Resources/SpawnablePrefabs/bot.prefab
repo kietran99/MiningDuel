@@ -5048,6 +5048,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   speed: 3
+  SlowDownPercentage: 0.8
   length: 0
   currentNode: 0
   currentGoal: {x: 0, y: 0}
@@ -5102,4 +5103,5 @@ MonoBehaviour:
   maxHP: 100
   minHP: 0
   currentHP: 100
+  knockbackForce: 0.2
   damagedVFX: {fileID: 7958351659384862809}

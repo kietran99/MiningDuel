@@ -16,6 +16,9 @@ namespace MD.Character
         private int currentHP = 100;
 
         [SerializeField]
+        private float knockbackForce = .2f;
+
+        [SerializeField]
         private VisualEffects.DamagedVFX damagedVFX = null;
 
         public System.Action<uint> OnOutOfHP { get; set; }
@@ -24,14 +27,14 @@ namespace MD.Character
         public void TakeDamage(NetworkIdentity source, int dmg)
         {
             currentHP = Mathf.Clamp(currentHP - dmg, minHP, maxHP);
-            
+            transform.Translate((transform.position - source.transform.position).normalized * knockbackForce);
+
             if (!currentHP.Equals(minHP))
             {
                 return;
             }
 
             OnOutOfHP?.Invoke(netId);
-            // gameObject.SetActive(false);
         }
 
         private void OnCurrentHPSync(int oldCurHP, int newCurHP)

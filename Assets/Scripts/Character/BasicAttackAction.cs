@@ -11,9 +11,6 @@ namespace MD.Character
         private int power = 2;
 
         [SerializeField]
-        private float knockbackForce = .2f;
-
-        [SerializeField]
         private AttackableDataGatherer attackableDataGatherer = null;
 
         [SerializeField]
@@ -53,7 +50,6 @@ namespace MD.Character
             damagableList.ForEach(damagable => 
             {
                 damagable.GetComponent<IDamagable>().TakeDamage(netIdentity, power);
-                damagable.transform.Translate((damagable.transform.position - transform.position) * knockbackForce);
             });
         }
 
