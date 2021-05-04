@@ -52,7 +52,7 @@ namespace MD.Character
         {
             damagableList.ForEach(damagable => 
             {
-                damagable.GetComponent<IDamagable>().TakeDamage(power);
+                damagable.GetComponent<IDamagable>().TakeDamage(netIdentity, power);
                 damagable.transform.Translate((damagable.transform.position - transform.position) * knockbackForce);
             });
         }

@@ -108,11 +108,6 @@ namespace MD.Character
             {
                 CmdRequestSpawnLinkedTrap(netIdentity,Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
             }
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                Debug.Log("slow down");
-                GetComponent<MoveAction>().SlowDown(3f);
-            }
         }
 
         [Command]

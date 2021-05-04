@@ -21,7 +21,7 @@ namespace MD.Character
         public System.Action<uint> OnOutOfHP { get; set; }
 
         [Server]
-        public void TakeDamage(int dmg)
+        public void TakeDamage(NetworkIdentity source, int dmg)
         {
             currentHP = Mathf.Clamp(currentHP - dmg, minHP, maxHP);
             
@@ -71,7 +71,7 @@ namespace MD.Character
         }
 
         [Command]
-        void CmdTakeDamage() => TakeDamage(20);
+        void CmdTakeDamage() => TakeDamage(this.netIdentity, 20);
     #endif
     #endregion
     }

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using MD.Character;
-public class LinkedTrap : NetworkBehaviour
+public class LinkedTrap : NetworkBehaviour, IDamagable
 {
     [SerializeField]
     float slowDownTime = 1.5f;
+    [SerializeField]
+    float explosionTime = .2f;
     [SerializeField]
     List<LinkedTrap> linkedTrapsList;
 
@@ -62,7 +64,7 @@ public class LinkedTrap : NetworkBehaviour
     {
         if (isExploding) return;
         isExploding = true;
-        Explode();
+        StartCoroutine( Explode());
     }
 
     [Server]
@@ -84,10 +86,13 @@ public class LinkedTrap : NetworkBehaviour
     }
 
     [Server]
-    private void Explode()
+    private IEnumerator Explode()
     {
         //animate
         Debug.Log("explode");
+        
+        yield return new WaitForSeconds(explosionTime);
+
         Collider2D collider = rangeControl.GetComponent<Collider2D>();
         if (collider != null)
         {
@@ -97,8 +102,8 @@ public class LinkedTrap : NetworkBehaviour
             {
                 if (results[i].CompareTag(Constants.PLAYER_TAG))
                 {
-                    IPlayer player = GetComponent<IPlayer>();
-                    if (player == null || player.GetNetworkIdentity().Equals(owner)) continue;
+                    IPlayer player = results[i].GetComponent<IPlayer>();
+                    if (player.GetNetworkIdentity().Equals(owner)) continue;
                     MD.Diggable.Projectile.IExplodable explodable = results[i].GetComponent<MD.Diggable.Projectile.IExplodable>();
                     if (explodable != null)
                     {
@@ -111,7 +116,6 @@ public class LinkedTrap : NetworkBehaviour
         {
             Debug.LogError("cant find collider of range control");
         }
-
 
         for (int i=0; i<linkedTrapsList.Count; i++)
         {
@@ -171,6 +175,15 @@ public class LinkedTrap : NetworkBehaviour
         if(WireDict.TryGetValue(trap,out GameObject wire))
         {
             Destroy(wire);
+        }
+    }
+
+    [Server]
+    public void TakeDamage(NetworkIdentity source, int damage)
+    {
+        if (source == owner)
+        {
+            Detonate();
         }
     }
 }

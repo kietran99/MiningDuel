@@ -333,10 +333,10 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8555643561292018698}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.5, y: 0.53}
@@ -356,11 +356,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  slowDownTime: 1.5
+  explosionTime: 0.1
+  linkedTrapsList: []
   owner: {fileID: 0}
   rangeControl: {fileID: 2559538637866694821}
   WirePrefab: {fileID: 5758539721120645229, guid: 23c6ca9b04b957b42a8b0d415b0567d6,
     type: 3}
   WireLenghPadding: 1
+  explodeFilter:
+    useTriggers: 0
+    useLayerMask: 1
+    useDepth: 0
+    useOutsideDepth: 0
+    useNormalAngle: 0
+    useOutsideNormalAngle: 0
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 1
+    minDepth: 0
+    maxDepth: 0
+    minNormalAngle: 0
+    maxNormalAngle: 0
 --- !u!114 &6163613605608616368
 MonoBehaviour:
   m_ObjectHideFlags: 0

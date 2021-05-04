@@ -1,7 +1,8 @@
-﻿namespace MD.Character
+﻿using Mirror;
+namespace MD.Character
 {
     public interface IDamagable
     {
-        void TakeDamage(int dmg);
+        void TakeDamage(NetworkIdentity source,int dmg);
     }
 }

@@ -59,6 +59,7 @@ namespace MD.Character
         [Server]
         public void HandleTrapExplode(float slowDownTime)
         {
+            Debug.Log("Player trapped");
             MoveAction player = GetComponent<MoveAction>();
             if (player)
             {

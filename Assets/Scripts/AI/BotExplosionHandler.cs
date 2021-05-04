@@ -47,6 +47,7 @@ namespace MD.AI
         [Server]
         public void HandleTrapExplode(float slowDownTime) 
         {
+            Debug.Log("bot exploded");
             BotMoveAction moveAction = GetComponent<BotMoveAction>();
             if (moveAction != null)
             {
