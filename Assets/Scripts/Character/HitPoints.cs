@@ -27,6 +27,7 @@ namespace MD.Character
         public void TakeDamage(NetworkIdentity source, int dmg)
         {
             currentHP = Mathf.Clamp(currentHP - dmg, minHP, maxHP);
+            TargetOnDamageGiven(source.connectionToClient, dmg);
             transform.Translate((transform.position - source.transform.position).normalized * knockbackForce);
 
             if (!currentHP.Equals(minHP))
@@ -35,6 +36,12 @@ namespace MD.Character
             }
 
             OnOutOfHP?.Invoke(netId);
+        }
+
+        [TargetRpc]
+        private void TargetOnDamageGiven(NetworkConnection atker, int dmg)
+        {
+            EventSystems.EventManager.Instance.TriggerEvent(new DamageGivenData(transform.position, dmg));
         }
 
         private void OnCurrentHPSync(int oldCurHP, int newCurHP)
