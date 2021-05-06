@@ -33,9 +33,11 @@ public class LinkedTrap : NetworkBehaviour, IDamagable
     private Dictionary<LinkedTrap,GameObject> WireDict;
     private Vector3 BaseWireScale;
 
+    private float MinWireLength = .3f;
 
 
-    void Start()
+
+    void Awake()
     {
         linkedTrapsList = new List<LinkedTrap>();
         isExploding = false;
@@ -51,6 +53,11 @@ public class LinkedTrap : NetworkBehaviour, IDamagable
         {
             spriteRenderers[i].maskInteraction = SpriteMaskInteraction.None;
         }
+    }
+
+    private void OnDisable()
+    {
+        RemoveWire();
     }
 
     [Command]
@@ -74,14 +81,13 @@ public class LinkedTrap : NetworkBehaviour, IDamagable
         if (index != -1)
         {
             linkedTrapsList.RemoveAt(index);
-            RemoveWire(from);
+            // RpcRemoveWire(from);
             Detonate();
         }
         else
         {
             Debug.LogError("explode triggered from out of range trap from " + from.transform.position + " this" + transform.position );
         }
-        RemoveWire(from);
         Detonate();
     }
 
@@ -116,14 +122,12 @@ public class LinkedTrap : NetworkBehaviour, IDamagable
         {
             Debug.LogError("cant find collider of range control");
         }
-
         for (int i=0; i<linkedTrapsList.Count; i++)
         {
             if (linkedTrapsList[i].gameObject == null) 
             {
                 Debug.Break();
             }
-            RemoveWire(linkedTrapsList[i]);
             linkedTrapsList[i].SpreadExplode(this);
         }
         NetworkServer.Destroy(gameObject);
@@ -154,11 +158,12 @@ public class LinkedTrap : NetworkBehaviour, IDamagable
         Vector2 centeredTo = to + HALF_CELL_OFFSET;
 
         Debug.DrawLine(centeredFrom,centeredTo,Color.red,100f);
-        float length = Vector2.Distance(centeredFrom,centeredTo);
+        float length = Vector2.Distance(centeredFrom,centeredTo)- WireLenghPadding;
+        length = Mathf.Max(MinWireLength,length);
         float angle = Vector2.SignedAngle(Vector2.right, centeredTo-centeredFrom);
 
         GameObject wire = Instantiate(WirePrefab,Vector2.Lerp(centeredFrom,centeredTo,.5f),Quaternion.identity);
-        Vector3 scale = new Vector3(BaseWireScale.x*length - BaseWireScale.x*WireLenghPadding,BaseWireScale.y,BaseWireScale.z);
+        Vector3 scale = new Vector3(BaseWireScale.x*length,BaseWireScale.y,BaseWireScale.z);
         wire.transform.localScale = scale;
         wire.transform.Rotate(Vector3.forward*angle,Space.Self);
 
@@ -170,11 +175,11 @@ public class LinkedTrap : NetworkBehaviour, IDamagable
         return wire;
     }
 
-    private void RemoveWire(LinkedTrap trap)
+    private void RemoveWire()
     {   
-        if(WireDict.TryGetValue(trap,out GameObject wire))
+        foreach ( KeyValuePair<LinkedTrap, GameObject> entry in WireDict)
         {
-            Destroy(wire);
+            Destroy(entry.Value);
         }
     }
 
