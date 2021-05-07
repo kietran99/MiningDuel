@@ -2,6 +2,7 @@
 using UnityEngine;
 using Mirror;
 using System.Collections;
+
 namespace MD.Character
 {
     [RequireComponent(typeof(Rigidbody2D))]
@@ -10,12 +11,16 @@ namespace MD.Character
         [SerializeField]
         private float speed = 1f;
 
+        [SerializeField]
+        private float counterSuccessDashDistance = .2f;
+
         private Rigidbody2D rigidBody;
         private Vector2 moveVect, minMoveBound, maxMoveBound;
         private Vector2 offset = new Vector2(.5f, .5f);
         
         [SerializeField] [SyncVar]
-        private float speedModifier =1f;
+        private float speedModifier = 1f;
+
         [SyncVar]
         private int slowedDownCount = 0;
         private float SlowDownPercentage = .8f;
@@ -30,28 +35,49 @@ namespace MD.Character
             }
         }
 
+        private bool isImmobilize = false;
+
         private void Start()
         {
             speedModifier = 1f;
             rigidBody = GetComponent<Rigidbody2D>();
-            EventSystems.EventManager.Instance.StartListening<JoystickDragData>(BindMoveVector);
+            var eventConsumer = EventSystems.EventConsumer.GetOrAttach(gameObject);
+            eventConsumer.StartListening<JoystickDragData>(BindMoveVector);
+            eventConsumer.StartListening<GetCounteredData>(HandleGetCountered);
+            eventConsumer.StartListening<CounterSuccessData>(Dash);
         }
 
-        private void OnDestroy()
+        private void HandleGetCountered(GetCounteredData counterData)
         {
-            EventSystems.EventManager.Instance.StopListening<JoystickDragData>(BindMoveVector);
+            isImmobilize = true;
+            Invoke(nameof(RegainMobility), counterData.immobilizeTime);
+        }
+
+        private void RegainMobility() => isImmobilize = false;
+
+        private void Dash(CounterSuccessData data)
+        {
+            var moveDist = data.counterDir * counterSuccessDashDistance;
+            transform.position += new Vector3(moveDist.x, moveDist.y, 0f);
         }
 
         void FixedUpdate()
         {
             if (!isLocalPlayer) return;
-#if UNITY_EDITOR
+
+        #if UNITY_EDITOR
             var moveX = Input.GetAxisRaw("Horizontal");
             var moveY = Input.GetAxisRaw("Vertical");
             EventSystems.EventManager.Instance.TriggerEvent(new JoystickDragData(new Vector2(moveX, moveY)));
-#endif
+        #endif
+        
+            if (isImmobilize)
+            {
+                return;
+            }
+
             if (moveVect.Equals(Vector2.zero) || !Player.CanMove) return;
-            
+
             MoveCharacter(moveVect.x, moveVect.y);
         }
 

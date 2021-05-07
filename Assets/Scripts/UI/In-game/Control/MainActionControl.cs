@@ -27,16 +27,23 @@ namespace MD.UI
 
             button.onClick.AddListener(Invoke);
             var eventConsumer = EventSystems.EventConsumer.Attach(gameObject);
-            EventSystems.EventManager.Instance.StartListening<ProjectileObtainData>(HideButton);
-            EventSystems.EventManager.Instance.StartListening<ThrowInvokeData>(ShowButton);
+            eventConsumer.StartListening<ProjectileObtainData>(HideButton);
+            eventConsumer.StartListening<ThrowInvokeData>(ShowButton);
             eventConsumer.StartListening<MainActionToggleData>(ToggleInvoker);
+            eventConsumer.StartListening<GetCounteredData>(TemporaryDisableButton);
         }
+
+        private void TemporaryDisableButton(Character.GetCounteredData counterData)
+        {
+            button.interactable = false;
+            Invoke(nameof(EnableButton), counterData.immobilizeTime);
+        }
+
+        private void EnableButton() => button.interactable = true;
 
         private void OnDestroy()
         {
             button.onClick.RemoveListener(Invoke);
-            EventSystems.EventManager.Instance.StopListening<ProjectileObtainData>(HideButton);
-            EventSystems.EventManager.Instance.StopListening<ThrowInvokeData>(ShowButton);
         }
 
         private void ToggleInvoker(MainActionToggleData actionToggleData)

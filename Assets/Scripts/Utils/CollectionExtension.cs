@@ -106,6 +106,20 @@ public static class CollectionExtension
         return currentVal;
     }
 
+    public static T Reduce<T>(this List<T> iter, Func<T, T, T> function)
+    {
+        if (iter.Count == 0) return default(T);
+
+        T currentVal = iter[0];
+
+        for (int i = 0; i < iter.Count; i++)
+        {
+            currentVal = function(currentVal, iter[i]);
+        }
+
+        return currentVal;
+    }
+
     public static T Reduce<T, U>(this U[] iter, Func<T, U, T> function, T startValue)
     {
         T currentVal = startValue;

@@ -1,7 +1,6 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Mirror;
 using MD.UI;
-using System.Collections.Generic;
 
 namespace MD.Character
 {
@@ -9,68 +8,56 @@ namespace MD.Character
     {
         [SerializeField]
         private int power = 2;
+     
+        [SerializeField]
+        private float immobilizeTime = .5f;
 
         [SerializeField]
-        private AttackableDataGatherer attackableDataGatherer = null;
+        private EnemyInAttackRangeDetect enemyDetect = null;
+
+        [SerializeField]
+        private WeaponDamageZone damageZone = null;
 
         [SerializeField]
         private PickaxeAnimatorController pickaxeAnimatorController = null;
 
-        private List<NetworkIdentity> damagableList = new List<NetworkIdentity>(4);
-
         public override void OnStartAuthority()
         {
             EventSystems.EventManager.Instance.StartListening<AttackInvokeData>(HandleAttackInvoke);
-            attackableDataGatherer.OnDamagableEnter += AddToDamagableList;
-            attackableDataGatherer.OnDamagableExit += RemoveFromDamagableList;
+            enemyDetect.OnTrackingTargetsChanged += ToggleMainAction;
+            damageZone.OnDamagableCollide += CmdNewAttack;
+            damageZone.OnGetCountered += HandleGetCountered;
         }
 
         public override void OnStopClient()
         {
             EventSystems.EventManager.Instance.StopListening<AttackInvokeData>(HandleAttackInvoke);
-            attackableDataGatherer.OnDamagableEnter -= AddToDamagableList;
-            attackableDataGatherer.OnDamagableExit -= RemoveFromDamagableList;
+            enemyDetect.OnTrackingTargetsChanged -= ToggleMainAction;
+            damageZone.OnDamagableCollide -= CmdNewAttack;
+            damageZone.OnGetCountered -= HandleGetCountered;
         }
 
         [Client]
         private void HandleAttackInvoke(AttackInvokeData _)
         {
-            if (damagableList.Count.Equals(0))
-            {
-                return;
-            }
-
             pickaxeAnimatorController.Play();
-            CmdAttack(damagableList);
+            damageZone.AttemptSwing();
         }
-          
+
+        private void ToggleMainAction(bool targetsInRange)
+        {
+            EventSystems.EventManager.Instance.TriggerEvent(new Character.MainActionToggleData(targetsInRange ? MainActionType.ATTACK : MainActionType.DIG));
+        }
+
         [Command]
-        private void CmdAttack(List<NetworkIdentity> damagableList) 
+        private void CmdNewAttack(NetworkIdentity damagable)
         {
-            damagableList.ForEach(damagable => 
-            {
-                damagable.GetComponent<IDamagable>().TakeDamage(netIdentity, power);
-            });
+            damagable.GetComponent<IDamagable>().TakeDamage(netIdentity, power);
         }
 
-        private void AddToDamagableList(NetworkIdentity damagable)
+        private void HandleGetCountered(Vector2 counterVect)
         {
-            damagableList.Add(damagable);
-            // Debug.Log("Damagable List Size: " + damagableList.Count);
-            if (damagableList.Count.Equals(1)) 
-            {
-                EventSystems.EventManager.Instance.TriggerEvent(new Character.MainActionToggleData(MainActionType.ATTACK));
-            }
-        }
-
-        private void RemoveFromDamagableList(NetworkIdentity damagable)
-        {
-            damagableList.Remove(damagable);
-            // Debug.Log("Damagable List Size: " + damagableList.Count);
-            if (damagableList.Count.Equals(0)) 
-            {
-                EventSystems.EventManager.Instance.TriggerEvent(new Character.MainActionToggleData(MainActionType.DIG));
-            }
+            EventSystems.EventManager.Instance.TriggerEvent(new GetCounteredData(counterVect, immobilizeTime));
         }
 
     #if UNITY_EDITOR
@@ -84,6 +71,7 @@ namespace MD.Character
 
             if (Input.GetMouseButtonDown(1))
             {
+                // GetCounter(new Vector2(-2f, -2f), immobilizeTime);
                 EventSystems.EventManager.Instance.TriggerEvent(new AttackInvokeData());
             }
         }

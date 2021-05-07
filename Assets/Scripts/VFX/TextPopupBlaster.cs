@@ -80,7 +80,7 @@ namespace MD.VisualEffects
             OnFade?.Invoke(gameObject);
         }
 
-        private float RandomExplosionForce() => Random.Range(5f, 7f);
+        private float RandomExplosionForce() => Random.Range(4f, 5f);
 
         private Vector2 RandomExplosionDirection() => new Vector2(Random.Range(-.5f, .5f), Random.Range(0f, 1f)).normalized;
     }
