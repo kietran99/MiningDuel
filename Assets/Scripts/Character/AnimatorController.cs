@@ -29,6 +29,8 @@ namespace MD.Character
             eventManager.StartListening<DigInvokeData>(InvokeDig);
             eventManager.StartListening<ProjectileObtainData>(SetHoldState);
             eventManager.StartListening<ThrowInvokeData>(RevertToIdleState);
+            var eventConsumer = EventSystems.EventConsumer.Attach(gameObject);
+            eventConsumer.StartListening<AttackInvokeData>(PlayBasicAttack);
         }
 
         private void OnDisable()
@@ -84,5 +86,11 @@ namespace MD.Character
         private void BindLastMoveStats(float lastX, float lastY) => (this.lastX, this.lastY) = (lastX, lastY);    
 
         public void CancelDigAction() => animator.SetBool(AnimatorConstants.IS_DIGGING, false);  
+
+        private void PlayBasicAttack(AttackInvokeData _)
+        {
+            // animator.SetTrigger(AnimatorConstants.ATTACK);
+            networkAnimator.SetTrigger(AnimatorConstants.BASIC_ATTACK);
+        }
     }
 }

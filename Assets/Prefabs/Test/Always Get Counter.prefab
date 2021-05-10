@@ -98,6 +98,7 @@ GameObject:
   - component: {fileID: 3396130773654146851}
   - component: {fileID: 3396130773654146848}
   - component: {fileID: 3396130773654146849}
+  - component: {fileID: 3264688550610477107}
   m_Layer: 0
   m_Name: Always Get Counter
   m_TagString: Untagged
@@ -185,3 +186,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 427bcf663ea4ac344b030fb56e7323d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3264688550610477107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3396130773654146854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d71a1b9d9ca19c04fb7844b4860dbdac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageZone: {fileID: 3396130771928546039}

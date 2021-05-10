@@ -89,7 +89,7 @@ namespace MD.Character
             gameObject.SetActive(false);
         }
 
-        public void GetCounter(Vector2 counterVect)
+        private void GetCounter(Vector2 counterVect)
         {
             Debug.Log("Get Countered: " + name);
             OnGetCountered?.Invoke(counterVect);
