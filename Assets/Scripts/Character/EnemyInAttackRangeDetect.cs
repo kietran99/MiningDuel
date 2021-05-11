@@ -17,6 +17,15 @@ namespace MD.Character
         {
             cachedDamagableDict = new Dictionary<int, Transform>();
             trackingTargets = new List<Transform>();
+            EventSystems.EventConsumer.Attach(gameObject).StartListening<UI.AttackInvokeData>(TriggerAttackDirData);
+        }
+
+        private void TriggerAttackDirData(UI.AttackInvokeData _) 
+        {
+            var targetAngle = -(pickaxe.localEulerAngles.z + 90f);
+            Debug.Log("Angle: " + targetAngle);
+            var atkDir = new Vector2(-Mathf.Cos(Mathf.Deg2Rad * targetAngle), Mathf.Sin(Mathf.Deg2Rad * targetAngle));
+            EventSystems.EventManager.Instance.TriggerEvent(new AttackDirectionData(atkDir));
         }
 
         private void OnTriggerEnter2D(Collider2D other)

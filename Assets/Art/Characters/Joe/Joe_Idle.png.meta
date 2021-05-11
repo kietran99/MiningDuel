@@ -1,16 +1,31 @@
 fileFormatVersion: 2
-guid: cbadcd5233900f34fa8a25b883b42cc2
+guid: aca0aa9034753bc4ba4dc1b0dd968d1b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4836675245905264742
-    second: Joe_Run_Up_0
+      213: -5158355375989388107
+    second: Joe_Idle_0
   - first:
-      213: -8582125332254102977
-    second: Joe_Run_Up_1
+      213: 6067377351109833637
+    second: Joe_Idle_1
   - first:
-      213: -559884696466912606
-    second: Joe_Run_Up_2
+      213: -8877388020422518664
+    second: Joe_Idle_2
+  - first:
+      213: -4526649579965746250
+    second: Joe_Idle_3
+  - first:
+      213: 8832555257063221798
+    second: Joe_Idle_4
+  - first:
+      213: 5452905983147034682
+    second: Joe_Idle_5
+  - first:
+      213: -1657077984836352886
+    second: Joe_Idle_6
+  - first:
+      213: 3403534451016132034
+    second: Joe_Idle_7
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -41,11 +56,11 @@ TextureImporter:
   textureSettings:
     serializedVersion: 2
     filterMode: 0
-    aniso: -1
+    aniso: 1
     mipBias: -100
     wrapU: 1
     wrapV: 1
-    wrapW: 1
+    wrapW: -1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -70,7 +85,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 128
+    maxTextureSize: 256
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -82,7 +97,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Standalone
-    maxTextureSize: 128
+    maxTextureSize: 256
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -94,7 +109,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Android
-    maxTextureSize: 128
+    maxTextureSize: 256
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -108,7 +123,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Joe_Run_Up_0
+      name: Joe_Idle_0
       rect:
         serializedVersion: 2
         x: 0
@@ -122,14 +137,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 660cb16a2825f1340800000000000000
-      internalID: 4836675245905264742
+      spriteID: 5bc0dec9d17d968b0800000000000000
+      internalID: -5158355375989388107
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Joe_Run_Up_1
+      name: Joe_Idle_1
       rect:
         serializedVersion: 2
         x: 32
@@ -143,14 +158,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f3aec19fa7a26e880800000000000000
-      internalID: -8582125332254102977
+      spriteID: 5a3f623fd87a33450800000000000000
+      internalID: 6067377351109833637
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Joe_Run_Up_2
+      name: Joe_Idle_2
       rect:
         serializedVersion: 2
         x: 64
@@ -164,8 +179,113 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2aa89efb5d3ea38f0800000000000000
-      internalID: -559884696466912606
+      spriteID: 878586d31ae2dc480800000000000000
+      internalID: -8877388020422518664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Joe_Idle_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6b37873b03c1e21c0800000000000000
+      internalID: -4526649579965746250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Joe_Idle_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 62a234c953a839a70800000000000000
+      internalID: 8832555257063221798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Joe_Idle_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a38c417d91d9cab40800000000000000
+      internalID: 5452905983147034682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Joe_Idle_6
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a8485b43a50e009e0800000000000000
+      internalID: -1657077984836352886
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Joe_Idle_7
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c5ee9dec88cb3f20800000000000000
+      internalID: 3403534451016132034
       vertices: []
       indices: 
       edges: []
@@ -173,7 +293,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: c5b1dbe785869054aa8ab37f5f839b15
     internalID: 0
     vertices: []
     indices: 

@@ -71,7 +71,6 @@ namespace MD.Character
 
             if (Input.GetMouseButtonDown(1))
             {
-                // GetCounter(new Vector2(-2f, -2f), immobilizeTime);
                 EventSystems.EventManager.Instance.TriggerEvent(new AttackInvokeData());
             }
         }

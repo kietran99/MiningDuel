@@ -5349,7 +5349,7 @@ SpriteRenderer:
   m_SortingLayerID: 384472861
   m_SortingLayer: 3
   m_SortingOrder: 10
-  m_Sprite: {fileID: -522798739330844983, guid: dfc39f382af3df54c865c31cedf22169,
+  m_Sprite: {fileID: -5158355375989388107, guid: aca0aa9034753bc4ba4dc1b0dd968d1b,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -5593,6 +5593,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   speed: 4
+  counterSuccessDashDistance: 0.2
   speedModifier: 1
 --- !u!114 &7091697348273341030
 MonoBehaviour:

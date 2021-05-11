@@ -1,43 +1,43 @@
 fileFormatVersion: 2
-guid: 1303960ba818a374e977b5db09824852
+guid: 9e5494ddc8eb48a498e7f968c30e23ae
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -563990117474642993
-    second: Joe_Basic_Attack_0
+      213: 3626837033056697102
+    second: Joe_Run_0
   - first:
-      213: 5282834859660734644
-    second: Joe_Basic_Attack_1
+      213: 1028461307435813757
+    second: Joe_Run_1
   - first:
-      213: 8241959790890511070
-    second: Joe_Basic_Attack_2
+      213: 5490259890694098708
+    second: Joe_Run_2
   - first:
-      213: -8110380372773736457
-    second: Joe_Basic_Attack_3
+      213: 5782872078333488153
+    second: Joe_Run_3
   - first:
-      213: -8419090694708437177
-    second: Joe_Basic_Attack_4
+      213: 1516096187613943914
+    second: Joe_Run_4
   - first:
-      213: -2261492956482122098
-    second: Joe_Basic_Attack_5
+      213: 8261257504508305336
+    second: Joe_Run_5
   - first:
-      213: -25890217080942709
-    second: Joe_Basic_Attack_6
+      213: 5901066054542409218
+    second: Joe_Run_6
   - first:
-      213: 3538718975174796244
-    second: Joe_Basic_Attack_7
+      213: 4609544398354818173
+    second: Joe_Run_7
   - first:
-      213: -2423041802248879567
-    second: Joe_Basic_Attack_8
+      213: -6682003349566950050
+    second: Joe_Run_8
   - first:
-      213: -974849094878824578
-    second: Joe_Basic_Attack_9
+      213: -5240235492167104735
+    second: Joe_Run_9
   - first:
-      213: 9006323670583447205
-    second: Joe_Basic_Attack_10
+      213: -1675385018886106800
+    second: Joe_Run_10
   - first:
-      213: -4746187900009517401
-    second: Joe_Basic_Attack_11
+      213: 3954140423424528627
+    second: Joe_Run_11
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -135,7 +135,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Joe_Basic_Attack_0
+      name: Joe_Run_0
       rect:
         serializedVersion: 2
         x: 0
@@ -143,20 +143,20 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fc3d71fe9fd4c28f0800000000000000
-      internalID: -563990117474642993
+      spriteID: e0b7395d01d155230800000000000000
+      internalID: 3626837033056697102
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Joe_Basic_Attack_1
+      name: Joe_Run_1
       rect:
         serializedVersion: 2
         x: 32
@@ -164,20 +164,20 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4b0f021b056605940800000000000000
-      internalID: 5282834859660734644
+      spriteID: d7b02fe2c14d54e00800000000000000
+      internalID: 1028461307435813757
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Joe_Basic_Attack_2
+      name: Joe_Run_2
       rect:
         serializedVersion: 2
         x: 64
@@ -185,20 +185,20 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: edae41513c2516270800000000000000
-      internalID: 8241959790890511070
+      spriteID: 41f856d2842513c40800000000000000
+      internalID: 5490259890694098708
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Joe_Basic_Attack_3
+      name: Joe_Run_3
       rect:
         serializedVersion: 2
         x: 96
@@ -206,20 +206,20 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7ff65878504227f80800000000000000
-      internalID: -8110380372773736457
+      spriteID: 91ca79a2483e04050800000000000000
+      internalID: 5782872078333488153
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Joe_Basic_Attack_4
+      name: Joe_Run_4
       rect:
         serializedVersion: 2
         x: 128
@@ -227,20 +227,20 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 74f5b129e91692b80800000000000000
-      internalID: -8419090694708437177
+      spriteID: a689d0433714a0510800000000000000
+      internalID: 1516096187613943914
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Joe_Basic_Attack_5
+      name: Joe_Run_5
       rect:
         serializedVersion: 2
         x: 160
@@ -248,20 +248,20 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e8ec5d253209d90e0800000000000000
-      internalID: -2261492956482122098
+      spriteID: 8bf5f3a2ee1e5a270800000000000000
+      internalID: 8261257504508305336
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Joe_Basic_Attack_6
+      name: Joe_Run_6
       rect:
         serializedVersion: 2
         x: 192
@@ -275,14 +275,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b8f8bb71cf404aff0800000000000000
-      internalID: -25890217080942709
+      spriteID: 20ebd19bf4cc4e150800000000000000
+      internalID: 5901066054542409218
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Joe_Basic_Attack_7
+      name: Joe_Run_7
       rect:
         serializedVersion: 2
         x: 224
@@ -296,14 +296,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4d36a33b82e0c1130800000000000000
-      internalID: 3538718975174796244
+      spriteID: d74a458353468ff30800000000000000
+      internalID: 4609544398354818173
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Joe_Basic_Attack_8
+      name: Joe_Run_8
       rect:
         serializedVersion: 2
         x: 256
@@ -317,14 +317,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 13288059150af5ed0800000000000000
-      internalID: -2423041802248879567
+      spriteID: e5577193b51c443a0800000000000000
+      internalID: -6682003349566950050
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Joe_Basic_Attack_9
+      name: Joe_Run_9
       rect:
         serializedVersion: 2
         x: 288
@@ -338,14 +338,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e77f226c9e3a872f0800000000000000
-      internalID: -974849094878824578
+      spriteID: 1274cf57591f647b0800000000000000
+      internalID: -5240235492167104735
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Joe_Basic_Attack_10
+      name: Joe_Run_10
       rect:
         serializedVersion: 2
         x: 320
@@ -359,14 +359,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5ae815d29a3ecfc70800000000000000
-      internalID: 9006323670583447205
+      spriteID: 051584fa336dfb8e0800000000000000
+      internalID: -1675385018886106800
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Joe_Basic_Attack_11
+      name: Joe_Run_11
       rect:
         serializedVersion: 2
         x: 352
@@ -380,8 +380,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7aeeca65047222eb0800000000000000
-      internalID: -4746187900009517401
+      spriteID: 3f05b32e3cdefd630800000000000000
+      internalID: 3954140423424528627
       vertices: []
       indices: 
       edges: []
@@ -389,7 +389,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: be3c7b68fc137034481526de503f6544
+    spriteID: ccb133af2e9f3554eb508c9dcdc45752
     internalID: 0
     vertices: []
     indices: 

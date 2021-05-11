@@ -30,7 +30,7 @@ namespace MD.Character
             eventManager.StartListening<ProjectileObtainData>(SetHoldState);
             eventManager.StartListening<ThrowInvokeData>(RevertToIdleState);
             var eventConsumer = EventSystems.EventConsumer.Attach(gameObject);
-            eventConsumer.StartListening<AttackInvokeData>(PlayBasicAttack);
+            eventConsumer.StartListening<AttackDirectionData>(PlayBasicAttack);
         }
 
         private void OnDisable()
@@ -87,9 +87,10 @@ namespace MD.Character
 
         public void CancelDigAction() => animator.SetBool(AnimatorConstants.IS_DIGGING, false);  
 
-        private void PlayBasicAttack(AttackInvokeData _)
+        private void PlayBasicAttack(AttackDirectionData data)
         {
-            // animator.SetTrigger(AnimatorConstants.ATTACK);
+            animator.SetFloat(AnimatorConstants.ATK_X, data.dir.x);
+            animator.SetFloat(AnimatorConstants.ATK_Y, data.dir.y);
             networkAnimator.SetTrigger(AnimatorConstants.BASIC_ATTACK);
         }
     }
