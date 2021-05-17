@@ -4836,7 +4836,7 @@ SpriteRenderer:
   m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &6541206941868605103
@@ -5054,6 +5054,8 @@ MonoBehaviour:
   currentGoal: {x: 0, y: 0}
   isMoving: 0
   hasPath: 0
+  knockbackForce: 2
+  counterSuccessDashDistance: 2
 --- !u!114 &2659648287536106052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5103,5 +5105,5 @@ MonoBehaviour:
   maxHP: 100
   minHP: 0
   currentHP: 100
-  knockbackForce: 0.2
   damagedVFX: {fileID: 7958351659384862809}
+  moveAction: {fileID: 5339483725538874892}

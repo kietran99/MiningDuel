@@ -23,7 +23,7 @@ namespace MD.Character
         private void TriggerAttackDirData(UI.AttackInvokeData _) 
         {
             var targetAngle = -(pickaxe.localEulerAngles.z + 90f);
-            Debug.Log("Angle: " + targetAngle);
+            // Debug.Log("Angle: " + targetAngle);
             var atkDir = new Vector2(-Mathf.Cos(Mathf.Deg2Rad * targetAngle), Mathf.Sin(Mathf.Deg2Rad * targetAngle));
             EventSystems.EventManager.Instance.TriggerEvent(new AttackDirectionData(atkDir));
         }

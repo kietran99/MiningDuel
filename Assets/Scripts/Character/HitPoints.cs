@@ -16,9 +16,6 @@ namespace MD.Character
         private int currentHP = 100;
 
         [SerializeField]
-        private float knockbackForce = .2f;
-
-        [SerializeField]
         private VisualEffects.DamagedVFX damagedVFX = null;
 
         public System.Action<uint> OnOutOfHP { get; set; }
@@ -28,7 +25,7 @@ namespace MD.Character
         {
             currentHP = Mathf.Clamp(currentHP - dmg, minHP, maxHP);
             TargetOnDamageGiven(source.connectionToClient, dmg);
-            transform.Translate((transform.position - source.transform.position).normalized * knockbackForce);
+            TargetOnDamageTaken((transform.position - source.transform.position).normalized);
 
             if (!currentHP.Equals(minHP))
             {
@@ -43,6 +40,9 @@ namespace MD.Character
         {
             EventSystems.EventManager.Instance.TriggerEvent(new DamageGivenData(transform.position, dmg));
         }
+
+        [TargetRpc]
+        private void TargetOnDamageTaken(Vector2 atkDir) => EventSystems.EventManager.Instance.TriggerEvent(new DamageTakenData(netId, atkDir));
 
         private void OnCurrentHPSync(int oldCurHP, int newCurHP)
         {

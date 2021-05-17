@@ -5593,7 +5593,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   speed: 4
-  counterSuccessDashDistance: 0.2
+  knockbackForce: 2
+  counterSuccessDashDistance: 2
   speedModifier: 1
 --- !u!114 &7091697348273341030
 MonoBehaviour:
@@ -5744,7 +5745,6 @@ MonoBehaviour:
   maxHP: 100
   minHP: 0
   currentHP: 100
-  knockbackForce: 0.2
   damagedVFX: {fileID: 4639249340357379130}
 --- !u!114 &995740549010693815
 MonoBehaviour:
@@ -5760,7 +5760,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  power: 30
+  power: 20
   immobilizeTime: 0.5
   enemyDetect: {fileID: 3718961518730160324}
   damageZone: {fileID: 5694320646257469459}

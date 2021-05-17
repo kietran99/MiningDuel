@@ -6,7 +6,7 @@ namespace MD.Character
     {
         void Start()
         {
-            AttackTime = 0f;
+            attackTime = 0f;
         }
     }
 }

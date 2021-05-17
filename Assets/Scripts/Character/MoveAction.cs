@@ -8,11 +8,16 @@ namespace MD.Character
     [RequireComponent(typeof(Rigidbody2D))]
     public class MoveAction : NetworkBehaviour
     {
+        private float DASH_MULTIPLIER = 1000f;
+
         [SerializeField]
         private float speed = 1f;
 
         [SerializeField]
-        private float counterSuccessDashDistance = .2f;
+        private float knockbackForce = 2f;
+
+        [SerializeField]
+        private float counterSuccessDashDistance = 2f;
 
         private Rigidbody2D rigidBody;
         private Vector2 moveVect, minMoveBound, maxMoveBound;
@@ -43,8 +48,19 @@ namespace MD.Character
             rigidBody = GetComponent<Rigidbody2D>();
             var eventConsumer = EventSystems.EventConsumer.GetOrAttach(gameObject);
             eventConsumer.StartListening<JoystickDragData>(BindMoveVector);
+            eventConsumer.StartListening<DamageTakenData>(OnDamageTaken);
             eventConsumer.StartListening<GetCounteredData>(HandleGetCountered);
-            eventConsumer.StartListening<CounterSuccessData>(Dash);
+            eventConsumer.StartListening<CounterSuccessData>(OnCounterSuccessful);
+        }
+
+        private void OnDamageTaken(DamageTakenData data)
+        {
+            if (!data.damagedId.Equals(netId))
+            {
+                return;
+            }
+
+            Dash(data.atkDir * knockbackForce);
         }
 
         private void HandleGetCountered(GetCounteredData counterData)
@@ -55,10 +71,14 @@ namespace MD.Character
 
         private void RegainMobility() => isImmobilize = false;
 
-        private void Dash(CounterSuccessData data)
+        private void OnCounterSuccessful(CounterSuccessData data)
         {
-            var moveDist = data.counterDir * counterSuccessDashDistance;
-            transform.position += new Vector3(moveDist.x, moveDist.y, 0f);
+            Dash(data.counterDir * counterSuccessDashDistance);
+        }
+
+        private void Dash(Vector2 vect)
+        {
+            rigidBody.AddForce(vect * DASH_MULTIPLIER, ForceMode2D.Impulse);
         }
 
         void FixedUpdate()

@@ -3,12 +3,14 @@ using Mirror;
 using PathFinding;
 using System.Collections.Generic;
 using System.Collections;
+using MD.Character;
 
 namespace MD.AI
 {
     [RequireComponent(typeof(PlayerBot))]
     public class BotMoveAction : NetworkBehaviour
     {
+        private float DASH_MULTIPLIER = 1000f;
         public float speed = 3f;
         // private int resCount = 0;
         // private bool collideLeft = false;
@@ -35,6 +37,12 @@ namespace MD.AI
         [SerializeField]
         private bool hasPath = false;
 
+        [SerializeField]
+        private float knockbackForce = 2f;
+
+        // [SerializeField]
+        // private float counterSuccessDashDistance = .2f;
+
         private int slowDownCount = 0;
 
         private BotAnimator animator;
@@ -52,9 +60,10 @@ namespace MD.AI
 
         private Rigidbody2D theRigidbody;
 
+        // private bool isImmobilize = false;
+
         void Start()
         {
-
             theRigidbody = GetComponent<Rigidbody2D>();
             ServiceLocator.Resolve(out mapGenerator);
             mapWidth = mapGenerator.MapWidth;
@@ -62,6 +71,36 @@ namespace MD.AI
             mapRoot = Vector2Int.zero;
             aStar = new AStar(mapGenerator.MapWidth,mapGenerator.MapHeight,IsWalkable);
             playerBot = transform.GetComponent<PlayerBot>();
+            var eventConsumer = EventSystems.EventConsumer.GetOrAttach(gameObject);
+            eventConsumer.StartListening<DamageTakenData>(OnDamageTaken);
+        }
+
+        private void OnDamageTaken(DamageTakenData data)
+        {
+            if (!data.damagedId.Equals(netId))
+            {
+                return;
+            }
+
+            Dash(data.atkDir * knockbackForce);
+        }
+
+        // private void HandleGetCountered(GetCounteredData counterData)
+        // {
+        //     isImmobilize = true;
+        //     Invoke(nameof(RegainMobility), counterData.immobilizeTime);
+        // }
+
+        // private void RegainMobility() => isImmobilize = false;
+
+        // private void OnCounterSuccessful(CounterSuccessData data)
+        // {
+        //     Dash(data.counterDir * counterSuccessDashDistance);
+        // }
+
+        private void Dash(Vector2 vect)
+        {
+            theRigidbody.AddForce(vect * DASH_MULTIPLIER, ForceMode2D.Impulse);
         }
 
         ///END HARD CODE ZONE 
@@ -165,6 +204,12 @@ namespace MD.AI
             //         Debug.DrawLine(IndexToWorldMiddleSquare(node.index) -Vector2.one/10f,IndexToWorldMiddleSquare(node.index)+Vector2.one/10f, Color.green);
             //     }
             // }
+
+            // if (isImmobilize)
+            // {
+            //     return;
+            // }
+
             MoveBot();
         }
 

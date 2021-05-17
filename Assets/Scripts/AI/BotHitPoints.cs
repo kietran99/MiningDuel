@@ -1,4 +1,6 @@
-﻿namespace MD.AI
+﻿using UnityEngine;
+
+namespace MD.AI
 {
     public class BotHitPoints : Character.HitPoints
     {
