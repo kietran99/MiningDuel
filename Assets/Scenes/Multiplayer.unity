@@ -579,6 +579,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Always Counter Zone
       objectReference: {fileID: 0}
+    - target: {fileID: 5034981078117406190, guid: b29a104b75c0fee42bc95c011607021f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5277731373993620723, guid: b29a104b75c0fee42bc95c011607021f,
         type: 3}
       propertyPath: sceneId
@@ -1574,6 +1579,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Always Get Counter
+      objectReference: {fileID: 0}
+    - target: {fileID: 3396130773654146854, guid: ab2136a00ea9731458c7a0093cd0cb5d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab2136a00ea9731458c7a0093cd0cb5d, type: 3}
