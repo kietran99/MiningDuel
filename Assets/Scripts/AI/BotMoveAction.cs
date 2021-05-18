@@ -81,7 +81,7 @@ namespace MD.AI
             {
                 return;
             }
-
+            
             Dash(data.atkDir * knockbackForce);
         }
 

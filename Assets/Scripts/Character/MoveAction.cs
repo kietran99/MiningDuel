@@ -21,7 +21,7 @@ namespace MD.Character
 
         private Rigidbody2D rigidBody;
         private Vector2 moveVect, minMoveBound, maxMoveBound;
-        private Vector2 offset = new Vector2(.5f, .5f);
+        // private Vector2 offset = new Vector2(.5f, .5f);
         
         [SerializeField] [SyncVar]
         private float speedModifier = 1f;
@@ -29,21 +29,12 @@ namespace MD.Character
         [SyncVar]
         private int slowedDownCount = 0;
         private float SlowDownPercentage = .8f;
-
         private Player player = null;
-        private Player Player
-        {
-            get
-            {
-                if (player != null) return player;
-                return player = GetComponent<Player>();
-            }
-        }
-
         private bool isImmobilize = false;
 
         private void Start()
         {
+            player = GetComponent<Player>();
             speedModifier = 1f;
             rigidBody = GetComponent<Rigidbody2D>();
             var eventConsumer = EventSystems.EventConsumer.GetOrAttach(gameObject);
@@ -65,11 +56,24 @@ namespace MD.Character
 
         private void HandleGetCountered(GetCounteredData counterData)
         {
+            if (hasAuthority)
+            {
+                EventSystems.EventManager.Instance.TriggerEvent(new StunData(true));
+            }
+
             isImmobilize = true;
             Invoke(nameof(RegainMobility), counterData.immobilizeTime);
         }
 
-        private void RegainMobility() => isImmobilize = false;
+        private void RegainMobility() 
+        {
+            if (hasAuthority)
+            {
+                EventSystems.EventManager.Instance.TriggerEvent(new StunData(false));
+            }
+
+            isImmobilize = false;
+        }
 
         private void OnCounterSuccessful(CounterSuccessData data)
         {
@@ -96,7 +100,7 @@ namespace MD.Character
                 return;
             }
 
-            if (moveVect.Equals(Vector2.zero) || !Player.CanMove) return;
+            if (moveVect.Equals(Vector2.zero) || !player.CanMove) return;
 
             MoveCharacter(moveVect.x, moveVect.y);
         }
@@ -107,19 +111,14 @@ namespace MD.Character
         {
             var movePos = new Vector2(moveX, moveY).normalized * speed*speedModifier;
             if (slowedDownCount > 0) movePos*=(1f-SlowDownPercentage);
-            // transform.Translate(movePos * Time.fixedDeltaTime);
-            // transform.position = new Vector2(Mathf.Clamp(transform.position.x, minMoveBound.x + offset.x, maxMoveBound.x - offset.x),
-            //                     Mathf.Clamp(transform.position.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));
            rigidBody.MovePosition(rigidBody.position + movePos*Time.fixedDeltaTime);
-        //    rigidBody.position = new Vector2(Mathf.Clamp(rigidBody.position.x, minMoveBound.x + offset.x, maxMoveBound.x - offset.x),
-        //                         Mathf.Clamp(rigidBody.position.y, minMoveBound.y + offset.y, maxMoveBound.y - offset.y));
         } 
 
         private void LateUpdate()
         {
             if (!isLocalPlayer) return;
 
-            if (moveVect.Equals(Vector2.zero) || !Player.CanMove) return;
+            if (moveVect.Equals(Vector2.zero) || !player.CanMove) return;
 
             EventSystems.EventManager.Instance.TriggerEvent(new MoveData(rigidBody.position.x, rigidBody.position.y));
         }
@@ -129,6 +128,7 @@ namespace MD.Character
             this.minMoveBound = minMoveBound;
             this.maxMoveBound = maxMoveBound;
         }
+
         [Command]
         public void CmdModifySpeed(float percentage, float time)
         {
@@ -149,7 +149,7 @@ namespace MD.Character
 
         private IEnumerator IncreaseSpeedCoroutine(float percentage, float time)
         {
-            Debug.Log("increase speed by " + percentage);
+            Debug.Log("Increase speed by " + percentage);
             speedModifier += percentage;
             yield return new WaitForSeconds(time);
             speedModifier -= percentage;

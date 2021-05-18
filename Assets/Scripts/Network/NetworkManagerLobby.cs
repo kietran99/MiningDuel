@@ -14,6 +14,7 @@ namespace MD.UI
     {
         #region CONSTANTS
         private readonly string NAME_PLAYER_ONLINE = "Player Online";
+        private readonly string SPAWN_PLATFORM = "Spawn Platform";
         private readonly string DIGGABLE_GENERATOR = "Diggable Generator";
         private readonly string DIGGABLE_GENERATOR_COMMUNICATOR = "Diggable Generator Communicator";
         private readonly string SONAR = "Sonar";
@@ -261,6 +262,7 @@ namespace MD.UI
             SpawnSonar();            
             SpawnDiggableGeneratorCommunicator();  
             Players.ForEach(player => GenMapRenderer(player.connectionToClient)); 
+            Players.ForEach(player => SpawnSpawnPlatform(player.netIdentity));
             Players.ForEach(player => SpawnStorage(player.netIdentity, player.PlayerColor));
 
             SpawnScanWaveSpawner();
@@ -274,9 +276,16 @@ namespace MD.UI
             NetworkServer.Spawn(scanWaveSpawner);
         } 
 
+        private void SpawnSpawnPlatform(NetworkIdentity playerId)
+        {
+            var platform = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(SPAWN_PLATFORM)), playerId.transform.position - new Vector3(0f, .4f, 0f), Quaternion.identity);
+            NetworkServer.Spawn(platform);
+        }
+
         private void SpawnStorage(NetworkIdentity playerId, Color flagColor)
         {
-            var storage = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(STORAGE)), playerId.transform.position, Quaternion.identity);
+            // var storage = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(STORAGE)), playerId.transform.position, Quaternion.identity);
+            var storage = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(STORAGE)), playerId.transform.position + new Vector3(-2f, 0f, 0f), Quaternion.identity);
             storage.GetComponent<Diggable.Core.Storage>().Initialize(playerId, flagColor);
             NetworkServer.Spawn(storage.gameObject);
         }
