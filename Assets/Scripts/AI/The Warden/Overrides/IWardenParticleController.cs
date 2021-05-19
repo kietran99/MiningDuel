@@ -2,7 +2,7 @@
 {
     public interface IWardenParticleController
     {   
-        void PlayChaseEffect();
+        void PlayChaseEffect(UnityEngine.Vector2 targetDir);
         void HideChaseEffect();
         void PlayAttackEffect();
     }

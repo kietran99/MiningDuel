@@ -17,8 +17,9 @@ namespace MD.AI.TheWarden
             attackParticles.Play();
         }
 
-        public void PlayChaseEffect()
+        public void PlayChaseEffect(Vector2 targetDir)
         {
+            chaseParticles.transform.Rotate(new Vector3(0f, 0f, Vector2.SignedAngle(-chaseParticles.transform.right, targetDir)));
             chaseParticles.Play();
         }
     }

@@ -954,7 +954,6 @@ GameObject:
   - component: {fileID: 717355073}
   - component: {fileID: 717355072}
   - component: {fileID: 717355071}
-  - component: {fileID: 717355074}
   m_Layer: 0
   m_Name: Player 1
   m_TagString: Untagged
@@ -1040,22 +1039,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &717355074
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 717355070}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 1
 --- !u!1 &782455847
 GameObject:
   m_ObjectHideFlags: 0
@@ -1744,7 +1727,7 @@ PrefabInstance:
     - target: {fileID: 1885830966531665606, guid: 02af81bcfdcf1854496855ce9003539b,
         type: 3}
       propertyPath: shouldLog
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1885830966531665606, guid: 02af81bcfdcf1854496855ce9003539b,
         type: 3}
@@ -13873,6 +13856,46 @@ PrefabInstance:
         type: 3}
       propertyPath: shouldLog
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2941669689697164427, guid: e11aeb3ea19cac241b87f941f1902538,
+        type: 3}
+      propertyPath: m_SortingLayerID
+      value: 384472861
+      objectReference: {fileID: 0}
+    - target: {fileID: 2941669689697164427, guid: e11aeb3ea19cac241b87f941f1902538,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2941669689697164427, guid: e11aeb3ea19cac241b87f941f1902538,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2941669690217903225, guid: e11aeb3ea19cac241b87f941f1902538,
+        type: 3}
+      propertyPath: m_SortingLayerID
+      value: 384472861
+      objectReference: {fileID: 0}
+    - target: {fileID: 2941669690217903225, guid: e11aeb3ea19cac241b87f941f1902538,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2941669690217903225, guid: e11aeb3ea19cac241b87f941f1902538,
+        type: 3}
+      propertyPath: m_SortMode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2941669690217903225, guid: e11aeb3ea19cac241b87f941f1902538,
+        type: 3}
+      propertyPath: m_MaxParticleSize
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2941669690217903225, guid: e11aeb3ea19cac241b87f941f1902538,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 2941669690398587481, guid: e11aeb3ea19cac241b87f941f1902538,
         type: 3}

@@ -6,7 +6,7 @@ namespace MD.AI.TheWarden
     public class DefaultWardenDamagable : NetworkBehaviour, IWardenDamagable
     {
         [Server]
-        public void TakeDamage()
+        public void TakeWardenDamage(int dmg)
         {
             RpcTakeDamage();
         }

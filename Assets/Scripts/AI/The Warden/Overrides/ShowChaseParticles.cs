@@ -12,7 +12,8 @@ namespace MD.AI.TheWarden
                     .Get<IWardenParticleController>(WardenMacros.PARTICLE_CONTROLLER)
                     .Map(particleController => 
                     {
-                        particleController.PlayChaseEffect();
+                        var targetDir = blackboard.Get<Transform>(WardenMacros.CHASE_TARGET).Match(target => -actor.transform.position + target.position, () => Vector3.zero);
+                        particleController.PlayChaseEffect(targetDir);
                         return BTNodeState.SUCCESS;
                     });
         }

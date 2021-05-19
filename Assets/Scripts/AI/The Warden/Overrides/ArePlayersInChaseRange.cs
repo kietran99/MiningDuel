@@ -100,8 +100,7 @@ namespace MD.AI.TheWarden
             {
                 return Option<Transform>.None;
             }
-
-            // var chosenTarget = possibleTargets.Reduce((target_0 , target_1) => target_0.Score > target_1.Score ? target_0 : target_1);                        
+                    
             var chosenTarget = possibleTargets.Reduce((target_0 , target_1) => CalcScore(actorPos, target_0) > CalcScore(actorPos, target_1) ? target_0 : target_1);                        
             BTLogger.Log("Number of Chasable Players: " + possibleTargets.Length);          
             return chosenTarget.Transform;

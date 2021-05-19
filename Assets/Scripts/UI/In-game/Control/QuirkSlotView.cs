@@ -10,7 +10,7 @@ namespace MD.UI
         private int quirkSlotIndex = 0;
 
         [SerializeField]
-        private GameObject activeBorder = null;// inactiveBorder = null;
+        private GameObject activeBorder = null;
         
         [SerializeField]
         private Button quirkButton = null;
@@ -46,7 +46,6 @@ namespace MD.UI
 
         private void Insert(Sprite quirkSprite, string quirkDesc)
         {
-            // inactiveBorder.SetActive(false);
             activeBorder.SetActive(true);
             quirkButton.gameObject.SetActive(true);
             quirkImage.sprite = quirkSprite;
@@ -55,7 +54,6 @@ namespace MD.UI
 
         private void Remove()
         {
-            // inactiveBorder.SetActive(true);
             activeBorder.SetActive(false);
             quirkButton.gameObject.SetActive(false);
             quirkImage.sprite = null;

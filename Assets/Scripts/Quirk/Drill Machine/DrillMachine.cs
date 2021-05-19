@@ -67,7 +67,11 @@ namespace MD.Quirk
                 );
         }
 
-        public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage)
+        public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage)   => HandleDestroy();
+        public void HandleTrapExplode(float slowDownTime) => HandleDestroy();
+
+
+        public void HandleDestroy()
         {
             Debug.Log("Drill Machine Exploded");
             StopAllCoroutines();

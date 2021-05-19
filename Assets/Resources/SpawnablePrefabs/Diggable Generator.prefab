@@ -73,7 +73,7 @@ MonoBehaviour:
       weight: 4
     - tag: 10
       weight: 2
-    - tag: 11
+    - tag: 20
       weight: 1
     - tag: -1
       weight: 4

@@ -21,9 +21,9 @@ namespace MD.AI.TheWarden
         }
 
         [Server]
-        public void PlayChaseEffect()
+        public void PlayChaseEffect(Vector2 targetDir)
         {
-            RpcPlayChaseEffect();
+            RpcPlayChaseEffect(targetDir);
         }
 
         [ClientRpc]
@@ -39,8 +39,9 @@ namespace MD.AI.TheWarden
         }
 
         [ClientRpc]
-        private void RpcPlayChaseEffect()
+        public void RpcPlayChaseEffect(Vector2 targetDir)
         {
+            chaseParticles.transform.Rotate(new Vector3(0f, 0f, Vector2.SignedAngle(-chaseParticles.transform.right, targetDir)));
             chaseParticles.Play();
         }
     }

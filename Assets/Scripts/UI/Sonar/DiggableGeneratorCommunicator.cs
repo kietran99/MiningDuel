@@ -12,7 +12,6 @@ namespace MD.Diggable.Core
 
         public override void OnStartServer()
         {
-            // ServiceLocator.Register(this);
             SubscribeDiggableEvents();
         }
         [ServerCallback]
@@ -62,23 +61,18 @@ namespace MD.Diggable.Core
         [TargetRpc]
         private void TargetHandleDigProgressEvent(NetworkConnection target, Diggable.Gem.DigProgressData digProgressData)
         {
-            // if (!hasAuthority) return;
-
             EventManager.Instance.TriggerEvent(digProgressData);
         }
 
         [TargetRpc]
         private void TargetHandleGemObtainEvent(NetworkConnection target, GemObtainData gemObtainData)
         {
-            // if (!hasAuthority) return;
-
             EventManager.Instance.TriggerEvent(gemObtainData);
         }
 
         [TargetRpc]
         private void TargetHandleProjectileObtainEvent(NetworkConnection target, ProjectileObtainData projectileObtainData)
         {
-            // if (!hasAuthority) return;
             EventManager.Instance.TriggerEvent(projectileObtainData);
         }
 
@@ -93,23 +87,5 @@ namespace MD.Diggable.Core
         {
             EventManager.Instance.TriggerEvent(diggableSpawnData);
         }
-
-        // [Command]
-        // public void CmdRequestScanArea(Vector2Int[] positions)
-        // {
-        //     ServiceLocator
-        //         .Resolve<IDiggableGenerator>()
-        //         .Match(
-        //             unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
-        //             digGen => TargetBroadcastScanData(digGen.GetDiggableArea(positions))
-        //         );
-        // }
-
-        // [TargetRpc]
-        // private void TargetBroadcastScanData(DiggableType[] diggableArea)
-        // {
-        //     Debug.Log("Yes");
-        //     EventManager.Instance.TriggerEvent(new UI.ScanData(diggableArea));
-        // }
     }
 }

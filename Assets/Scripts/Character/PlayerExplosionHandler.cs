@@ -56,6 +56,17 @@ namespace MD.Character
             }
         }
 
+        [Server]
+        public void HandleTrapExplode(float slowDownTime)
+        {
+            Debug.Log("Player trapped");
+            MoveAction player = GetComponent<MoveAction>();
+            if (player)
+            {
+                player.SlowDown(slowDownTime);
+            }
+        }
+
         [ClientRpc]
         private void RpcPlayDamagingEffect()
         {
@@ -90,15 +101,6 @@ namespace MD.Character
             randomDir.x = Random.Range(-1f, 1f);
             randomDir.y = Random.Range(-1f, 1f);
             return randomDir.normalized;
-        }
-    
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.B))
-            {
-                StopAllCoroutines();
-                StartCoroutine(PlayDamagingEffect());
-            }
         }
     }
 }

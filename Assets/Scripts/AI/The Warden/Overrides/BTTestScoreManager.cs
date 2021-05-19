@@ -9,9 +9,9 @@ namespace MD.AI.TheWarden
 
         public int CurrentScore => score;
 
-        public void TakeDamage()
+        public void TakeWardenDamage(int dmg)
         {
-            Debug.Log(name + " was attacked by The Warden");
+            Debug.Log("Took " + dmg + " from The Warden");
         }
     }
 }

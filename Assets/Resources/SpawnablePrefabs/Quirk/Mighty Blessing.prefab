@@ -63,6 +63,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   quirkData: {fileID: 11400000, guid: 4b9548452b5805842b40ac63240c37e6, type: 2}
-  radius: 5
+  radius: 3
   power: 9999
-  digDelay: 0.01
+  delayStartLevel: 2

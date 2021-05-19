@@ -1,5 +1,6 @@
 ﻿using Functional.Type;
 using MD.AI.BehaviourTree;
+using MD.Character;
 using UnityEngine;
 
 namespace MD.AI.TheWarden

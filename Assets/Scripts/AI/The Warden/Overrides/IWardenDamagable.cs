@@ -1,9 +1,7 @@
-﻿using UnityEngine;
-
-namespace MD.AI.TheWarden
+﻿namespace MD.AI.TheWarden
 {
     public interface IWardenDamagable
     {
-        void TakeDamage();
+        void TakeWardenDamage(int dmg);
     }
 }
