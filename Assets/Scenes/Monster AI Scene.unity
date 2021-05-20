@@ -13857,6 +13857,21 @@ PrefabInstance:
       propertyPath: shouldLog
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2941669689098966384, guid: e11aeb3ea19cac241b87f941f1902538,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2941669689098966384, guid: e11aeb3ea19cac241b87f941f1902538,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2941669689098966384, guid: e11aeb3ea19cac241b87f941f1902538,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2941669689697164427, guid: e11aeb3ea19cac241b87f941f1902538,
         type: 3}
       propertyPath: m_SortingLayerID
