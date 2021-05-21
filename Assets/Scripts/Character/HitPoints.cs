@@ -18,8 +18,6 @@ namespace MD.Character
         [SerializeField]
         private VisualEffects.DamagedVFX damagedVFX = null;
 
-        public System.Action<uint> OnOutOfHP { get; set; }
-
         [Server]
         public void TakeWardenDamage(int dmg)
         {
@@ -30,14 +28,14 @@ namespace MD.Character
                 return;
             }
 
-            OnOutOfHP?.Invoke(netId);
+            RaiseDeathEvent();
         }
 
         [Server]
-        public void TakeDamage(NetworkIdentity source, int dmg)
+        public void TakeDamage(NetworkIdentity source, int dmg, bool isCritical)
         {
             currentHP = Mathf.Clamp(currentHP - dmg, minHP, maxHP);
-            TargetOnDamageGiven(source.connectionToClient, dmg);
+            TargetOnDamageGiven(source.connectionToClient, dmg, isCritical);
             TargetOnDamageTaken((transform.position - source.transform.position).normalized);
 
             if (!currentHP.Equals(minHP))
@@ -45,17 +43,19 @@ namespace MD.Character
                 return;
             }
 
-            OnOutOfHP?.Invoke(netId);
+            RaiseDeathEvent();    
         }
 
         [TargetRpc]
-        private void TargetOnDamageGiven(NetworkConnection atker, int dmg)
+        private void TargetOnDamageGiven(NetworkConnection atker, int dmg, bool isCritical)
         {
-            EventSystems.EventManager.Instance.TriggerEvent(new DamageGivenData(transform.position, dmg));
+            EventSystems.EventManager.Instance.TriggerEvent(new DamageGivenData(transform.position, dmg, isCritical));
         }
 
         [TargetRpc]
         private void TargetOnDamageTaken(Vector2 atkDir) => EventSystems.EventManager.Instance.TriggerEvent(new DamageTakenData(netId, atkDir));
+
+        protected virtual void RaiseDeathEvent() => EventSystems.EventManager.Instance.TriggerEvent(new CharacterDeathData(netId));
 
         private void OnCurrentHPSync(int oldCurHP, int newCurHP)
         {
@@ -94,7 +94,7 @@ namespace MD.Character
         }
 
         [Command]
-        void CmdTakeDamage() => TakeDamage(netIdentity, 20);
+        void CmdTakeDamage() => TakeDamage(netIdentity, 40, true);
     #endif
     #endregion
     }

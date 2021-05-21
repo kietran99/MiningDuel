@@ -7,6 +7,8 @@ namespace MD.Network.GameMode
 {
     public class PvPModeManager : AbstractGameModeManager
     {
+        private System.Action<CharacterDeathData> deathHandler;
+
         public PvPModeManager() : base()
         {}
         
@@ -23,19 +25,17 @@ namespace MD.Network.GameMode
         public override void SetupGame(float matchTime, List<Player> players)
         {
             base.SetupGame(matchTime, players);
-
-            foreach (var player in players)
-            {
-                player.GetComponent<HitPoints>().OnOutOfHP += eliminatedPlayerId => HandlePlayerOutOfHP(eliminatedPlayerId, players);
-            }
+            deathHandler = data => OnPlayerDeath(data, players);
+            EventSystems.EventManager.Instance.StartListening<CharacterDeathData>(deathHandler);
         }
 
-        private void HandlePlayerOutOfHP(uint eliminatedPlayerId, List<Player> players)
+        private void OnPlayerDeath(CharacterDeathData data, List<Player> players)
         {
+            var eliminatedPlayerId = data.eliminatedId;
             var eliminatedPlayer = players.Find(player => player.netId.Equals(eliminatedPlayerId));
             eliminatedPlayer.TargetNotifyEndGame(false);
             
-            if (eliminatedPlayerId == players[0].netId)
+            if (eliminatedPlayerId == players[0].netId) // Is Host
             {
                 players[0].gameObject.SetActive(false);
             }
@@ -64,6 +64,7 @@ namespace MD.Network.GameMode
 
         private void WinPvPByElimination(uint winningPlayerId)
         {
+            EventSystems.EventManager.Instance.StopListening<CharacterDeathData>(deathHandler);
             Debug.Log("Player " + winningPlayerId + " won the game");         
             networkManager.Players.Find(player => player.netId.Equals(winningPlayerId)).TargetNotifyEndGame(true);
             StopCountdown();

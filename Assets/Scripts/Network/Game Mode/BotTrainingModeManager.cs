@@ -47,14 +47,14 @@ namespace MD.Network.GameMode
         private void SetupPlayerState(Player player)
         {
             player.transform.position = networkManager.NextSpawnPoint;
-            player.GetComponent<HitPoints>().OnOutOfHP += LoseBotTrainingByElimination;
+            EventSystems.EventManager.Instance.StartListening<CharacterDeathData>(LoseBotTrainingByElimination);
         }
 
         private void SetupBotState(List<Character.Player> players)
         {
             var bot = networkManager.SpawnBot(networkManager.NextSpawnPoint);
             aliveBots.Add(bot.GetComponent<NetworkIdentity>().netId);
-            bot.GetComponent<AI.BotHitPoints>().OnOutOfHP += HandleBotEliminated;  
+            bot.GetComponent<AI.BotHitPoints>().OnBotDeath += HandleBotEliminated;  
         }
 
         private void HandleBotEliminated(uint botId)
@@ -79,12 +79,14 @@ namespace MD.Network.GameMode
 
         private void WinBotTrainingByElimination()
         {
+            EventSystems.EventManager.Instance.StopListening<CharacterDeathData>(LoseBotTrainingByElimination);
             player.TargetNotifyEndGame(true);          
             StopCountdown();        
         }
 
-        private void LoseBotTrainingByElimination(uint playerId)
+        private void LoseBotTrainingByElimination(CharacterDeathData data)
         {
+            EventSystems.EventManager.Instance.StopListening<CharacterDeathData>(LoseBotTrainingByElimination);
             player.TargetNotifyEndGame(false);          
             StopCountdown();
         }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace MD.AI.TheWarden
 {
@@ -8,6 +9,8 @@ namespace MD.AI.TheWarden
         private int score = 0;
 
         public int CurrentScore => score;
+
+        public Action<uint> OnDeath { get; set; }
 
         public void TakeWardenDamage(int dmg)
         {

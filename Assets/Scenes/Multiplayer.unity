@@ -944,6 +944,11 @@ PrefabInstance:
       propertyPath: expansionLength
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1885830965857812952, guid: 02af81bcfdcf1854496855ce9003539b,
+        type: 3}
+      propertyPath: power
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 1885830966005838600, guid: 02af81bcfdcf1854496855ce9003539b,
         type: 3}
       propertyPath: chaseSpeed
@@ -958,6 +963,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: The Warden BT
+      objectReference: {fileID: 0}
+    - target: {fileID: 1885830966531665604, guid: 02af81bcfdcf1854496855ce9003539b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1885830966531665605, guid: 02af81bcfdcf1854496855ce9003539b,
         type: 3}
@@ -1683,6 +1693,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: The Warden
+      objectReference: {fileID: 0}
+    - target: {fileID: 2941669690398587481, guid: e11aeb3ea19cac241b87f941f1902538,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2941669690398587482, guid: e11aeb3ea19cac241b87f941f1902538,
         type: 3}

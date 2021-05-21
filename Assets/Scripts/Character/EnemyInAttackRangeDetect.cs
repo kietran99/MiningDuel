@@ -17,10 +17,9 @@ namespace MD.Character
         {
             cachedDamagableDict = new Dictionary<int, Transform>();
             trackingTargets = new List<Transform>();
-            EventSystems.EventConsumer.Attach(gameObject).StartListening<UI.AttackInvokeData>(TriggerAttackDirData);
         }
 
-        private void TriggerAttackDirData(UI.AttackInvokeData _) 
+        public void RaiseAttackDirEvent() 
         {
             var targetAngle = -(pickaxe.localEulerAngles.z + 90f);
             // Debug.Log("Angle: " + targetAngle);

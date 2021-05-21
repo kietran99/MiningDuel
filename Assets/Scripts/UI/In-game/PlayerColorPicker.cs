@@ -17,7 +17,14 @@ namespace MD.Character
 
         private void Reset() => curIdx = -1;
 
-        public int NextIndex => ++curIdx;
+        public int NextIndex 
+        { 
+            get
+            {
+                curIdx = curIdx == (availableColors.Length - 1) ?  0 : (curIdx + 1);
+                return curIdx;
+            }
+        }
 
         public Color GetColor(int idx) => availableColors[idx];
     }

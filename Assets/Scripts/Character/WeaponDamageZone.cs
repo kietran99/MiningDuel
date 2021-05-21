@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 namespace MD.Character
 {
@@ -14,19 +15,26 @@ namespace MD.Character
         [SerializeField]
         private Transform pivotTransform = null;
 
+        [SerializeField]
+        private WeaponCriticalZone criticalZone = null;
+
         private Quaternion baseRotation;
         private bool isSwinging = false;
         protected float attackTime = 0f;
+        private HashSet<int> hitList = new HashSet<int>();
 
-        public Action<Mirror.NetworkIdentity> OnDamagableCollide { get; set; }
+        public Action<IDamagable, bool> OnDamagableCollide { get; set; }
         public Action<Vector2> OnCounterSuccessfully { get; set; }
         public Action<Vector2> OnGetCountered { get; set; }
 
         private void Start()
         {
             baseRotation = transform.localRotation;
+            criticalZone.OnCollide += OnCriticalZoneEnter;
         }
    
+        private void OnDestroy() => criticalZone.OnCollide -= OnCriticalZoneEnter;
+
         public void AttemptSwing()
         {
             if (isSwinging)
@@ -61,18 +69,25 @@ namespace MD.Character
             transform.localRotation = baseRotation;
             isSwinging = false;
             attackTime = 0f;
+            hitList = new HashSet<int>();
             gameObject.SetActive(false);
         }
 
         private void OnTriggerEnter2D(Collider2D other)
-        {
-            if (other.TryGetComponent<IDamagable>(out var damagable))
+        { 
+            if (hitList.Contains(other.GetInstanceID()))
             {
-                // Debug.Log("Hit: " + other.name);
-                OnDamagableCollide?.Invoke(other.GetComponent<Mirror.NetworkIdentity>());
                 return;
             }
 
+            if (other.TryGetComponent<IDamagable>(out var damagable))
+            {
+                // Debug.Log("Regular Hit: " + other.name);
+                hitList.Add(other.GetInstanceID());
+                OnDamagableCollide?.Invoke(damagable, false);
+                return;
+            }
+            
             if (!other.TryGetComponent<WeaponDamageZone>(out var otherWeapon))
             {
                 return;
@@ -90,6 +105,23 @@ namespace MD.Character
         }
 
         private bool Counterable(WeaponDamageZone otherWeapon) => otherWeapon.attackTime < attackTime;
+
+        private void OnCriticalZoneEnter(Collider2D other)
+        { 
+            if (hitList.Contains(other.GetInstanceID()))
+            {
+                return;
+            }
+
+            if (!other.TryGetComponent<IDamagable>(out var damagable))
+            {
+                return;
+            }
+
+            // Debug.Log("Critical Hit: " + other.name);
+            hitList.Add(other.GetInstanceID());
+            OnDamagableCollide?.Invoke(damagable, true);          
+        }
 
         private void GetCountered(Vector2 counterVect)
         {

@@ -6,11 +6,13 @@ namespace MD.Character
     {
         public Vector2 damagablePos;
         public int dmg;
+        public bool isCritical;
 
-        public DamageGivenData(Vector2 damagablePos, int dmg)
+        public DamageGivenData(Vector2 damagablePos, int dmg, bool isCritical)
         {
             this.damagablePos = damagablePos;
             this.dmg = dmg;
+            this.isCritical = isCritical;
         }
     }
 }

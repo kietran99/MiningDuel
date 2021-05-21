@@ -184,7 +184,7 @@ public class LinkedTrap : NetworkBehaviour, IDamagable
     }
 
     [Server]
-    public void TakeDamage(NetworkIdentity source, int damage)
+    public void TakeDamage(NetworkIdentity source, int damage, bool _)
     {
         if (source == owner)
         {

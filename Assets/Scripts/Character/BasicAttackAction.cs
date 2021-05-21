@@ -8,7 +8,10 @@ namespace MD.Character
     {
         [SerializeField]
         private int power = 2;
-     
+
+        [SerializeField]
+        private float criticalMultiplier = 1.5f;
+
         [SerializeField]
         private float immobilizeTime = .5f;
 
@@ -50,6 +53,7 @@ namespace MD.Character
         [Client]
         private void HandleAttackInvoke(AttackInvokeData _)
         {
+            enemyDetect.RaiseAttackDirEvent();
             pickaxeAnimatorController.Play();
             CmdAttemptSwingWeapon();
         }
@@ -63,9 +67,10 @@ namespace MD.Character
         }
 
         [Server]
-        private void GiveDamage(NetworkIdentity damagable)
+        private void GiveDamage(IDamagable damagable, bool isCritical)
         {
-            damagable.GetComponent<IDamagable>().TakeDamage(netIdentity, power);
+            var dmg = Mathf.RoundToInt(power * (isCritical ? criticalMultiplier : 1f));
+            damagable.TakeDamage(netIdentity, dmg, isCritical);
         }
 
         private void OnCounterSuccessfully(Vector2 counterVect) => TargetOnCounterSuccessfully(counterVect);

@@ -2,6 +2,6 @@
 {
     public interface IDamagable
     {
-        void TakeDamage(Mirror.NetworkIdentity source, int dmg);
+        void TakeDamage(Mirror.NetworkIdentity source, int dmg, bool isCritical);
     }
 }

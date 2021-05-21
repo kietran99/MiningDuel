@@ -26,10 +26,10 @@ namespace MD.VisualEffects
 
         private void HandleDamageTaken(Character.DamageGivenData data)
         {
-            Spawn(data.dmg, new Vector2(data.damagablePos.x, data.damagablePos.y + yOffset));
+            Spawn(data.dmg, data.isCritical, new Vector2(data.damagablePos.x, data.damagablePos.y + yOffset));
         }
 
-        private void Spawn(int dmg, Vector2 spawnPos)
+        private void Spawn(int dmg, bool isCritical, Vector2 spawnPos)
         {
             var popup = pool.Pop();
             var popupId = popup.GetInstanceID();
@@ -41,20 +41,12 @@ namespace MD.VisualEffects
                 popupBlaster.OnFade += PushToPool;
             }
 
-            popupBlaster.Blast(dmg.ToString(), spawnPos, normalDamageColor);
+            popupBlaster.Blast(dmg.ToString(), spawnPos, isCritical ? criticalDamageColor : normalDamageColor);
         }
 
         private void PushToPool(GameObject popup)
         {
             pool.Push(popup);
         }
-
-        // private void Update()
-        // {
-        //     if (Input.GetKeyDown(KeyCode.Space))
-        //     {
-        //         Spawn(UnityEngine.Random.Range(0, 101), new Vector2(0f, 0f));
-        //     }
-        // }
     }
 }

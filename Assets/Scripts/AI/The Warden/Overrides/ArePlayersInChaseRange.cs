@@ -64,10 +64,28 @@ namespace MD.AI.TheWarden
                     },
                     () => gameObject.SetActive(false)
                 );
+
+            EventSystems.EventManager.Instance.StartListening<Character.CharacterDeathData>(FilterRemainingPlayers);
+        }
+
+        private void FilterRemainingPlayers(Character.CharacterDeathData data)
+        {
+            targets = targets.Filter(target => target.Transform.GetComponent<Mirror.NetworkIdentity>().netId != data.eliminatedId);
+
+            bool matchEnded = targets.Length == 1;
+            if (matchEnded)
+            {
+                EventSystems.EventManager.Instance.StopListening<Character.CharacterDeathData>(FilterRemainingPlayers);
+            }
         }
 
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
+            if (targets.Length == 0)
+            {
+                return BTNodeState.FAILURE;
+            }
+
             var chaseRange = blackboard
                 .Get<float>(WardenMacros.DELTA_CHASE_RANGE, true)
                 .Match(

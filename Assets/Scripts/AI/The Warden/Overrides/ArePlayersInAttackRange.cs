@@ -1,6 +1,6 @@
-﻿using Functional.Type;
+﻿using System.Collections.Generic;
+using Functional.Type;
 using MD.AI.BehaviourTree;
-using MD.Character;
 using UnityEngine;
 
 namespace MD.AI.TheWarden
@@ -59,16 +59,34 @@ namespace MD.AI.TheWarden
                             return;
                         }
 
-                        var targets = new System.Collections.Generic.List<AttackTarget>();
+                        var targets = new List<AttackTarget>();
                         maybeValidTargets.ForEach(maybeTarget => maybeTarget.Match(target => targets.Add(target), () => {}));
                         allTargets = targets.ToArray();
                     },
                     () => gameObject.SetActive(false)
                 );
+
+            EventSystems.EventManager.Instance.StartListening<Character.CharacterDeathData>(FilterRemainingPlayers);
+        }
+
+        private void FilterRemainingPlayers(Character.CharacterDeathData data)
+        {
+            allTargets = allTargets.Filter(target => target.Transform.GetComponent<Mirror.NetworkIdentity>().netId != data.eliminatedId);
+
+            bool matchEnded = allTargets.Length == 1;
+            if (matchEnded)
+            {
+                EventSystems.EventManager.Instance.StopListening<Character.CharacterDeathData>(FilterRemainingPlayers);
+            }
         }
 
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
+            if (allTargets.Length == 0)
+            {
+                return BTNodeState.FAILURE;
+            }
+
             var attackable = allTargets.Find(target => (actor.transform.position - target.Position).sqrMagnitude <= ATTACKABLE_DIST);
             
             gzmLastActorPos = actor.transform.position;

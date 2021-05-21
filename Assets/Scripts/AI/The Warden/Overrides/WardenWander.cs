@@ -52,7 +52,7 @@ namespace MD.AI.TheWarden
         private (int, Vector2) FindNextGoal(Vector2 actorPos, int lastAngle, Vector2 lastGoal)
         {
             var movableQuadrants = quadrants.Filter(quadrant => quadrant.Movable(actorPos, distanceToNextDecision) && !quadrant.IsIn(lastAngle));
-            var nextAngle = movableQuadrants.Random().RandAngle();
+            var nextAngle = movableQuadrants.Length == 0 ? (lastAngle + 180) : movableQuadrants.Random().RandAngle();
             var angleInRad = nextAngle * Mathf.Deg2Rad;
             var nextGoal = new Vector2(distanceToNextDecision * Mathf.Cos(angleInRad) + lastGoal.x, distanceToNextDecision * Mathf.Sin(angleInRad) + lastGoal.y);
             return (nextAngle, nextGoal);
