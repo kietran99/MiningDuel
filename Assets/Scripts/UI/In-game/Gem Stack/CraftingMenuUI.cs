@@ -11,6 +11,8 @@ public class CraftingMenuUI : MonoBehaviour
     
     [SerializeField]
     private List<CraftItemUI> ItemUIObjectsList;
+    [SerializeField]
+    private CraftingMenuDrag menuDrag;
 
     void Start()
     {
@@ -48,6 +50,7 @@ public class CraftingMenuUI : MonoBehaviour
             // Debug.Log("new list " + data.itemsList);
             if (ItemUIObjectsList[i].Name() == data.itemsList[i]) continue;
             ItemUIObjectsList[i].SetItem(data.itemsList[i]);
+            menuDrag.TriggerIndexChangeEvent();
         }
     }
 

@@ -1018,6 +1018,7 @@ MonoBehaviour:
   container: {fileID: 1542635186}
   itemUI: {fileID: 2239446595883569759, guid: 3288d66bf8ddb0d44a1f00c47593f206, type: 3}
   ItemUIObjectsList: []
+  menuDrag: {fileID: 1542635190}
 --- !u!114 &5597613224410003289
 MonoBehaviour:
   m_ObjectHideFlags: 0
