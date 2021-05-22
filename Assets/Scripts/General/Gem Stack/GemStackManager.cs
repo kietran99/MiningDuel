@@ -67,8 +67,10 @@ namespace MD.CraftingSystem
 
             EventSystems.EventManager.Instance.StartListening<GemObtainData>(HandleGemObtain);
             EventSystems.EventManager.Instance.StartListening<CraftMenuChangeIndexData>(HandleChangeIndex);
-            EventSystems.EventManager.Instance.StartListening<UseItemInvokeData>(HandleUseItemInvoke);
+            EventSystems.EventManager.Instance.StartListening<UseItemInvokeData>(HandleUseItemInvoke); 
 
+            // register for craft material indicator
+            ServiceLocator.Register<GemStackManager>(this);
         }
 
         private void OnDisable()
@@ -351,6 +353,12 @@ namespace MD.CraftingSystem
         private void CmdRequestUse(CraftItemName name)
         {
             EventSystems.EventManager.Instance.TriggerEvent<CraftItemData>(new CraftItemData(netIdentity,name));
+        }
+
+        public (int, int) GetCraftItemMaterialsInfor(int index)
+        {
+            if (index < 0 || index >= craftableItemsList.Count) return (0, 0);
+            return (GetIndex(craftableItemsList[index].index), craftableItemsList[index].length);
         }
 
     }

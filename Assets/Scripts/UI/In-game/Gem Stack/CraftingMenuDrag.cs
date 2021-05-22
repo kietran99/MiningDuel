@@ -95,7 +95,7 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
         cellSize = glg.cellSize.x;
         cellSpacing = glg.spacing.x;
         index =0;
-        TriggerIndexChangeEvent();
+        // TriggerIndexChangeEvent();
         Initialize();
         SetSelectedIndex(0);
 
@@ -113,6 +113,7 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
         if (index <= 0) transform.localPosition = new Vector3(-cellSize/2f,0,0);
         else transform.localPosition = new Vector3(-cellSize/2f - index*(cellSize + cellSpacing),0,0);
         location = transform.localPosition;
+        TriggerIndexChangeEvent();
     }
 
     private void HandleItemsNumberChange(CraftItemsNumberChangeData data)
@@ -120,7 +121,7 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
         count = data.numOfItems;
         Initialize();
         if (index >= count) index = Mathf.Max(0,count-1);
-        TriggerIndexChangeEvent();
+        // TriggerIndexChangeEvent();
         SetSelectedIndex(index);
     }
 

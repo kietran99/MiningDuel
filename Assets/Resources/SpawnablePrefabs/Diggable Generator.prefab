@@ -77,8 +77,8 @@ MonoBehaviour:
       weight: 1
     - tag: -1
       weight: 4
-  startSpawnAmount: 50
-  generateInterval: 2
+  startSpawnAmount: 200
+  generateInterval: 1
   quirkLootTable:
     entries:
     - tag: 0
