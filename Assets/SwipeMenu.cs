@@ -5,6 +5,9 @@ using UnityEngine.EventSystems;
 public class SwipeMenu : MonoBehaviour
 {
     [SerializeField]
+    private GameObject MenuNameObj;
+
+    [SerializeField]
     private float moveSpeed = 1f;
 
     [SerializeField]
@@ -21,7 +24,12 @@ public class SwipeMenu : MonoBehaviour
 
     bool IsInventoryMenu = true;
 
-    private IEnumerator SmoothMove(float YStart, float YEnd)
+    private string INVENTORY_STRING = "Inventory";
+    private string CRAFT_STRING = "Craft";
+
+    private string menuName;
+
+    private IEnumerator SmoothSwitchMenu(float YStart, float YEnd)
     {
         float elapsedTime = 0;
         // float time = 1f/moveSpeed;
@@ -53,18 +61,24 @@ public class SwipeMenu : MonoBehaviour
             yield return null;
         }
 
+        MenuNameObj.SetActive(true);
+        MenuNameObj.GetComponentInChildren<UnityEngine.UI.Text>().text = menuName;
     }
 
     public void SwitchMenu()
     {
         if(IsInventoryMenu)
         {
-            StartCoroutine(SmoothMove(InventoryMenuYPosition,CraftMenuYPosition));
+            MenuNameObj.SetActive(false);
+            menuName = CRAFT_STRING;
+            StartCoroutine(SmoothSwitchMenu(InventoryMenuYPosition,CraftMenuYPosition));
             IsInventoryMenu = false;
         }
         else
         {
-            StartCoroutine(SmoothMove(CraftMenuYPosition,InventoryMenuYPosition));
+            MenuNameObj.SetActive(false);
+            menuName = INVENTORY_STRING;
+            StartCoroutine(SmoothSwitchMenu(CraftMenuYPosition,InventoryMenuYPosition));
             IsInventoryMenu = true;
         }
     }

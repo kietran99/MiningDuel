@@ -2196,44 +2196,48 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1542635185, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
-      propertyPath: m_StaticEditorFlags
+    - target: {fileID: 826938828, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
+      propertyPath: m_Color.r
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1542635186, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1542635186, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1542635186, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
-      propertyPath: m_AnchoredPosition.x
+    - target: {fileID: 826938828, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
+      propertyPath: m_Color.g
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1542635186, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
-      propertyPath: m_Pivot.x
+    - target: {fileID: 826938828, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
+      propertyPath: m_Color.b
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1542635186, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1542635186, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1542635186, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
-      propertyPath: m_Pivot.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1542635186, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
+    - target: {fileID: 1027361588, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 84.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1027361588, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.000038147
+      objectReference: {fileID: 0}
+    - target: {fileID: 1027361588, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 137.47214
+      objectReference: {fileID: 0}
+    - target: {fileID: 1027361589, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1027361589, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
+      propertyPath: m_Type
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1696706627, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
+    - target: {fileID: 1027361589, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
       propertyPath: m_Color.a
+      value: 0.7019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 1027361589, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1027361589, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
+      propertyPath: m_Maskable
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 72249921851178018, guid: 445ad5f27f6d1d647a615c6a1ed5e078,
@@ -2360,6 +2364,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5357082498707126361, guid: 445ad5f27f6d1d647a615c6a1ed5e078,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -52
+      objectReference: {fileID: 0}
+    - target: {fileID: 5357082498707126361, guid: 445ad5f27f6d1d647a615c6a1ed5e078,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 306.61908
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
