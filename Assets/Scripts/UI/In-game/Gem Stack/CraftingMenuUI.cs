@@ -22,9 +22,7 @@ public class CraftingMenuUI : MonoBehaviour
 
     void HandleListChange(CraftableItemsListChangeData data)
     {
-        Debug.Log("before list count" + ItemUIObjectsList.Count + "  new list count" + data.itemsList.Count);
         int delta = data.itemsList.Count - ItemUIObjectsList.Count;
-        Debug.Log("delta " + delta);
         if (delta > 0)
         {
             for (int i = 0; i <delta; i++)

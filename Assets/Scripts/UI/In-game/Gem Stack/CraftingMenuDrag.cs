@@ -34,6 +34,7 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void OnDrag(PointerEventData data)
     {
+        Debug.Log("OnDrag");
         float difference = (data.pressPosition.x - data.position.x)*dragSpeed;
         if ((index == 0 && difference < 0) ||  (index == count-1 && difference > 0 ))
         {
@@ -43,7 +44,7 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
         {
             difference =  Mathf.Clamp(difference,-swipeLength -dragMaxExceedLength, swipeLength + dragMaxExceedLength);
         }
-        transform.localPosition = location - new Vector3(difference,0,0);
+        rectTransform.anchoredPosition  = location - new Vector3(difference,0,0);
     }
 
     public void OnEndDrag(PointerEventData data)
@@ -64,12 +65,12 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
                 index--;
                 TriggerIndexChangeEvent();
             }
-            StartCoroutine(SmoothMove(transform.localPosition,newLocation));
+            StartCoroutine(SmoothMove(rectTransform.anchoredPosition ,newLocation));
             location = newLocation;
         }
         else
         {
-            StartCoroutine(SmoothMove(transform.localPosition, location));
+            StartCoroutine(SmoothMove(rectTransform.anchoredPosition , location));
         }   
     }
 
@@ -81,7 +82,7 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
         {
             elapsedTime += Time.deltaTime;
             if (elapsedTime >= time) elapsedTime = time;
-            transform.localPosition = Vector3.Slerp(start,end,elapsedTime*SwipeSpeed);
+            rectTransform.anchoredPosition  = Vector3.Slerp(start,end,elapsedTime*SwipeSpeed);
             yield return null;
         }
     }
@@ -106,13 +107,14 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
     private void Initialize()
     {
         rectTransform.sizeDelta = new Vector2(count*cellSize + (count-1)*cellSpacing,rectTransform.sizeDelta.y);
+        // rectTransform.sizeDelta = new Vector2(count*cellSize + (count-1)*cellSpacing,0);
     }
 
     private void SetSelectedIndex(int index)
     {
-        if (index <= 0) transform.localPosition = new Vector3(-cellSize/2f,0,0);
-        else transform.localPosition = new Vector3(-cellSize/2f - index*(cellSize + cellSpacing),0,0);
-        location = transform.localPosition;
+        if (index <= 0) rectTransform.anchoredPosition  = new Vector3(-cellSize/2f,0,0);
+        else rectTransform.anchoredPosition = new Vector3(-cellSize/2f - index*(cellSize + cellSpacing),0,0);
+        location = rectTransform.anchoredPosition;
         TriggerIndexChangeEvent();
     }
 
