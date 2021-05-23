@@ -145,7 +145,7 @@ public class InventoryMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void TriggerIndexChangeEvent()
     {
-        EventSystems.EventManager.Instance.TriggerEvent<CraftMenuChangeIndexData>(new CraftMenuChangeIndexData(index));
+        // EventSystems.EventManager.Instance.TriggerEvent<CraftMenuChangeIndexData>(new CraftMenuChangeIndexData(index));
     }
 
 }

@@ -24,8 +24,8 @@ public class InventoryMenuUI : MonoBehaviour
 
     void Start()
     {
-        //since player spawn before enter mulitplayer scene
-        //trigger an fake event aquiring pickaxe when enter multiplayer scene for UI to update
+        //since player spawn and aquired a pickaxe before enter mulitplayer scene
+        //trigger a fake event aquiring a pickaxe when enter multiplayer scene for UI to update
         InventoryController.InventoryItem pickAxe = new InventoryController.InventoryItem(InventoryController.InventoryItemType.PickAxe,1,false);
         EventSystems.EventManager.Instance.TriggerEvent<AddInventoryItemData>
         (new AddInventoryItemData(0, pickAxe));
@@ -38,6 +38,8 @@ public class InventoryMenuUI : MonoBehaviour
         if (prefab.Equals(null) ) return;
         GameObject item =  Instantiate(prefab,Vector3.zero,Quaternion.identity,SpawnContainer);
         inventoryUI.Add(item);
+        count++;
+
         if (inventoryUI.Count -1  != data.index)
         {
             Debug.LogError("something wrong here");
@@ -54,6 +56,7 @@ public class InventoryMenuUI : MonoBehaviour
         GameObject obj = inventoryUI[data.index]; 
         inventoryUI.RemoveAt(data.index);
         Destroy(obj);
+        count--;
     }
 
     private void HandleItemAmountChange(InventoryItemAmountChangeData data)

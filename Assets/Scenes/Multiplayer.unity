@@ -2316,14 +2316,7 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5768071429750866300, guid: 445ad5f27f6d1d647a615c6a1ed5e078,
-        type: 3}
-      propertyPath: TrapItem
-      value: 
-      objectReference: {fileID: 5523632056619162987, guid: 189ad8fe09bcb504b808c0907db0b780,
-        type: 3}
-    m_RemovedComponents:
-    - {fileID: 2927123569559536263, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
 --- !u!4 &2072605618153717510
 Transform:
