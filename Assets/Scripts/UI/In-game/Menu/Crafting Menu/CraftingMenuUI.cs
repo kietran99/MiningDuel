@@ -17,7 +17,7 @@ public class CraftingMenuUI : MonoBehaviour
     void Start()
     {
         ItemUIObjectsList = new List<CraftItemUI>();
-        GetComponent<EventSystems.EventConsumer>().StartListening<CraftableItemsListChangeData>(HandleListChange);
+        gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<CraftableItemsListChangeData>(HandleListChange);
     }
 
     void HandleListChange(CraftableItemsListChangeData data)

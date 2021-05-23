@@ -1,9 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
+
+public class InventoryMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
 {
     [SerializeField]
     private float PercentThreshold = .2f;
@@ -21,7 +21,8 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField]
     private int index;
 
-    private int count = 5;
+    [SerializeField]
+    private int count = 0;
 
     private float swipeLength;
 
@@ -88,7 +89,7 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         GridLayoutGroup glg = GetComponent<GridLayoutGroup>();
@@ -96,12 +97,14 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
         cellSize = glg.cellSize.x;
         cellSpacing = glg.spacing.x;
         index =0;
+        count =0;
         // TriggerIndexChangeEvent();
         Initialize();
         SetSelectedIndex(0);
 
-        var eventConsumer = GetComponent<EventSystems.EventConsumer>();
-        eventConsumer.StartListening<CraftItemsNumberChangeData>(HandleItemsNumberChange);   
+        var consumer = gameObject.AddComponent<EventSystems.EventConsumer>();
+        consumer.StartListening<AddInventoryItemData>(HandleAddItem);   
+        consumer.StartListening<RemoveInventoryItemData>(HandleRemoveItem);  
     }
 
     private void Initialize()
@@ -118,9 +121,22 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
         TriggerIndexChangeEvent();
     }
 
-    private void HandleItemsNumberChange(CraftItemsNumberChangeData data)
+
+
+    private void HandleAddItem(AddInventoryItemData data)
     {
-        count = data.numOfItems;
+        count+= 1;
+        HandleItemsNumberChange();
+    }
+
+    private void HandleRemoveItem(RemoveInventoryItemData data)
+    {
+        count -= 1;
+        HandleItemsNumberChange();
+    }
+
+    private void HandleItemsNumberChange()
+    {
         Initialize();
         if (index >= count) index = Mathf.Max(0,count-1);
         // TriggerIndexChangeEvent();
