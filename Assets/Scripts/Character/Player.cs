@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
 using UnityEngine.SceneManagement;
+using MD.Diggable.Projectile;
 
 namespace MD.Character
 {
@@ -113,7 +114,7 @@ namespace MD.Character
         [Command]
         private void CmdRequestSpawnLinkedTrap(NetworkIdentity owner, int x, int y)
         {
-                LinkedTrapSpawnData data = new LinkedTrapSpawnData(owner,x,y);
+                var data = new LinkedTrapSpawnData(owner,x,y);
                 EventSystems.EventManager.Instance.TriggerEvent<LinkedTrapSpawnData>(data);
         }
 

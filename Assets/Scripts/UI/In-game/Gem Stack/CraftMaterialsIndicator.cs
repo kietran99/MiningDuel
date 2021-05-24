@@ -37,7 +37,7 @@ public class CraftMaterialsIndicator : MonoBehaviour
     // Update is called once per frame
     void SetPosition(int index, int length)
     {
-        Debug.Log("set item index" + index + " length" + length);
+        // Debug.Log("set item index" + index + " length" + length);
         float offsetWidth = slotWidth*index;
         float width = length*slotWidth;
         rectTransform.anchoredPosition = new Vector2(basePadding + offsetWidth,rectTransform.anchoredPosition.y);

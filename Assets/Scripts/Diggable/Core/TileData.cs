@@ -26,7 +26,8 @@
         public TileData(DiggableType type)
         {
             Type = type;
-            initialDigsLeft = type.Equals(DiggableType.EMPTY) ? 0 : DiggableTypeConverter.Convert(type).DigValue;
+            // initialDigsLeft = type.Equals(DiggableType.EMPTY) ? 0 : DiggableTypeConverter.Convert(type).DigValue;
+            initialDigsLeft = type.Equals(DiggableType.EMPTY) ? 0 : 1;
             DigsLeft = initialDigsLeft;
         }
 
