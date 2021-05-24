@@ -10,7 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a8ab0fd45821ab4c80dfb1ea0d42501, type: 3}
-  m_Name: Dynamite
+  m_Name: Linked Trap Stats
   m_EditorClassIdentifier: 
-  stunTime: 0.5
+  projectileSprite: {fileID: 21300000, guid: deb4f766d32f6b14cac90671c8ddeaa2, type: 3}
+  sonarSprite: {fileID: 21300000, guid: deb4f766d32f6b14cac90671c8ddeaa2, type: 3}
   gemDropPercentage: 10

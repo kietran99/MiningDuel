@@ -6,5 +6,6 @@
     UNCOMMON_GEM = 4,
     RARE_GEM = 10,
     SUPER_RARE_GEM = 20,
-    NORMAL_BOMB = -1
+    NORMAL_BOMB = -1,
+    LINKED_TRAP = -2
 }

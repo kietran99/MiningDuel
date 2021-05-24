@@ -15,6 +15,7 @@ namespace MD.Diggable.Core
         private readonly static string NAME_RARE_GEM = "Rare Gem Stats";
         private readonly static string NAME_SUPER_RARE_GEM = "Super Rare Gem Stats";
         private readonly static string NAME_BOMB = "Bomb Stats";
+        private readonly static string NAME_LINKED_TRAP = "Linked Trap Stats";
 
         private static readonly Dictionary<DiggableType, IDiggableStats> typeDict = new Dictionary<DiggableType, IDiggableStats>
         {
@@ -22,7 +23,8 @@ namespace MD.Diggable.Core
             { DiggableType.UNCOMMON_GEM, (GemStats) Resources.Load(GEM_PATH + NAME_UNCOMMON_GEM) },
             { DiggableType.RARE_GEM, (GemStats)Resources.Load(GEM_PATH + NAME_RARE_GEM) },
             { DiggableType.SUPER_RARE_GEM, (GemStats)Resources.Load(GEM_PATH + NAME_SUPER_RARE_GEM) },
-            { DiggableType.NORMAL_BOMB, (ProjectileStats)Resources.Load(PROJECTILE_PATH + NAME_BOMB) }
+            { DiggableType.NORMAL_BOMB, (ProjectileStats)Resources.Load(PROJECTILE_PATH + NAME_BOMB) },
+            { DiggableType.LINKED_TRAP, (ProjectileStats)Resources.Load(PROJECTILE_PATH + NAME_LINKED_TRAP) }
         };
 
         private static readonly Dictionary<int, DiggableType> valToTypeDict = new Dictionary<int, DiggableType>
@@ -31,7 +33,8 @@ namespace MD.Diggable.Core
             { 4, DiggableType.UNCOMMON_GEM },
             { 10, DiggableType.RARE_GEM },
             { 20, DiggableType.SUPER_RARE_GEM },
-            { -1, DiggableType.NORMAL_BOMB }
+            { -1, DiggableType.NORMAL_BOMB },
+            { -2, DiggableType.LINKED_TRAP }
         };
 
         public static IDiggableStats Convert(DiggableType type)

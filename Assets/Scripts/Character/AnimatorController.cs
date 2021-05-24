@@ -49,15 +49,17 @@ namespace MD.Character
             animator.SetBool(AnimatorConstants.IS_HOLDING, false);
         }
 
-        private void SetHoldState(ProjectileObtainData obj)
+        private void SetHoldState(ProjectileObtainData data)
         {
-            animator.SetBool(AnimatorConstants.IS_HOLDING, true);
+            if (data.type.Equals(DiggableType.NORMAL_BOMB))
+            {
+                animator.SetBool(AnimatorConstants.IS_HOLDING, true);
+            }
         }
 
         private void InvokeDig(DigInvokeData obj)
         {
             animator.SetBool(AnimatorConstants.IS_DIGGING, true); 
-            //networkAnimator.SetTrigger(AnimatorConstants.INVOKE_DIG);
         }
 
         private void SetMovementState(JoystickDragData dragData)

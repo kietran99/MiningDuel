@@ -23,6 +23,11 @@ namespace MD.Diggable.Core
         [Server]
         private void Spawn(NetworkConnection diggerConn, ProjectileObtainData projObtainData)
         {
+            if (projObtainData.type.Equals(DiggableType.LINKED_TRAP))
+            {
+                return;
+            }
+
             var digger = projObtainData.thrower;
             var holdingProjectile = Instantiate(exposedBombPrefab, digger.gameObject.transform);
             holdingProjectile.transform.position = new Vector3(0, 1f, 0);
