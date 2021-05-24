@@ -358,8 +358,8 @@ MonoBehaviour:
   syncInterval: 0.1
   slowDownTime: 1.5
   explosionTime: 0.1
+  power: 17
   linkedTrapsList: []
-  owner: {fileID: 0}
   rangeControl: {fileID: 2559538637866694821}
   WirePrefab: {fileID: 5758539721120645229, guid: 23c6ca9b04b957b42a8b0d415b0567d6,
     type: 3}

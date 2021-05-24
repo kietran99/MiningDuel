@@ -65,10 +65,8 @@ MonoBehaviour:
   syncInterval: 0.1
   diggableLootTable:
     entries:
-    - tag: 273
-      weight: 2
     - tag: 1
-      weight: 8
+      weight: 6
     - tag: 4
       weight: 4
     - tag: 10
@@ -76,21 +74,11 @@ MonoBehaviour:
     - tag: 20
       weight: 1
     - tag: -1
+      weight: 2
+    - tag: -2
       weight: 4
   startSpawnAmount: 200
   generateInterval: 1
-  quirkLootTable:
-    entries:
-    - tag: 0
-      weight: 3
-    - tag: 1
-      weight: 1
-    - tag: 2
-      weight: 3
-    - tag: 3
-      weight: 3
-  quirkObtainPrefab: {fileID: 711221842714100812, guid: 231bd0e423307404682396cb5f9ee9cd,
-    type: 3}
 --- !u!114 &611995917156761752
 MonoBehaviour:
   m_ObjectHideFlags: 0

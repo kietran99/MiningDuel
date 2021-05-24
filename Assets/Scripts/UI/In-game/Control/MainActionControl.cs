@@ -78,9 +78,12 @@ namespace MD.UI
             button.gameObject.SetActive(true);
         }
 
-        private void HideButton(ProjectileObtainData obj)
+        private void HideButton(ProjectileObtainData data)
         {
-            button.gameObject.SetActive(false);
+            if (data.type.Equals(DiggableType.NORMAL_BOMB))
+            {
+                button.gameObject.SetActive(false);
+            }
         }
     }
 }
