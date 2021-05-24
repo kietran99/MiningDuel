@@ -139,13 +139,12 @@ public class InventoryMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
     {
         Initialize();
         if (index >= count) index = Mathf.Max(0,count-1);
-        // TriggerIndexChangeEvent();
         SetSelectedIndex(index);
     }
 
     public void TriggerIndexChangeEvent()
     {
-        // EventSystems.EventManager.Instance.TriggerEvent<CraftMenuChangeIndexData>(new CraftMenuChangeIndexData(index));
+        EventSystems.EventManager.Instance.TriggerEvent<InventoryMenuIndexChangeData>(new InventoryMenuIndexChangeData(index));
     }
 
 }

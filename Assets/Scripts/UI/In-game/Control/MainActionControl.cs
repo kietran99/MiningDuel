@@ -12,17 +12,20 @@ namespace MD.UI
         private Button button = null;
 
         private MainActionType curActionType;
+        private MainActionType lastActionType;
 
         private System.Collections.Generic.Dictionary<MainActionType, Action> invokerDict;
 
         private void Start()
         {
             curActionType = MainActionType.DIG;
+            lastActionType = curActionType;
 
             invokerDict = new System.Collections.Generic.Dictionary<MainActionType, Action>()
             {
                 { MainActionType.DIG, () => EventSystems.EventManager.Instance.TriggerEvent(new DigInvokeData()) },
-                { MainActionType.ATTACK, () => EventSystems.EventManager.Instance.TriggerEvent(new AttackInvokeData()) }
+                { MainActionType.ATTACK, () => EventSystems.EventManager.Instance.TriggerEvent(new AttackInvokeData()) },
+                { MainActionType.SETTRAP, () => EventSystems.EventManager.Instance.TriggerEvent(new SetTrapInvokeData())}
             };
 
             button.onClick.AddListener(Invoke);
@@ -48,7 +51,21 @@ namespace MD.UI
 
         private void ToggleInvoker(MainActionToggleData actionToggleData)
         {
-            curActionType = actionToggleData.actionType;
+            //if switch to attack
+            //store current action type when switch to attack
+            if (actionToggleData.actionType == MainActionType.ATTACK && curActionType != MainActionType.ATTACK)
+            {
+                lastActionType = curActionType;
+                curActionType = MainActionType.ATTACK;
+            }
+            //if return
+            //return to last action type
+            else if(curActionType == MainActionType.ATTACK && actionToggleData.actionType != MainActionType.ATTACK)
+            {
+                curActionType = lastActionType;
+            }
+            else
+                curActionType = actionToggleData.actionType;
         }
 
         public void Invoke()

@@ -1,12 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using MD.Character;
 public class InventoryController : NetworkBehaviour
 {
-    public struct InventoryItem
+    [System.Serializable]
+    public class InventoryItem
     {
         public InventoryItemType type;
+        [SerializeField]
         public int amount;
 
         public bool removable;
@@ -21,13 +23,13 @@ public class InventoryController : NetworkBehaviour
         public int ReduceAmount(int amount=1)
         {
             this.amount -= amount;
-            return amount;
+            return this.amount;
         }
 
         public int IncreaseAmount(int amount=1)
         {
             this.amount += amount;
-            return amount;
+            return this.amount;
         }
     }
 
@@ -37,8 +39,23 @@ public class InventoryController : NetworkBehaviour
         Trap = 1,
     }
 
+    public MainActionType GetActionType(InventoryItemType itemType)
+    {
+        switch (itemType)
+        {
+            case InventoryItemType.PickAxe:
+                return MainActionType.DIG;
+            case InventoryItemType.Trap:
+                return MainActionType.SETTRAP;
+            default:
+                return MainActionType.DIG;
+        }
+    }
+
     [SerializeField]
     private List<InventoryItem> inventory;
+    [SerializeField]
+    private int currentIndex = 0;
     private int count;
 
     void Start()
@@ -46,28 +63,58 @@ public class InventoryController : NetworkBehaviour
         inventory = new List<InventoryItem>();
         InventoryItem pickaxe = new InventoryItem(InventoryItemType.PickAxe, 1, false);
         AddItem(pickaxe);
+        var consumer = GetComponent<EventSystems.EventConsumer>();
+        if (consumer == null)
+        {
+            consumer = gameObject.AddComponent<EventSystems.EventConsumer>();
+        }
+        consumer.StartListening<InventoryMenuIndexChangeData>(HandleInventoryIndexChange);
+        consumer.StartListening<SetTrapInvokeData>(HandleSetTrapInvoke);
     }
 
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.G))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             InventoryItem trap = new InventoryItem(InventoryItemType.Trap, 3);
             AddItem(trap);
         }
-        if (Input.GetKeyDown(KeyCode.R))
+    }
+
+    private void HandleInventoryIndexChange(InventoryMenuIndexChangeData data)
+    {
+        if (data.index < 0 || data.index >= inventory.Count)
         {
-            CmdRequestSpawnLinkedTrap(netIdentity,Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
-            UseItem(1);
+            Debug.LogError("index out of bound");
+            return;
         }
+        currentIndex = data.index;
+        MainActionType type = GetActionType(inventory[currentIndex].type);
+        EventSystems.EventManager.Instance.TriggerEvent<MainActionToggleData>(new MainActionToggleData(type));
+    }
+
+    private void HandleSetTrapInvoke(SetTrapInvokeData data)
+    {
+        if (inventory[currentIndex].type != InventoryItemType.Trap)
+        {
+            Debug.LogError("wrong item" + inventory[currentIndex].type + " of index " + currentIndex );
+            return;
+        }
+        if (inventory[currentIndex].amount <= 0 )
+        {
+            Debug.LogError("error using out of stack item");
+            return;
+        }
+        CmdRequestSpawnLinkedTrap(netIdentity,Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
+        UseItem(currentIndex);
     }
 
     [Command]
     private void CmdRequestSpawnLinkedTrap(NetworkIdentity owner, int x, int y)
     {
-            LinkedTrapSpawnData data = new LinkedTrapSpawnData(owner,x,y);
-            EventSystems.EventManager.Instance.TriggerEvent<LinkedTrapSpawnData>(data);
+        LinkedTrapSpawnData data = new LinkedTrapSpawnData(owner,x,y);
+        EventSystems.EventManager.Instance.TriggerEvent<LinkedTrapSpawnData>(data);
     }
 
     public bool UseItem(int index) //return true if remove an item
@@ -86,7 +133,7 @@ public class InventoryController : NetworkBehaviour
             return true;
         }
         EventSystems.EventManager.Instance.TriggerEvent<InventoryItemAmountChangeData>(
-            new InventoryItemAmountChangeData(index, inventory.Count));
+            new InventoryItemAmountChangeData(index, inventory[index].amount));
         return false;
     }
 

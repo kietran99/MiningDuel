@@ -11,11 +11,11 @@ public class InventoryMenuUI : MonoBehaviour
     [SerializeField]
     private GameObject TrapItem = null;
 
-    List<GameObject> inventoryUI;
+    List<InventoryItemUIController> inventoryUI;
 
     void Awake()
     {
-        inventoryUI = new List<GameObject>();
+        inventoryUI = new List<InventoryItemUIController>();
         var eventConsumer = gameObject.AddComponent<EventSystems.EventConsumer>();
         eventConsumer.StartListening<AddInventoryItemData>(HandleAddItem);
         eventConsumer.StartListening<RemoveInventoryItemData>(HandleRemoveItem);
@@ -36,8 +36,9 @@ public class InventoryMenuUI : MonoBehaviour
     {
         GameObject prefab = GetPrefab(data.item.type);
         if (prefab.Equals(null) ) return;
-        GameObject item =  Instantiate(prefab,Vector3.zero,Quaternion.identity,SpawnContainer);
+        InventoryItemUIController item =  Instantiate(prefab,Vector3.zero,Quaternion.identity,SpawnContainer).GetComponent<InventoryItemUIController>();
         inventoryUI.Add(item);
+        item.SetAmount(data.item.amount);
         count++;
 
         if (inventoryUI.Count -1  != data.index)
@@ -53,7 +54,7 @@ public class InventoryMenuUI : MonoBehaviour
             Debug.LogError("something wrong here");            
             return;
         }
-        GameObject obj = inventoryUI[data.index]; 
+        GameObject obj = inventoryUI[data.index].gameObject; 
         inventoryUI.RemoveAt(data.index);
         Destroy(obj);
         count--;
@@ -61,7 +62,7 @@ public class InventoryMenuUI : MonoBehaviour
 
     private void HandleItemAmountChange(InventoryItemAmountChangeData data)
     {
-
+        inventoryUI[data.index].SetAmount(data.amount);
     }
 
     private GameObject GetPrefab(InventoryController.InventoryItemType itemType)
