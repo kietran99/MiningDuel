@@ -12,12 +12,36 @@ namespace MD.Diggable.Core
 
         public override void OnStartServer()
         {
-            GetComponent<IDiggableGenerator>().ProjectileObtainEvent += Spawn;
+            GetComponent<IDiggableGenerator>().ProjectileObtainEvent += HandleProjetileObtain;
         }
 
         public override void OnStopServer()
         {
-            GetComponent<IDiggableGenerator>().ProjectileObtainEvent -= Spawn;
+            GetComponent<IDiggableGenerator>().ProjectileObtainEvent -= HandleProjetileObtain;
+        }
+        [Server]
+        private void HandleProjetileObtain(NetworkConnection diggerConn, ProjectileObtainData projObtainData)
+        {
+            if (projObtainData.type.Equals(DiggableType.LINKED_TRAP))
+            {
+                var inventory =  diggerConn.identity.gameObject.GetComponent<InventoryController>();
+                if (inventory == null)
+                {
+                    Debug.LogError(diggerConn.identity.gameObject +" has no inventory controller component");
+                    return;
+                }
+                inventory.TargetObtainTraps(diggerConn);
+            }
+            else
+            {
+                Spawn(diggerConn, projObtainData);
+            }
+        }
+
+        [TargetRpc]
+        private void TargetAddTrap(NetworkConnection diggercon)
+        {
+
         }
 
         [Server]
@@ -25,6 +49,7 @@ namespace MD.Diggable.Core
         {
             if (projObtainData.type.Equals(DiggableType.LINKED_TRAP))
             {
+
                 return;
             }
 

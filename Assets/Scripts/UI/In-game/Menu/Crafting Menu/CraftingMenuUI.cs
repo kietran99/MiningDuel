@@ -5,12 +5,12 @@ using MD.CraftingSystem;
 public class CraftingMenuUI : MonoBehaviour
 {
     [SerializeField]
-    private Transform container;
+    private Transform container = null;
     [SerializeField]
-    private CraftItemUI itemUI;
+    private CraftItemUI itemUI =null;
     
     [SerializeField]
-    private List<CraftItemUI> ItemUIObjectsList;
+    private List<CraftItemUI> ItemUIObjectsList = null;
     [SerializeField]
     private CraftingMenuDrag menuDrag;
 

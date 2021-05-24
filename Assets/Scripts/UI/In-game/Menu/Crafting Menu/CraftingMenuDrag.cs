@@ -34,7 +34,6 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void OnDrag(PointerEventData data)
     {
-        Debug.Log("OnDrag");
         float difference = (data.pressPosition.x - data.position.x)*dragSpeed;
         if ((index == 0 && difference < 0) ||  (index == count-1 && difference > 0 ))
         {

@@ -7,7 +7,7 @@ namespace MD.Diggable.Projectile
     public class TrapExplodeRangeControl : MonoBehaviour
     {
         [SerializeField]
-        LinkedTrap trap;
+        LinkedTrap trap = null;
 
         [SerializeField]
         ContactFilter2D filterMask;

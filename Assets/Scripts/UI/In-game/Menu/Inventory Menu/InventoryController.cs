@@ -60,8 +60,9 @@ public class InventoryController : NetworkBehaviour
     private int currentIndex = 0;
     private int count;
 
-    void Start()
+    public override void OnStartAuthority()
     {
+        base.OnStartAuthority();
         inventory = new List<InventoryItem>();
         InventoryItem pickaxe = new InventoryItem(InventoryItemType.PickAxe, 1, false);
         AddItem(pickaxe);
@@ -74,21 +75,11 @@ public class InventoryController : NetworkBehaviour
         consumer.StartListening<SetTrapInvokeData>(HandleSetTrapInvoke);
     }
 
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            InventoryItem trap = new InventoryItem(InventoryItemType.Trap, 3);
-            AddItem(trap);
-        }
-    }
-
     private void HandleInventoryIndexChange(InventoryMenuIndexChangeData data)
     {
         if (data.index < 0 || data.index >= inventory.Count)
         {
-            Debug.LogError("index out of bound");
+            Debug.LogError("index out of bound index: " + data.index + " count: " + inventory.Count);
             return;
         }
         currentIndex = data.index;
@@ -155,6 +146,13 @@ public class InventoryController : NetworkBehaviour
         EventSystems.EventManager.Instance.TriggerEvent<AddInventoryItemData>
         (new AddInventoryItemData(inventory.Count -1, item));
         return true;
+    }
+
+    [TargetRpc]
+    public void TargetObtainTraps(NetworkConnection conn)
+    {
+        InventoryController.InventoryItem trap = new InventoryController.InventoryItem(InventoryController.InventoryItemType.Trap, 3);
+        AddItem(trap);
     }
 
 }

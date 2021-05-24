@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 public class SwipeMenu : MonoBehaviour
 {
     [SerializeField]
-    private GameObject MenuNameObj;
+    private GameObject MenuNameObj = null;
 
     [SerializeField]
     private float moveSpeed = 1f;
