@@ -1,36 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-[RequireComponent(typeof(CircleCollider2D))]
-public class TrapExplodeRangeControl : MonoBehaviour
+
+namespace MD.Diggable.Projectile
 {
-    [SerializeField]
-    LinkedTrap trap;
-
-    [SerializeField]
-    ContactFilter2D filterMask;
-
-    public void LinkNearbyTraps()
+    [RequireComponent(typeof(CircleCollider2D))]
+    public class TrapExplodeRangeControl : MonoBehaviour
     {
-        Collider2D collider = GetComponent<Collider2D>();
-        List<Collider2D> results = new List<Collider2D>();
-        collider.OverlapCollider(filterMask, results);
-        for (int i=0; i < results.Count; i++)
+        [SerializeField]
+        LinkedTrap trap;
+
+        [SerializeField]
+        ContactFilter2D filterMask;
+
+        public void LinkNearbyTraps()
         {
-            TrapExplodeRangeControl trapCollider = results[i].GetComponent<TrapExplodeRangeControl>();
-            if (trapCollider != null)
+            Collider2D collider = GetComponent<Collider2D>();
+            List<Collider2D> results = new List<Collider2D>();
+            collider.OverlapCollider(filterMask, results);
+            for (int i=0; i < results.Count; i++)
             {
-                LinkedTrap otherTrap = trapCollider.GetTrap();
-                otherTrap.RegistLinkedTrap(trap, false);
-                trap.RegistLinkedTrap(otherTrap, otherTrap.GetOwner().Equals(trap.GetOwner())); //create wire on traps of the same owner
-            }
-            else
-            {
-                Debug.LogError("Cant get trapexploderangecontrol script");
+                TrapExplodeRangeControl trapCollider = results[i].GetComponent<TrapExplodeRangeControl>();
+                if (trapCollider != null)
+                {
+                    LinkedTrap otherTrap = trapCollider.GetTrap();
+                    otherTrap.RegistLinkedTrap(trap, false);
+                    trap.RegistLinkedTrap(otherTrap, otherTrap.GetOwner().Equals(trap.GetOwner())); //create wire on traps of the same owner
+                }
+                else
+                {
+                    Debug.LogError("Cant get trapexploderangecontrol script");
+                }
             }
         }
+
+        public LinkedTrap GetTrap() => trap;
+
     }
-
-    public LinkedTrap GetTrap() => trap;
-
 }

@@ -43,13 +43,13 @@ namespace MD.CraftingSystem
             int value = indicesDict.IndexOf(name);
             if (value != -1)
             {
-                Debug.Log("found index is " + value);
+                // Debug.Log("found index is " + value);
                 return value;
             }
             else
             {
                 indicesDict.Add(name);
-                Debug.Log("found index is " + (indicesDict.Count -1));
+                // Debug.Log("found index is " + (indicesDict.Count -1));
                 return indicesDict.Count -1;
             }
         }
@@ -78,10 +78,10 @@ namespace MD.CraftingSystem
         
         public CraftItemName Search(CraftableGem[] gems)
         {
-            Debug.Log("start search");
+            // Debug.Log("start search");
             foreach (CraftableGem gem in gems)
             {
-                Debug.Log(" " + gem);
+                // Debug.Log(" " + gem);
             }
             int index;
             TrieNode pCrawl = root;

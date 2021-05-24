@@ -2,6 +2,8 @@
 using UnityEngine;
 using Mirror;
 using MD.Character;
+using MD.Diggable.Projectile;
+
 public class InventoryController : NetworkBehaviour
 {
     [System.Serializable]
@@ -113,7 +115,7 @@ public class InventoryController : NetworkBehaviour
     [Command]
     private void CmdRequestSpawnLinkedTrap(NetworkIdentity owner, int x, int y)
     {
-        LinkedTrapSpawnData data = new LinkedTrapSpawnData(owner,x,y);
+        var data = new LinkedTrapSpawnData(owner,x,y);
         EventSystems.EventManager.Instance.TriggerEvent<LinkedTrapSpawnData>(data);
     }
 

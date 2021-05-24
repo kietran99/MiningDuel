@@ -1,15 +1,18 @@
 ﻿using Mirror;
-public struct LinkedTrapSpawnData : EventSystems.IEventData
+
+namespace MD.Diggable.Projectile
 {
-    public NetworkIdentity owner;
-    public int x;
-    public int y;
-
-    public LinkedTrapSpawnData(NetworkIdentity owner, int x, int y)
+    public struct LinkedTrapSpawnData : EventSystems.IEventData
     {
-        this.owner = owner;
-        this.x = x;
-        this.y = y;
-    }
+        public NetworkIdentity owner;
+        public int x;
+        public int y;
 
+        public LinkedTrapSpawnData(NetworkIdentity owner, int x, int y)
+        {
+            this.owner = owner;
+            this.x = x;
+            this.y = y;
+        }
+    }
 }

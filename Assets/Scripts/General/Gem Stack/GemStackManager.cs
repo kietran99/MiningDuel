@@ -261,7 +261,7 @@ namespace MD.CraftingSystem
         {
             int pos = index - head;
             if (pos < 0) pos += gemStack.Length;
-            Debug.Log("pos is " + pos + " index  is " + index);
+            // Debug.Log("pos is " + pos + " index  is " + index);
             return pos;
         }
 
