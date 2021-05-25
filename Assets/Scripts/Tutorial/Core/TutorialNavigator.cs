@@ -37,6 +37,12 @@ namespace MD.Tutorial
 
         public void LoadData(TutorialNavigateData data)
         {
+            var maybeCurTutorialMaterial = GameObject.FindObjectOfType<AbstractTutorialMaterial>();
+            if (maybeCurTutorialMaterial != null)
+            {
+                Destroy(maybeCurTutorialMaterial.gameObject);
+            }
+
             player.position = new Vector3(0f, .5f, 0f);
             curTutorialState = data.SetupEnvironment();
         }

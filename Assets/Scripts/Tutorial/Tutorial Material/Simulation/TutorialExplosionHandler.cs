@@ -22,5 +22,7 @@ namespace MD.Tutorial
                 droppingGem.GetComponent<Rigidbody2D>().AddForce(Random.Range(100f, maxExplosionForce) * new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)));
             }
         }
+
+        public void HandleTrapExplode(float slowDownTime){}
     }
 }

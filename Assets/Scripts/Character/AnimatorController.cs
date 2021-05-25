@@ -29,6 +29,8 @@ namespace MD.Character
             eventManager.StartListening<DigInvokeData>(InvokeDig);
             eventManager.StartListening<ProjectileObtainData>(SetHoldState);
             eventManager.StartListening<ThrowInvokeData>(RevertToIdleState);
+            var eventConsumer = EventSystems.EventConsumer.Attach(gameObject);
+            eventConsumer.StartListening<AttackDirectionData>(PlayBasicAttack);
         }
 
         private void OnDisable()
@@ -47,15 +49,17 @@ namespace MD.Character
             animator.SetBool(AnimatorConstants.IS_HOLDING, false);
         }
 
-        private void SetHoldState(ProjectileObtainData obj)
+        private void SetHoldState(ProjectileObtainData data)
         {
-            animator.SetBool(AnimatorConstants.IS_HOLDING, true);
+            if (data.type.Equals(DiggableType.NORMAL_BOMB))
+            {
+                animator.SetBool(AnimatorConstants.IS_HOLDING, true);
+            }
         }
 
         private void InvokeDig(DigInvokeData obj)
         {
             animator.SetBool(AnimatorConstants.IS_DIGGING, true); 
-            //networkAnimator.SetTrigger(AnimatorConstants.INVOKE_DIG);
         }
 
         private void SetMovementState(JoystickDragData dragData)
@@ -84,5 +88,12 @@ namespace MD.Character
         private void BindLastMoveStats(float lastX, float lastY) => (this.lastX, this.lastY) = (lastX, lastY);    
 
         public void CancelDigAction() => animator.SetBool(AnimatorConstants.IS_DIGGING, false);  
+
+        private void PlayBasicAttack(AttackDirectionData data)
+        {
+            animator.SetFloat(AnimatorConstants.ATK_X, data.dir.x);
+            animator.SetFloat(AnimatorConstants.ATK_Y, data.dir.y);
+            networkAnimator.SetTrigger(AnimatorConstants.BASIC_ATTACK);
+        }
     }
 }

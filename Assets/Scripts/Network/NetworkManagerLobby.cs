@@ -14,6 +14,7 @@ namespace MD.UI
     {
         #region CONSTANTS
         private readonly string NAME_PLAYER_ONLINE = "Player Online";
+        private readonly string SPAWN_PLATFORM = "Spawn Platform";
         private readonly string DIGGABLE_GENERATOR = "Diggable Generator";
         private readonly string DIGGABLE_GENERATOR_COMMUNICATOR = "Diggable Generator Communicator";
         private readonly string SONAR = "Sonar";
@@ -21,6 +22,7 @@ namespace MD.UI
         private readonly string MAP_RENDERER = "Map Renderer";
         private readonly string SCAN_WAVE_SPAWNER = "Scan Wave Spawner";
         private readonly string OFFSCREEN_INDICATOR = "Offscreen Indicator";
+        private readonly string STORAGE = "Storage";
         #endregion
 
         #region SERIALIZE FIELDS
@@ -30,6 +32,9 @@ namespace MD.UI
 
         [Scene] [SerializeField]
         private string gamePlayScene = string.Empty;
+
+        [SerializeField]
+        private float matchTime = 240f;
 
         [Header("Room")]
         [SerializeField]
@@ -43,9 +48,6 @@ namespace MD.UI
 
         [SerializeField]
         private GameObject botPrefab = null;
-
-        [SerializeField]
-        private Diggable.Core.Storage gemStorage = null;    
         #endregion
 
         #region FIELDS
@@ -58,12 +60,14 @@ namespace MD.UI
         public bool isBotTraining;
         private IGameModeManager gameModeManager;
         private Map.Core.SpawnPositionsData spawnPositionsData;
+        private List<uint> aliveBots = new List<uint>();
         #endregion
 
         public static event Action OnClientConnected;
         public static event Action OnClientDisconnnected;
 
         public int MinNumPlayers => minimumPlayers; 
+        public Vector2 NextSpawnPoint => spawnPositionsData.NextSpawnPoint;
         private Player NetworkPlayerPrefab
         {
             set => networkPlayerPrefab = value;
@@ -168,7 +172,6 @@ namespace MD.UI
 
         public Player SpawnBotTrainingPlayer(NetworkConnection conn)
         {
-            // var player = Instantiate(NetworkPlayerPrefab, spawnPositionsData.NextSpawnPoint, Quaternion.identity);
             var player = Instantiate(NetworkPlayerPrefab);
             player.SetPlayerNameAndColor(PlayerPrefs.GetString(PlayerNameInput.PLAYER_PREF_NAME_KEY));
             NetworkServer.AddPlayerForConnection(conn, player.gameObject); 
@@ -193,6 +196,7 @@ namespace MD.UI
             Time.timeScale = 1f;
             ServerChangeScene(menuScene);
             CleanObjectsOnDisconnect();
+            GetComponent<CustomNetworkDiscovery>().StopAdvertisingServer();
             base.OnStopServer();
         }
 
@@ -259,6 +263,7 @@ namespace MD.UI
             SpawnSonar();            
             SpawnDiggableGeneratorCommunicator();  
             Players.ForEach(player => GenMapRenderer(player.connectionToClient)); 
+            Players.ForEach(player => SpawnSpawnPlatform(player.netIdentity));
             Players.ForEach(player => SpawnStorage(player.netIdentity, player.PlayerColor));
 
             SpawnScanWaveSpawner();
@@ -279,10 +284,17 @@ namespace MD.UI
             NetworkServer.Spawn(offscreenIndicator);
         }
 
+        private void SpawnSpawnPlatform(NetworkIdentity playerId)
+        {
+            var platform = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(SPAWN_PLATFORM)), playerId.transform.position - new Vector3(0f, .4f, 0f), Quaternion.identity);
+            NetworkServer.Spawn(platform);
+        }
+
         private void SpawnStorage(NetworkIdentity playerId, Color flagColor)
         {
-            var storage = Instantiate(gemStorage, playerId.transform.position, Quaternion.identity);
-            storage.Initialize(playerId, flagColor);
+            // var storage = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(STORAGE)), playerId.transform.position, Quaternion.identity);
+            var storage = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(STORAGE)), playerId.transform.position + new Vector3(-2f, 0f, 0f), Quaternion.identity);
+            storage.GetComponent<Diggable.Core.Storage>().Initialize(playerId, flagColor);
             NetworkServer.Spawn(storage.gameObject);
         }
 
@@ -304,32 +316,6 @@ namespace MD.UI
             NetworkServer.Spawn(mapRenderer, conn);
         }
 
-
-        private void SetupGame()
-        {
-            float matchTime = 120f;
-            Time.timeScale = 1f;   
-            gameModeManager.SetupGame();      
-            Invoke(nameof(EndGame), matchTime);
-        }
-
-        public void SetupPlayerState(float matchTime)
-        {
-            foreach (Player player in Players)
-            {
-                player.Movable(true);
-                player.TargetNotifyGameReady(matchTime);
-            }
-        }
-
-        public void SetupBotAndPlayerState(Transform player)
-        {
-            player.position = spawnPositionsData.NextSpawnPoint;
-            var bot = Instantiate(botPrefab, spawnPositionsData.NextSpawnPoint, Quaternion.identity);
-            Bots.Add(bot.GetComponent<PlayerBot>());
-            NetworkServer.Spawn(bot, Players[0].connectionToClient);
-        }
-
         public void StartGame()
         {
             if (SceneManager.GetActiveScene().path == menuScene && IsReadyToStart())
@@ -346,7 +332,21 @@ namespace MD.UI
 
         public bool IsReadyToStart() => gameModeManager.IsReadyToStart();
 
-        private void EndGame()
+        private void SetupGame()
+        {  
+            gameModeManager.SetupGame(matchTime, Players); 
+            Invoke(nameof(EndGameByTimeOut), matchTime);
+        }
+
+        public GameObject SpawnBot(Vector2 spawnPos)
+        {
+            var bot = Instantiate(botPrefab, spawnPos, Quaternion.identity);
+            Bots.Add(bot.GetComponent<PlayerBot>());
+            NetworkServer.Spawn(bot, Players[0].connectionToClient);
+            return bot;
+        }
+
+        private void EndGameByTimeOut()
         {
             Debug.Log("Player count: " + Players.Count);
             
@@ -379,15 +379,15 @@ namespace MD.UI
             }
         }
 
+    #if UNITY_EDITOR
         void Update()
         {
-    #if UNITY_EDITOR
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 CancelInvoke();
-                EndGame();
+                EndGameByTimeOut();
             }
-    #endif
         }   
+    #endif
     }
 }    

@@ -4,28 +4,21 @@ using UnityEngine;
 
 namespace MD.Character
 {
-    public class ScoreManager : NetworkBehaviour
+    public class ScoreManager : NetworkBehaviour, IScoreManager
     {
         [System.Serializable]
         public struct MultiplierThreshold
         {
             public int score;
             public float multiplier;
-
-            public MultiplierThreshold(int score, float multiplier)
-            {
-                this.score = score;
-                this.multiplier = multiplier;
-            }
         }
 
         [SerializeField]
         private MultiplierThreshold[] multiplierThresholds = null;
 
-        [SerializeField]
         [SyncVar(hook=nameof(SyncScore))]
         private int currentScore;
-        [SerializeField]
+        
         [SyncVar(hook=nameof(SyncFinalScore))]
         private int finalScore;
 
@@ -47,6 +40,7 @@ namespace MD.Character
             EventSystems.EventManager.Instance.StartListening<StoreFinishedData>(StoreGem);
             player = GetComponent<Player>();
         }
+
         public override void OnStopServer()
         {
             EventSystems.EventManager.Instance.StartListening<StoreFinishedData>(StoreGem);
@@ -91,7 +85,7 @@ namespace MD.Character
         private bool IsLocalTarget(uint targetID) => targetID.Equals(netId);
 
         [Server]
-        private void IncreaseScore(int amount) => currentScore +=Mathf.FloorToInt(amount * currentMultiplier);       
+        private void IncreaseScore(int amount) => currentScore += Mathf.FloorToInt(amount * currentMultiplier);       
 
         [Command]
         private void CmdIncreaseScore(int amount) => currentScore += Mathf.FloorToInt(amount * currentMultiplier);        
@@ -136,6 +130,14 @@ namespace MD.Character
             EventSystems.EventManager.Instance.TriggerEvent(new MultiplierChangeData(newMult));            
         }
 
+        [Server]
+        void StoreGem(StoreFinishedData data)
+        {
+            if (data.player != player.netIdentity) return;
+            finalScore += currentScore;
+            currentScore = 0;
+        }
+
         // Cheat codes
         void Update()
         {
@@ -149,14 +151,6 @@ namespace MD.Character
                 EventSystems.EventManager.Instance.TriggerEvent(new MultiplierChangeData(UnityEngine.Random.Range(1, 100)));
             }
             #endif
-        }
-
-        [Server]
-        void StoreGem(StoreFinishedData data)
-        {
-            if (data.player != player.netIdentity) return;
-            finalScore += currentScore;
-            currentScore = 0;
-        } 
+        }        
     }
 }

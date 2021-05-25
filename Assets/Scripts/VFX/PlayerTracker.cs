@@ -17,7 +17,7 @@ namespace MD.VisualEffects
             playerTransform = player.transform;
         }
 
-        private void FixedUpdate()
+        private void LateUpdate()
         {
             if (playerTransform == null)
             {

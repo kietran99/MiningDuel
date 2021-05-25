@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEditor;
+using UnityEngine.UI;
 
 public class ManualMapGenerator : MonoBehaviour
 {
@@ -11,15 +12,20 @@ public class ManualMapGenerator : MonoBehaviour
     [SerializeField] int width = 10;
     [SerializeField] int height = 10;
     [SerializeField] string myName = "map";
-    [SerializeField] Tilemap botMap = null;
-    [SerializeField] Tilemap topMap = null;
-    [SerializeField] Tilemap obstacleMap =null;
-    [SerializeField] RuleTile tileNo1= null;
-    [SerializeField] RuleTile tileNo2= null;
-    [SerializeField] RuleTile tileNo3= null;
-    [SerializeField] RuleTile obstacleTile = null;
+    // [SerializeField] Tilemap botMap = null;
+    // [SerializeField] Tilemap topMap = null;
+    // [SerializeField] Tilemap obstacleMap =null;
+    // [SerializeField] RuleTile tileNo1= null;
+    // [SerializeField] RuleTile tileNo2= null;
+    // [SerializeField] RuleTile tileNo3= null;
+    // [SerializeField] RuleTile obstacleTile = null;
+    [SerializeField] Tilemap[] allLayer = null;
+    [SerializeField] RuleTile[] allTile = null;
+    [SerializeField] Text noticeText = null;
     int[,] map;
+    int[][,] subMap;
     int tileID = 0;
+    int selectedMask = 0;
     // string seed = "";
     public int GetElement(int x, int y)
     {
@@ -31,11 +37,37 @@ public class ManualMapGenerator : MonoBehaviour
         return map[x,y];
         // return 0;
     }
+
+    void UpdateNotice()
+    {
+        if(allTile == null || allLayer == null)
+        {
+            return;
+        }
+        if(tileID == -1)
+        {
+            noticeText.text = "You are now deleting Tile from Layer mask: " + selectedMask.ToString();
+        }
+        else
+            noticeText.text = "You are now using Tile: " + allTile[tileID].name + " on Layer mask: " + selectedMask.ToString();
+    }
     // Start is called before the first frame update
     void Start()
     {
         map = new int[width,height];
+        subMap = new int[allLayer.Length][,];
+        for(int i = 0; i < allLayer.Length; i++)
+        {
+            subMap[i] = new int[width,height];
+        }
+        for(int x = 0; x < width; x++)
+            for(int y = 0; y < height; y++)
+            {
+                subMap[0][x,y] = 1;
+            }
         ApplyTiles();
+        UpdateNotice();
+        Debug.Log("Use Arrow key to move around\nUse MouseScroll to Zoom And LeftClick to draw\nUse Button \"T\" to switch Tile to draw and Button \"L\" to switch tile map to draw on\nFinally, Hit \"S\" to Save");
     }
 
     // Update is called once per frame
@@ -63,36 +95,44 @@ public class ManualMapGenerator : MonoBehaviour
         {
             Camera.main.transform.Translate(new Vector3(0,-10*Time.deltaTime,0));
         }
-        switch(tileID)
-        {
-            case 0:
-                Debug.Log("Apllying Tile: tileNo1");
-                break;
-            case 1:
-                Debug.Log("Apllying Tile: tileNo2");
-                break;
-            case 2:
-                Debug.Log("Apllying Tile: tileNo3");
-                break;
-            case -1:
-                Debug.Log("Apllying Tile: obstacleTile");
-                break;
-        }
         if(Input.GetKeyDown(KeyCode.BackQuote))
         {
             tileID = -1;
+            UpdateNotice();
         }
         if(Input.GetKeyDown(KeyCode.Alpha0))
         {
             tileID = 0;
+            UpdateNotice();
         }
         if(Input.GetKeyDown(KeyCode.Alpha1))
         {
             tileID = 1;
+            UpdateNotice();
         }
         if(Input.GetKeyDown(KeyCode.Alpha2))
         {
             tileID = 2;
+            UpdateNotice();
+        }
+
+        if(Input.GetKeyDown(KeyCode.T))
+        {
+            tileID++;
+            if(tileID >= allTile.Length)
+            {
+                tileID = -1;
+            }
+            UpdateNotice();
+        }
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            selectedMask++;
+            if(selectedMask >= allLayer.Length)
+            {
+                selectedMask = 0;
+            }
+            UpdateNotice();
         }
         if(Input.GetMouseButton(0))
         {
@@ -103,8 +143,14 @@ public class ManualMapGenerator : MonoBehaviour
             int y = (int)mousePos.y;
             if( x>=0 && x < width && y>= 0 && y <height)
             {
-                map[x,y] = tileID;
-                ApplyTiles(x,y);
+                // if(tileID != -1)
+                // {
+                //     map[x,y] = tileID;
+                // }
+                // else
+                //     map[x,y] = 0;
+                // // ApplyTiles(x,y);
+                ApplyTiles(x,y,selectedMask);
             }
         }
         
@@ -144,55 +190,57 @@ public class ManualMapGenerator : MonoBehaviour
         }
     }
 
-    void ApplyTiles(int x, int y)
+    void ApplyTiles(int x, int y, int mask)
     {
-        if(x < 0 || y < 0) return;
+        if(x < 0 || y < 0 || mask < 0 || allLayer == null || mask >= allLayer.Length) return;
         int weight = map[x,y];
-        switch(weight)
+        if(tileID == -1)
         {
-            case 0:
-                topMap.SetTile(new Vector3Int(x, y, 0),null);
-                obstacleMap.SetTile(new Vector3Int(x, y, 0), null);
-                break;
-            case 1:
-                obstacleMap.SetTile(new Vector3Int(x, y, 0), null);
-                topMap.SetTile(new Vector3Int(x, y, 0), tileNo2);
-                break;
-            case 2:
-                obstacleMap.SetTile(new Vector3Int(x, y, 0), null);
-                topMap.SetTile(new Vector3Int(x, y, 0), tileNo3);
-                break;
-            case -1:
-                topMap.SetTile(new Vector3Int(x, y, 0), null);
-                obstacleMap.SetTile(new Vector3Int(x, y,0), obstacleTile);
-                break;
+            allLayer[mask].SetTile(new Vector3Int(x, y,0), null);
+            subMap[mask][x,y] = 0;
         }
-
+        else
+            allLayer[mask].SetTile(new Vector3Int(x,y,0),allTile[tileID]);
+        subMap[mask][x,y] = tileID + 1;
+        int finalIndexVal = allLayer.Length-1;
+        for(int i = finalIndexVal; i >= 0; i--)
+        {
+            if(subMap[i][x,y] == 0)
+                continue;
+            map[x,y] = subMap[i][x,y] - 1;
+            break;
+        }
+        // map[x,y] = finalIndexVal - 1;
     }
     void ApplyTiles()
     {
-        topMap.ClearAllTiles();
-        botMap.ClearAllTiles();
-        obstacleMap.ClearAllTiles();
+        // topMap.ClearAllTiles();
+        // botMap.ClearAllTiles();
+        // obstacleMap.ClearAllTiles();
+        for(int i = 0; i < allLayer.Length; i++)
+        {
+            allLayer[i].ClearAllTiles();
+        }
         if(map!= null)
         {
             for(int x = 0; x < width; x++)
             {
                 for(int y = 0; y < height; y++)
                 {                    
-                    botMap.SetTile(new Vector3Int(x , y , 0), tileNo1);
-                    if(map[x,y] == 1)
-                    {
-                        topMap.SetTile(new Vector3Int(x , y , 0), tileNo2);
-                    }
-                    else if(map[x,y] == 2)
-                    {
-                        topMap.SetTile(new Vector3Int(x, y, 0), tileNo3);
-                    }       
-                    else if(map[x,y] == -1)
-                    {
-                        obstacleMap.SetTile(new Vector3Int(x, y, 0), obstacleTile);
-                    }           
+                    // botMap.SetTile(new Vector3Int(x , y , 0), tileNo1);
+                    // if(map[x,y] == 1)
+                    // {
+                    //     topMap.SetTile(new Vector3Int(x , y , 0), tileNo2);
+                    // }
+                    // else if(map[x,y] == 2)
+                    // {
+                    //     topMap.SetTile(new Vector3Int(x, y, 0), tileNo3);
+                    // }       
+                    // else if(map[x,y] == -1)
+                    // {
+                    //     obstacleMap.SetTile(new Vector3Int(x, y, 0), obstacleTile);
+                    // }     
+                    allLayer[0].SetTile(new Vector3Int(x,y,0),allTile[0]);      
                 }
             }
         }

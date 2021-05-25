@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
 using UnityEngine.SceneManagement;
+using MD.Diggable.Projectile;
 
 namespace MD.Character
 {
@@ -8,7 +9,7 @@ namespace MD.Character
     [RequireComponent(typeof(DigAction))]
     [RequireComponent(typeof(PlayerExplosionHandler))]
     [RequireComponent(typeof(ScoreManager))]
-    public class Player : NetworkBehaviour
+    public class Player : NetworkBehaviour, IPlayer
     {        
         [SerializeField]
         private PlayerColorPicker colorPicker = null;
@@ -77,7 +78,7 @@ namespace MD.Character
         [TargetRpc]
         public void TargetNotifyEndGame(bool hasWon)
         {
-            EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(hasWon, scoreManager.CurrentScore));
+            EventSystems.EventManager.Instance.TriggerEvent(new EndGameData(hasWon, scoreManager.FinalScore));
         }
 
         public void ExitGame()
@@ -97,6 +98,26 @@ namespace MD.Character
             NetworkManager.singleton.StopClient();
             (NetworkManager.singleton as UI.NetworkManagerLobby).CleanObjectsOnDisconnect();
             SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);            
-        }       
+        } 
+
+
+        //for testing purpose
+        void Update()
+        {
+            if(!hasAuthority) return;
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                CmdRequestSpawnLinkedTrap(netIdentity,Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
+            }
+        }
+
+        [Command]
+        private void CmdRequestSpawnLinkedTrap(NetworkIdentity owner, int x, int y)
+        {
+                var data = new LinkedTrapSpawnData(owner,x,y);
+                EventSystems.EventManager.Instance.TriggerEvent<LinkedTrapSpawnData>(data);
+        }
+
+        public NetworkIdentity GetNetworkIdentity() => netIdentity;      
     }
 }

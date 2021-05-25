@@ -1,91 +1,121 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class SonarUI : MonoBehaviour
+
+namespace MD.UI
 {
-    [SerializeField]
-    RawImage fillArea;
-    [SerializeField]
-    RectTransform BarMask;
-
-    [SerializeField]
-    float syncTime = .5f;
-    
-    float barMaskUnitWidth;
-    float barMaskMaxWidth;
-
-    [SerializeField]
-    private int targetLevel;
-
-    private float speedDivide = 1.9f;
-    bool isSimulating;
-
-    private Vector2 barMaskSizeDelta;
-
-    // private WaitForSeconds synctimeWait;
-
-    void Start()
+    public class SonarUI : MonoBehaviour
     {
-        EventSystems.EventManager.Instance.StartListening<ScanWaveChangeData>(UpdateUI);
-        barMaskUnitWidth = BarMask.sizeDelta.x/30f;
-        barMaskMaxWidth = BarMask.sizeDelta.x;
-        barMaskSizeDelta = BarMask.sizeDelta;
-    }
-    void OnDestroy()
-    {
-        EventSystems.EventManager.Instance.StopListening<ScanWaveChangeData>(UpdateUI);
-    }
+        [SerializeField]
+        private RawImage fillArea = null;
 
-    void Update()
-    {
-        Rect fillAreaRect = fillArea.uvRect;
-        fillAreaRect.x += .1f*Time.deltaTime;
-        if (fillAreaRect.x >100f) fillAreaRect.x = 0;
-        fillArea.uvRect = fillAreaRect;
+        [SerializeField]
+        private RectTransform barMask = null;
 
+        [SerializeField]
+        float syncTime = .5f;
 
-        if (!isSimulating)
+        [SerializeField]
+        private int targetLevel = 0;
+
+        [SerializeField]
+        private Gradient batteryColor = null;
+        
+        private float barMaskUnitWidth, barMaskMaxWidth;
+
+        private float speedDivide = 1.9f;
+        
+        private bool isSimulating;
+
+        private Vector2 barMaskSizeDelta;
+
+        // private WaitForSeconds synctimeWait;
+
+        void Start()
         {
-            barMaskSizeDelta.x = barMaskSizeDelta.x + speedDivide*Time.deltaTime*barMaskUnitWidth;
-            if(barMaskSizeDelta.x > barMaskMaxWidth) barMaskSizeDelta.x = barMaskMaxWidth;
-            BarMask.sizeDelta = barMaskSizeDelta;
-        }       
-    }
+            EventSystems.EventConsumer.Attach(gameObject).StartListening<ScanWaveChangeData>(UpdateUI);
+            barMaskUnitWidth = barMask.sizeDelta.x / 30f;
+            barMaskMaxWidth = barMask.sizeDelta.x;
+            barMaskSizeDelta = barMask.sizeDelta;
+        }
 
-    void UpdateUI(ScanWaveChangeData data)
-    {
-        targetLevel = data.currentLevel;
-        if (targetLevel == Mathf.FloorToInt(barMaskSizeDelta.x/barMaskUnitWidth)) return;
-        if (!isSimulating) StartCoroutine(nameof(SimulateChange));
-    }
-
-    private IEnumerator SimulateChange()
-    {
-        isSimulating = true;
-        float targetWidth = targetLevel*barMaskUnitWidth;
-        float delta = targetWidth-barMaskSizeDelta.x; 
-        int currentTargetLevel = targetLevel;
-        float speed = delta/syncTime;
-        float elapsedTime = 0f;
-        while (elapsedTime < syncTime)
+        void Update()
         {
-            barMaskSizeDelta.x = barMaskSizeDelta.x + speed*Time.deltaTime;
-            if ((delta >= 0 && barMaskSizeDelta.x >= targetWidth) 
-            || (delta < 0 && barMaskSizeDelta.x <= targetWidth))
+            Rect fillAreaRect = fillArea.uvRect;
+            fillAreaRect.x += .1f * Time.deltaTime;
+
+            if (fillAreaRect.x > 100f) 
             {
-                barMaskSizeDelta.x = targetWidth;
-                BarMask.sizeDelta = barMaskSizeDelta;
-                break;
+                fillAreaRect.x = 0;
             }
-            BarMask.sizeDelta = barMaskSizeDelta;
-            elapsedTime += Time.deltaTime;
-            yield return null;
+
+            fillArea.uvRect = fillAreaRect;
+
+            if (!isSimulating)
+            {
+                barMaskSizeDelta.x = barMaskSizeDelta.x + speedDivide * Time.deltaTime * barMaskUnitWidth;
+
+                if (barMaskSizeDelta.x > barMaskMaxWidth) 
+                {
+                    barMaskSizeDelta.x = barMaskMaxWidth;
+                }
+
+                barMask.sizeDelta = barMaskSizeDelta;
+
+                fillArea.color = batteryColor.Evaluate(barMaskSizeDelta.x / barMaskMaxWidth);
+            }       
         }
-        if (currentTargetLevel != targetLevel)
+
+        void UpdateUI(ScanWaveChangeData data)
         {
-            StartCoroutine(nameof(SimulateChange));
+            targetLevel = data.currentLevel;
+
+            if (targetLevel == Mathf.FloorToInt(barMaskSizeDelta.x / barMaskUnitWidth)) 
+            {
+                return;
+            }
+
+            if (!isSimulating) 
+            {
+                StartCoroutine(nameof(SimulateChange));
+            }
         }
-        isSimulating = false;
+
+        private IEnumerator SimulateChange()
+        {
+            isSimulating = true;
+            float targetWidth = targetLevel * barMaskUnitWidth;
+            float delta = targetWidth - barMaskSizeDelta.x; 
+            int currentTargetLevel = targetLevel;
+            float speed = delta / syncTime;
+            float elapsedTime = 0f;
+
+            while (elapsedTime < syncTime)
+            {
+                barMaskSizeDelta.x = barMaskSizeDelta.x + speed * Time.deltaTime;
+                if ((delta >= 0 && barMaskSizeDelta.x >= targetWidth) 
+                || (delta < 0 && barMaskSizeDelta.x <= targetWidth))
+                {
+                    barMaskSizeDelta.x = targetWidth;
+                    barMask.sizeDelta = barMaskSizeDelta;
+
+                    fillArea.color = batteryColor.Evaluate(barMaskSizeDelta.x / barMaskMaxWidth);
+                    break;
+                }
+
+                barMask.sizeDelta = barMaskSizeDelta;
+                elapsedTime += Time.deltaTime;
+
+                fillArea.color = batteryColor.Evaluate(barMaskSizeDelta.x / barMaskMaxWidth);
+                yield return null;
+            }
+
+            if (currentTargetLevel != targetLevel)
+            {
+                StartCoroutine(nameof(SimulateChange));
+            }
+
+            isSimulating = false;
+        }
     }
 }
