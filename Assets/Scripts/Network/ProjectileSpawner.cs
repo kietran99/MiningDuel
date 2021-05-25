@@ -12,15 +12,15 @@ namespace MD.Diggable.Core
 
         public override void OnStartServer()
         {
-            GetComponent<IDiggableGenerator>().ProjectileObtainEvent += HandleProjetileObtain;
+            GetComponent<IDiggableGenerator>().ProjectileObtainEvent += HandleProjectileObtain;
         }
 
         public override void OnStopServer()
         {
-            GetComponent<IDiggableGenerator>().ProjectileObtainEvent -= HandleProjetileObtain;
+            GetComponent<IDiggableGenerator>().ProjectileObtainEvent -= HandleProjectileObtain;
         }
         [Server]
-        private void HandleProjetileObtain(NetworkConnection diggerConn, ProjectileObtainData projObtainData)
+        private void HandleProjectileObtain(NetworkConnection diggerConn, ProjectileObtainData projObtainData)
         {
             if (projObtainData.type.Equals(DiggableType.LINKED_TRAP))
             {
