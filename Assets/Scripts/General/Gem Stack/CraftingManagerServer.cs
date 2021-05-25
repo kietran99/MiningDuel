@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using MD.CraftingSystem;
 using Mirror;
-using MD.Character;
 using MD.Quirk;
+
 public class CraftingManagerServer : NetworkBehaviour
 {
     [SerializeField]
@@ -21,7 +19,6 @@ public class CraftingManagerServer : NetworkBehaviour
     {
         EventSystems.EventManager.Instance.StopListening<CraftItemData>(CraftItem);
     }
-
 
     private void CraftItem(CraftItemData data)
     {

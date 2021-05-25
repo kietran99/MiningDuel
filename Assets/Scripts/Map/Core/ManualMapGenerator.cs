@@ -15,7 +15,7 @@ public class ManualMapGenerator : MonoBehaviour
     [SerializeField] Tile tileNo1= null;
     [SerializeField] Tile tileNo2= null;
     [SerializeField] Tile tileNo3= null;
-    int[,] map;
+    int[,] map = null;
     public int GetElement(int x, int y)
     {
         if(x < 0 || y < 0)

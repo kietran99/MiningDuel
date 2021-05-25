@@ -100,6 +100,9 @@ namespace MD.Character
             SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);            
         } 
 
-        public NetworkIdentity GetNetworkIdentity() => netIdentity;      
+        public NetworkIdentity GetNetworkIdentity() => netIdentity;  
+
+        [ClientRpc]
+        public void RpcTriggerNumAliveChangeEvent(int nAlive) => EventSystems.EventManager.Instance.TriggerEvent(new AliveCountChangeData(nAlive));     
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections;
 using UnityEngine;
 using Mirror;
-using MD.Quirk;
 
 namespace MD.Diggable.Core
 {
