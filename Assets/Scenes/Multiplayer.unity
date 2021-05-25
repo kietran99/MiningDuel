@@ -1340,6 +1340,18 @@ Sprite:
   m_PhysicsShape: []
   m_Bones: []
   m_SpriteID: 
+--- !u!114 &988324536 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4168711481691225303, guid: 445ad5f27f6d1d647a615c6a1ed5e078,
+    type: 3}
+  m_PrefabInstance: {fileID: 72249921311826442}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2c3629282602db4b84c4cf511f20823, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1043541092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2196,6 +2208,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1542635190, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
+      propertyPath: swipeMenu
+      value: 
+      objectReference: {fileID: 988324536}
     - target: {fileID: 72249921851178018, guid: 445ad5f27f6d1d647a615c6a1ed5e078,
         type: 3}
       propertyPath: m_Name
@@ -2316,6 +2332,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7419777444156695466, guid: 445ad5f27f6d1d647a615c6a1ed5e078,
+        type: 3}
+      propertyPath: swipeMenu
+      value: 
+      objectReference: {fileID: 988324536}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 445ad5f27f6d1d647a615c6a1ed5e078, type: 3}
 --- !u!4 &2072605618153717510

@@ -6,6 +6,15 @@ using UnityEngine.UI;
 public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
 {
     [SerializeField]
+    SwipeMenu swipeMenu = null;
+
+    [SerializeField]
+    private float SwitchMenuMaxPercentThreshold = .5f;
+    
+    // [SerializeField]
+    // private float SwitchMenuMinPercentThreshold = .1f;
+
+    [SerializeField]
     private float PercentThreshold = .2f;
 
     [SerializeField]
@@ -26,14 +35,25 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
     private float swipeLength;
 
     private Vector3 location;
+    // private Vector3 YLocation;
     private float cellSize;
     private float cellSpacing;
-
-    private bool isDraging;
     private RectTransform rectTransform;
+    // private Transform Container;
+    // private bool isSwitchMenu = false;
 
     public void OnDrag(PointerEventData data)
     {
+        // float YDiff= (data.pressPosition.y - data.position.y)*dragSpeed;
+        // if (YDiff < SwitchMenuMinPercentThreshold*cellSize) // move menu to hand curent drag point position; 
+        // {
+        //     isSwitchMenu = true;
+        //     YDiff =  Mathf.Clamp(YDiff, -dragMaxExceedLength , 0);
+        //     Container.localPosition  = YLocation - new Vector3(0,YDiff,0);
+        //     return;
+        // }
+        // isSwitchMenu = false;
+
         float difference = (data.pressPosition.x - data.position.x)*dragSpeed;
         if ((index == 0 && difference < 0) ||  (index == count-1 && difference > 0 ))
         {
@@ -48,6 +68,21 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void OnEndDrag(PointerEventData data)
     {
+        // if (isSwitchMenu)
+        // {
+        //     float Ypercentage= (data.pressPosition.y - data.position.y)/cellSize;;
+        //     if (Ypercentage < SwitchMenuMaxPercentThreshold)
+        //     {
+        //         swipeMenu.SwitchMenu();
+        //     }
+        //     else
+        //     {
+        //         swipeMenu.ReturnToCurrentPostion();
+        //     }
+        //     return;
+        // }
+
+
         float percentage = (data.pressPosition.x - data.position.x)/cellSize;
         if (Mathf.Abs(percentage) > PercentThreshold)
         {
@@ -98,21 +133,22 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
         // TriggerIndexChangeEvent();
         Initialize();
         SetSelectedIndex(0);
-
+        // Container = swipeMenu.transform;
         var eventConsumer = gameObject.AddComponent<EventSystems.EventConsumer>();
         eventConsumer.StartListening<CraftItemsNumberChangeData>(HandleItemsNumberChange);   
+        // YLocation = swipeMenu.GetCraftMenuLocation();
     }
 
     private void Initialize()
     {
-        rectTransform.sizeDelta = new Vector2(count*cellSize + (count-1)*cellSpacing,rectTransform.sizeDelta.y);
-        // rectTransform.sizeDelta = new Vector2(count*cellSize + (count-1)*cellSpacing,0);
+        // 2*halfcellsizePadding + num*cell + (num-1)*space
+        rectTransform.sizeDelta = new Vector2(cellSize + count*cellSize + (count-1)*cellSpacing,rectTransform.sizeDelta.y);
     }
 
     private void SetSelectedIndex(int index)
     {
-        if (index <= 0) rectTransform.anchoredPosition  = new Vector3(-cellSize/2f,0,0);
-        else rectTransform.anchoredPosition = new Vector3(-cellSize/2f - index*(cellSize + cellSpacing),0,0);
+        if (index <= 0) rectTransform.anchoredPosition  = new Vector3(0,0,0);
+        else rectTransform.anchoredPosition = new Vector3( -index*(cellSize + cellSpacing), 0, 0);
         location = rectTransform.anchoredPosition;
         TriggerIndexChangeEvent();
     }
@@ -122,7 +158,6 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
         count = data.numOfItems;
         Initialize();
         if (index >= count) index = Mathf.Max(0,count-1);
-        // TriggerIndexChangeEvent();
         SetSelectedIndex(index);
     }
 

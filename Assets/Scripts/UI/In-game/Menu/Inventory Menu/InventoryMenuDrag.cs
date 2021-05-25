@@ -5,6 +5,11 @@ using UnityEngine.UI;
 
 public class InventoryMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
 {
+    // [SerializeField]
+    // SwipeMenu swipeMenu = null;
+
+    // [SerializeField]
+    // private float SwitchMenuPercentThreshold = .5f;
     [SerializeField]
     private float PercentThreshold = .2f;
 
@@ -24,31 +29,62 @@ public class InventoryMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField]
     private int count = 0;
 
+    private Transform Container;
+
     private float swipeLength;
 
     private Vector3 location;
+    // private Vector3 YLocation;
     private float cellSize;
     private float cellSpacing;
 
-    private bool isDraging;
+    // private bool isDraging;
     private RectTransform rectTransform;
+
+    // private bool isSwitchMenu = false;
 
     public void OnDrag(PointerEventData data)
     {
-        float difference = (data.pressPosition.x - data.position.x)*dragSpeed;
-        if ((index == 0 && difference < 0) ||  (index == count-1 && difference > 0 ))
+        // float YDiff= (data.pressPosition.y - data.position.y)*dragSpeed;
+        // if (YDiff > cellSize*.1f) // move menu to hand curent drag point position; 
+        // {
+        //     isSwitchMenu = true;
+        //     YDiff =  Mathf.Clamp(YDiff, 0 , dragMaxExceedLength);
+        //     Container.localPosition  = YLocation - new Vector3(0,YDiff,0);
+        //     return;
+        // }
+        // isSwitchMenu = false;
+
+        float XDiff = (data.pressPosition.x - data.position.x)*dragSpeed;
+        if ((index == 0 && XDiff < 0) ||  (index == count-1 && XDiff > 0 ))
         {
-            difference =  Mathf.Clamp(difference,-dragMaxExceedLength,dragMaxExceedLength);
+            XDiff =  Mathf.Clamp(XDiff,-dragMaxExceedLength,dragMaxExceedLength);
         }
         else
         {
-            difference =  Mathf.Clamp(difference,-swipeLength -dragMaxExceedLength, swipeLength + dragMaxExceedLength);
+            XDiff =  Mathf.Clamp(XDiff,-swipeLength -dragMaxExceedLength, swipeLength + dragMaxExceedLength);
         }
-        rectTransform.anchoredPosition  = location - new Vector3(difference,0,0);
+        rectTransform.anchoredPosition  = location - new Vector3(XDiff,0,0);
     }
 
     public void OnEndDrag(PointerEventData data)
     {
+        // if (isSwitchMenu)
+        // {
+        //     float Ypercentage= (data.pressPosition.y - data.position.y)/cellSize;;
+        //     if (Ypercentage > SwitchMenuPercentThreshold) // swipe down
+        //     {
+        //         swipeMenu.SwitchMenu();
+        //     }
+        //     else
+        //     {
+        //         swipeMenu.ReturnToCurrentPostion();
+        //     }
+        //     return;
+        // }
+
+
+
         float percentage = (data.pressPosition.x - data.position.x)/cellSize;
         if (Mathf.Abs(percentage) > PercentThreshold)
         {
@@ -100,22 +136,28 @@ public class InventoryMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
         // TriggerIndexChangeEvent();
         Initialize();
         SetSelectedIndex(0);
-
+        // Container = swipeMenu.transform;
         var consumer = gameObject.AddComponent<EventSystems.EventConsumer>();
         consumer.StartListening<AddInventoryItemData>(HandleAddItem);   
         consumer.StartListening<RemoveInventoryItemData>(HandleRemoveItem);  
     }
+    // void Start()
+    // {
+    //     // YLocation = swipeMenu.GetInventoryMenuLocation();
+    // }
 
     private void Initialize()
     {
-        rectTransform.sizeDelta = new Vector2(count*cellSize + (count-1)*cellSpacing,rectTransform.sizeDelta.y);
-        // rectTransform.sizeDelta = new Vector2(count*cellSize + (count-1)*cellSpacing,0);
+        // 2*halfcellsizePadding + num*cell + (num-1)*space
+        rectTransform.sizeDelta = new Vector2(cellSize + count*cellSize + (count-1)*cellSpacing,rectTransform.sizeDelta.y);
     }
 
     private void SetSelectedIndex(int index)
     {
         if (index <= 0) rectTransform.anchoredPosition  = new Vector3(-cellSize/2f,0,0);
         else rectTransform.anchoredPosition = new Vector3(-cellSize/2f - index*(cellSize + cellSpacing),0,0);
+        if (index <= 0) rectTransform.anchoredPosition  = new Vector3(0,0,0);
+        else rectTransform.anchoredPosition = new Vector3( -index*(cellSize + cellSpacing), 0, 0);
         location = rectTransform.anchoredPosition;
         TriggerIndexChangeEvent();
     }
