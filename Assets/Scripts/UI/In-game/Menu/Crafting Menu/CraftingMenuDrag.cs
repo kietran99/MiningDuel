@@ -5,20 +5,19 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
 {
-    [SerializeField]
-    SwipeMenu swipeMenu = null;
 
     [SerializeField]
-    private float SwitchMenuMaxPercentThreshold = .5f;
-    
-    // [SerializeField]
-    // private float SwitchMenuMinPercentThreshold = .1f;
+    RectTransform swipeMenuTransform = null;
+
+    [SerializeField]
+    private float AutoSwitchMenuThreshold = 1f;
 
     [SerializeField]
     private float PercentThreshold = .2f;
 
     [SerializeField]
     private float SwipeSpeed = 1f;
+
 
     [SerializeField]
 
@@ -31,6 +30,7 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
     private int index;
 
     private int count = 5;
+    SwipeMenu swipeMenu = null;
 
     private float swipeLength;
 
@@ -39,73 +39,96 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
     private float cellSize;
     private float cellSpacing;
     private RectTransform rectTransform;
-    // private Transform Container;
-    // private bool isSwitchMenu = false;
+    [SerializeField]
+    private Vector3 ShownPosition;
+    private float maxDragLength;
+
+    [SerializeField]
+    private bool isSwitchMenu = false;
+    
+    [SerializeField]
+    private bool isSwiping = false;
+
 
     public void OnDrag(PointerEventData data)
     {
-        // float YDiff= (data.pressPosition.y - data.position.y)*dragSpeed;
-        // if (YDiff < SwitchMenuMinPercentThreshold*cellSize) // move menu to hand curent drag point position; 
-        // {
-        //     isSwitchMenu = true;
-        //     YDiff =  Mathf.Clamp(YDiff, -dragMaxExceedLength , 0);
-        //     Container.localPosition  = YLocation - new Vector3(0,YDiff,0);
-        //     return;
-        // }
-        // isSwitchMenu = false;
 
-        float difference = (data.pressPosition.x - data.position.x)*dragSpeed;
-        if ((index == 0 && difference < 0) ||  (index == count-1 && difference > 0 ))
+        if (!isSwiping)
         {
-            difference =  Mathf.Clamp(difference,-dragMaxExceedLength,dragMaxExceedLength);
+            float YDiff= (data.pressPosition.y - data.position.y)*dragSpeed;
+            if (YDiff < -.2f*cellSize) // move menu to hand curent drag point position; 
+            {
+                isSwitchMenu = true;
+                YDiff =  Mathf.Clamp(YDiff, -maxDragLength , 0);
+                Debug.Log("diff " + YDiff);
+                swipeMenuTransform.anchoredPosition  = ShownPosition - new Vector3(0,YDiff,0);
+            }
         }
-        else
+
+        if (!isSwitchMenu)
         {
-            difference =  Mathf.Clamp(difference,-swipeLength -dragMaxExceedLength, swipeLength + dragMaxExceedLength);
+            float difference = (data.pressPosition.x - data.position.x)*dragSpeed;
+            if (Mathf.Abs(difference) > .1f*cellSize) 
+            {
+                isSwiping=true;
+                if ((index == 0 && difference < 0) ||  (index == count-1 && difference > 0 ))
+                {
+                    difference =  Mathf.Clamp(difference,-dragMaxExceedLength,dragMaxExceedLength);
+                }
+                else
+                {
+                    difference =  Mathf.Clamp(difference,-swipeLength -dragMaxExceedLength, swipeLength + dragMaxExceedLength);
+                }
+                rectTransform.anchoredPosition  = location - new Vector3(difference,0,0);
+            }
         }
-        rectTransform.anchoredPosition  = location - new Vector3(difference,0,0);
+
     }
 
     public void OnEndDrag(PointerEventData data)
     {
-        // if (isSwitchMenu)
-        // {
-        //     float Ypercentage= (data.pressPosition.y - data.position.y)/cellSize;;
-        //     if (Ypercentage < SwitchMenuMaxPercentThreshold)
-        //     {
-        //         swipeMenu.SwitchMenu();
-        //     }
-        //     else
-        //     {
-        //         swipeMenu.ReturnToCurrentPostion();
-        //     }
-        //     return;
-        // }
-
-
-        float percentage = (data.pressPosition.x - data.position.x)/cellSize;
-        if (Mathf.Abs(percentage) > PercentThreshold)
+        if (isSwitchMenu)
         {
-            Vector3 newLocation = location;
-            if (percentage > 0 && index < count -1)
+            float Ypercentage= (data.pressPosition.y - data.position.y)/cellSize;;
+            if (Ypercentage < AutoSwitchMenuThreshold)
             {
-                newLocation += new Vector3(-swipeLength,0,0);
-                index ++;
-                TriggerIndexChangeEvent();
+                swipeMenu.SwitchMenu();
             }
-            else if (percentage < 0 && index > 0)
+            else
             {
-                newLocation += new Vector3(swipeLength,0,0);
-                index--;
-                TriggerIndexChangeEvent();
+                swipeMenu.ReturnToCurrentPostion();
             }
-            StartCoroutine(SmoothMove(rectTransform.anchoredPosition ,newLocation));
-            location = newLocation;
         }
-        else
+
+        if (isSwiping)
         {
-            StartCoroutine(SmoothMove(rectTransform.anchoredPosition , location));
-        }   
+            float percentage = (data.pressPosition.x - data.position.x)/cellSize;
+            if (Mathf.Abs(percentage) > PercentThreshold)
+            {
+                Vector3 newLocation = location;
+                if (percentage > 0 && index < count -1)
+                {
+                    newLocation += new Vector3(-swipeLength,0,0);
+                    index ++;
+                    TriggerIndexChangeEvent();
+                }
+                else if (percentage < 0 && index > 0)
+                {
+                    newLocation += new Vector3(swipeLength,0,0);
+                    index--;
+                    TriggerIndexChangeEvent();
+                }
+                StartCoroutine(SmoothMove(rectTransform.anchoredPosition ,newLocation));
+                location = newLocation;
+            }
+            else
+            {
+                StartCoroutine(SmoothMove(rectTransform.anchoredPosition , location));
+            }   
+        }
+
+        isSwiping = false;
+        isSwitchMenu = false;
     }
 
     private IEnumerator SmoothMove(Vector3 start, Vector3 end)
@@ -130,13 +153,14 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
         cellSize = glg.cellSize.x;
         cellSpacing = glg.spacing.x;
         index =0;
-        // TriggerIndexChangeEvent();
         Initialize();
         SetSelectedIndex(0);
-        // Container = swipeMenu.transform;
         var eventConsumer = gameObject.AddComponent<EventSystems.EventConsumer>();
-        eventConsumer.StartListening<CraftItemsNumberChangeData>(HandleItemsNumberChange);   
-        // YLocation = swipeMenu.GetCraftMenuLocation();
+        eventConsumer.StartListening<CraftItemsNumberChangeData>(HandleItemsNumberChange);  
+
+        swipeMenu = swipeMenuTransform.GetComponent<SwipeMenu>();
+        ShownPosition= swipeMenu.GetCraftMenuLocation();
+        maxDragLength = cellSize*.7f;
     }
 
     private void Initialize()

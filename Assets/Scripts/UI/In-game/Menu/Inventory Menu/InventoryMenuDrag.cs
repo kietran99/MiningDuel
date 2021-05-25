@@ -45,15 +45,6 @@ public class InventoryMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void OnDrag(PointerEventData data)
     {
-        // float YDiff= (data.pressPosition.y - data.position.y)*dragSpeed;
-        // if (YDiff > cellSize*.1f) // move menu to hand curent drag point position; 
-        // {
-        //     isSwitchMenu = true;
-        //     YDiff =  Mathf.Clamp(YDiff, 0 , dragMaxExceedLength);
-        //     Container.localPosition  = YLocation - new Vector3(0,YDiff,0);
-        //     return;
-        // }
-        // isSwitchMenu = false;
 
         float XDiff = (data.pressPosition.x - data.position.x)*dragSpeed;
         if ((index == 0 && XDiff < 0) ||  (index == count-1 && XDiff > 0 ))
@@ -69,22 +60,6 @@ public class InventoryMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void OnEndDrag(PointerEventData data)
     {
-        // if (isSwitchMenu)
-        // {
-        //     float Ypercentage= (data.pressPosition.y - data.position.y)/cellSize;;
-        //     if (Ypercentage > SwitchMenuPercentThreshold) // swipe down
-        //     {
-        //         swipeMenu.SwitchMenu();
-        //     }
-        //     else
-        //     {
-        //         swipeMenu.ReturnToCurrentPostion();
-        //     }
-        //     return;
-        // }
-
-
-
         float percentage = (data.pressPosition.x - data.position.x)/cellSize;
         if (Mathf.Abs(percentage) > PercentThreshold)
         {
@@ -141,10 +116,6 @@ public class InventoryMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
         consumer.StartListening<AddInventoryItemData>(HandleAddItem);   
         consumer.StartListening<RemoveInventoryItemData>(HandleRemoveItem);  
     }
-    // void Start()
-    // {
-    //     // YLocation = swipeMenu.GetInventoryMenuLocation();
-    // }
 
     private void Initialize()
     {

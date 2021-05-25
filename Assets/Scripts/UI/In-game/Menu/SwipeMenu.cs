@@ -21,7 +21,7 @@ public class SwipeMenu : MonoBehaviour
     float moveExceedLength = 10f;
 
     private RectTransform rectTransform;
-
+    [SerializeField]
     bool IsInventoryMenu = true;
 
     private string INVENTORY_STRING = "Inventory";
@@ -71,14 +71,14 @@ public class SwipeMenu : MonoBehaviour
         {
             MenuNameObj.SetActive(false);
             menuName = CRAFT_STRING;
-            StartCoroutine(SmoothSwitchMenu(HiddenPositionY,ShowYPositionY));
+            StartCoroutine(SmoothSwitchMenu(rectTransform.anchoredPosition.y,ShowYPositionY));
             IsInventoryMenu = false;
         }
         else
         {
             MenuNameObj.SetActive(false);
             menuName = INVENTORY_STRING;
-            StartCoroutine(SmoothSwitchMenu(ShowYPositionY,HiddenPositionY));
+            StartCoroutine(SmoothSwitchMenu(rectTransform.anchoredPosition.y,HiddenPositionY));
             IsInventoryMenu = true;
         }
     }
@@ -87,7 +87,7 @@ public class SwipeMenu : MonoBehaviour
     {
         if (IsInventoryMenu)
         {
-            StartCoroutine(SmoothSwitchMenu(rectTransform.anchoredPosition.y,hiddenPositionYMargin));
+            StartCoroutine(SmoothSwitchMenu(rectTransform.anchoredPosition.y,HiddenPositionY));
         }
         else
         {
@@ -95,16 +95,16 @@ public class SwipeMenu : MonoBehaviour
         }
     }
 
-    // public Vector3 GetCraftMenuLocation()
-    // {
-    //     return new Vector3(0f,CraftMenuYPosition, 0f);
-    // }
-    // public Vector3 GetInventoryMenuLocation()
-    // {
-    //     return new Vector3(0f,InventoryMenuYPosition, 0f);
-    // }
+    public Vector3 GetCraftMenuLocation()
+    {
+        return new Vector3(0f,ShowYPositionY, 0f);
+    }
+    public Vector3 GetHiddentMenuLocation()
+    {
+        return new Vector3(0f,HiddenPositionY, 0f);
+    }
 
-    private void Start()
+    private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         HiddenPositionY = rectTransform.rect.height + hiddenPositionYMargin;
