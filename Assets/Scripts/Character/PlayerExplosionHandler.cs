@@ -16,6 +16,9 @@ namespace MD.Character
         private float maxExplosionForce = 250f;
 
         [SerializeField]
+        private float immobilizeTime = .2f;
+
+        [SerializeField]
         private SpriteRenderer playerRenderer = null;
 
         [SerializeField]
@@ -44,7 +47,7 @@ namespace MD.Character
             int dropAmount = Mathf.FloorToInt(scoreManager.CurrentMultiplier * scoreManager.CurrentScore * gemDropPercentage * PERCENTAGE_MODIFIER);
             RpcPlayDamagingEffect();
 
-            EventSystems.EventManager.Instance.TriggerEvent(new ExplodedData(playerId, dropAmount));
+            EventSystems.EventManager.Instance.TriggerEvent(new ExplodedData(playerId, dropAmount, immobilizeTime));
 
             for (int i = 0; i < dropAmount; i++)
             {

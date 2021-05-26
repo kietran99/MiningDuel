@@ -4,11 +4,13 @@
     {
         public uint explodedTargetID;
         public int dropAmount;
+        public float immobilizeTime;
 
-        public ExplodedData(uint explodedPlayerId, int dropAmount)
+        public ExplodedData(uint explodedTargetID, int dropAmount, float immobilizeTime)
         {
-            this.explodedTargetID = explodedPlayerId;
+            this.explodedTargetID = explodedTargetID;
             this.dropAmount = dropAmount;
+            this.immobilizeTime = immobilizeTime;
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿namespace MD.Character
 {
-    public struct StunData : EventSystems.IEventData
+    public struct StunStatusData : EventSystems.IEventData
     {
         public bool isStunned;
 
-        public StunData(bool isStunned)
+        public StunStatusData(bool isStunned)
         {
             this.isStunned = isStunned;
         }

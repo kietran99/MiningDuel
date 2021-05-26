@@ -21,7 +21,6 @@ namespace MD.Character
 
         private Rigidbody2D rigidBody;
         private Vector2 moveVect, minMoveBound, maxMoveBound;
-        // private Vector2 offset = new Vector2(.5f, .5f);
         
         [SerializeField] [SyncVar]
         private float speedModifier = 1f;
@@ -41,7 +40,12 @@ namespace MD.Character
             eventConsumer.StartListening<JoystickDragData>(BindMoveVector);
             eventConsumer.StartListening<DamageTakenData>(OnDamageTaken);
             eventConsumer.StartListening<GetCounteredData>(HandleGetCountered);
-            eventConsumer.StartListening<CounterSuccessData>(OnCounterSuccessful);
+            eventConsumer.StartListening<CounterSuccessData>(OnCounterSuccessful);           
+        }
+
+        public override void OnStartServer()
+        {
+            EventSystems.EventConsumer.GetOrAttach(gameObject).StartListening<ExplodedData>(ServerHandleExploded);
         }
 
         private void OnDamageTaken(DamageTakenData data)
@@ -56,20 +60,42 @@ namespace MD.Character
 
         private void HandleGetCountered(GetCounteredData counterData)
         {
+            Immobilize(counterData.immobilizeTime);
+        }
+
+        [Server]
+        private void ServerHandleExploded(ExplodedData data)
+        {
+            RpcHandleExploded(data.explodedTargetID, data.immobilizeTime);
+        }
+
+        [ClientRpc]
+        private void RpcHandleExploded(uint explodedPlayerId, float immobilizeTime)
+        {
+            if (netId != explodedPlayerId)
+            {
+                return;
+            }
+
+            Immobilize(immobilizeTime);
+        }
+
+        private void Immobilize(float time)
+        {
             if (hasAuthority)
             {
-                EventSystems.EventManager.Instance.TriggerEvent(new StunData(true));
+                EventSystems.EventManager.Instance.TriggerEvent(new StunStatusData(true));
             }
 
             isImmobilize = true;
-            Invoke(nameof(RegainMobility), counterData.immobilizeTime);
+            Invoke(nameof(RegainMobility), time);
         }
 
         private void RegainMobility() 
         {
             if (hasAuthority)
             {
-                EventSystems.EventManager.Instance.TriggerEvent(new StunData(false));
+                EventSystems.EventManager.Instance.TriggerEvent(new StunStatusData(false));
             }
 
             isImmobilize = false;

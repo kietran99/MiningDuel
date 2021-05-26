@@ -10,6 +10,9 @@ namespace MD.Character
         private int power = 2;
 
         [SerializeField]
+        private int hitScore = 50;
+
+        [SerializeField]
         private float criticalMultiplier = 1.5f;
 
         [SerializeField]
@@ -71,6 +74,7 @@ namespace MD.Character
         {
             var dmg = Mathf.RoundToInt(power * (isCritical ? criticalMultiplier : 1f));
             damagable.TakeDamage(netIdentity, dmg, isCritical);
+            EventSystems.EventManager.Instance.TriggerEvent(new HitScoreObtainData(Mathf.RoundToInt(hitScore * (isCritical ? criticalMultiplier : 1f))));
         }
 
         private void OnCounterSuccessfully(Vector2 counterVect) => TargetOnCounterSuccessfully(counterVect);
