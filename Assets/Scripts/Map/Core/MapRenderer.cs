@@ -29,13 +29,24 @@ namespace MD.Map.Core
                 .Resolve<IMapGenerator>()
                 .Match(
                     errMessage => Debug.Log(errMessage.Message), 
-                    mapGenerator => TargetRender(mapGenerator.MapData, mapGenerator.MapWidth, mapGenerator.MapHeight)
+                    mapGenerator => TargetRender(mapGenerator.MapData, mapGenerator.MapWidth, mapGenerator.MapHeight, mapGenerator.UseGeneratedMaps, mapGenerator.mapUsed)
                 );
         }
         
         [TargetRpc]
-        private void TargetRender(int[] map, int width, int height)
+        private void TargetRender(int[] map, int width, int height, bool useGeneratedMaps, string mapName)
         {
+            if(useGeneratedMaps)
+            {
+                Destroy(grid);
+                string mapPath = "GeneratedMaps/"+mapName;
+                // Debug.Log("Map Name: "+mapPath);
+                grid = (Instantiate(Resources.Load(mapPath,typeof(GameObject))) as GameObject).GetComponent<Grid>();
+                botMap = grid.transform.GetChild(0).GetComponent<Tilemap>();
+                botMap.CompressBounds();
+                Camera.main.GetComponent<CameraController>().SetMapData(botMap);
+                return;
+            }
             botMap = grid.transform.GetChild(0).GetComponent<Tilemap>();
             topMap = grid.transform.GetChild(1).GetComponent<Tilemap>();
             obstacleMap = grid.transform.GetChild(2).GetComponent<Tilemap>();

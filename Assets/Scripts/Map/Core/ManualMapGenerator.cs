@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEditor;
 using UnityEngine.UI;
+using Random = System.Random;
 
 public class ManualMapGenerator : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class ManualMapGenerator : MonoBehaviour
     public int MapHeight => height;
     [SerializeField] int width = 10;
     [SerializeField] int height = 10;
+    [Range(1,8)] [SerializeField] int deathLim = 1;
+    [Range(1,8)] [SerializeField] int birthLim = 1;
+    [Range(0,100)] public int randomFillPercent = 0;
     [SerializeField] string myName = "map";
     // [SerializeField] Tilemap botMap = null;
     // [SerializeField] Tilemap topMap = null;
@@ -18,7 +22,7 @@ public class ManualMapGenerator : MonoBehaviour
     // [SerializeField] RuleTile tileNo1= null;
     // [SerializeField] RuleTile tileNo2= null;
     // [SerializeField] RuleTile tileNo3= null;
-    // [SerializeField] RuleTile obstacleTile = null;
+    [SerializeField] RuleTile obstacleTile = null;
     [SerializeField] Tilemap[] allLayer = null;
     [SerializeField] RuleTile[] allTile = null;
     [SerializeField] Text noticeText = null;
@@ -48,6 +52,10 @@ public class ManualMapGenerator : MonoBehaviour
         {
             noticeText.text = "You are now deleting Tile from Layer mask: " + selectedMask.ToString();
         }
+        else if(tileID == -2)
+        {
+            noticeText.text = "You are now using the Obstacle Tile on Layer mask: "+ selectedMask.ToString();
+        }
         else
             noticeText.text = "You are now using Tile: " + allTile[tileID].name + " on Layer mask: " + selectedMask.ToString();
     }
@@ -67,7 +75,7 @@ public class ManualMapGenerator : MonoBehaviour
             }
         ApplyTiles();
         UpdateNotice();
-        Debug.Log("Use Arrow key to move around\nUse MouseScroll to Zoom And LeftClick to draw\nUse Button \"T\" to switch Tile to draw and Button \"L\" to switch tile map to draw on\nFinally, Hit \"S\" to Save");
+        Debug.Log("Use Arrow key to move around\nUse MouseScroll to Zoom And LeftClick to draw\nUse Button \"T\" to switch Tile to draw and Button \"L\" to switch tile map to draw on\nTo autogenerate sum gud shit, press \"A\"\nFinally, Hit \"S\" to Save");
     }
 
     // Update is called once per frame
@@ -121,7 +129,7 @@ public class ManualMapGenerator : MonoBehaviour
             tileID++;
             if(tileID >= allTile.Length)
             {
-                tileID = -1;
+                tileID = -2;
             }
             UpdateNotice();
         }
@@ -133,6 +141,19 @@ public class ManualMapGenerator : MonoBehaviour
                 selectedMask = 0;
             }
             UpdateNotice();
+        }
+
+        if(Input.GetKeyDown(KeyCode.A))
+        {
+            GenerateMap();
+            for(int i =0; i < 7; i++)
+            {
+                map = newSmoothmap(map);
+            }
+            #if UNITY_EDITOR
+            EditorUtility.DisplayDialog("Ahh you cheating bastard","Auto-gen will use Tile: "+ allTile[0].name+" to fill the first tilemap (layer 0) and Tile: "+ allTile[1].name+" to fill the second tilemap(Layer 1)","Roger!");
+            #endif
+            ApplyTiles();
         }
         if(Input.GetMouseButton(0))
         {
@@ -190,6 +211,89 @@ public class ManualMapGenerator : MonoBehaviour
         }
     }
 
+    void GenerateMap()
+    {
+        if(map == null)
+        {
+            map = new int[width,height];
+        }
+        RandomFillMap();
+    }
+    void RandomFillMap()
+    {
+        string seed = Time.time.ToString();
+        Random pseudoRandom = new Random(seed.GetHashCode());
+        for(int x = 0 ; x < width ; x++)
+        {
+            for(int y = 0 ; y < height ; y++)
+            {
+                map[x,y] = (pseudoRandom.Next(0,100) < randomFillPercent) ? 1 : 0;
+            }
+        }
+    }
+
+    int[,] newSmoothmap (int[,] oldMap)
+    {
+        // Debug.ClearDeveloperConsole();
+        int[,] newMap = oldMap.Clone() as int[,];
+        for( int x = 0 ; x < width ; x++)
+        {
+            for(int y = 0 ; y < height ; y++)
+            {
+                newMap[x,y] = 0;
+            }
+        }
+        for( int x = 0 ; x < width ; x++)
+        {
+            for(int y = 0 ; y < height ; y++)
+            {
+                int neighborWallTiles = GetSurroundingWallCount(x,y);
+                if(oldMap[x,y] == 1)
+                {
+                    if(neighborWallTiles < deathLim) newMap[x,y] = 0;
+                    else
+                    {
+                        newMap[x,y] = 1;
+                    }
+
+                }
+                if(oldMap[x,y] == 0)
+                {
+                    if(neighborWallTiles < birthLim) newMap[x,y] = 1;
+                }
+                else
+                {
+                    newMap[x,y] = 0;
+                }
+                
+            }
+        }
+        return newMap;
+    }
+
+    int GetSurroundingWallCount(int gridX, int gridY)
+    {
+        int wallCount = 0;
+        for(int neighborX = gridX - 1; neighborX <= gridX + 1; neighborX++)
+        {
+            for(int neighborY = gridY - 1; neighborY <= gridY + 1; neighborY++)
+            {
+                if(neighborX >= 0  && neighborX < width  && neighborY >= 0  && neighborY < height )
+                {
+                    if(neighborX != gridX || neighborY != gridY)
+                    {
+                        wallCount += map[neighborX,neighborY];
+                    }
+                }
+                else
+                {
+                    wallCount++;
+                }
+            }
+        }
+        return wallCount;
+    }
+
     void ApplyTiles(int x, int y, int mask)
     {
         if(x < 0 || y < 0 || mask < 0 || allLayer == null || mask >= allLayer.Length) return;
@@ -199,16 +303,27 @@ public class ManualMapGenerator : MonoBehaviour
             allLayer[mask].SetTile(new Vector3Int(x, y,0), null);
             subMap[mask][x,y] = 0;
         }
+        else if(tileID == -2)
+        {
+            allLayer[mask].SetTile(new Vector3Int(x,y,0),obstacleTile);
+        }
         else
             allLayer[mask].SetTile(new Vector3Int(x,y,0),allTile[tileID]);
         subMap[mask][x,y] = tileID + 1;
         int finalIndexVal = allLayer.Length-1;
-        for(int i = finalIndexVal; i >= 0; i--)
+        if(tileID != -2)
         {
-            if(subMap[i][x,y] == 0)
-                continue;
-            map[x,y] = subMap[i][x,y] - 1;
-            break;
+            for(int i = finalIndexVal; i >= 0; i--)
+            {
+                if(subMap[i][x,y] == 0)
+                    continue;
+                map[x,y] = subMap[i][x,y] - 1;
+                break;
+            }
+        }
+        else
+        {
+            map[x,y] = -1;
         }
         // map[x,y] = finalIndexVal - 1;
     }
@@ -240,7 +355,12 @@ public class ManualMapGenerator : MonoBehaviour
                     // {
                     //     obstacleMap.SetTile(new Vector3Int(x, y, 0), obstacleTile);
                     // }     
-                    allLayer[0].SetTile(new Vector3Int(x,y,0),allTile[0]);      
+                    allLayer[0].SetTile(new Vector3Int(x,y,0),allTile[0]);  
+                    int weight = map[x,y];
+                    if(weight > 0 )
+                    {
+                        allLayer[1].SetTile(new Vector3Int(x,y,0),allTile[weight]);
+                    }   
                 }
             }
         }
@@ -250,7 +370,12 @@ public class ManualMapGenerator : MonoBehaviour
         #if UNITY_EDITOR
         string saveName = myName;
         string fileName = "";
+        string prefabSavePath = "Assets/Resources/GeneratedMaps/";
+        var grid = GameObject.FindGameObjectWithTag("Grid");
         SaveMapData.SaveArray(this,saveName,out fileName);
+        string[] names = fileName.Split('.');
+        prefabSavePath += names[0] + ".prefab";
+        PrefabUtility.SaveAsPrefabAsset(grid,prefabSavePath);
         EditorUtility.DisplayDialog("Map Data saved","The file was saved under Streaming Assests with name: " + fileName,"Continue");
         #endif
     }

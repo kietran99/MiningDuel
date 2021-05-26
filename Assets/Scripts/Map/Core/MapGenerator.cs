@@ -68,9 +68,13 @@ namespace MD.Map.Core
 
         [SerializeField]
         private Vector2[] spawnOffset = null;
+        string mapName = "";
 
         public int MapWidth => width;
         public int MapHeight => height;
+        public bool UseGeneratedMaps => useGeneratedMaps;
+
+        public string mapUsed => mapName ;
         public SpawnPositionsData SpawnPositionsData => new SpawnPositionsData(spawnOffset.Map(pos => pos + new Vector2(width / 2, height / 2)));
         // [SerializeField] bool useGeneratedMaps = false;
         // [SerializeField] int noObtacleAreaRadius = 4;
@@ -101,8 +105,10 @@ namespace MD.Map.Core
             ServiceLocator.Register((IMapGenerator)this);  
             if (useGeneratedMaps && allMapsName.Length > 0)
             {
+                // Destroy(GameObject.FindGameObjectWithTag("Grid"));
                 int rd = UnityEngine.Random.Range(0, allMapsName.Length);
                 MapData mapData = SaveMapData.LoadMap(allMapsName[rd]);
+                mapName = allMapsName[rd];
                 width = mapData.width;
                 height = mapData.height;
                 map = new int[width,height];

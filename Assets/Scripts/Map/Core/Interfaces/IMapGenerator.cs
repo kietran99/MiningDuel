@@ -11,5 +11,8 @@ namespace MD.Map.Core
         List<Vector2Int> MovablePostions { get; }
         int[] MapData { get; }
         bool IsObstacle(int x, int y);
+        bool UseGeneratedMaps {get;}
+        string mapUsed{ get;}
+
     }
 }
