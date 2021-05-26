@@ -10,12 +10,11 @@ namespace MD.UI
 
         [SerializeField]
         private float moveSpeed = 1f;
-
+        
         [SerializeField]
-        float InventoryMenuYPosition = 0f;
-
-        [SerializeField]
-        float CraftMenuYPosition = 0f;
+        private float hiddenPositionYMargin = 20f;
+        float HiddenPositionY = 0f;
+        float ShowYPositionY = 0f;
 
         [SerializeField]
         float moveExceedTime = .1f;
@@ -23,6 +22,9 @@ namespace MD.UI
         [SerializeField]
         float moveExceedLength = 10f;
 
+        private RectTransform rectTransform;
+
+        [SerializeField]
         bool IsInventoryMenu = true;
 
         private string INVENTORY_STRING = "Inventory";
@@ -49,7 +51,7 @@ namespace MD.UI
                 if (elapsedTime >= firstMoveTime) elapsedTime = firstMoveTime;
                 
                 // transform.localPosition = Vector3.Slerp(start,exceedEnd,elapsedTime/firstMoveTime);
-                transform.localPosition = new Vector3(0,Mathf.Lerp(YStart,YExceedEnd,elapsedTime/firstMoveTime));
+                rectTransform.anchoredPosition = new Vector3(0,Mathf.Lerp(YStart,YExceedEnd,elapsedTime/firstMoveTime));
                 yield return null;
             }
             elapsedTime = 0;
@@ -58,7 +60,7 @@ namespace MD.UI
                 elapsedTime += Time.deltaTime;
                 if (elapsedTime >= secondMoveTime) elapsedTime = secondMoveTime;
                 // transform.localPosition = Vector3.Slerp(exceedEnd,end,elapsedTime/secondMoveTime);
-                transform.localPosition = new Vector3(0,Mathf.Lerp(YExceedEnd,YEnd,elapsedTime/secondMoveTime));
+                rectTransform.anchoredPosition = new Vector3(0,Mathf.Lerp(YExceedEnd,YEnd,elapsedTime/secondMoveTime));
                 yield return null;
             }
 
@@ -72,18 +74,45 @@ namespace MD.UI
             {
                 MenuNameObj.SetActive(false);
                 menuName = CRAFT_STRING;
-                StartCoroutine(SmoothSwitchMenu(InventoryMenuYPosition,CraftMenuYPosition));
+                StartCoroutine(SmoothSwitchMenu(rectTransform.anchoredPosition.y,ShowYPositionY));
                 IsInventoryMenu = false;
             }
             else
             {
                 MenuNameObj.SetActive(false);
                 menuName = INVENTORY_STRING;
-                StartCoroutine(SmoothSwitchMenu(CraftMenuYPosition,InventoryMenuYPosition));
+                StartCoroutine(SmoothSwitchMenu(rectTransform.anchoredPosition.y,HiddenPositionY));
                 IsInventoryMenu = true;
             }
         }
         
+        public void ReturnToCurrentPostion()
+        {
+            if (IsInventoryMenu)
+            {
+                StartCoroutine(SmoothSwitchMenu(rectTransform.anchoredPosition.y,HiddenPositionY));
+            }
+            else
+            {
+                StartCoroutine(SmoothSwitchMenu(rectTransform.anchoredPosition.y,ShowYPositionY));
+            }
+        }
+
+        public Vector3 GetCraftMenuLocation()
+        {
+            return new Vector3(0f,ShowYPositionY, 0f);
+        }
+        public Vector3 GetHiddentMenuLocation()
+        {
+            return new Vector3(0f,HiddenPositionY, 0f);
+        }
+
+        private void Awake()
+        {
+            rectTransform = GetComponent<RectTransform>();
+            HiddenPositionY = rectTransform.rect.height + hiddenPositionYMargin;
+            ShowYPositionY = 0f;
+        }
 
         private void Update()
         {
