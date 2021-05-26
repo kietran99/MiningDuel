@@ -13,6 +13,12 @@ namespace MD.AI
 
         [SerializeField]
         private float maxExplosionForce = 250f;
+
+        [SerializeField]
+        private float immobilizeTime = .5f;
+
+        [SerializeField]
+        private BotMoveAction moveAction = null;
         #endregion
 
         private PlayerBot bot = null;
@@ -29,10 +35,10 @@ namespace MD.AI
         public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage)
         {
             Debug.Log("Bot Exploded by " + transform.name);
-            // if (!ServiceLocator.Resolve<IScoreManager>(out IScoreManager scoreManager)) return;
 
             int numOfGem = Mathf.FloorToInt(Bot.CurrentScore * gemDropPercentage * .01f);
             Bot.DecreaseScore(numOfGem);
+            moveAction.Immobilize(immobilizeTime);
 
             for (int i = 0; i < numOfGem; i++)
             {

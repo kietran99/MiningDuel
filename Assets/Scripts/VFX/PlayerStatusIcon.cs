@@ -18,7 +18,7 @@ namespace MD.VisualEffects
         {
             var eventConsumer = EventSystems.EventConsumer.Attach(gameObject);
             eventConsumer.StartListening<MainActionToggleData>(OnMainActionToggle);
-            eventConsumer.StartListening<StunData>(OnStunned);
+            eventConsumer.StartListening<StunStatusData>(OnStunned);
         }
 
         private void OnMainActionToggle(MainActionToggleData data)
@@ -26,7 +26,7 @@ namespace MD.VisualEffects
             spriteRenderer.sprite = data.actionType.Equals(MainActionType.ATTACK) ? attackableIcon : null;
         }
 
-        private void OnStunned(StunData data)
+        private void OnStunned(StunStatusData data)
         {
             spriteRenderer.sprite = data.isStunned ? stunIcon : null;
         }

@@ -60,7 +60,7 @@ namespace MD.AI
 
         private Rigidbody2D theRigidbody;
 
-        // private bool isImmobilize = false;
+        private bool isImmobilize = false;
 
         void Start()
         {
@@ -85,13 +85,13 @@ namespace MD.AI
             Dash(data.atkDir * knockbackForce);
         }
 
-        // private void HandleGetCountered(GetCounteredData counterData)
-        // {
-        //     isImmobilize = true;
-        //     Invoke(nameof(RegainMobility), counterData.immobilizeTime);
-        // }
+        public void Immobilize(float time)
+        {
+            isImmobilize = true;
+            Invoke(nameof(RegainMobility), time);
+        }
 
-        // private void RegainMobility() => isImmobilize = false;
+        private void RegainMobility() => isImmobilize = false;
 
         // private void OnCounterSuccessful(CounterSuccessData data)
         // {
@@ -204,11 +204,11 @@ namespace MD.AI
             //         Debug.DrawLine(IndexToWorldMiddleSquare(node.index) -Vector2.one/10f,IndexToWorldMiddleSquare(node.index)+Vector2.one/10f, Color.green);
             //     }
             // }
-
-            // if (isImmobilize)
-            // {
-            //     return;
-            // }
+            Debug.Log(isImmobilize);
+            if (isImmobilize)
+            {
+                return;
+            }
 
             MoveBot();
         }

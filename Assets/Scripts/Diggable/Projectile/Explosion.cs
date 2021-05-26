@@ -13,6 +13,9 @@ namespace MD.Diggable.Projectile
         private float explosionRadius = 1.5f;
 
         [SerializeField]
+        private int power = 20;
+
+        [SerializeField]
         private GameObject projectileObject = null;
 
         [SerializeField]
@@ -52,10 +55,11 @@ namespace MD.Diggable.Projectile
             timer = GetComponent<ITimer>();
             timer.Activate();
         }
+
         public void StopExplosion()
         {
             shouldExplode = false;
-            Debug.Log("Bomb should not expolde");
+            Debug.Log("Bomb should not explode");
         }
         
         [ServerCallback]
@@ -100,7 +104,7 @@ namespace MD.Diggable.Projectile
                 shouldExplode = true;
                 return;
             }
-            // if (!other.CompareTag(Constants.PLAYER_TAG)) return;
+            
             if (other.GetComponent<IExplodable>() == null) return;
             if (launcher)
             {
@@ -110,17 +114,6 @@ namespace MD.Diggable.Projectile
 
             Explode();          
         }
-
-        // [ServerCallback]
-        // private void OnTriggerExit2D(Collider2D other)
-        // {
-        //     if (!other.CompareTag(Constants.PLAYER_TAG) || isThrown) return;
-
-        //     if (other.GetComponent<MD.Character.ThrowAction>().netIdentity == GetComponent<ProjectileLauncher>().Thrower)
-        //     {
-        //         isThrown = true;
-        //     }
-        // }
 
         [ServerCallback]
         private void Explode()
@@ -138,12 +131,14 @@ namespace MD.Diggable.Projectile
 
             foreach (Collider2D collide in colliders)
             {
-                // if (!collide.CompareTag(Constants.PLAYER_TAG)) continue;  
+                var target = collide.transform.GetComponent<IExplodable>();
 
-                IExplodable target = collide.transform.GetComponent<IExplodable>();
                 if (target == null) continue;
+
                 var thrower = GetComponent<ProjectileLauncher>().Thrower;
                 target?.HandleExplosion(thrower.transform, thrower.netId, stats.GemDropPercentage);
+
+                collide.transform.GetComponent<Character.IDamagable>()?.TakeDamage(thrower, power, false);
             }
         }
         
