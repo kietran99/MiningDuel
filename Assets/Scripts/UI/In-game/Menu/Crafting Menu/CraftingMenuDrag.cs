@@ -29,7 +29,7 @@ namespace MD.UI
         [SerializeField]
         private int index;
 
-        private int count = 5;
+        private int count = 0;
         SwipeMenu swipeMenu = null;
 
         private float swipeLength;
@@ -166,8 +166,8 @@ namespace MD.UI
 
         private void Initialize()
         {
-            // 2*halfcellsizePadding + num*cell + (num-1)*space
-            rectTransform.sizeDelta = new Vector2(cellSize + count*cellSize + (count-1)*cellSpacing,rectTransform.sizeDelta.y);
+            // 3*cellsizePadding + num*cell + (num-1)*space
+            rectTransform.sizeDelta = new Vector2(3*cellSize + count*cellSize + (count-1)*cellSpacing,rectTransform.sizeDelta.y);
         }
 
         private void SetSelectedIndex(int index)
