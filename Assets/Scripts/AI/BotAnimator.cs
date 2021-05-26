@@ -42,15 +42,17 @@ public class BotAnimator : MonoBehaviour
     public void SetMovementState(Vector2 move)
     {
         var speed = move.sqrMagnitude;
+        if (speed < 0.1f) return;
+
         animator.SetFloat(AnimatorConstants.HORIZONTAL, move.x);
         animator.SetFloat(AnimatorConstants.VERTICAL, move.y);
         animator.SetFloat(AnimatorConstants.SPEED, speed);
 
-        if (speed.IsEqual(0f))
-        {
-            PlayIdle();
-            return;
-        }
+        // if (speed.IsEqual(0f))
+        // {
+        //     PlayIdle();
+        //     return;
+        // }
 
         BindLastMoveStats(move.x, move.y);
     }
