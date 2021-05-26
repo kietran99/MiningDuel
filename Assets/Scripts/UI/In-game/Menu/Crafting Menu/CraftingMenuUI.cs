@@ -17,14 +17,23 @@ namespace MD.UI
         [SerializeField]
         private CraftingMenuDrag menuDrag = null;
 
+        [SerializeField]
+        private bool isInThisMenu = false;
+
         void Start()
         {
             ItemUIObjectsList = new List<CraftItemUI>();
-            gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<CraftableItemsListChangeData>(HandleListChange);
+            var consumer = gameObject.AddComponent<EventSystems.EventConsumer>();
+            consumer.StartListening<CraftableItemsListChangeData>(HandleListChange);
+            consumer.StartListening<MenuSwitchEvent>(HandleMenuSwitchEvent);
         }
 
         void HandleListChange(CraftableItemsListChangeData data)
         {
+            if (isInThisMenu)
+            {
+                EventSystems.EventManager.Instance.TriggerEvent(new SetCraftButtonData(data.itemsList.Count>0));
+            }
             int delta = data.itemsList.Count - ItemUIObjectsList.Count;
             if (delta > 0)
             {
@@ -52,6 +61,16 @@ namespace MD.UI
                 if (ItemUIObjectsList[i].Name() == data.itemsList[i]) continue;
                 ItemUIObjectsList[i].SetItem(data.itemsList[i]);
                 menuDrag.TriggerIndexChangeEvent();
+            }
+        }
+
+        private void HandleMenuSwitchEvent(MenuSwitchEvent data)
+        {
+            Debug.Log("received data switchtoinventory " + data.switchToInventoryMenu);
+            isInThisMenu = !data.switchToInventoryMenu;
+            if (isInThisMenu && ItemUIObjectsList.Count>0)
+            {
+                EventSystems.EventManager.Instance.TriggerEvent(new SetCraftButtonData(true));
             }
         }
 

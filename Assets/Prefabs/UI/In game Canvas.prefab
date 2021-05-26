@@ -3059,18 +3059,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &869822093157084479
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2977458019666357034}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e838ab1d905c1f4b97e076b49713f8a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3188552275200226120
 GameObject:
   m_ObjectHideFlags: 0
@@ -3158,6 +3146,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3525694072565921926}
+  - component: {fileID: 3468545913239220494}
   m_Layer: 5
   m_Name: Use Item Button Container
   m_TagString: Untagged
@@ -3182,9 +3171,22 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -310, y: 350}
+  m_AnchoredPosition: {x: -333, y: 373.28}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3468545913239220494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3225601766107144858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e838ab1d905c1f4b97e076b49713f8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Button: {fileID: 2977458019666357034}
 --- !u!1 &3440447001055064684
 GameObject:
   m_ObjectHideFlags: 0
@@ -5976,7 +5978,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 869822093157084479}
+      objectReference: {fileID: 3468545913239220494}
     - target: {fileID: 2900253976682946696, guid: f7e3093fe5cf872478fd3778c89b2cff,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -6121,6 +6123,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 2900253976682946702, guid: f7e3093fe5cf872478fd3778c89b2cff,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2900253976875378529, guid: f7e3093fe5cf872478fd3778c89b2cff,
         type: 3}

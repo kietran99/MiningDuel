@@ -9,6 +9,9 @@ namespace MD.UI
         private GameObject MenuNameObj = null;
 
         [SerializeField]
+        private CraftingMenuUI craftingMenuUI = null;
+
+        [SerializeField]
         private float moveSpeed = 1f;
         
         [SerializeField]
@@ -70,20 +73,23 @@ namespace MD.UI
 
         public void SwitchMenu()
         {
-            if(IsInventoryMenu)
+            if(IsInventoryMenu) //switch to craft menu
             {
                 MenuNameObj.SetActive(false);
                 menuName = CRAFT_STRING;
                 StartCoroutine(SmoothSwitchMenu(rectTransform.anchoredPosition.y,ShowYPositionY));
-                IsInventoryMenu = false;
             }
             else
             {
+                //turn off craft button if is on when switch back to inventory
+                EventSystems.EventManager.Instance.TriggerEvent(new SetCraftButtonData(false));
+
                 MenuNameObj.SetActive(false);
                 menuName = INVENTORY_STRING;
                 StartCoroutine(SmoothSwitchMenu(rectTransform.anchoredPosition.y,HiddenPositionY));
-                IsInventoryMenu = true;
             }
+            EventSystems.EventManager.Instance.TriggerEvent(new MenuSwitchEvent(!IsInventoryMenu));
+            IsInventoryMenu = !IsInventoryMenu;
         }
         
         public void ReturnToCurrentPostion()
