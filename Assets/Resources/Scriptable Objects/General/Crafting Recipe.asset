@@ -26,9 +26,9 @@ MonoBehaviour:
   - Materials: 0a0000000a0000000a0000000a0000000a000000
     craftItemName: 8
   - Materials: 140000001400000014000000
-    craftItemName: 9
+    craftItemName: 5
   - Materials: 1400000014000000140000001400000014000000
-    craftItemName: 10
+    craftItemName: 6
   CrafteditemsList:
   - name: 1
     quirk: {fileID: -1094164381378787549, guid: 43f9e416aeef7fa4e9606072d227354a,
@@ -52,10 +52,16 @@ MonoBehaviour:
     UISprite: {fileID: 21300000, guid: b2b1f4f1674a10644a54814815daa928, type: 3}
   - name: 9
     quirk: {fileID: 7267176726980965476, guid: d3d86a13f978d544fb1b64d5b58e439a, type: 3}
-    UISprite: {fileID: 21300000, guid: 26b1f708ad1bee24e94f3d668cc19a8e, type: 3}
+    UISprite: {fileID: 21300000, guid: c1200fba9ced0694582075c61527fc8a, type: 3}
   - name: 10
     quirk: {fileID: 7267176726980965476, guid: d3d86a13f978d544fb1b64d5b58e439a, type: 3}
-    UISprite: {fileID: 21300000, guid: b3e7e022f9313404eb32fd9654bc72cf, type: 3}
+    UISprite: {fileID: 21300000, guid: c1200fba9ced0694582075c61527fc8a, type: 3}
+  - name: 5
+    quirk: {fileID: 882582063969667997, guid: da11ce95d4b9ff94e9d75c1b0089c5d5, type: 3}
+    UISprite: {fileID: 21300010, guid: 88ae461370fb3334d8f7009dad27cd8f, type: 3}
+  - name: 6
+    quirk: {fileID: 882582063969667997, guid: ddcd113322d49d04c968765f87b55c33, type: 3}
+    UISprite: {fileID: 21300006, guid: 88ae461370fb3334d8f7009dad27cd8f, type: 3}
   LONG_RECIPE_LENGTH: 5
   SHORT_RECIPE_LENGTH: 3
   trie:
@@ -95,11 +101,11 @@ MonoBehaviour:
     - children: ffffffffffffffffffffffff11000000
       name: 0
     - children: ffffffffffffffffffffffff12000000
-      name: 9
+      name: 5
     - children: ffffffffffffffffffffffff13000000
       name: 0
     - children: ffffffffffffffffffffffffffffffff
-      name: 10
+      name: 6
     root:
       children: 00000000050000000a0000000f000000
       name: 0

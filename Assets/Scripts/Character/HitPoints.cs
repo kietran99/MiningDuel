@@ -32,6 +32,12 @@ namespace MD.Character
         }
 
         [Server]
+        public void HealPercentageHealth(float percentage)
+        {
+            currentHP  = Mathf.Clamp(currentHP + Mathf.FloorToInt(maxHP*percentage), minHP, maxHP);
+        }
+
+        [Server]
         public void TakeDamage(NetworkIdentity source, int dmg, bool isCritical)
         {
             currentHP = Mathf.Clamp(currentHP - dmg, minHP, maxHP);

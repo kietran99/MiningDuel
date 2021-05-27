@@ -10,7 +10,7 @@ public class CraftItemUI : MonoBehaviour
     private CraftingRecipe recipeSO = null;
 
     [SerializeField]
-    private CraftItemName itemName = CraftItemName.SpeedPotion1;
+    private CraftItemName itemName = CraftItemName.SpeedBoost1;
 
     public void SetItem(CraftItemName name) 
     {
@@ -21,7 +21,7 @@ public class CraftItemUI : MonoBehaviour
 
     private void Awake()
     {
-        itemName = CraftItemName.SpeedPotion1;
+        itemName = CraftItemName.SpeedBoost1;
         Setup();
     }
 
