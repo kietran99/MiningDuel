@@ -13,6 +13,7 @@ namespace MD.UI
 
         private MainActionType curActionType;
         private MainActionType lastActionType;
+        private bool isStunned = false;
 
         private System.Collections.Generic.Dictionary<MainActionType, Action> invokerDict;
 
@@ -34,6 +35,7 @@ namespace MD.UI
             eventConsumer.StartListening<ThrowInvokeData>(ShowButton);
             eventConsumer.StartListening<MainActionToggleData>(ToggleInvoker);
             eventConsumer.StartListening<GetCounteredData>(TemporaryDisableButton);
+            eventConsumer.StartListening<StunStatusData> (HandleStunStatusChange);
         }
 
         private void TemporaryDisableButton(Character.GetCounteredData counterData)
@@ -70,6 +72,7 @@ namespace MD.UI
 
         public void Invoke()
         {
+            if (isStunned) return;
             invokerDict[curActionType]();
         }
 
@@ -85,5 +88,7 @@ namespace MD.UI
                 button.gameObject.SetActive(false);
             }
         }
+
+        private void HandleStunStatusChange(StunStatusData data) => isStunned = data.isStunned;
     }
 }

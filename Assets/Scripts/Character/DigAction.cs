@@ -53,20 +53,20 @@ namespace MD.Character
                 );
         }
 
-        // Cheat control
-        [ClientCallback]
-        private void Update()
-        {
-            if (!hasAuthority)
-            {
-                return;
-            }
+        // // Cheat control
+        // [ClientCallback]
+        // private void Update()
+        // {
+        //     if (!hasAuthority)
+        //     {
+        //         return;
+        //     }
             
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                EventSystems.EventManager.Instance.TriggerEvent(new DigInvokeData());            
-            }
-        }
+        //     if (Input.GetKeyDown(KeyCode.E))
+        //     {
+        //         EventSystems.EventManager.Instance.TriggerEvent(new DigInvokeData());            
+        //     }
+        // }
 
         public void IncreaseDigPower(int amount, float time)
         {

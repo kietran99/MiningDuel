@@ -14,6 +14,9 @@ namespace MD.Character
         private Animator animator;
 
         private float lastX, lastY;
+        [SerializeField]
+
+        private bool isStunned = false;
 
         void Awake()
         {
@@ -31,8 +34,8 @@ namespace MD.Character
             eventManager.StartListening<ThrowInvokeData>(RevertToIdleState);
             var eventConsumer = EventSystems.EventConsumer.Attach(gameObject);
             eventConsumer.StartListening<AttackDirectionData>(PlayBasicAttack);
-            // eventConsumer.StartListening<Quirk.MightyBlessingActivateData>(data => PlayBasicAttack(Vector2.zero));
             eventConsumer.StartListening<Quirk.MightyBlessingActivateData>(PlayMightyBlessing);
+            eventConsumer.StartListening<StunStatusData>(HandleStunStatusChange);
         }
 
         private void OnDisable()
@@ -44,6 +47,11 @@ namespace MD.Character
             eventManager.StopListening<DigInvokeData>(InvokeDig);
             eventManager.StopListening<ProjectileObtainData>(SetHoldState);
             eventManager.StopListening<ThrowInvokeData>(RevertToIdleState);
+        }
+
+        private void HandleStunStatusChange(StunStatusData data)
+        {
+            isStunned = data.isStunned;
         }
 
         private void RevertToIdleState(ThrowInvokeData obj)
@@ -61,11 +69,13 @@ namespace MD.Character
 
         private void InvokeDig(DigInvokeData obj)
         {
+            if (isStunned) return;
             animator.SetBool(AnimatorConstants.IS_DIGGING, true); 
         }
 
         private void SetMovementState(JoystickDragData dragData)
         {
+            if (isStunned) return;
             var speed = dragData.InputDirection.sqrMagnitude;
             animator.SetFloat(AnimatorConstants.HORIZONTAL, dragData.InputDirection.x);
             animator.SetFloat(AnimatorConstants.VERTICAL, dragData.InputDirection.y);
@@ -106,9 +116,6 @@ namespace MD.Character
         private void PlayMightyBlessing(Quirk.MightyBlessingActivateData _)
         {
             animator.SetBool(AnimatorConstants.IS_DIGGING, true);
-
         }
-
-        private void StopMightyBlessing() => animator.SetBool(AnimatorConstants.IS_DIGGING, false);
     }
 }
