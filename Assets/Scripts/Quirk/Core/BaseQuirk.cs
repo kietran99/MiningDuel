@@ -18,7 +18,7 @@ namespace MD.Quirk
 
         public override void OnStartClient()
         {
-            gameObject.SetActive(false);
+            // gameObject.SetActive(false);
         }
 
         public virtual void Activate(NetworkIdentity user)
@@ -36,6 +36,7 @@ namespace MD.Quirk
 
         public virtual void SingleActivate(NetworkIdentity user) {}
 
-        public virtual void SyncActivate(NetworkIdentity user) => gameObject.SetActive(true);
+        // public virtual void SyncActivate(NetworkIdentity user) => gameObject.SetActive(true);
+        public virtual void SyncActivate(NetworkIdentity user) {}
     }
 }
