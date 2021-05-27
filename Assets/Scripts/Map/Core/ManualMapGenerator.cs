@@ -18,7 +18,7 @@ public class ManualMapGenerator : MonoBehaviour
     [SerializeField] string myName = "map";
     // [SerializeField] Tilemap botMap = null;
     // [SerializeField] Tilemap topMap = null;
-    // [SerializeField] Tilemap obstacleMap =null;
+    [SerializeField] Tilemap obstacleMap =null;
     // [SerializeField] RuleTile tileNo1= null;
     // [SerializeField] RuleTile tileNo2= null;
     // [SerializeField] RuleTile tileNo3= null;
@@ -50,14 +50,14 @@ public class ManualMapGenerator : MonoBehaviour
         }
         if(tileID == -1)
         {
-            noticeText.text = "You are now deleting Tile from Layer mask: " + selectedMask.ToString();
+            noticeText.text = "You are now deleting Tile from "+allLayer[selectedMask].name+", Layer mask: " + selectedMask.ToString();
         }
         else if(tileID == -2)
         {
-            noticeText.text = "You are now using the Obstacle Tile on Layer mask: "+ selectedMask.ToString();
+            noticeText.text = "You are now using the Obstacle Tile, which will always be drawn on " + obstacleMap.name;
         }
         else
-            noticeText.text = "You are now using Tile: " + allTile[tileID].name + " on Layer mask: " + selectedMask.ToString();
+            noticeText.text = "You are now using Tile: " + allTile[tileID].name + " on " + allLayer[selectedMask].name+ ", Layer mask: " + selectedMask.ToString();
     }
     // Start is called before the first frame update
     void Start()
@@ -130,6 +130,7 @@ public class ManualMapGenerator : MonoBehaviour
             if(tileID >= allTile.Length)
             {
                 tileID = -2;
+                selectedMask = 2;
             }
             UpdateNotice();
         }
@@ -305,7 +306,8 @@ public class ManualMapGenerator : MonoBehaviour
         }
         else if(tileID == -2)
         {
-            allLayer[mask].SetTile(new Vector3Int(x,y,0),obstacleTile);
+            obstacleMap.SetTile(new Vector3Int(x,y,0),obstacleTile);
+            // mask = 2;
         }
         else
             allLayer[mask].SetTile(new Vector3Int(x,y,0),allTile[tileID]);
@@ -360,6 +362,7 @@ public class ManualMapGenerator : MonoBehaviour
                     if(weight > 0 )
                     {
                         allLayer[1].SetTile(new Vector3Int(x,y,0),allTile[weight]);
+                        subMap[1][x,y] = weight+1;
                     }   
                 }
             }

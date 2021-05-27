@@ -383,6 +383,7 @@ MonoBehaviour:
   birthLim: 4
   randomFillPercent: 36
   myName: map
+  obstacleMap: {fileID: 1778653030}
   obstacleTile: {fileID: 11400000, guid: 5835e723cbe260e40b0a98f97c2d44a5, type: 2}
   allLayer:
   - {fileID: 1796263150}
@@ -580,7 +581,7 @@ CompositeCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1778653027}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
