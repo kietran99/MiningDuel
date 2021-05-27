@@ -31,6 +31,8 @@ namespace MD.Character
             eventManager.StartListening<ThrowInvokeData>(RevertToIdleState);
             var eventConsumer = EventSystems.EventConsumer.Attach(gameObject);
             eventConsumer.StartListening<AttackDirectionData>(PlayBasicAttack);
+            // eventConsumer.StartListening<Quirk.MightyBlessingActivateData>(data => PlayBasicAttack(Vector2.zero));
+            eventConsumer.StartListening<Quirk.MightyBlessingActivateData>(PlayMightyBlessing);
         }
 
         private void OnDisable()
@@ -91,9 +93,22 @@ namespace MD.Character
 
         private void PlayBasicAttack(AttackDirectionData data)
         {
-            animator.SetFloat(AnimatorConstants.ATK_X, data.dir.x);
-            animator.SetFloat(AnimatorConstants.ATK_Y, data.dir.y);
+            PlayBasicAttack(data.dir);
+        }
+
+        private void PlayBasicAttack(Vector2 dir)
+        {
+            animator.SetFloat(AnimatorConstants.ATK_X, dir.x);
+            animator.SetFloat(AnimatorConstants.ATK_Y, dir.y);
             networkAnimator.SetTrigger(AnimatorConstants.BASIC_ATTACK);
         }
+
+        private void PlayMightyBlessing(Quirk.MightyBlessingActivateData _)
+        {
+            animator.SetBool(AnimatorConstants.IS_DIGGING, true);
+
+        }
+
+        private void StopMightyBlessing() => animator.SetBool(AnimatorConstants.IS_DIGGING, false);
     }
 }
