@@ -204,7 +204,6 @@ namespace MD.AI
             //         Debug.DrawLine(IndexToWorldMiddleSquare(node.index) -Vector2.one/10f,IndexToWorldMiddleSquare(node.index)+Vector2.one/10f, Color.green);
             //     }
             // }
-            Debug.Log(isImmobilize);
             if (isImmobilize)
             {
                 return;

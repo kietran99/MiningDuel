@@ -74,7 +74,13 @@ namespace MD.Character
 
         private void SetMovementState(JoystickDragData dragData)
         {
-            if (isStunned) return;
+            if (isStunned) 
+            {
+                animator.SetFloat(AnimatorConstants.SPEED, 0f);
+                PlayIdle();  
+                return;
+            }
+            
             var speed = dragData.InputDirection.sqrMagnitude;
             animator.SetFloat(AnimatorConstants.HORIZONTAL, dragData.InputDirection.x);
             animator.SetFloat(AnimatorConstants.VERTICAL, dragData.InputDirection.y);
