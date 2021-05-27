@@ -15,19 +15,56 @@ namespace MD.Quirk
         private int power = 9999;
 
         [SerializeField]
+        private LayerMask affectLayers = 0;
+
+        [SerializeField]
+        private ParticleSystem vfx = null;
+
+        [SerializeField]
         private float delayStartLevel = 2f;
 
+        public override void Activate(NetworkIdentity user)
+        {
+            Physics2D
+                .OverlapCircleAll(user.transform.position, radius, affectLayers)
+                .ForEach(collider =>
+                {
+                    if (!collider.TryGetComponent<Character.IDamagable>(out var damagable))
+                    {
+                        return;
+                    }
+
+                    if (collider.gameObject.GetInstanceID() == user.gameObject.GetInstanceID())
+                    {
+                        return;
+                    }
+
+                    damagable.TakeDamage(user, power, false);
+                });
+
+            base.Activate(user);
+        }
+
+        public override void SyncActivate(NetworkIdentity user)
+        {
+            base.SyncActivate(user);
+            transform.position = user.transform.position;
+            vfx.Play();
+            EventSystems.EventManager.Instance.TriggerEvent(new MightyBlessingActivateData());
+        }
+
+    #region LEGACY CODE
         private Vector2Int center;
 
-        public override void SingleActivate(NetworkIdentity userIdentity)
-        {
-            center = new Vector2Int (
-                Mathf.FloorToInt(userIdentity.transform.position.x),
-                Mathf.FloorToInt(userIdentity.transform.position.y)
-            );
+        // public override void SingleActivate(NetworkIdentity userIdentity)
+        // {
+        //     center = new Vector2Int (
+        //         Mathf.FloorToInt(userIdentity.transform.position.x),
+        //         Mathf.FloorToInt(userIdentity.transform.position.y)
+        //     );
       
-            CmdRequestGemPos(userIdentity, center);
-        }
+        //     CmdRequestGemPos(userIdentity, center);
+        // }
 
         [Command]
         private void CmdRequestGemPos(NetworkIdentity user, Vector2Int center)
@@ -131,4 +168,5 @@ namespace MD.Quirk
             return res;
         }
     }
+    #endregion
 }
