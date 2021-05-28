@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obtainSprite: {fileID: 21300000, guid: f7c36399c8f53cc41a88f65ee2417ac7, type: 3}
   description: 
+  QuirkName: Camo Perse

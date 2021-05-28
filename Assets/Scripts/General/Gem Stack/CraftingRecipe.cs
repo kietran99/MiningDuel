@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using MD.Quirk;
 using System;
+using UnityEngine.UI;
 namespace MD.CraftingSystem
 {
 
@@ -97,6 +98,18 @@ namespace MD.CraftingSystem
         public CraftItemName Search(CraftableGem[] gems)
         {
             return trie.Search(gems);
+        }
+
+        public CraftableGem[] GetMaterials(CraftItemName name)
+        {
+            for (int i=0; i< Recipes.Count; i++)
+            {
+                if (Recipes[i].craftItemName.Equals(name))
+                {
+                    return Recipes[i].Materials;
+                }
+            }
+            return null;
         }
     }
 }

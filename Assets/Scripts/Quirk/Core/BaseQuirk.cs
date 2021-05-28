@@ -14,8 +14,19 @@ namespace MD.Quirk
 
         public Sprite ObtainSprite => quirkData.ObtainSprite;
 
-        public string Description => quirkData.Description;
+        public string GetDescription() 
+        {
+            if (quirkData != null)
+                return quirkData.Description;
+            return null;
+        }
 
+        public string GetName()
+        {
+            if (quirkData != null)
+                return quirkData.Name;
+            return null;
+        }
         public override void OnStartClient()
         {
             // gameObject.SetActive(false);

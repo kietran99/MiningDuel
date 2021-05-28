@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obtainSprite: {fileID: 21300000, guid: e1dc196df3a372a439a1387e18d28dd5, type: 3}
   description: Reflect a projectile upon contact, expires after one use
+  QuirkName: Aegis Counter

@@ -12,8 +12,13 @@ namespace MD.Quirk
         [SerializeField]
         private string description = string.Empty;
 
+        [SerializeField]
+        private string QuirkName = string.Empty;
+
         public Sprite ObtainSprite => obtainSprite;
 
         public string Description => description;
+
+        public string Name => QuirkName;
     }
 }

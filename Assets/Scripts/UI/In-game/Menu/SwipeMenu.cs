@@ -120,12 +120,5 @@ namespace MD.UI
             ShowYPositionY = 0f;
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Tab))
-            {
-                SwitchMenu();
-            }
-        }
     }
 }
