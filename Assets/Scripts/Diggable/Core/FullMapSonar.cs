@@ -179,7 +179,7 @@ namespace MD.Diggable.Core
         [ClientRpc]
         private void RpcHandleDiggableSpawnEvent(Vector3Int diggableSpawnData)
         {
-            if (tileDataDict.Equals(null)) return;
+            if (tileDataDict == null) return;
             var spawnPos = new Vector2Int(diggableSpawnData.x, diggableSpawnData.y);
             var sprite = GetSonarSprite(diggableSpawnData.z);
 
