@@ -97,8 +97,7 @@ namespace MD.Diggable.Projectile
         [Server]
         private IEnumerator Explode()
         {
-            //animate
-            Debug.Log("explode");
+            RpcPlayExplosionEffect(transform.position);
             
             yield return new WaitForSeconds(explosionTime);
 
@@ -137,11 +136,19 @@ namespace MD.Diggable.Projectile
                 {
                     Debug.Break();
                 }
+
                 linkedTrapsList[i].SpreadExplode(this);
             }
+
             NetworkServer.Destroy(gameObject);
         }
-        
+
+        [ClientRpc]
+        private void RpcPlayExplosionEffect(Vector2 pos)
+        {
+            EventSystems.EventManager.Instance.TriggerEvent(new VisualEffects.ExplosionEffectRequestData(pos));
+        }
+
         [ClientRpc]
         public void RpcAssignOwnerAndLinkTraps(NetworkIdentity owner)
         {

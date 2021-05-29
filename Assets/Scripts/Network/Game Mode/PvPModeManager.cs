@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MD.AI;
 using MD.Character;
 using Mirror;
 using UnityEngine;
@@ -65,7 +66,7 @@ namespace MD.Network.GameMode
 
         private void WinPvPByElimination(uint winningPlayerId)
         {
-            EventSystems.EventManager.Instance.StopListening<CharacterDeathData>(deathHandler);
+            StopListeningToDeathEvent();
             Debug.Log("Player " + winningPlayerId + " won the game");         
             networkManager.Players.Find(player => player.netId.Equals(winningPlayerId)).TargetNotifyEndGame(true);
             StopCountdown();
@@ -82,5 +83,13 @@ namespace MD.Network.GameMode
 
             return true;
         }
+
+        public override void EndGameByTimeOut(List<Player> players, List<PlayerBot> bots)
+        {
+            base.EndGameByTimeOut(players, bots);
+            StopListeningToDeathEvent();
+        }
+
+        private void StopListeningToDeathEvent() => EventSystems.EventManager.Instance.StopListening<CharacterDeathData>(deathHandler);
     }
 }

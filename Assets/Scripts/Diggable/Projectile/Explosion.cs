@@ -161,7 +161,7 @@ namespace MD.Diggable.Projectile
         }
 
         [ClientRpc]
-        private void RpcPlayExplosionEffect() => spriteRenderer.sprite = explodeSprite;
+        private void RpcPlayExplosionEffect() => EventSystems.EventManager.Instance.TriggerEvent(new VisualEffects.ExplosionEffectRequestData(transform.position));
 
         [Server]
         public void NotifyThrow()
