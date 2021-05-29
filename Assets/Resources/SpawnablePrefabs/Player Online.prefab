@@ -5548,6 +5548,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   networkAnimator: {fileID: 2133106330430454662}
+  isStunned: 0
 --- !u!114 &4639249340357379130
 MonoBehaviour:
   m_ObjectHideFlags: 0
