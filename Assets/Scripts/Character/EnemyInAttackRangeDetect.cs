@@ -10,6 +10,7 @@ namespace MD.Character
 
         private Dictionary<int, Transform> cachedDamagableDict;
         private List<Transform> trackingTargets;
+        private Transform lastTarget;
 
         public System.Action<bool> OnTrackingTargetsChanged;
 
@@ -17,6 +18,7 @@ namespace MD.Character
         {
             cachedDamagableDict = new Dictionary<int, Transform>();
             trackingTargets = new List<Transform>();
+            lastTarget = transform;
         }
 
         public void RaiseAttackDirEvent() 
@@ -54,6 +56,7 @@ namespace MD.Character
             if (trackingTargets.Count == 0) 
             {
                 OnTrackingTargetsChanged?.Invoke(false);
+                EventSystems.EventManager.Instance.TriggerEvent(new AttackTargetChangeData(false, Vector2.zero));
             }
         }
 
@@ -81,6 +84,7 @@ namespace MD.Character
             }
 
             var closestTarget = trackingTargets.Reduce(GetCloserObject);
+            EventSystems.EventManager.Instance.TriggerEvent(new AttackTargetChangeData(true, closestTarget.transform.position));
             pickaxe.transform.Rotate(0f, 0f, Vector2.SignedAngle(-pickaxe.transform.up, closestTarget.position - pickaxe.transform.position));
         }
 
