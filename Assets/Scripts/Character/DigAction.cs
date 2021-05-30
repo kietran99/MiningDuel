@@ -14,7 +14,6 @@ namespace MD.Character
 
         protected virtual bool IsPlayer => true;
 
-
         public override void OnStartAuthority()
         {
             StartListeningToEvents();
@@ -53,25 +52,11 @@ namespace MD.Character
                 );
         }
 
-        // // Cheat control
-        // [ClientCallback]
-        // private void Update()
-        // {
-        //     if (!hasAuthority)
-        //     {
-        //         return;
-        //     }
-            
-        //     if (Input.GetKeyDown(KeyCode.E))
-        //     {
-        //         EventSystems.EventManager.Instance.TriggerEvent(new DigInvokeData());            
-        //     }
-        // }
-
         public void IncreaseDigPower(int amount, float time)
         {
             StartCoroutine(IncreaseDidPowerCoroutine(amount,time));
         }
+
         private IEnumerator IncreaseDidPowerCoroutine(int amount, float time)
         {
             power+= amount;
