@@ -11,7 +11,7 @@ namespace MD.VisualEffects
             target = ServiceLocator.Resolve<Character.Player>().Match(err => transform, player => player.transform);
         }
 
-        private void FixedUpdate()
+        private void LateUpdate()
         {
             transform.position = new Vector3(Mathf.FloorToInt(target.position.x) + .5f, Mathf.FloorToInt(target.position.y) + .5f, 0f);
         }

@@ -17,7 +17,7 @@ namespace MD.VisualEffects
             EventSystems.EventConsumer.Attach(gameObject).StartListening<Character.AttackTargetChangeData>(ToggleMode);
         }
 
-        private void FixedUpdate()
+        private void LateUpdate()
         {
             transform.position = targetPos;
         }
