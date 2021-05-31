@@ -7,5 +7,7 @@ AnimatorOverrideController:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Attack Target Marker_1
-  m_Controller: {fileID: 0}
-  m_Clips: []
+  m_Controller: {fileID: 9100000, guid: a8a883cd9f5552f428f47ff7b3dcbc95, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: ea7182e11a64cda4e9497876bece7d64, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: f066dd57d8b583640a6c6a4246f47014, type: 2}
