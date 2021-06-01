@@ -113,11 +113,25 @@ namespace MD.UI
             return new Vector3(0f,HiddenPositionY, 0f);
         }
 
+        private void SwitchMenuAfterCraft(UseItemInvokeData data)
+        {
+            if (!IsInventoryMenu)
+            {
+                SwitchMenu();
+            }
+        }
+
+
         private void Awake()
         {
             rectTransform = GetComponent<RectTransform>();
             HiddenPositionY = rectTransform.rect.height + hiddenPositionYMargin;
             ShowYPositionY = 0f;
+        }
+
+        void Start()
+        {
+            EventSystems.EventConsumer.GetOrAttach(gameObject).StartListening<UseItemInvokeData>(SwitchMenuAfterCraft);
         }
 
     }

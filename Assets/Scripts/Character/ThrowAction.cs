@@ -24,6 +24,8 @@ namespace MD.Character
         protected WaitForSecondsRealtime chargeTimeWFS;  
         private Camera mainCamera;
         private bool raycastedUI;
+
+        private bool isThrowing = false;
         #endregion
 
         public override void OnStartLocalPlayer()
@@ -73,6 +75,8 @@ namespace MD.Character
 
         private void HandleThrowCommand(Vector2 normalizedThrowDir)
         {
+            if (isThrowing) return;
+            isThrowing = true;
             CmdShowIndicatorMomentarily();
             StartCoroutine(ChargedThrow(normalizedThrowDir));
         }
@@ -98,6 +102,7 @@ namespace MD.Character
             yield return chargeTimeWFS;
 
             CmdThrow(throwDirection.x, throwDirection.y);
+            isThrowing = false;
         }
 
         [Command]
