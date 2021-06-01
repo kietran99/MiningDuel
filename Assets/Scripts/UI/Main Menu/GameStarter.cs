@@ -8,6 +8,8 @@ public class GameStarter : MonoBehaviour
 {
     [SerializeField]
     private Button startButton = null;
+
+    private bool isStarted = false;
     
     private NetworkManagerLobby room;
     private NetworkManagerLobby Room
@@ -31,6 +33,8 @@ public class GameStarter : MonoBehaviour
 
     private void StartGame()
     {
+        if (isStarted) return;
+        isStarted = true;
         //Room.StartBotTraining();
         IGameModeManager gameModeManager = new BotTrainingModeManager();
         gameModeManager.StartHost();

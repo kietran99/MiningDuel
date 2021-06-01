@@ -27,8 +27,7 @@ namespace MD.CraftingSystem
         Syringe2,
         MightyBlessing1,
         MightyBlessing2,
-        DrillMachine1,
-        DrillMachine2
+        DrillMachine,
     }
     public enum CraftableGem
     {
