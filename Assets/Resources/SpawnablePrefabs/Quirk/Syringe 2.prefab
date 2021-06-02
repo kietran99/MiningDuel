@@ -62,5 +62,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  quirkData: {fileID: 0}
+  quirkData: {fileID: 11400000, guid: f52914cbc5d8967498002ca2be7b0079, type: 2}
   HealPercentages: 1

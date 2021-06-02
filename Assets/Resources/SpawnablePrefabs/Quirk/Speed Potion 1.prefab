@@ -62,6 +62,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  quirkData: {fileID: 0}
+  quirkData: {fileID: 11400000, guid: 4770783bca03a8746b1647abe35bd89e, type: 2}
   speedPercentage: 0.3
   time: 7

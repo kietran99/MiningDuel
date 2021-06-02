@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 93b58ad7f885713449fe32e348f97bb7, type: 3}
-  m_Name: Mighty Blessing Data
+  m_Name: Mighty Blessing E
   m_EditorClassIdentifier: 
   obtainSprite: {fileID: 21300000, guid: 8a2e14b3b034b404eb4df87c121aaa36, type: 3}
-  description: Excavates every gem in a small area, can only be used once.
-  QuirkName: Mighty Blessing
+  description: Mighty Blessing's not good enough? Here's a much better version.
+  QuirkName: E- Mighty Blessing

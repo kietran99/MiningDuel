@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 93b58ad7f885713449fe32e348f97bb7, type: 3}
-  m_Name: Camo Perse Data
+  m_Name: Aegis Counter E
   m_EditorClassIdentifier: 
-  obtainSprite: {fileID: 21300000, guid: f7c36399c8f53cc41a88f65ee2417ac7, type: 3}
-  description: An exploding mine disguised as a gem, hella deadly.
-  QuirkName: Camo Perse
+  obtainSprite: {fileID: 21300000, guid: e1dc196df3a372a439a1387e18d28dd5, type: 3}
+  description: Longer-lasting version of Aegis Counter
+  QuirkName: E- Aegis Counter
