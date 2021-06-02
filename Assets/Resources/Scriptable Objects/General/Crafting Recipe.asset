@@ -31,6 +31,8 @@ MonoBehaviour:
     craftItemName: 6
   - Materials: 0a0000000a0000000a0000001400000014000000
     craftItemName: 9
+  - Materials: 010000000100000004000000
+    craftItemName: 10
   CrafteditemsList:
   - name: 1
     quirk: {fileID: -1094164381378787549, guid: 43f9e416aeef7fa4e9606072d227354a,
@@ -61,13 +63,17 @@ MonoBehaviour:
   - name: 6
     quirk: {fileID: 882582063969667997, guid: ddcd113322d49d04c968765f87b55c33, type: 3}
     UISprite: {fileID: 21300162, guid: 88ae461370fb3334d8f7009dad27cd8f, type: 3}
+  - name: 10
+    quirk: {fileID: -8500650738032078455, guid: 75ede8a2c6074fc4496ea2678c5977aa,
+      type: 3}
+    UISprite: {fileID: 21300000, guid: f7c36399c8f53cc41a88f65ee2417ac7, type: 3}
   LONG_RECIPE_LENGTH: 5
   SHORT_RECIPE_LENGTH: 3
   trie:
     trieNodesList:
     - children: 01000000ffffffffffffffffffffffff
       name: 0
-    - children: 02000000ffffffffffffffffffffffff
+    - children: 0200000016000000ffffffffffffffff
       name: 0
     - children: 03000000ffffffffffffffffffffffff
       name: 1
@@ -109,6 +115,8 @@ MonoBehaviour:
       name: 0
     - children: ffffffffffffffffffffffffffffffff
       name: 9
+    - children: ffffffffffffffffffffffffffffffff
+      name: 10
     root:
       children: 00000000050000000a0000000f000000
       name: 0

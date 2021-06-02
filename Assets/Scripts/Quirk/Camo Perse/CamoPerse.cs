@@ -4,7 +4,7 @@ using Mirror;
 namespace MD.Quirk
 {
     [RequireComponent(typeof(CircleCollider2D))]
-    public class CamoPerse : BaseQuirk
+    public class CamoPerse : NetworkBehaviour
     {
         private readonly float GRID_OFFSET = .5f;
 
@@ -17,9 +17,19 @@ namespace MD.Quirk
         private NetworkIdentity planter = null, collidingTarget = null;
 
         // [Client]
-        public override void SyncActivate(NetworkIdentity userIdentity)
+        // public override void SyncActivate(NetworkIdentity userIdentity)
+        // {
+        //     base.SyncActivate(userIdentity); 
+        //     planter = userIdentity;
+        //     System.Func<float, float> SnapPosition = val => Mathf.FloorToInt(val) + GRID_OFFSET;
+        //     transform.position = new Vector3(SnapPosition(planter.transform.position.x), SnapPosition(planter.transform.position.y), 0f);
+        //     gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<CamoPerseAnimEndData>(HandleAnimEndEvent);
+        //     animHandler.PlayAnimation();
+        // }
+        
+        [ClientRpc]
+        public void RpcSetUp(NetworkIdentity userIdentity)
         {
-            base.SyncActivate(userIdentity); 
             planter = userIdentity;
             System.Func<float, float> SnapPosition = val => Mathf.FloorToInt(val) + GRID_OFFSET;
             transform.position = new Vector3(SnapPosition(planter.transform.position.x), SnapPosition(planter.transform.position.y), 0f);

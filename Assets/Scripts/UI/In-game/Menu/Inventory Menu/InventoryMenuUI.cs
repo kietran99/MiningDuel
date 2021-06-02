@@ -10,6 +10,8 @@ public class InventoryMenuUI : MonoBehaviour
     private GameObject PickAxeItem = null;
     [SerializeField]
     private GameObject TrapItem = null;
+    [SerializeField]
+    private GameObject CamoPerseItem = null;
 
     List<InventoryItemUIController> inventoryUI;
 
@@ -73,6 +75,8 @@ public class InventoryMenuUI : MonoBehaviour
                 return PickAxeItem;
             case InventoryController.InventoryItemType.Trap:
                 return TrapItem;
+            case InventoryController.InventoryItemType.CamoTrap:
+                return CamoPerseItem;
             default:
                 return null;
         }
