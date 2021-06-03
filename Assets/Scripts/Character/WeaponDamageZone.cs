@@ -32,8 +32,6 @@ namespace MD.Character
             baseRotation = transform.localRotation;
             criticalZone.OnCollide += OnCriticalZoneEnter;
         }
-   
-        private void OnDestroy() => criticalZone.OnCollide -= OnCriticalZoneEnter;
 
         public void AttemptSwing()
         {

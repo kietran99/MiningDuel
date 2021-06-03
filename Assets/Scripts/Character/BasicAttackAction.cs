@@ -43,14 +43,8 @@ namespace MD.Character
 
         public override void OnStartAuthority()
         {
-            EventSystems.EventManager.Instance.StartListening<AttackInvokeData>(HandleAttackInvoke);
-            enemyDetect.OnTrackingTargetsChanged += ToggleMainAction;
-        }
-
-        public override void OnStopClient()
-        {
-            EventSystems.EventManager.Instance.StopListening<AttackInvokeData>(HandleAttackInvoke);
-            enemyDetect.OnTrackingTargetsChanged -= ToggleMainAction;
+            var eventConsumer = EventSystems.EventConsumer.GetOrAttach(gameObject);
+            eventConsumer.StartListening<AttackInvokeData>(HandleAttackInvoke);
         }
 
         [Client]
@@ -89,21 +83,5 @@ namespace MD.Character
         {
             EventSystems.EventManager.Instance.TriggerEvent(new GetCounteredData(counterVect, immobilizeTime));
         }
-
-    #if UNITY_EDITOR
-        [ClientCallback]
-        void Update()
-        {
-            if (!hasAuthority)
-            {
-                return;
-            }    
-
-            if (Input.GetMouseButtonDown(1))
-            {
-                EventSystems.EventManager.Instance.TriggerEvent(new AttackInvokeData());
-            }
-        }
-    #endif
     }
 }

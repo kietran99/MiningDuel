@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1997218604643784021}
   - component: {fileID: -8466529127824146443}
   m_Layer: 0
-  m_Name: Target Marker
+  m_Name: Dig Target Marker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -114,3 +114,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c22e71c4d1253764dac09b8b6aa3e215, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 1997218604643784022}

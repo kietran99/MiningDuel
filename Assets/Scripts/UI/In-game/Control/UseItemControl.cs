@@ -1,36 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-public class UseItemControl: MonoBehaviour
+
+namespace MD.UI
 {
-    [SerializeField]
-    private GameObject Button;
-
-    void Start()
+    public class UseItemControl: MonoBehaviour
     {
-        gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<MD.UI.SetCraftButtonData>(HandleSetButtonData);
-    }
+        [SerializeField]
+        private GameObject Button = null;
 
-    public void HandleSetButtonData(MD.UI.SetCraftButtonData data)
-    {
-        if (data.status)
+        void Start()
         {
-            if (!Button.activeInHierarchy)
+            EventSystems.EventConsumer.Attach(gameObject).StartListening<SetCraftButtonData>(HandleSetButtonData);
+        }
+
+        public void HandleSetButtonData(SetCraftButtonData data)
+        {
+            if (data.status)
             {
-                Button.SetActive(true);
+                if (!Button.activeInHierarchy)
+                {
+                    Button.SetActive(true);
+                }
+            }
+            else
+            {
+                if (Button.activeInHierarchy)
+                {
+                    Button.SetActive(false);
+                }
             }
         }
-        else
-        {
-            if (Button.activeInHierarchy)
-            {
-                Button.SetActive(false);
-            }
-        }
-    }
 
-    public void UseItem()
-    {
-        EventSystems.EventManager.Instance.TriggerEvent(new UseItemInvokeData());
+        public void UseItem()
+        {
+            EventSystems.EventManager.Instance.TriggerEvent(new UseItemInvokeData());
+        }
     }
 }

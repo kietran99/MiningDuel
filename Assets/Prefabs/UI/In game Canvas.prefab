@@ -177,7 +177,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -34, y: 440}
-  m_SizeDelta: {x: 328.0332, y: 173.44727}
+  m_SizeDelta: {x: 328, y: 173}
   m_Pivot: {x: 1, y: 0}
 --- !u!223 &602810222
 Canvas:
@@ -445,7 +445,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1153,15 +1153,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   swipeMenuTransform: {fileID: 7407204474616208881}
-  AutoSwitchMenuThreshold: 1
-  PercentThreshold: 0.5
-  SwipeSpeed: 8
+  autoSwitchMenuThreshold: 1
+  percentThreshold: 0.5
+  swipeSpeed: 8
   dragSpeed: 0.3
   dragMaxExceedLength: 30
-  index: 0
-  ShownPosition: {x: 0, y: 0, z: 0}
-  isSwitchMenu: 0
-  isSwiping: 0
 --- !u!114 &1696706627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1445,7 +1441,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   container: {fileID: 1542635186}
   itemUI: {fileID: 2239446595883569759, guid: 3288d66bf8ddb0d44a1f00c47593f206, type: 3}
-  ItemUIObjectsList: []
   menuDrag: {fileID: 1542635190}
   isInThisMenu: 0
 --- !u!1 &2008051412
@@ -2184,7 +2179,7 @@ RectTransform:
   m_GameObject: {fileID: 137349052853710634}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.96, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1163402385}
   - {fileID: 1825192877}
@@ -2194,7 +2189,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 167.82684, y: 162.996}
+  m_SizeDelta: {x: 168, y: 163}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4669969935930514022
 CanvasRenderer:
@@ -2565,8 +2560,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 18.7}
-  m_SizeDelta: {x: 282.70203, y: 164.22968}
+  m_AnchoredPosition: {x: 0, y: 19}
+  m_SizeDelta: {x: 283, y: 164}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5365593893476667159
 MonoBehaviour:
@@ -2909,8 +2904,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1.8999939, y: 43.6}
-  m_SizeDelta: {x: 42.936646, y: 87.11597}
+  m_AnchoredPosition: {x: -1.5, y: 43.5}
+  m_SizeDelta: {x: 43, y: 87}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8413596809649471029
 CanvasRenderer:
@@ -3916,7 +3911,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 311.9668, y: 175}
+  m_SizeDelta: {x: 312, y: 175}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8565576139211479104
 CanvasRenderer:
@@ -3979,8 +3974,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: -0.0000076293945}
-  m_SizeDelta: {x: 0, y: 215.03055}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 215}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &4951552699445158315
 MonoBehaviour:
@@ -4198,7 +4193,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 195}
-  m_SizeDelta: {x: 311.9834, y: 175}
+  m_SizeDelta: {x: 312, y: 175}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7900722659520969633
 CanvasRenderer:
@@ -4249,8 +4244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2c3629282602db4b84c4cf511f20823, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MenuNameObj: {fileID: 1027361587}
-  craftingMenuUI: {fileID: 0}
+  menuNameContainer: {fileID: 1027361587}
   moveSpeed: 3
   hiddenPositionYMargin: 20
   moveExceedTime: 0.2
@@ -4651,8 +4645,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000091552734, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -4.5, y: 0}
+  m_SizeDelta: {x: 9, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7404775635213212511
 CanvasRenderer:
@@ -5021,8 +5015,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -2.1799927, y: 0}
-  m_SizeDelta: {x: -174.77502, y: -35}
+  m_AnchoredPosition: {x: -2.5, y: 0}
+  m_SizeDelta: {x: -175, y: -36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &569223195192448352
 CanvasRenderer:
@@ -5096,7 +5090,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 282.70203, y: 140}
+  m_SizeDelta: {x: 283, y: 140}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3065049296024355619
 MonoBehaviour:
@@ -5147,8 +5141,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -67.5}
-  m_SizeDelta: {x: 130.44269, y: 88.18182}
+  m_AnchoredPosition: {x: 0, y: -67}
+  m_SizeDelta: {x: 130, y: 88}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &8589767072085542825
 CanvasRenderer:
@@ -5202,7 +5196,6 @@ MonoBehaviour:
   swipeMenuTransform: {fileID: 7407204474616208881}
   SwitchMenuPercentThreshold: 0.8
   dragSpeed: 0.5
-  hiddenPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &8093614455377878557
 GameObject:
   m_ObjectHideFlags: 0

@@ -6018,6 +6018,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pickaxe: {fileID: 8432381725177120217}
+  theCollider: {fileID: 5901030484151253573}
 --- !u!1001 &5430411515488753426
 PrefabInstance:
   m_ObjectHideFlags: 0

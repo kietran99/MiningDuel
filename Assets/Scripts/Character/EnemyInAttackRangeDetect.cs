@@ -11,22 +11,39 @@ namespace MD.Character
         private Dictionary<int, Transform> cachedDamagableDict;
         private List<Transform> trackingTargets;
         private Transform lastTarget;
-
-        public System.Action<bool> OnTrackingTargetsChanged;
+        private bool detectActive = true;
 
         private void Start()
         {
             cachedDamagableDict = new Dictionary<int, Transform>();
             trackingTargets = new List<Transform>();
             lastTarget = transform;
+            EventSystems.EventConsumer.GetOrAttach(gameObject).StartListening<MainWeaponToggleData>(OnMainWeaponToggle);
+        }
+        
+        private void OnMainWeaponToggle(MainWeaponToggleData data)
+        {
+            if (detectActive == data.isActive)
+            {
+                return;
+            }
+            
+            detectActive = data.isActive;
+            
+            if (!detectActive)
+            {
+                return;
+            }
+
+            var curAction = trackingTargets.Count >= 1 ? MainActionType.ATTACK : MainActionType.DIG; 
+            EventSystems.EventManager.Instance.TriggerEvent(new MainActionToggleData(curAction));
         }
 
         public void RaiseAttackDirEvent() 
         {
             var targetAngle = -(pickaxe.localEulerAngles.z + 90f);
-            // Debug.Log("Angle: " + targetAngle);
             var atkDir = new Vector2(-Mathf.Cos(Mathf.Deg2Rad * targetAngle), Mathf.Sin(Mathf.Deg2Rad * targetAngle));
-            EventSystems.EventManager.Instance.TriggerEvent(new AttackDirectionData(atkDir));
+            EventSystems.EventManager.Instance.TriggerEvent(new AttackDirectionData(atkDir));       
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -38,24 +55,34 @@ namespace MD.Character
 
             trackingTargets.Add(otherTransform);
 
-            if (trackingTargets.Count == 1) 
-            {
-                OnTrackingTargetsChanged?.Invoke(true);
-            }
-        }
-
-        private void OnTriggerExit2D(Collider2D other)
-        {
-            if (!TryGetTransform(other, out var otherTransform))
+            if (!detectActive) 
             {
                 return;
             }
 
+            if (trackingTargets.Count == 1)
+            {
+                EventSystems.EventManager.Instance.TriggerEvent(new Character.MainActionToggleData(MainActionType.ATTACK));
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {   
+            if (!TryGetTransform(other, out var otherTransform))
+            {
+                return;
+            }
+            
             trackingTargets.Remove(otherTransform);
             
+            if (!detectActive) 
+            {
+                return;
+            }
+
             if (trackingTargets.Count == 0) 
             {
-                OnTrackingTargetsChanged?.Invoke(false);
+                EventSystems.EventManager.Instance.TriggerEvent(new Character.MainActionToggleData(MainActionType.DIG));
                 EventSystems.EventManager.Instance.TriggerEvent(new AttackTargetChangeData(false, Vector2.zero));
             }
         }
@@ -78,6 +105,11 @@ namespace MD.Character
 
         private void Update()
         {
+            if (!detectActive)
+            {
+                return;
+            }
+
             if (trackingTargets.Count == 0)
             {
                 return;

@@ -28,9 +28,6 @@ namespace MD.Diggable.Projectile
         private Sprite almostExplodeSprite = null;
 
         [SerializeField]
-        private Sprite explodeSprite = null;
-
-        [SerializeField]
         private ParticleSystem sparkEffect = null;
 
         [SerializeField]

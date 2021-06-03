@@ -10,13 +10,12 @@ namespace MD.Diggable.Projectile
 
         public override void OnStartServer()
         {
-            base.OnStartServer();
             EventSystems.EventConsumer.GetOrAttach(gameObject).StartListening<LinkedTrapSpawnData>(SpawnLinkedTrap);
         }
 
         private void SpawnLinkedTrap(LinkedTrapSpawnData data)
         {
-            Debug.Log("trap spawner get spawned trap");
+            // Debug.Log("trap spawner get spawned trap");
             var obj = Instantiate(LinkedTrapPrefab, new Vector3(data.x,data.y,0),Quaternion.identity);
             NetworkServer.Spawn(obj,data.owner.connectionToClient);
             obj.GetComponent<LinkedTrap>().RpcAssignOwnerAndLinkTraps(data.owner);

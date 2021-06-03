@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using MD.Diggable.Gem;
-using MD.CraftingSystem;
 
 namespace MD.CraftingSystem
 {
@@ -154,9 +152,9 @@ namespace MD.CraftingSystem
                 craftableItemsList.AddRange(res);
                 if (skipCheck) i+= recipeSO.LONG_RECIPE_LENGTH -1;
             }
-            EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(GetItemListData()));
+            EventSystems.EventManager.Instance.TriggerEvent(new CraftableItemsListChangeData(GetItemListData()));
 
-            EventSystems.EventManager.Instance.TriggerEvent<GemStackUsedData>(new GemStackUsedData(GetPos(index),length));
+            EventSystems.EventManager.Instance.TriggerEvent(new GemStackUsedData(GetPos(index),length));
         }
 
         private List<CraftItemName> GetItemListData()
@@ -195,9 +193,9 @@ namespace MD.CraftingSystem
             }
 
             // craftableItemsList = tempList;
-            EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(GetItemListData()));
+            EventSystems.EventManager.Instance.TriggerEvent(new CraftableItemsListChangeData(GetItemListData()));
             //update Material indicator when add a new gem
-            EventSystems.EventManager.Instance.TriggerEvent<CraftMenuChangeIndexData> (new CraftMenuChangeIndexData(Mathf.Max(SelectedIndex))); 
+            EventSystems.EventManager.Instance.TriggerEvent(new CraftMenuChangeIndexData(Mathf.Max(SelectedIndex))); 
         }
 
         private bool IsEqual(List<CraftableItemsData> list1, List<CraftableItemsData> list2)
