@@ -41,6 +41,7 @@ namespace MD.UI
         {
             PickAxe = 0,
             Trap = 1,
+            CamoTrap = 2
         }
 
         public MainActionType GetActionType(InventoryItemType itemType)
@@ -50,6 +51,8 @@ namespace MD.UI
                 case InventoryItemType.PickAxe:
                     return MainActionType.DIG;
                 case InventoryItemType.Trap:
+                    return MainActionType.SETTRAP;
+                case InventoryItemType.CamoTrap:
                     return MainActionType.SETTRAP;
                 default:
                     return MainActionType.DIG;
@@ -87,30 +90,6 @@ namespace MD.UI
                 MainActionType type = GetActionType(inventory[currentIndex].type);
                 EventSystems.EventManager.Instance.TriggerEvent(new MainActionToggleData(type));
             }
-        }
-
-        private void HandleSetTrapInvoke(SetTrapInvokeData data)
-        {
-            if (inventory[currentIndex].type != InventoryItemType.Trap)
-            {
-                Debug.LogError("wrong item" + inventory[currentIndex].type + " of index " + currentIndex);
-                return;
-            }
-
-            if (inventory[currentIndex].amount <= 0 )
-            {
-                Debug.LogError("error using out of stack item");
-                return;
-            }
-
-            CmdRequestSpawnLinkedTrap(netIdentity, Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
-            UseItem(currentIndex);
-        }
-
-        [Command]
-        private void CmdRequestSpawnLinkedTrap(NetworkIdentity owner, int x, int y)
-        {
-            EventSystems.EventManager.Instance.TriggerEvent(new LinkedTrapSpawnData(owner, x, y));
         }
 
         public bool UseItem(int index) //return true if remove an item
@@ -154,10 +133,56 @@ namespace MD.UI
             return true;
         }
 
+        private void HandleSetTrapInvoke(SetTrapInvokeData data)
+        {
+            if (inventory[currentIndex].amount <= 0 )
+            {
+                Debug.LogError("error using out of stack item");
+                return;
+            }
+
+            if (inventory[currentIndex].type == InventoryItemType.Trap)
+            {
+                CmdRequestSpawnLinkedTrap(netIdentity, Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
+            } 
+            else if (inventory[currentIndex].type == InventoryItemType.CamoTrap)
+            {
+                CmdRequestSpawnCamoTrap(netIdentity, Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
+            } 
+            else
+            {
+                Debug.Log("error type : " + inventory[currentIndex].type);
+                return;
+            }
+
+            UseItem(currentIndex);
+        }
+
         [TargetRpc]
         public void TargetObtainTraps(NetworkConnection conn)
         {
-            AddItem(new InventoryItem(InventoryItemType.Trap, 3));
+            InventoryController.InventoryItem trap = new InventoryController.InventoryItem(InventoryController.InventoryItemType.Trap, 3);
+            AddItem(trap);
+        }
+
+        public void ObtainCamoPerse()
+        {
+            InventoryController.InventoryItem camoTrap = new InventoryController.InventoryItem(InventoryItemType.CamoTrap, 3);
+            AddItem(camoTrap);
+        }
+        
+        [Command]
+        private void CmdRequestSpawnLinkedTrap(NetworkIdentity owner, int x, int y)
+        {
+            var data = new LinkedTrapSpawnData(owner,x,y);
+            EventSystems.EventManager.Instance.TriggerEvent<LinkedTrapSpawnData>(data);
+        }
+
+        [Command]
+        private void CmdRequestSpawnCamoTrap(NetworkIdentity owner, int x, int y)
+        {
+            var data = new CamoPerseSpawnData(owner,x,y);
+            EventSystems.EventManager.Instance.TriggerEvent<CamoPerseSpawnData>(data);
         }
 
     }

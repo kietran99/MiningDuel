@@ -7,12 +7,18 @@ namespace MD.UI
     public class InventoryMenuUI : MonoBehaviour
     {
         private int count = 0;
+
         [SerializeField]
         private Transform SpawnContainer = null;
+
         [SerializeField]
         private GameObject PickAxeItem = null;
+
         [SerializeField]
         private GameObject TrapItem = null;
+
+        [SerializeField]
+        private GameObject CamoPerseItem = null;
 
         List<InventoryItemUIController> inventoryUI;
 
@@ -29,10 +35,9 @@ namespace MD.UI
         {
             //since player spawn and aquired a pickaxe before enter mulitplayer scene
             //trigger a fake event aquiring a pickaxe when enter multiplayer scene for UI to update
-            InventoryController.InventoryItem pickAxe = new InventoryController.InventoryItem(InventoryController.InventoryItemType.PickAxe,1,false);
+            InventoryController.InventoryItem pickAxe = new InventoryController.InventoryItem(InventoryController.InventoryItemType.PickAxe, 1, false);
             EventSystems.EventManager.Instance.TriggerEvent(new AddInventoryItemData(0, pickAxe));
         }
-
 
         private void HandleAddItem(AddInventoryItemData data)
         {
@@ -69,12 +74,14 @@ namespace MD.UI
 
         private GameObject GetPrefab(InventoryController.InventoryItemType itemType)
         {
-            switch (itemType)
+            switch(itemType)
             {
                 case InventoryController.InventoryItemType.PickAxe:
                     return PickAxeItem;
                 case InventoryController.InventoryItemType.Trap:
                     return TrapItem;
+                case InventoryController.InventoryItemType.CamoTrap:
+                    return CamoPerseItem;
                 default:
                     return null;
             }

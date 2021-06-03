@@ -3938,6 +3938,8 @@ MonoBehaviour:
     type: 3}
   TrapItem: {fileID: 5523632056619162987, guid: 189ad8fe09bcb504b808c0907db0b780,
     type: 3}
+  CamoPerseItem: {fileID: 5523632056619162987, guid: b03a3534956ccb340b2bb2146e34d9f2,
+    type: 3}
 --- !u!1 &4724497448689442555
 GameObject:
   m_ObjectHideFlags: 0
