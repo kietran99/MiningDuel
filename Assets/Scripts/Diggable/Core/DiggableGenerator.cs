@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using Mirror;
+using Functional.Type;
 
 namespace MD.Diggable.Core
 {
@@ -215,14 +216,19 @@ namespace MD.Diggable.Core
             return diggableArea;
         }
     
-        public Functional.Type.Either<InvalidTileError, bool> IsProjectileAt(int x, int y)
+        public Either<InvalidTileError, bool> IsProjectileAt(int x, int y)
         {
             return diggableData.GetDataAt(x, y).Map(tileData => tileData.Type.IsProjectile());
         }
 
-        public Functional.Type.Either<InvalidTileError, bool> IsGemAt(int x, int y)
+        public Either<InvalidTileError, bool> IsGemAt(int x, int y)
         {
             return diggableData.GetDataAt(x, y).Map(tileData => tileData.Type.IsGem());
+        }
+
+        public Either<InvalidTileError, bool> IsEmptyAt(int x, int y)
+        {
+            return diggableData.GetDataAt(x, y).Map(tileData => tileData.IsEmpty);
         }
 
         #if UNITY_EDITOR

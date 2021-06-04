@@ -43,7 +43,7 @@ namespace MD.UI
 
             float YExceedEnd = YEnd + (YEnd > YStart ? moveExceedLength: -moveExceedLength);
 
-            Debug.Log("Smooth move from start " + YStart + " end " + YEnd + " exceedEnd" + YExceedEnd);
+            // Debug.Log("Smooth move from start " + YStart + " end " + YEnd + " exceedEnd" + YExceedEnd);
 
             while (elapsedTime < firstMoveTime)
             {

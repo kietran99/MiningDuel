@@ -20,15 +20,15 @@ namespace MD.Diggable.Projectile
 
         private void SpawnLinkedTrap(LinkedTrapSpawnData data)
         {
-            var obj = Instantiate(LinkedTrapPrefab, new Vector3(data.x,data.y,0),Quaternion.identity);
+            var obj = Instantiate(LinkedTrapPrefab, new Vector3(data.x, data.y, 0f),Quaternion.identity);
             NetworkServer.Spawn(obj,data.owner.connectionToClient);
             obj.GetComponent<LinkedTrap>().RpcAssignOwnerAndLinkTraps(data.owner);
         }
 
         private void SpawnCamoTrap(CamoPerseSpawnData data)
-        {
-            var obj = Instantiate(CamoPersePrefab, new Vector3(data.x,data.y,0),Quaternion.identity);
-            NetworkServer.Spawn(obj,data.owner.connectionToClient);
+        {            
+            var obj = Instantiate(CamoPersePrefab);
+            NetworkServer.Spawn(obj, data.owner.connectionToClient);
             obj.GetComponent<MD.Quirk.CamoPerse>().RpcSetUp(data.owner);
         }
     }

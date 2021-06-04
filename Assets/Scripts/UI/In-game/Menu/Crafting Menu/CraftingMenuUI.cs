@@ -48,7 +48,7 @@ namespace MD.UI
             {
                 for (int i = 0; i < -delta; i++)
                 {
-                    Debug.Log("destroy gameobject");
+                    // Debug.Log("destroy gameobject");
                     Destroy(ItemUIObjectsList[0].gameObject);
                     ItemUIObjectsList.RemoveAt(0);
                 }
@@ -56,7 +56,7 @@ namespace MD.UI
             }
             for (int i = 0; i < ItemUIObjectsList.Count; i++)
             {
-                Debug.Log("list count" + ItemUIObjectsList.Count + "  new list count" + data.itemsList.Count);
+                // Debug.Log("list count" + ItemUIObjectsList.Count + "  new list count" + data.itemsList.Count);
                 // Debug.Log("new list " + data.itemsList);
                 if (ItemUIObjectsList[i].Name() == data.itemsList[i]) 
                 {
@@ -70,7 +70,7 @@ namespace MD.UI
 
         private void HandleMenuSwitchEvent(MenuSwitchEvent data)
         {
-            Debug.Log("received data switchtoinventory " + data.switchToInventoryMenu);
+            // Debug.Log("received data switchtoinventory " + data.switchToInventoryMenu);
             isInThisMenu = !data.switchToInventoryMenu;
             if (isInThisMenu && ItemUIObjectsList.Count > 0)
             {

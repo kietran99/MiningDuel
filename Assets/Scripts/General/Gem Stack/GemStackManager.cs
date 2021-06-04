@@ -212,7 +212,7 @@ namespace MD.CraftingSystem
         {
             int pos = index - head;
             if (pos < 0) pos += gemStack.Length;
-            Debug.Log("pos is " + pos + " index  is " + index);
+            // Debug.Log("pos is " + pos + " index  is " + index);
             return pos;
         }
 
@@ -294,7 +294,7 @@ namespace MD.CraftingSystem
                 Debug.Log("index out of bound lengh " + craftableItemsList.Count + " index " + SelectedIndex);
                 return;
             }
-            Debug.Log("use item  " + craftableItemsList[SelectedIndex].name + " index " + craftableItemsList[SelectedIndex].index + " length " + craftableItemsList[SelectedIndex].length);
+            // Debug.Log("use item  " + craftableItemsList[SelectedIndex].name + " index " + craftableItemsList[SelectedIndex].index + " length " + craftableItemsList[SelectedIndex].length);
             var name = craftableItemsList[SelectedIndex].name;
             RemoveFromStack(craftableItemsList[SelectedIndex].index,craftableItemsList[SelectedIndex].length);
             CmdRequestUse(name);

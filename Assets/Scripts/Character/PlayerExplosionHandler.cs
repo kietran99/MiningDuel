@@ -42,7 +42,7 @@ namespace MD.Character
         }
 
         [Server]
-        public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage)
+        public void HandleExplosion(Transform attacker, uint throwerID, float gemDropPercentage)
         {
             int dropAmount = Mathf.FloorToInt(scoreManager.CurrentMultiplier * scoreManager.CurrentScore * gemDropPercentage * PERCENTAGE_MODIFIER);
             RpcPlayDamagingEffect();
@@ -54,7 +54,7 @@ namespace MD.Character
                 GameObject droppingGem = Instantiate(droppingGemPrefab, transform.position, Quaternion.identity);
                 NetworkServer.Spawn(droppingGem);
                 droppingGem.GetComponent<Diggable.Gem.DropObtain>().ThrowerID = throwerID;
-                droppingGem.GetComponent<Diggable.Gem.DropDriver>().ThrowerTransform = throwerTransform;
+                droppingGem.GetComponent<Diggable.Gem.DropDriver>().Attacker = attacker;
                 droppingGem.GetComponent<Rigidbody2D>().AddForce(RandomExplosionForce() * RandomExplosionDirection());
             }
         }

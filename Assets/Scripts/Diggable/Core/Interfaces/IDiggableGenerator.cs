@@ -19,5 +19,6 @@ namespace MD.Diggable.Core
         DiggableType[] GetDiggableArea(Vector2Int[] positions);
         Either<InvalidTileError, bool> IsProjectileAt(int x, int y); 
         Either<InvalidTileError, bool> IsGemAt(int x, int y);
+        Either<InvalidTileError, bool> IsEmptyAt(int x, int y);
     }
 }

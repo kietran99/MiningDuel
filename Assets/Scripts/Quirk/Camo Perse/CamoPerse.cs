@@ -6,32 +6,23 @@ namespace MD.Quirk
     [RequireComponent(typeof(CircleCollider2D))]
     public class CamoPerse : NetworkBehaviour
     {
-        private readonly float GRID_OFFSET = .5f;
-
         [SerializeField]
         private CamoPerseAnimHandler animHandler = null;
 
         [SerializeField]
         private float gemDropPercentage = 20;
 
-        private NetworkIdentity planter = null, collidingTarget = null;
+        [SerializeField]
+        private int power = 15;
 
-        // [Client]
-        // public override void SyncActivate(NetworkIdentity userIdentity)
-        // {
-        //     base.SyncActivate(userIdentity); 
-        //     planter = userIdentity;
-        //     System.Func<float, float> SnapPosition = val => Mathf.FloorToInt(val) + GRID_OFFSET;
-        //     transform.position = new Vector3(SnapPosition(planter.transform.position.x), SnapPosition(planter.transform.position.y), 0f);
-        //     gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<CamoPerseAnimEndData>(HandleAnimEndEvent);
-        //     animHandler.PlayAnimation();
-        // }
+        private NetworkIdentity planter = null, collidingTarget = null;
         
         [ClientRpc]
         public void RpcSetUp(NetworkIdentity userIdentity)
         {
             planter = userIdentity;
-            System.Func<float, float> SnapPosition = val => Mathf.FloorToInt(val) + GRID_OFFSET;
+            float gridOffset = .5f;
+            System.Func<float, float> SnapPosition = val => Mathf.FloorToInt(val) + gridOffset;
             transform.position = new Vector3(SnapPosition(planter.transform.position.x), SnapPosition(planter.transform.position.y), 0f);
             gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<CamoPerseAnimEndData>(HandleAnimEndEvent);
             animHandler.PlayAnimation();
@@ -89,19 +80,21 @@ namespace MD.Quirk
         [Command]
         private void CmdExplodeIfPlayerInRange()
         {
-            var explodeTarget = collidingTarget.GetComponent<Diggable.Projectile.IExplodable>();
-
-            if (explodeTarget == null)
+            if (!collidingTarget.TryGetComponent<Diggable.Projectile.IExplodable>(out var explodeTarget))
             {
-                Debug.Log("Camo Perse: Unexplodable Digger");
                 return;
             }
             
-            explodeTarget?.HandleExplosion(planter.transform, planter.netId, gemDropPercentage);
-
+            explodeTarget.HandleExplosion(planter.transform, planter.netId, gemDropPercentage);
+            collidingTarget.GetComponent<Character.IDamagable>()?.TakeDamage(planter, power, false);
             GetComponent<CircleCollider2D>().enabled = false;
-            RpcBindCollidingTarget(null);
+            
             NetworkServer.Destroy(gameObject);
+        }
+
+        private void OnDestroy()
+        {
+            EventSystems.EventManager.Instance.TriggerEvent(new VisualEffects.ExplosionEffectRequestData(transform.position));
         }
     }
 }

@@ -5955,8 +5955,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  inventory: []
-  currentIndex: 0
 --- !u!1 &8738467807321543979
 GameObject:
   m_ObjectHideFlags: 0
@@ -6017,8 +6015,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aae345af5468bd84685c17d96830e8f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: -7965588256565871280}
   pickaxe: {fileID: 8432381725177120217}
-  theCollider: {fileID: 5901030484151253573}
 --- !u!1001 &5430411515488753426
 PrefabInstance:
   m_ObjectHideFlags: 0

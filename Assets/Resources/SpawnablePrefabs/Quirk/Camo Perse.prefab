@@ -62,4 +62,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  quirkData: {fileID: 0}
+  quirkData: {fileID: 11400000, guid: 10e6db0ca9b798742bf93a3394546120, type: 2}

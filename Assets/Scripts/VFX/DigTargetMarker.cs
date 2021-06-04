@@ -34,7 +34,7 @@ namespace MD.VisualEffects
 
         private void OnMainActionToggle(MainActionToggleData data)
         {
-            isActive = data.actionType.Equals(MainActionType.DIG);
+            isActive = data.actionType.Equals(MainActionType.DIG) || data.actionType.Equals(MainActionType.SETTRAP);
             spriteRenderer.enabled = isActive;
         }
     }

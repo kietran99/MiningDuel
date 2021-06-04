@@ -181,9 +181,21 @@ namespace MD.UI
         [Command]
         private void CmdRequestSpawnCamoTrap(NetworkIdentity owner, int x, int y)
         {
-            var data = new CamoPerseSpawnData(owner,x,y);
+            var plantable = ServiceLocator
+                .Resolve<Diggable.Core.IDiggableGenerator>()
+                .Match(err => false, digGen => digGen.IsEmptyAt(x, y).Match(err => false, isEmpty => isEmpty));
+
+            if (!plantable)
+            {
+                TargetReturnCamo();
+                return;
+            }
+
+            var data = new CamoPerseSpawnData(owner, x, y);
             EventSystems.EventManager.Instance.TriggerEvent<CamoPerseSpawnData>(data);
         }
 
+        [TargetRpc]
+        private void TargetReturnCamo() => AddItem(new InventoryController.InventoryItem(InventoryItemType.CamoTrap, 1));
     }
 }

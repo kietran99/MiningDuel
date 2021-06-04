@@ -45,7 +45,7 @@ namespace MD.AI
                 GameObject droppingGem = Instantiate(droppingGemPrefab, transform.position, Quaternion.identity);
                 NetworkServer.Spawn(droppingGem);
                 droppingGem.GetComponent<Diggable.Gem.DropObtain>().ThrowerID = throwerID;
-                droppingGem.GetComponent<Diggable.Gem.DropDriver>().ThrowerTransform = throwerTransform;
+                droppingGem.GetComponent<Diggable.Gem.DropDriver>().Attacker = throwerTransform;
                 droppingGem.GetComponent<Rigidbody2D>().AddForce(GetExplosionForce() * GetExplosionDirection());
             }
         }

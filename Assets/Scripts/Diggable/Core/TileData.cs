@@ -27,8 +27,7 @@
         {
             Type = type;
             initialDigsLeft = type.Equals(DiggableType.EMPTY) ? 0 : DiggableTypeConverter.Convert(type).DigValue;
-            // DigsLeft = initialDigsLeft;
-            DigsLeft = 1;
+            DigsLeft = type.Equals(DiggableType.EMPTY) ? 0 : 1;
         }
 
         public bool IsEmpty { get => DigsLeft == 0; }

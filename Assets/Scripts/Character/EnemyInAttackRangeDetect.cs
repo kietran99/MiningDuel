@@ -6,8 +6,12 @@ namespace MD.Character
     public class EnemyInAttackRangeDetect : MonoBehaviour
     {
         [SerializeField]
+        private Player player = null;
+
+        [SerializeField]
         private Transform pickaxe = null;
 
+        private int playerUid;
         private Dictionary<int, Transform> cachedDamagableDict;
         private List<Transform> trackingTargets;
         private Transform lastTarget;
@@ -15,6 +19,7 @@ namespace MD.Character
 
         private void Start()
         {
+            playerUid = player.GetInstanceID();
             cachedDamagableDict = new Dictionary<int, Transform>();
             trackingTargets = new List<Transform>();
             lastTarget = transform;
@@ -83,7 +88,7 @@ namespace MD.Character
             if (trackingTargets.Count == 0) 
             {
                 EventSystems.EventManager.Instance.TriggerEvent(new Character.MainActionToggleData(MainActionType.DIG));
-                EventSystems.EventManager.Instance.TriggerEvent(new AttackTargetChangeData(false, Vector2.zero));
+                EventSystems.EventManager.Instance.TriggerEvent(new AttackTargetChangeData(playerUid, false, Vector2.zero));
             }
         }
 
@@ -116,7 +121,7 @@ namespace MD.Character
             }
 
             var closestTarget = trackingTargets.Reduce(GetCloserObject);
-            EventSystems.EventManager.Instance.TriggerEvent(new AttackTargetChangeData(true, closestTarget.transform.position));
+            EventSystems.EventManager.Instance.TriggerEvent(new AttackTargetChangeData(playerUid, true, closestTarget.transform.position));
             pickaxe.transform.Rotate(0f, 0f, Vector2.SignedAngle(-pickaxe.transform.up, closestTarget.position - pickaxe.transform.position));
         }
 
