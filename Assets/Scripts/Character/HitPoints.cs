@@ -18,6 +18,9 @@ namespace MD.Character
         [SerializeField]
         private VisualEffects.DamagedVFX damagedVFX = null;
 
+        [SerializeField]
+        private ParticleSystem HealEffect = null;
+
         [Server]
         public void TakeWardenDamage(int dmg)
         {
@@ -36,6 +39,7 @@ namespace MD.Character
         {
             currentHP  = Mathf.Clamp(currentHP + Mathf.FloorToInt(maxHP*percentage), minHP, maxHP);
         }
+
 
         [Server]
         public void TakeDamage(NetworkIdentity source, int dmg, bool isCritical)
@@ -65,7 +69,10 @@ namespace MD.Character
 
         private void OnCurrentHPSync(int oldCurHP, int newCurHP)
         {
-            damagedVFX.Play();
+            if (oldCurHP > newCurHP)
+                damagedVFX.Play();
+            else
+                PlayHealEffect();
 
             if (hasAuthority)
             {
@@ -76,6 +83,12 @@ namespace MD.Character
         protected virtual void OnAuthorityCurrentHPSync(int oldCurHP, int newCurHP)
         {
             EventSystems.EventManager.Instance.TriggerEvent(new HPChangeData(oldCurHP, newCurHP, maxHP));
+        }
+
+        protected virtual void PlayHealEffect()
+        {
+            if (HealEffect)
+                HealEffect.Play();
         }
 
     #region TEST_TAKE_DMG
