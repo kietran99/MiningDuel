@@ -59,10 +59,10 @@ MonoBehaviour:
     UISprite: {fileID: 21300000, guid: c1200fba9ced0694582075c61527fc8a, type: 3}
   - name: 5
     quirk: {fileID: 882582063969667997, guid: da11ce95d4b9ff94e9d75c1b0089c5d5, type: 3}
-    UISprite: {fileID: 21300012, guid: 88ae461370fb3334d8f7009dad27cd8f, type: 3}
+    UISprite: {fileID: 21300000, guid: a95a5572133bee14d9bb407dd5e1e7fe, type: 3}
   - name: 6
     quirk: {fileID: 882582063969667997, guid: ddcd113322d49d04c968765f87b55c33, type: 3}
-    UISprite: {fileID: 21300162, guid: 88ae461370fb3334d8f7009dad27cd8f, type: 3}
+    UISprite: {fileID: 21300000, guid: 8703b6a2749e21743bf5a5fd51efb86a, type: 3}
   - name: 10
     quirk: {fileID: -8500650738032078455, guid: 75ede8a2c6074fc4496ea2678c5977aa,
       type: 3}
