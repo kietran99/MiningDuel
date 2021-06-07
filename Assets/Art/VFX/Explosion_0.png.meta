@@ -20,6 +20,27 @@ TextureImporter:
   - first:
       213: -266013474302823725
     second: Explosion_0_5
+  - first:
+      213: -6357456349487204862
+    second: Explosion_0_0
+  - first:
+      213: 8910788623096913881
+    second: Explosion_0_1
+  - first:
+      213: 2263650991234923089
+    second: Explosion_0_2
+  - first:
+      213: 4899728449356069583
+    second: Explosion_0_3
+  - first:
+      213: -6757881151365488602
+    second: Explosion_0_4
+  - first:
+      213: -1053951216745081256
+    second: Explosion_0_5
+  - first:
+      213: 3859403119217574591
+    second: Explosion_0_6
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -125,14 +146,14 @@ TextureImporter:
         width: 48
         height: 48
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 485c6d77399da8eb0800000000000000
-      internalID: -4716718432323189372
+      spriteID: 20673c52227c5c7a0800000000000000
+      internalID: -6357456349487204862
       vertices: []
       indices: 
       edges: []
@@ -146,14 +167,14 @@ TextureImporter:
         width: 48
         height: 48
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 98535dd8b6274d8d0800000000000000
-      internalID: -2822505260187830903
+      spriteID: 9df98449a0b79ab70800000000000000
+      internalID: 8910788623096913881
       vertices: []
       indices: 
       edges: []
@@ -167,14 +188,14 @@ TextureImporter:
         width: 48
         height: 48
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 303cd745ca3473a30800000000000000
-      internalID: 4194895985349870339
+      spriteID: 15ab40c459a1a6f10800000000000000
+      internalID: 2263650991234923089
       vertices: []
       indices: 
       edges: []
@@ -188,14 +209,14 @@ TextureImporter:
         width: 48
         height: 48
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 34691da660ca2c6a0800000000000000
-      internalID: -6430388174369745341
+      spriteID: fca7eb790155ff340800000000000000
+      internalID: 4899728449356069583
       vertices: []
       indices: 
       edges: []
@@ -209,14 +230,14 @@ TextureImporter:
         width: 48
         height: 48
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 81987c50f3bfd0210800000000000000
-      internalID: 1300972115478415640
+      spriteID: 6206d8ac5ee2732a0800000000000000
+      internalID: -6757881151365488602
       vertices: []
       indices: 
       edges: []
@@ -236,8 +257,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3d276be872eee4cf0800000000000000
-      internalID: -266013474302823725
+      spriteID: 8569153d3fc9f51f0800000000000000
+      internalID: -1053951216745081256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Explosion_0_6
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 0
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fb28ffd50ba5f8530800000000000000
+      internalID: 3859403119217574591
       vertices: []
       indices: 
       edges: []
