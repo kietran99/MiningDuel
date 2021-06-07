@@ -14,7 +14,6 @@ namespace MD.Character
         private Animator animator;
 
         private float lastX, lastY;
-        [SerializeField]
 
         private bool isStunned = false;
 

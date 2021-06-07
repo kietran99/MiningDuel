@@ -23,7 +23,7 @@ namespace MD.Quirk
         [SerializeField]
         private float delayStartLevel = 2f;
 
-        public override void Activate(NetworkIdentity user)
+        public override void ServerActivate(NetworkIdentity user)
         {
             Physics2D
                 .OverlapCircleAll(user.transform.position, radius, affectLayers)
@@ -42,7 +42,7 @@ namespace MD.Quirk
                     damagable.TakeDamage(user, power, false);
                 });
 
-            base.Activate(user);
+            base.ServerActivate(user);
         }
 
         public override void SyncActivate(NetworkIdentity user)

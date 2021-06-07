@@ -11,12 +11,11 @@ namespace MD.Character
         [SerializeField]
         private int minHP = 0;
 
-        [SerializeField]
         [SyncVar(hook = nameof(OnCurrentHPSync))]
         private int currentHP = 100;
 
-        [SerializeField]
-        private VisualEffects.DamagedVFX damagedVFX = null;
+        public System.Action OnDamageTaken { get; set; }
+        public System.Action OnHeal { get; set; } 
 
         [Server]
         public void TakeWardenDamage(int dmg)
@@ -34,7 +33,7 @@ namespace MD.Character
         [Server]
         public void HealPercentageHealth(float percentage)
         {
-            currentHP  = Mathf.Clamp(currentHP + Mathf.FloorToInt(maxHP*percentage), minHP, maxHP);
+            currentHP = Mathf.Clamp(currentHP + Mathf.FloorToInt(maxHP*percentage), minHP, maxHP);
         }
 
         [Server]
@@ -65,7 +64,14 @@ namespace MD.Character
 
         private void OnCurrentHPSync(int oldCurHP, int newCurHP)
         {
-            damagedVFX.Play();
+            if (oldCurHP > newCurHP)
+            {
+                OnDamageTaken?.Invoke();
+            }
+            else 
+            {
+                OnHeal?.Invoke();
+            }
 
             if (hasAuthority)
             {

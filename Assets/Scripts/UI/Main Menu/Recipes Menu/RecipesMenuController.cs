@@ -60,7 +60,6 @@ namespace MD.UI
             }
         }
 
-        
         private void UpdateUI()
         {
             materialsUIController.UpdateUI(recipeSO.CrafteditemsList[currentIndex].name);
@@ -69,11 +68,11 @@ namespace MD.UI
             string name = recipeSO.CrafteditemsList[currentIndex].quirk.GetName();
             RecipeDescription.text = "unknown";
             RecipeName.text = "unknown";
-            if (description != "")
+            if (description != string.Empty)
             {
                 RecipeDescription.text = description;
             }
-            if (description != "")
+            if (description != string.Empty)
             {
                 RecipeName.text = name;
             }

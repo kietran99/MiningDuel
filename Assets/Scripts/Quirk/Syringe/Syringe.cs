@@ -1,34 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using MD.Quirk;
-using MD.Character;
+﻿using UnityEngine;
 using Mirror;
 
-public class Syringe : BaseQuirk
+namespace MD.Quirk
 {
-    [SerializeField]
-    float HealPercentages = .5f;
-    public override void SingleActivate(NetworkIdentity user)
+    public class Syringe : BaseQuirk
     {
-        base.SingleActivate(user);
-        CmdHealAndDestroy(user);
-    }
+        [SerializeField]
+        float HealPercentages = .5f;
 
-    [Command]
-    private void CmdHealAndDestroy(NetworkIdentity user)
-    {
-        HitPoints hitPoints = user.GetComponent<HitPoints>();
-        if (hitPoints != null)
+        public override void ServerActivate(NetworkIdentity user)
         {
-            hitPoints.HealPercentageHealth(HealPercentages);
+            user.GetComponent<Character.HitPoints>()?.HealPercentageHealth(HealPercentages);
+            NetworkServer.Destroy(gameObject);
         }
-        RequestDestroy();
-    }
-
-    [Server]
-    private void RequestDestroy()
-    {
-        NetworkServer.Destroy(gameObject);   
     }
 }

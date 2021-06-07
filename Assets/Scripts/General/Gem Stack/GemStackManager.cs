@@ -5,7 +5,6 @@ using MD.Diggable.Gem;
 
 namespace MD.CraftingSystem
 {
-
     public class GemStackManager : NetworkBehaviour
     {
         [System.Serializable]
@@ -40,6 +39,7 @@ namespace MD.CraftingSystem
 
         [SerializeField]
         private DiggableType[] gemStack = null;
+
         [SerializeField]
         private int head = 0; //start index of the stack
         private int tail; //last index of the stack ;
@@ -52,15 +52,16 @@ namespace MD.CraftingSystem
 
         public override void OnStartAuthority()
         {
-            base.OnStartClient();
             gemStack = new DiggableType[MAX_NO_SLOTS];
             craftableItemsList = new List<CraftableItemsData>();
             head = 0;
             tail = 0;
             stackSize = 0;
             //just in case
-            for (int i=0; i< gemStack.Length; i++) gemStack[i] = DiggableType.EMPTY;
-
+            for (int i = 0; i < gemStack.Length; i++) 
+            {
+                gemStack[i] = DiggableType.EMPTY;
+            }
 
             EventSystems.EventManager.Instance.StartListening<GemObtainData>(HandleGemObtain);
             EventSystems.EventManager.Instance.StartListening<CraftMenuChangeIndexData>(HandleChangeIndex);
@@ -90,7 +91,10 @@ namespace MD.CraftingSystem
             }
 
             tail++;
-            if (tail >= gemStack.Length) tail = 0;
+            if (tail >= gemStack.Length) 
+            {
+                tail = 0;
+            }
 
             //full stack
             if (tail == head)
@@ -108,18 +112,22 @@ namespace MD.CraftingSystem
 
         private void RemoveFromStack(int index, int length)
         {
-
             //remove gems used;
             for (int i = index; i < index + length; i++)
             {
                 int j = i;
-                if (j >= gemStack.Length) j-= gemStack.Length;
+                if (j >= gemStack.Length) 
+                {
+                    j -= gemStack.Length;
+                }
+
                 gemStack[j] = DiggableType.EMPTY;
             }
+
             int currentIndex = 0, fillIndex = -1;
 
             //update stack
-            for (int i = 0; i< stackSize - (GetPos(index) + length) ; i++)    
+            for (int i = 0; i < stackSize - (GetPos(index) + length) ; i++)    
             {
                 currentIndex = i + index + length;
                 fillIndex = i + index; 
@@ -130,47 +138,67 @@ namespace MD.CraftingSystem
                 gemStack[currentIndex] = DiggableType.EMPTY;
 
             }
-            stackSize-=length;
+
+            stackSize -= length;
             
             //no update stack done
             if (fillIndex == -1)
             {
-                if (stackSize <=0) fillIndex =0;
+                if (stackSize <= 0) 
+                {
+                    fillIndex = 0;
+                }
                 else
                 {
-                    fillIndex = index-1;
-                    if (fillIndex < 0) fillIndex += gemStack.Length;
+                    fillIndex = index - 1;
+
+                    if (fillIndex < 0) 
+                    {
+                        fillIndex += gemStack.Length;
+                    }
                 }
             }  
 
             tail = fillIndex;
 
             craftableItemsList.Clear();
-            for (int i=0 ; i< stackSize - (recipeSO.SHORT_RECIPE_LENGTH -1); i++)
+
+            for (int i = 0; i < stackSize - (recipeSO.SHORT_RECIPE_LENGTH - 1); i++)
             {
                 List<CraftableItemsData> res = CanCraft(GetIndex(i), out bool skipCheck);
                 craftableItemsList.AddRange(res);
-                if (skipCheck) i+= recipeSO.LONG_RECIPE_LENGTH -1;
-            }
-            EventSystems.EventManager.Instance.TriggerEvent(new CraftableItemsListChangeData(GetItemListData()));
 
+                if (skipCheck) 
+                {
+                    i += recipeSO.LONG_RECIPE_LENGTH - 1;
+                }
+            }
+
+            EventSystems.EventManager.Instance.TriggerEvent(new CraftableItemsListChangeData(GetItemListData()));
             EventSystems.EventManager.Instance.TriggerEvent(new GemStackUsedData(GetPos(index),length));
         }
 
         private List<CraftItemName> GetItemListData()
         {
             List<CraftItemName> res = new List<CraftItemName>();
+
             foreach (CraftableItemsData data in craftableItemsList)
             {
                 res.Add(data.name);
             }
+
             return res;
         }
 
         private int GetIndex(int position)
         {
             int res = head + position;
-            if (res >= gemStack.Length) res-= gemStack.Length;
+
+            if (res >= gemStack.Length) 
+            {
+                res -= gemStack.Length;
+            }
+
             return res;
         }
 
@@ -185,10 +213,15 @@ namespace MD.CraftingSystem
 
             // List<CraftableItemsData> tempList = new List<CraftableItemsData>();
             craftableItemsList.Clear();
-            for (int i = 0; i< stackSize - (recipeSO.SHORT_RECIPE_LENGTH -1) ; i++) // ignore 2 last gems
+            for (int i = 0; i < stackSize - (recipeSO.SHORT_RECIPE_LENGTH -1); i++) // ignore 2 last gems
             {
                 List<CraftableItemsData> res = CanCraft(GetIndex(i), out bool skipCheck);
-                if (skipCheck) i+= recipeSO.LONG_RECIPE_LENGTH -1;
+
+                if (skipCheck) 
+                {
+                    i += recipeSO.LONG_RECIPE_LENGTH - 1;
+                }
+
                 craftableItemsList.AddRange(res);
             }
 
@@ -200,18 +233,29 @@ namespace MD.CraftingSystem
 
         private bool IsEqual(List<CraftableItemsData> list1, List<CraftableItemsData> list2)
         {
-            if (list1.Count != list2.Count) return false;
-            for (int i=0; i< list1.Count ; i++)
+            if (list1.Count != list2.Count) 
             {
-                if (!list1[i].Equals(list2[i])) return false;
+                return false;
             }
+
+            for (int i = 0; i < list1.Count ; i++)
+            {
+                if (!list1[i].Equals(list2[i])) 
+                {
+                    return false;
+                }
+            }
+
             return true;
         }
 
         private int GetPos(int index)
         {
             int pos = index - head;
-            if (pos < 0) pos += gemStack.Length;
+            if (pos < 0) 
+            {
+                pos += gemStack.Length;
+            }
             // Debug.Log("pos is " + pos + " index  is " + index);
             return pos;
         }
@@ -251,17 +295,24 @@ namespace MD.CraftingSystem
             // }
             List<CraftableGem> materials = new List<CraftableGem>();
             int pos = GetPos(index);
-            if (pos  <= stackSize - recipeSO.SHORT_RECIPE_LENGTH) //check min recipes
+
+            if (pos <= stackSize - recipeSO.SHORT_RECIPE_LENGTH) //check min recipes
             {
                 for (int i = 0; i < recipeSO.SHORT_RECIPE_LENGTH; i++)
                 {
                     materials.Add((CraftableGem) gemStack[GetIndex(pos + i)]);
                 }
+
                 CraftItemName item = recipeSO.Search(materials.ToArray());
-                if (item != CraftItemName.None) res.Add(new CraftableItemsData(item,index,recipeSO.SHORT_RECIPE_LENGTH));
+                if (item != CraftItemName.None) 
+                {
+                    res.Add(new CraftableItemsData(item, index, recipeSO.SHORT_RECIPE_LENGTH));
+                }
             }
+
             skipCheck = false;
-            if (pos  <= stackSize - recipeSO.LONG_RECIPE_LENGTH) //check min recipes
+
+            if (pos <= stackSize - recipeSO.LONG_RECIPE_LENGTH) //check min recipes
             {
                 for (int i = recipeSO.SHORT_RECIPE_LENGTH; i < recipeSO.LONG_RECIPE_LENGTH; i++)
                 {
@@ -271,7 +322,8 @@ namespace MD.CraftingSystem
                 //check if all gem are the same type
                 skipCheck = true;
                 CraftableGem gem = materials[0];
-                for (int i=1; i< materials.Count; i++)
+
+                for (int i = 1; i < materials.Count; i++)
                 {
                     if (gem != materials[i])
                     {
@@ -279,16 +331,26 @@ namespace MD.CraftingSystem
                         break;
                     }
                 } 
+
                 CraftItemName item = recipeSO.Search(materials.ToArray());
-                if (item != CraftItemName.None) res.Add(new CraftableItemsData(item,index,recipeSO.LONG_RECIPE_LENGTH));
+                if (item != CraftItemName.None) 
+                {
+                    res.Add(new CraftableItemsData(item,index,recipeSO.LONG_RECIPE_LENGTH));
+                }
             }
+
             return res;
         }
 
         private void HandleChangeIndex(CraftMenuChangeIndexData data) => SelectedIndex = data.index;
+
         private void HandleUseItemInvoke(UseItemInvokeData data)
         {
-            if (craftableItemsList.Count < 1) return;
+            if (craftableItemsList.Count < 1) 
+            {
+                return;
+            }
+
             if (SelectedIndex < 0 || SelectedIndex >= craftableItemsList.Count)
             {
                 Debug.Log("index out of bound lengh " + craftableItemsList.Count + " index " + SelectedIndex);
@@ -296,21 +358,37 @@ namespace MD.CraftingSystem
             }
             // Debug.Log("use item  " + craftableItemsList[SelectedIndex].name + " index " + craftableItemsList[SelectedIndex].index + " length " + craftableItemsList[SelectedIndex].length);
             var name = craftableItemsList[SelectedIndex].name;
-            RemoveFromStack(craftableItemsList[SelectedIndex].index,craftableItemsList[SelectedIndex].length);
+            RemoveFromStack(craftableItemsList[SelectedIndex].index, craftableItemsList[SelectedIndex].length);
             CmdRequestUse(name);
         }
 
         [Command]
         private void CmdRequestUse(CraftItemName name)
         {
-            EventSystems.EventManager.Instance.TriggerEvent<CraftItemData>(new CraftItemData(netIdentity,name));
+            EventSystems.EventManager.Instance.TriggerEvent<CraftItemData>(new CraftItemData(netIdentity, name));
         }
 
         public (int, int) GetCraftItemMaterialsInfor(int index)
         {
-            if (index < 0 || index >= craftableItemsList.Count) return (0, 0);
-            return (GetPos(craftableItemsList[index].index), craftableItemsList[index].length);
+            return (index < 0 || index >= craftableItemsList.Count) 
+                ? (0, 0) 
+                : (GetPos(craftableItemsList[index].index), craftableItemsList[index].length);
         }
 
+        #if UNITY_EDITOR
+        [ClientCallback]
+        private void Update()
+        {
+            if (!hasAuthority)
+            {
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                CmdRequestUse(CraftItemName.Syringe1);
+            }
+        }
+        #endif
     }
 }

@@ -1,12 +1,16 @@
-using MD.CraftingSystem;
 using Mirror;
-public class CraftItemData : EventSystems.IEventData
+
+namespace MD.CraftingSystem
 {
-    public NetworkIdentity player;
-    public CraftItemName item;
-    public CraftItemData(NetworkIdentity player,CraftItemName item )
+    public class CraftItemData : EventSystems.IEventData
     {
-        this.player = player;
-        this.item = item;
+        public NetworkIdentity player;
+        public CraftItemName item;
+        
+        public CraftItemData(NetworkIdentity player, CraftItemName item)
+        {
+            this.player = player;
+            this.item = item;
+        }
     }
 }

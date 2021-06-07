@@ -25,18 +25,18 @@ namespace MD.VisualEffects
 
         private void Start() 
         {
-            EventSystems.EventManager.Instance.StartListening<GemObtainData>(OnGemDig);
+            EventSystems.EventConsumer.Attach(gameObject).StartListening<GemObtainData, DiggableType>(OnGemDig, data => data.type);
         }
 
-        private void OnDisable() 
+        private void OnGemDig(DiggableType type)
         {
-            EventSystems.EventManager.Instance.StopListening<GemObtainData>(OnGemDig);
-        }
-
-        private void OnGemDig(GemObtainData gemObtainData)
-        {
-            spriteTable.Find(entry => entry.type.Equals(gemObtainData.type)).Match(matched => gemMaterial.SetTexture(TEXTURE_NAME, matched.sprite), () => {});
-            obtainParticles.Play();
+            spriteTable
+                .Find(entry => entry.type.Equals(type))
+                .Match(matched => 
+                {
+                    gemMaterial.SetTexture(TEXTURE_NAME, matched.sprite);
+                    obtainParticles.Play();
+                }, () => {});   
         }   
     }
 }
