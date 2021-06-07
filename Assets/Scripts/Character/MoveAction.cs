@@ -9,6 +9,8 @@ namespace MD.Character
     public class MoveAction : NetworkBehaviour
     {
         private float DASH_MULTIPLIER = 1000f;
+        [SerializeField]
+        MD.VisualEffects.SlowEffect slowEffect = null;
 
         [SerializeField]
         private float speed = 1f;
@@ -22,12 +24,12 @@ namespace MD.Character
         private Rigidbody2D rigidBody;
         private Vector2 moveVect, minMoveBound, maxMoveBound;
         
-        [SerializeField] [SyncVar]
+        [SyncVar]
         private float speedModifier = 1f;
 
         [SyncVar]
         private int slowedDownCount = 0;
-        private float SlowDownPercentage = .8f;
+        private float SlowDownPercentage = .7f;
         private Player player = null;
         private bool isImmobilize = false;
 
@@ -160,17 +162,31 @@ namespace MD.Character
         {
             StartCoroutine(IncreaseSpeedCoroutine(percentage,time));
         }
-
+        [Server]
         public void SlowDown(float time)
         {
             StartCoroutine(SlowDownCoroutine(time));
         }
-
+        [Server]
         private IEnumerator SlowDownCoroutine(float time)
         {
+            RpcPlaySlowEffect();
             slowedDownCount += 1;
             yield return new WaitForSeconds(time);
             slowedDownCount -= 1;
+            if (slowedDownCount<=0) RpcStopSlowEffect();
+        }
+
+        [ClientRpc]
+        private void RpcPlaySlowEffect()
+        {
+            slowEffect.Play();
+        }
+
+        [ClientRpc]
+        private void RpcStopSlowEffect()
+        {
+            slowEffect.Stop();
         }
 
         private IEnumerator IncreaseSpeedCoroutine(float percentage, float time)

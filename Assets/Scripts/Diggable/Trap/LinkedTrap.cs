@@ -9,7 +9,7 @@ namespace MD.Diggable.Projectile
     public class LinkedTrap : NetworkBehaviour, IDamagable
     {
         [SerializeField]
-        float slowDownTime = 1.5f;
+        float slowDownTime = 5f;
 
         [SerializeField]
         float explosionTime = .2f;
