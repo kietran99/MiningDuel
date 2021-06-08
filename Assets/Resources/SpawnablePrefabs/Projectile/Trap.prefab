@@ -357,7 +357,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  slowDownTime: 1.5
+  slowDownTime: 5
   explosionTime: 0.1
   power: 17
   linkedTrapsList: []

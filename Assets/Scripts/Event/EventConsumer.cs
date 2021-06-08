@@ -48,6 +48,11 @@ namespace EventSystems
             connections.Add(new EventConnection<T>(listener));
         }
 
+        public void StartListening<T>(Action listener) where T : IEventData
+        {
+            StartListening<T>(eventData => listener());
+        }
+
         public void StartListening<T, TMap>(Action<TMap> listener, Func<T, TMap> mapFn) where T : IEventData
         {
             StartListening<T>(eventData => listener(mapFn(eventData)));
