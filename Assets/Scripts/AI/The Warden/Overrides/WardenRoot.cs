@@ -18,6 +18,8 @@ namespace MD.AI.TheWarden
             blackboard.Set<IWardenParticleController>(WardenMacros.PARTICLE_CONTROLLER, actor.GetComponent<IWardenParticleController>());
             blackboard.Set<Animator>(WardenMacros.ANIMATOR, actor.GetComponentInChildren<Animator>());
             blackboard.Set<float>(WardenMacros.DELTA_CHASE_RANGE, 0);   
+            blackboard.Set(WardenMacros.SHOULD_CHARGE_ATK, false);
+            blackboard.Set(WardenMacros.ATK_CHARGE_INDICATOR, actor.GetComponent<IWardenAttackChargeIndicator>());
         }
 
         protected Quadrant[] MakeQuadrant(Vector2 topRightLimit, Vector2 botLeftLimit)

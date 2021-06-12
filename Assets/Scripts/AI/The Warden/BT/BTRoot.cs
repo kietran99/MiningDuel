@@ -53,7 +53,7 @@ namespace MD.AI.BehaviourTree
         private void Update()
         {
             child.Tick(actor, blackboard);
-            BTLogger.Log("--------------------------------------------------");
+            BTLogger.LogSeparator();
 
             #if UNITY_EDITOR
                 if (Input.GetKeyDown(KeyCode.LeftShift)) blackboard.Log();

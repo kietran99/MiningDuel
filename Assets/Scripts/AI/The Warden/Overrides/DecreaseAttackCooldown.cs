@@ -7,15 +7,9 @@ namespace MD.AI.TheWarden
     {
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
-            return blackboard
-                .Get<float>(WardenMacros.ATTACK_COOLDOWN)
-                .Map(
-                    cooldown => 
-                    {
-                        blackboard.Set<float>(WardenMacros.ATTACK_COOLDOWN, cooldown - Time.deltaTime);
-                        return BTNodeState.SUCCESS;
-                    }
-                );          
+            var curCooldown = blackboard.NullableGet<float>(WardenMacros.ATTACK_COOLDOWN);
+            blackboard.Set(WardenMacros.ATTACK_COOLDOWN, curCooldown - Time.deltaTime);
+            return BTNodeState.SUCCESS;        
         }
     }
 }

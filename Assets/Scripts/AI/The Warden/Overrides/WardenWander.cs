@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using MD.AI.BehaviourTree;
-using System;
 
 namespace MD.AI.TheWarden
 {
@@ -17,14 +16,16 @@ namespace MD.AI.TheWarden
         private Vector2 lastGoal;
         private int lastAngle = 0;
         private Quadrant[] quadrants;
-
         private Vector3 gLastActorPos;
 
         public override void OnRootInit(BTBlackboard blackboard)
         {
-            quadrants = blackboard.Get<Quadrant[]>(WardenMacros.QUADRANTS).Match(quadrants => quadrants, () => null);
+            quadrants = blackboard.NullableGet<Quadrant[]>(WardenMacros.QUADRANTS);
 
-            if (quadrants == null) gameObject.SetActive(false);
+            if (quadrants == null) 
+            {
+                gameObject.SetActive(false);
+            }
 
             moveAssist = new WardenMove();
             init = true;
@@ -40,7 +41,7 @@ namespace MD.AI.TheWarden
 
             var res = moveAssist.Move(actor.transform, lastGoal, moveSpeed);
 
-            if (res.Equals(BTNodeState.SUCCESS))
+            if (res == BTNodeState.SUCCESS)
             {
                 (lastAngle, lastGoal) = FindNextGoal(actor.transform.position, lastAngle, lastGoal);
             }

@@ -11,5 +11,8 @@
         public const string SHOULD_ATTACK_TRIGGER = "ShouldAttack";
         public const string DAMAGABLES = "Damagables";
         public const string ATTACK_COOLDOWN = "AttackCooldown";
+        public const string SHOULD_CHARGE_ATK = "ShouldAtkCharge";
+        public const string ATK_CHARGE_INDICATOR = "AtkChargeIndicator";
+        public const string ATK_POS = "AtkPos";
     }
 }

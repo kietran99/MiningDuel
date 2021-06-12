@@ -944,6 +944,11 @@ PrefabInstance:
       propertyPath: expansionLength
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1885830965707897924, guid: 02af81bcfdcf1854496855ce9003539b,
+        type: 3}
+      propertyPath: moveAwaySpeed
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1885830965857812952, guid: 02af81bcfdcf1854496855ce9003539b,
         type: 3}
       propertyPath: power
@@ -1779,6 +1784,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5199101666410333713, guid: e11aeb3ea19cac241b87f941f1902538,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8615799402448068873, guid: e11aeb3ea19cac241b87f941f1902538,
         type: 3}
       propertyPath: m_IsActive
@@ -1786,6 +1796,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2941669688896007682, guid: e11aeb3ea19cac241b87f941f1902538, type: 3}
+    - {fileID: 1667176701057939181, guid: e11aeb3ea19cac241b87f941f1902538, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e11aeb3ea19cac241b87f941f1902538, type: 3}
 --- !u!95 &1515607532 stripped
 Animator:
@@ -1877,6 +1888,27 @@ MonoBehaviour:
   syncInterval: 0.1
   chaseParticles: {fileID: 1515607538}
   attackParticles: {fileID: 1515607533}
+--- !u!1 &1515607540 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5199101666410333713, guid: e11aeb3ea19cac241b87f941f1902538,
+    type: 3}
+  m_PrefabInstance: {fileID: 1515607531}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1515607541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1515607534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e33d098b3a8eefe4fa8abb3b34779b25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  indicator: {fileID: 1515607540}
 --- !u!114 &1709172483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2346,7 +2378,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   smoothFollow: 1
   smoothSpeed: 0.2
-  map: {fileID: 0}
 --- !u!20 &2072605618153717753
 Camera:
   m_ObjectHideFlags: 0

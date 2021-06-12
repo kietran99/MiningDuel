@@ -66,6 +66,8 @@ namespace MD.AI.TheWarden
                     () => gameObject.SetActive(false)
                 );
 
+            blackboard.Set("AtkRange", baseAttackRange);
+
             EventSystems.EventConsumer.GetOrAttach(gameObject).StartListening<Character.CharacterDeathData>(FilterRemainingPlayers);
         }
 
@@ -76,24 +78,19 @@ namespace MD.AI.TheWarden
 
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
-            if (allTargets.Length == 0)
-            {
-                return BTNodeState.FAILURE;
-            }
-
-            var attackable = allTargets.Find(target => (actor.transform.position - target.Position).sqrMagnitude <= ATTACKABLE_DIST);
-            
             gzmLastActorPos = actor.transform.position;
 
-            if (!attackable.HasValue)
+            var players = blackboard.NullableGet<Transform[]>(WardenMacros.PLAYERS);
+
+            for (int i = 0; i < players.Length; i++)
             {
-                return BTNodeState.FAILURE;
+                if ((actor.transform.position - players[i].transform.position).sqrMagnitude <= ATTACKABLE_DIST)
+                {
+                    return BTNodeState.SUCCESS;
+                }
             }
 
-            var attackableTargets = allTargets.Filter(target => (actor.transform.position - target.Position).sqrMagnitude <= baseAttackRange * baseAttackRange);
-
-            blackboard.Set<IWardenDamagable[]>(WardenMacros.DAMAGABLES, attackableTargets.Map(target => target.Damagable));
-            return BTNodeState.SUCCESS;
+            return BTNodeState.FAILURE;
         }
 
         void OnDrawGizmos()
