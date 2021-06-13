@@ -43,8 +43,7 @@ namespace MD.Character
 
         public override void OnStartAuthority()
         {
-            var eventConsumer = EventSystems.EventConsumer.GetOrAttach(gameObject);
-            eventConsumer.StartListening<AttackInvokeData>(HandleAttackInvoke);
+            EventSystems.EventConsumer.GetOrAttach(gameObject).StartListening<AttackInvokeData>(HandleAttackInvoke);
         }
 
         [Client]
@@ -57,11 +56,6 @@ namespace MD.Character
 
         [Command]
         private void CmdAttemptSwingWeapon() => damageZone.AttemptSwing();
-
-        private void ToggleMainAction(bool targetsInRange)
-        {
-            EventSystems.EventManager.Instance.TriggerEvent(new Character.MainActionToggleData(targetsInRange ? MainActionType.ATTACK : MainActionType.DIG));
-        }
 
         [Server]
         private void GiveDamage(IDamagable damagable, bool isCritical)
