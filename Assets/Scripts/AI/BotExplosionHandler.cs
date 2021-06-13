@@ -34,7 +34,6 @@ namespace MD.AI
         [Server]
         public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage)
         {
-            Debug.Log("Bot Exploded by " + transform.name);
 
             int numOfGem = Mathf.FloorToInt(Bot.CurrentScore * gemDropPercentage * .01f);
             Bot.DecreaseScore(numOfGem);

@@ -20,6 +20,9 @@ namespace MD.AI
         // private float collideRightDistance = 0f;
         // private bool collideAhead = false;
         [SerializeField]
+        MD.VisualEffects.SlowEffect slowEffect = null;
+
+        [SerializeField]
         private float SlowDownPercentage = .8f;
         [SerializeField]
         private int length;
@@ -39,6 +42,7 @@ namespace MD.AI
 
         [SerializeField]
         private float knockbackForce = 2f;
+
 
         // [SerializeField]
         // private float counterSuccessDashDistance = .2f;
@@ -88,6 +92,7 @@ namespace MD.AI
         public void Immobilize(float time)
         {
             isImmobilize = true;
+            animator.PlayIdle();
             Invoke(nameof(RegainMobility), time);
         }
 
@@ -283,6 +288,7 @@ namespace MD.AI
         public void SlowDown(float time)
         {
             StartCoroutine(SlowDownCoroutine(time));
+            slowEffect.Play();
         }
 
         private IEnumerator SlowDownCoroutine(float time)
@@ -290,6 +296,7 @@ namespace MD.AI
             slowDownCount += 1;
             yield return new WaitForSeconds(time);
             slowDownCount -= 1;
+            if (slowDownCount <= 0) slowEffect.Stop();
         }
     }
 }
