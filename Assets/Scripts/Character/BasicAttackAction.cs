@@ -43,8 +43,7 @@ namespace MD.Character
 
         public override void OnStartAuthority()
         {
-            var eventConsumer = EventSystems.EventConsumer.GetOrAttach(gameObject);
-            eventConsumer.StartListening<AttackInvokeData>(HandleAttackInvoke);
+            EventSystems.EventConsumer.GetOrAttach(gameObject).StartListening<AttackInvokeData>(HandleAttackInvoke);
         }
 
         [Client]
@@ -58,16 +57,16 @@ namespace MD.Character
         [Command]
         protected void CmdAttemptSwingWeapon() => damageZone.AttemptSwing();
 
-        protected void ToggleMainAction(bool targetsInRange)
-        {
-            EventSystems.EventManager.Instance.TriggerEvent(new Character.MainActionToggleData(targetsInRange ? MainActionType.ATTACK : MainActionType.DIG));
-        }
-
         [Server]
         protected void GiveDamage(IDamagable damagable, bool isCritical)
         {
             var dmg = Mathf.RoundToInt(power * (isCritical ? criticalMultiplier : 1f));
             damagable.TakeDamage(netIdentity, dmg, isCritical);
+            IncreaseScore(isCritical);
+        }
+
+        protected virtual void IncreaseScore(bool isCritical)
+        {
             EventSystems.EventManager.Instance.TriggerEvent(new HitScoreObtainData(Mathf.RoundToInt(hitScore * (isCritical ? criticalMultiplier : 1f))));
         }
 

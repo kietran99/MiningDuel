@@ -9,14 +9,7 @@ public class BotAnimator : MonoBehaviour
 
     private void Start() 
     {
-        var eventManager = EventSystems.EventManager.Instance;
-        eventManager.StartListening<BotDigInvokeData>(HandleDigEvent);
-    }
-
-    private void OnDestroy() 
-    {
-        var eventManager = EventSystems.EventManager.Instance;
-        eventManager.StopListening<BotDigInvokeData>(HandleDigEvent);
+        EventSystems.EventConsumer.GetOrAttach(gameObject).StartListening<BotDigInvokeData>(HandleDigEvent);
     }
 
     private void HandleDigEvent(BotDigInvokeData obj)

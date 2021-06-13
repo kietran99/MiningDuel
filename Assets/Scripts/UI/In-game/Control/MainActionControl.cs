@@ -56,7 +56,7 @@ namespace MD.UI
 
         private void HideButton(ProjectileObtainData data)
         {
-            if (data.type.Equals(DiggableType.NORMAL_BOMB))
+            if (data.type == DiggableType.NORMAL_BOMB)
             {
                 button.gameObject.SetActive(false);
             }

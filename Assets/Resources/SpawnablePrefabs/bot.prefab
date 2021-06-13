@@ -5026,7 +5026,7 @@ GameObject:
   - component: {fileID: 2666721526544500624}
   - component: {fileID: 4683856279879392693}
   m_Layer: 0
-  m_Name: Damage Zone
+  m_Name: Bot Damage Zone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5551,6 +5551,8 @@ MonoBehaviour:
   enemyDetect: {fileID: 4438943676926451042}
   damageZone: {fileID: 4683856279879392693}
   pickaxeAnimatorController: {fileID: 6174100264394213097}
+  animatorController: {fileID: 102619972807231682}
+  bot: {fileID: 3704824660759751096}
 --- !u!1 &6763791481342596261
 GameObject:
   m_ObjectHideFlags: 0

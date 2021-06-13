@@ -46,9 +46,16 @@ namespace MD.Character
 
         public void RaiseAttackDirEvent() 
         {
-            var targetAngle = -(pickaxe.localEulerAngles.z + 90f);
-            var atkDir = new Vector2(-Mathf.Cos(Mathf.Deg2Rad * targetAngle), Mathf.Sin(Mathf.Deg2Rad * targetAngle));
-            EventSystems.EventManager.Instance.TriggerEvent(new AttackDirectionData(atkDir));       
+            EventSystems.EventManager.Instance.TriggerEvent(new AttackDirectionData(CurAtkDir));       
+        }
+
+        public Vector2 CurAtkDir 
+        {
+            get
+            {
+                var targetAngle = -(pickaxe.localEulerAngles.z + 90f);
+                return new Vector2(-Mathf.Cos(Mathf.Deg2Rad * targetAngle), Mathf.Sin(Mathf.Deg2Rad * targetAngle));
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D other)
