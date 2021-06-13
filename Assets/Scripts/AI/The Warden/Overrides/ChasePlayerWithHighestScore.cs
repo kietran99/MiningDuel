@@ -12,7 +12,7 @@ namespace MD.AI.TheWarden
 
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
-            return blackboard.Get<Transform>(WardenMacros.CHASE_TARGET).Map(target => moveAssist.Move(actor.transform, target.position, chaseSpeed));
+            return moveAssist.Move(actor.transform, blackboard.NullableGet<Transform>(WardenMacros.CHASE_TARGET).position, chaseSpeed);
         }
     }
 }

@@ -7,15 +7,9 @@ namespace MD.AI.TheWarden
     {       
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
-            return 
-                blackboard
-                    .Get<IWardenParticleController>(WardenMacros.PARTICLE_CONTROLLER)
-                    .Map(particleController => 
-                    {
-                        var targetDir = blackboard.Get<Transform>(WardenMacros.CHASE_TARGET).Match(target => -actor.transform.position + target.position, () => Vector3.zero);
-                        particleController.PlayChaseEffect(targetDir);
-                        return BTNodeState.SUCCESS;
-                    });
+            var targetDir = blackboard.NullableGet<Transform>(WardenMacros.CHASE_TARGET).position - actor.transform.position;
+            blackboard.NullableGet<IWardenParticleController>(WardenMacros.PARTICLE_CONTROLLER).PlayChaseEffect(targetDir);
+            return BTNodeState.SUCCESS;
         }
     }
 }

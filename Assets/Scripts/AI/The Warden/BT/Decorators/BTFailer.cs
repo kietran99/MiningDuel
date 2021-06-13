@@ -7,7 +7,7 @@ namespace MD.AI.BehaviourTree
         public override BTNodeState Tick(GameObject actor, BTBlackboard blackboard)
         {
             var res = child.Tick(actor, blackboard);
-            return res.Equals(BTNodeState.RUNNING) ? BTNodeState.RUNNING : BTNodeState.FAILURE;
+            return res == BTNodeState.RUNNING ? BTNodeState.RUNNING : BTNodeState.FAILURE;
         }
     }
 }

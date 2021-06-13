@@ -10,8 +10,8 @@ namespace MD.AI.TheWarden
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
             return blackboard
-                    .Get<Animator>(WardenMacros.ANIMATOR)
-                    .Map(animator => animator.GetCurrentAnimatorStateInfo(0).IsName(ATK_ANIM_NAME) ? BTNodeState.SUCCESS : BTNodeState.FAILURE);
+                .NullableGet<Animator>(WardenMacros.ANIMATOR).GetCurrentAnimatorStateInfo(0)
+                .IsName(ATK_ANIM_NAME) ? BTNodeState.SUCCESS : BTNodeState.FAILURE;
         }
     }
 }

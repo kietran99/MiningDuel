@@ -42,6 +42,27 @@ namespace MD.AI.BehaviourTree
             return Option<T>.None;
         }   
 
+        public T NullableGet<T>(string key, bool ignoreKeyNotFound = false)
+        {
+            if (dict.TryGetValue(key, out var val))
+            {
+                if (val is T)
+                {
+                    return (T) val;                
+                }
+
+                UnityEngine.Debug.LogError("Behaviour Tree: Value type mismatch");
+                return default(T);
+            }
+
+            if (!ignoreKeyNotFound) 
+            {
+                UnityEngine.Debug.LogError("Behaviour Tree: Key " + key + " was not found");
+            }
+
+            return default(T);
+        }
+
         public void Log()
         {
             foreach (var pair in dict)

@@ -10,6 +10,6 @@ namespace EventSystems
 
         public void Remove(Action<T> listener) => listeners -= listener;
 
-        public void Invoke(T eventData) => listeners?.Invoke(eventData);        
+        public void Invoke(T eventData) => listeners?.Invoke(eventData);       
     }  
 }

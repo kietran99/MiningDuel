@@ -92,6 +92,22 @@ public static class CollectionExtension
         return result;
     }
 
+    public static int Filter<T>(this T[] iter, Predicate<T> conditions, List<T> results)
+    {
+        var cnt = 0;
+
+        for (int i = 0; i < iter.Length; i++)
+        {
+            if (conditions(iter[i]))
+            {
+                ++cnt;
+                results.Add(iter[i]);
+            }
+        }
+
+        return cnt;
+    }
+
     public static T Reduce<T>(this T[] iter, Func<T, T, T> function)
     {
         if (iter.Length == 0) return default(T);

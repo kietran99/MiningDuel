@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace MD.AI.TheWarden
 {
-    public class Quadrant
+    public readonly struct Quadrant
     {
-        private int minAngle, maxAngle;
-        private Func<Vector2, float, bool>[] limitCheckers;
+        private readonly int minAngle, maxAngle;
+        private readonly Func<Vector2, float, bool>[] limitCheckers;
 
         public Quadrant(int min, int max, Func<Vector2, float, bool>[] limitCheckers)
         {

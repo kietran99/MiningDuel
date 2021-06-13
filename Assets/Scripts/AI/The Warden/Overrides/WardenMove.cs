@@ -21,6 +21,9 @@ namespace MD.AI.TheWarden
             return BTNodeState.RUNNING;
         }
 
-        private bool IsAtGoal(Vector2 curPos, Vector2 goal) => Mathf.Pow(curPos.x - goal.x, 2) + Mathf.Pow(curPos.y - goal.y, 2) <= ACCEPTABLE_GOAL_DIST;
+        private bool IsAtGoal(Vector2 curPos, Vector2 goal) 
+        {
+            return Mathf.Pow(curPos.x - goal.x, 2) + Mathf.Pow(curPos.y - goal.y, 2) <= ACCEPTABLE_GOAL_DIST;
+        }
     }
 }

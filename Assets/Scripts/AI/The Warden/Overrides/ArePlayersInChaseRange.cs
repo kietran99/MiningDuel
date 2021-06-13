@@ -40,6 +40,7 @@ namespace MD.AI.TheWarden
         private float baseChaseRange = 7f;
         
         private ChaseTarget[] targets;
+        private System.Collections.Generic.List<ChaseTarget> possibleTargets;
 
         private Vector3 gzmLastActorPos;
         private float gzmChaseRange;
@@ -57,10 +58,13 @@ namespace MD.AI.TheWarden
                             return;
                         }
 
+                        gzmChaseRange = baseChaseRange;
+
                         var targets = new System.Collections.Generic.List<ChaseTarget>();
                         maybeValidTargets.ForEach(maybeTarget => maybeTarget.Match(target => targets.Add(target), () => {}));
                         this.targets = targets.ToArray();
-                        gzmChaseRange = baseChaseRange;
+                        this.possibleTargets = new System.Collections.Generic.List<ChaseTarget>(players.Length);
+                        this.possibleTargets.TrimExcess();
                     },
                     () => gameObject.SetActive(false)
                 );
@@ -80,42 +84,53 @@ namespace MD.AI.TheWarden
                 return BTNodeState.FAILURE;
             }
 
-            var chaseRange = blackboard
-                .Get<float>(WardenMacros.DELTA_CHASE_RANGE, true)
-                .Match(
-                    deltaChaseRange => baseChaseRange + deltaChaseRange,
-                    () => baseChaseRange
-                ); 
+            var chaseRange = baseChaseRange + blackboard.NullableGet<float>(WardenMacros.DELTA_CHASE_RANGE, true);
 
             gzmChaseRange = chaseRange;
             gzmLastActorPos = actor.transform.position;
 
-            var maybeTarget = CheckTargetsInRange(actor.transform.position, targets, chaseRange);   
-
-            return 
-                maybeTarget
-                    .Match(
-                        chaseTarget =>
-                        {
-                            blackboard.Set<Transform>(WardenMacros.CHASE_TARGET, chaseTarget);
-                            return BTNodeState.SUCCESS;
-                        },
-                        () => BTNodeState.FAILURE
-                    );              
-        }
-
-        private Option<Transform> CheckTargetsInRange(Vector3 actorPos, ChaseTarget[] targets, float range)
-        {
-            var possibleTargets = targets.Filter(target => (actorPos - target.Position).sqrMagnitude <= range * range);
-
-            if (possibleTargets.Length == 0)
+            if (!CheckTargetsInRange(actor.transform.position, targets, chaseRange, out var chaseTarget))
             {
-                return Option<Transform>.None;
+                return BTNodeState.FAILURE;
+            }
+
+            blackboard.Set(WardenMacros.CHASE_TARGET, chaseTarget);
+            return BTNodeState.SUCCESS;   
+            // return BTNodeState.FAILURE;   
+        }
+        
+        private bool CheckTargetsInRange(Vector3 actorPos, ChaseTarget[] allTargets, float range, out Transform chaseTarget)
+        {
+            possibleTargets.Clear();
+        
+            for (int i = 0; i < allTargets.Length; i++)
+            {
+                if ((actorPos - allTargets[i].Position).sqrMagnitude <= range * range)
+                {
+                    possibleTargets.Add(allTargets[i]);
+                }
+            }
+
+            if (possibleTargets.Count == 0)
+            {
+                chaseTarget = null;
+                return false;
             }
                     
-            var chosenTarget = possibleTargets.Reduce((target_0 , target_1) => CalcScore(actorPos, target_0) > CalcScore(actorPos, target_1) ? target_0 : target_1);                        
-            BTLogger.Log("Number of Chasable Players: " + possibleTargets.Length);          
-            return chosenTarget.Transform;
+            // Debug.Log("Number of Chasable Players: " + possibleTargets.Length);         
+            
+            ChaseTarget chosenTarget = possibleTargets[0];
+
+            for (int i = 1; i < possibleTargets.Count; i++)
+            {
+                chosenTarget = 
+                    CalcScore(actorPos, possibleTargets[i - 1]) > CalcScore(actorPos, possibleTargets[i]) 
+                    ? possibleTargets[i - 1] 
+                    : possibleTargets[i];
+            }
+
+            chaseTarget = chosenTarget.Transform;
+            return true;
         }
 
         private float CalcScore(Vector3 actorPos, ChaseTarget target)
