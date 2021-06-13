@@ -21,6 +21,9 @@ namespace MD.AI
         // private bool collideAhead = false;
         [SerializeField]
         MD.VisualEffects.SlowEffect slowEffect = null;
+        
+        [SerializeField]
+        GameObject stunnedIcon = null;
 
         [SerializeField]
         private float SlowDownPercentage = .8f;
@@ -44,8 +47,8 @@ namespace MD.AI
         private float knockbackForce = 2f;
 
 
-        // [SerializeField]
-        // private float counterSuccessDashDistance = .2f;
+        [SerializeField]
+        private float counterSuccessDashDistance = .2f;
 
         private int slowDownCount = 0;
 
@@ -77,6 +80,8 @@ namespace MD.AI
             playerBot = transform.GetComponent<PlayerBot>();
             var eventConsumer = EventSystems.EventConsumer.GetOrAttach(gameObject);
             eventConsumer.StartListening<DamageTakenData>(OnDamageTaken);
+            eventConsumer.StartListening<BotGetCounteredData>(HandleGetCountered);
+            eventConsumer.StartListening<BotCounterSuccessData>(OnCounterSuccessful);
         }
 
         private void OnDamageTaken(DamageTakenData data)
@@ -92,16 +97,28 @@ namespace MD.AI
         public void Immobilize(float time)
         {
             isImmobilize = true;
+            stunnedIcon.SetActive(true);
             animator.PlayIdle();
             Invoke(nameof(RegainMobility), time);
         }
 
-        private void RegainMobility() => isImmobilize = false;
+        public bool IsStuned() => isImmobilize;
+        
 
-        // private void OnCounterSuccessful(CounterSuccessData data)
-        // {
-        //     Dash(data.counterDir * counterSuccessDashDistance);
-        // }
+        private void RegainMobility() 
+        {
+            stunnedIcon.SetActive(false);
+            isImmobilize = false;
+        }
+        private void OnCounterSuccessful(BotCounterSuccessData data)
+        {
+            Dash(data.counterDir * counterSuccessDashDistance);
+        }
+
+        private void HandleGetCountered(BotGetCounteredData counterData)
+        {
+            Immobilize(counterData.immobilizeTime);
+        }
 
         private void Dash(Vector2 vect)
         {
@@ -238,23 +255,16 @@ namespace MD.AI
 
         public bool SetMovePos(Vector2 movePos) 
         {         
-            // Debug.Log("find path for pos " + movePos);
             path = aStar.FindPath(WorldToIndex(transform.position),WorldToIndex(movePos));
             if (path != null)
             {
-                // Debug.Log("found path ");
                 length = path.Count;
-                // foreach (PathFinding.Node node in path)
-                // {
-                //     Debug.Log("->"+ IndexToWorld(node.index));
-                // }
                 currentNode = 0;
                 currentGoal = IndexToWorldMiddleSquare(path[currentNode].index);
                 hasPath = true;
                 return true;
             }
             hasPath = false;
-            // Debug.Log("not found path");
             return false;
         }
 

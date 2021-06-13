@@ -70,9 +70,9 @@ namespace MD.Character
             EventSystems.EventManager.Instance.TriggerEvent(new HitScoreObtainData(Mathf.RoundToInt(hitScore * (isCritical ? criticalMultiplier : 1f))));
         }
 
-        protected void OnCounterSuccessfully(Vector2 counterVect) => TargetOnCounterSuccessfully(counterVect);
+        protected virtual void OnCounterSuccessfully(Vector2 counterVect) => TargetOnCounterSuccessfully(counterVect);
 
-        protected void OnGetCountered(Vector2 counterVect) => TargetOnGetCountered(counterVect);
+        protected virtual void OnGetCountered(Vector2 counterVect) => TargetOnGetCountered(counterVect);
 
         [TargetRpc]
         protected void TargetOnCounterSuccessfully(Vector2 counterVect) => EventSystems.EventManager.Instance.TriggerEvent(new CounterSuccessData(counterVect));

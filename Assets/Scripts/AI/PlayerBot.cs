@@ -92,6 +92,7 @@ namespace MD.AI
 
         void Update()
         {
+            if (moveAction.IsStuned()) return;
             CheckCanSeePlayer();
             currentState = FSM.name.ToString();
             FSM = FSM.Process();

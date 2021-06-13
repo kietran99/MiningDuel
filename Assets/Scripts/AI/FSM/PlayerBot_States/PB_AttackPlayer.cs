@@ -4,7 +4,7 @@ namespace MD.AI
 {
     public class PB_AttackPlayer : FSMState
     {
-        private float attackCoolDown = .5f; 
+        private float attackCoolDown = 1f; 
 
         private float nextCanAttackTime = 0f;
         public PB_AttackPlayer(PlayerBot bot) : base(bot)
