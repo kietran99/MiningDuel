@@ -27,6 +27,9 @@ namespace MD.AI
 
         [SerializeField]
         private MD.Diggable.Projectile.ProjectileLauncher exposedBombPrefab = null;
+
+        [SerializeField]
+        private float nearbyDetectSquareRange = 36f;
         #endregion
 
         #region FIELDS
@@ -45,6 +48,7 @@ namespace MD.AI
         private BotThrowAction throwAction;
         public Vector2 lastSeenPlayer = Vector2.zero;
         private BotMoveAction moveAction;
+        private BotBasicAttackAction attackAction;
         private float nextDigTime = 0f;
         private FSMState FSM;
         // public int checkPointIdx = 0;
@@ -79,6 +83,7 @@ namespace MD.AI
             body = GetComponent<Rigidbody2D>();
             animator = GetComponent<BotAnimator>();
             moveAction = GetComponent<BotMoveAction>();
+            attackAction = GetComponent<BotBasicAttackAction>();
             moveAction.SetAnimator(animator);
             minMoveBound = MapConstants.MapMinBound;
             maxMoveBound = MapConstants.MapMaxBound;
@@ -99,9 +104,13 @@ namespace MD.AI
 
         public void StartMoving() => moveAction.startMoving();
 
+        public void StopMoving() => moveAction.StopMoving();
+
         public bool SetMovePosition(Vector2 movePos) => moveAction.SetMovePos(movePos);
 
         public void StartWandering() => moveAction.StartWandering();
+
+        public void Attack() => attackAction.Attack();
 
         // bool digBomb = false, takeControl = false;
 
@@ -337,6 +346,8 @@ namespace MD.AI
             }
         }
 
+        public bool IsHoldingProjectile() => throwAction.IsHoldingProjectile;
+
         private void CheckCanSeePlayer()
         {
             // RaycastHit2D[] hits =  Physics2D.RaycastAll(transform.position,(player.transform.position - transform.position).normalized, viewRange);
@@ -364,6 +375,22 @@ namespace MD.AI
                 return;
             }
             canSeePlayer = false;
+        }
+
+        public bool IsPlayerNearby()
+        {
+            Vector2 distance;
+            distance.x = target.transform.position.x - transform.position.x;
+            distance.y = target.transform.position.y - transform.position.y;
+            return (distance.sqrMagnitude  <=  nearbyDetectSquareRange);
+        }
+
+        public float GetSquarePlayerDistance()
+        {
+            Vector2 distance;
+            distance.x = target.transform.position.x - transform.position.x;
+            distance.y = target.transform.position.y - transform.position.y;
+            return distance.sqrMagnitude;
         }
 
         public void IncreaseScore(int amount) => score += amount;
@@ -403,6 +430,7 @@ namespace MD.AI
 
             return res;
         }
-        public NetworkIdentity GetNetworkIdentity() => netIdentity;  
+        public NetworkIdentity GetNetworkIdentity() => netIdentity;
+        public int GetUID () => GetInstanceID();  
     }
 }

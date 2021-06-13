@@ -8,6 +8,8 @@ namespace MD.AI
         private bool lastSeenPlayerArrived = false;
         private float elapsedTime = 0f;
 
+        private float nearbyRange = 6f;
+
         public PB_FindPlayer(PlayerBot bot) : base(bot)
         {
             name = STATE.FIND_PLAYER;
@@ -15,7 +17,6 @@ namespace MD.AI
 
         public override void Enter()
         {
-            Debug.Log("Finding Player");
             base.Enter();
             if(bot.SetMovePosition(bot.lastSeenPlayer))
                 bot.StartMoving();
@@ -24,24 +25,24 @@ namespace MD.AI
         public override void Update()
         {
             base.Update();
-            if (bot.CanSeePlayer)
+            if (bot.CanSeePlayer) //found player
             {
                 stage = EVENT.EXIT;
                 if (bot.Throwable)
                 {
-                    Debug.Log("Found Player - Obtained Projectile");
                     nextState = new PB_ThrowProjectile(bot);
                 }
-                else
+                else if (bot.IsPlayerNearby())
                 {
-                    Debug.Log("Found Player - No Projectile");
+                    nextState = new PB_ChasePlayer(bot);
+                }
+                else {
                     nextState = new PB_FindDiggable(bot, true);
                 }
                 return;
             }
             if (bot.Throwable && elapsedTime >= bot.holdBombTime)
             {
-                Debug.Log("Holding Projectile - Out of Time");
                 stage = EVENT.EXIT;
                 nextState = new PB_ThrowProjectileAway(bot);
             }
@@ -62,5 +63,6 @@ namespace MD.AI
             }
             elapsedTime += Time.deltaTime;
         }
+
     }
 }

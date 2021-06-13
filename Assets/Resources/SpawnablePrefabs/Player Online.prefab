@@ -6161,7 +6161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aae345af5468bd84685c17d96830e8f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: -7965588256565871280}
+  player: {fileID: 7091697348273341020}
   pickaxe: {fileID: 8432381725177120217}
 --- !u!1001 &398329799706025223
 PrefabInstance:

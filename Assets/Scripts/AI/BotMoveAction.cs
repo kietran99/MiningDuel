@@ -216,6 +216,11 @@ namespace MD.AI
         public void SetAnimator(BotAnimator anim) => animator = anim;
         public bool IsMoving => isMoving;
         public void startMoving() => isMoving = true;
+        public void StopMoving()
+        {
+            isMoving = false;
+            animator.PlayIdle();
+        }
         
         void ReplanPath(Vector2 movePos)
         {

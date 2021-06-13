@@ -57,8 +57,16 @@ public class BotAnimator : MonoBehaviour
         BindLastMoveStats(move.x, move.y);
     }
 
+    public void PlayBasicAttack(Vector2 dir)
+    {
+        animator.SetFloat(AnimatorConstants.ATK_X, dir.x);
+        animator.SetFloat(AnimatorConstants.ATK_Y, dir.y);
+        animator.SetTrigger(AnimatorConstants.BASIC_ATTACK);
+    }
+
     public void PlayIdle()
     {
+        animator.SetFloat(AnimatorConstants.SPEED, 0f);
         animator.SetFloat(AnimatorConstants.LAST_X, lastX);
         animator.SetFloat(AnimatorConstants.LAST_Y, lastY);
     }

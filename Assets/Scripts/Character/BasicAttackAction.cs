@@ -7,25 +7,25 @@ namespace MD.Character
     public class BasicAttackAction : NetworkBehaviour
     {
         [SerializeField]
-        private int power = 2;
+        protected int power = 2;
 
         [SerializeField]
-        private int hitScore = 50;
+        protected int hitScore = 50;
 
         [SerializeField]
-        private float criticalMultiplier = 1.5f;
+        protected float criticalMultiplier = 1.5f;
 
         [SerializeField]
-        private float immobilizeTime = .5f;
+        protected float immobilizeTime = .5f;
 
         [SerializeField]
-        private EnemyInAttackRangeDetect enemyDetect = null;
+        protected EnemyInAttackRangeDetect enemyDetect = null;
 
         [SerializeField]
-        private WeaponDamageZone damageZone = null;
+        protected WeaponDamageZone damageZone = null;
 
         [SerializeField]
-        private PickaxeAnimatorController pickaxeAnimatorController = null;
+        protected PickaxeAnimatorController pickaxeAnimatorController = null;
 
         public override void OnStartServer()
         {
@@ -48,7 +48,7 @@ namespace MD.Character
         }
 
         [Client]
-        private void HandleAttackInvoke(AttackInvokeData _)
+        protected void HandleAttackInvoke(AttackInvokeData _)
         {
             enemyDetect.RaiseAttackDirEvent();
             pickaxeAnimatorController.Play();
@@ -56,30 +56,30 @@ namespace MD.Character
         }
 
         [Command]
-        private void CmdAttemptSwingWeapon() => damageZone.AttemptSwing();
+        protected void CmdAttemptSwingWeapon() => damageZone.AttemptSwing();
 
-        private void ToggleMainAction(bool targetsInRange)
+        protected void ToggleMainAction(bool targetsInRange)
         {
             EventSystems.EventManager.Instance.TriggerEvent(new Character.MainActionToggleData(targetsInRange ? MainActionType.ATTACK : MainActionType.DIG));
         }
 
         [Server]
-        private void GiveDamage(IDamagable damagable, bool isCritical)
+        protected void GiveDamage(IDamagable damagable, bool isCritical)
         {
             var dmg = Mathf.RoundToInt(power * (isCritical ? criticalMultiplier : 1f));
             damagable.TakeDamage(netIdentity, dmg, isCritical);
             EventSystems.EventManager.Instance.TriggerEvent(new HitScoreObtainData(Mathf.RoundToInt(hitScore * (isCritical ? criticalMultiplier : 1f))));
         }
 
-        private void OnCounterSuccessfully(Vector2 counterVect) => TargetOnCounterSuccessfully(counterVect);
+        protected void OnCounterSuccessfully(Vector2 counterVect) => TargetOnCounterSuccessfully(counterVect);
 
-        private void OnGetCountered(Vector2 counterVect) => TargetOnGetCountered(counterVect);
-
-        [TargetRpc]
-        private void TargetOnCounterSuccessfully(Vector2 counterVect) => EventSystems.EventManager.Instance.TriggerEvent(new CounterSuccessData(counterVect));
+        protected void OnGetCountered(Vector2 counterVect) => TargetOnGetCountered(counterVect);
 
         [TargetRpc]
-        private void TargetOnGetCountered(Vector2 counterVect)
+        protected void TargetOnCounterSuccessfully(Vector2 counterVect) => EventSystems.EventManager.Instance.TriggerEvent(new CounterSuccessData(counterVect));
+
+        [TargetRpc]
+        protected void TargetOnGetCountered(Vector2 counterVect)
         {
             EventSystems.EventManager.Instance.TriggerEvent(new GetCounteredData(counterVect, immobilizeTime));
         }

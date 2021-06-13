@@ -6,7 +6,7 @@ namespace MD.Character
     public class EnemyInAttackRangeDetect : MonoBehaviour
     {
         [SerializeField]
-        private Player player = null;
+        private GameObject player = null;
 
         [SerializeField]
         private Transform pickaxe = null;
@@ -19,7 +19,7 @@ namespace MD.Character
 
         private void Start()
         {
-            playerUid = player.GetInstanceID();
+            playerUid = player.GetComponent<IPlayer>().GetUID();
             cachedDamagableDict = new Dictionary<int, Transform>();
             trackingTargets = new List<Transform>();
             lastTarget = transform;

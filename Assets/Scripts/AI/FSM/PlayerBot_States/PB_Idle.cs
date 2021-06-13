@@ -4,6 +4,7 @@ namespace MD.AI
 {
     public class PB_Idle : FSMState
     {
+
         public PB_Idle(PlayerBot bot) : base(bot)
         {
             name = STATE.IDLE;
@@ -18,7 +19,11 @@ namespace MD.AI
         {
             base.Update();
             stage = EVENT.EXIT;
-            if (bot.CurrentScore < bot.Target.CurrentScore && bot.CurrentScore >= 20)
+            if (bot.IsPlayerNearby())
+            {
+                nextState = new PB_ChasePlayer(bot);
+            }
+            else if (bot.CurrentScore < bot.Target.CurrentScore && bot.CurrentScore >= 20)
             {
                 // Debug.Log("Bot Score: < Player Score & >= 20");
                 nextState = new PB_FindPlayer(bot);
