@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Veloci Raptor
   m_EditorClassIdentifier: 
   obtainSprite: {fileID: 0}
-  description: A wind-powered footwear that allows users to move swiftly
+  description: A wind-powered footwear that allows the user to move swiftly, with
+    style of course.
   QuirkName: Veloci Raptor

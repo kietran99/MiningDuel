@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using MD.CraftingSystem;
@@ -31,7 +30,10 @@ namespace MD.UI
 
         void OnEnable()
         {
-            if (MaterialsList.Count == 5) isInitialized= true;
+            if (MaterialsList.Count == 5) 
+            {
+                isInitialized = true;
+            }
             else
             {
                 Debug.LogWarning("materials list missing Image objects");
@@ -40,22 +42,30 @@ namespace MD.UI
 
         public void UpdateUI(CraftItemName name)
         {
-            if (!isInitialized) return;
+            if (!isInitialized) 
+            {
+                return;
+            }
+
             CraftableGem[] res = recipeSO.GetMaterials(name);
-            if (res == null) return;
+
+            if (res == null) 
+            {
+                return;
+            }
+
             int currentIndex;
-            for (currentIndex = 0; currentIndex< res.Length; currentIndex++)
+            for (currentIndex = 0; currentIndex < res.Length; currentIndex++)
             {
                 MaterialsList[currentIndex].gameObject.SetActive(true);
                 MaterialsList[currentIndex].sprite = GetSprite(res[currentIndex]);
             }
 
-            for (int i = currentIndex; i< MaterialsList.Count ; i++)
+            for (int i = currentIndex; i < MaterialsList.Count; i++)
             {
                 MaterialsList[i].gameObject.SetActive(false);
             }
         }
-
 
         private Sprite GetSprite(CraftableGem gem)
         {

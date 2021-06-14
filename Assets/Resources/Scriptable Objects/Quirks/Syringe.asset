@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Syringe
   m_EditorClassIdentifier: 
   obtainSprite: {fileID: 0}
-  description: Restores some of your HP, not a Covid-19 vaccine
+  description: Not a Covid-19 vaccine but it restores some of your HP.
   QuirkName: Syringe

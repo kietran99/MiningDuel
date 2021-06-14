@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Mighty Blessing
   m_EditorClassIdentifier: 
   obtainSprite: {fileID: 21300000, guid: 8a2e14b3b034b404eb4df87c121aaa36, type: 3}
-  description: Excavates every gem in a small area, can only be used once.
+  description: Does almost nothing except for heavily damages every enemy around
+    you.
   QuirkName: Mighty Blessing

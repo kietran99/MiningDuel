@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Camo Perse Data
   m_EditorClassIdentifier: 
   obtainSprite: {fileID: 21300000, guid: f7c36399c8f53cc41a88f65ee2417ac7, type: 3}
-  description: An exploding mine disguised as a gem, hella deadly.
+  description: An exploding mine disguised as a gem, sneaky sneaky but hella deadly.
   QuirkName: Camo Perse

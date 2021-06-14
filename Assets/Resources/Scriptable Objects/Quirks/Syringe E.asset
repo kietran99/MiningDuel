@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Syringe E
   m_EditorClassIdentifier: 
   obtainSprite: {fileID: 0}
-  description: Restores more of your HP, doesn't cure Covid-19 but surely makes you
-    high
+  description: Restores more of your HP, still doesn't cure Covid-19 but guarantees
+    to make you high.
   QuirkName: E- Syringe

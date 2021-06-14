@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Veloci Raptor E
   m_EditorClassIdentifier: 
   obtainSprite: {fileID: 0}
-  description: Similar to Veloci Raptor, but you can enjoy the ride a bit longer.
+  description: Similar to Veloci Raptor, but you can enjoy the ride a little bit
+    longer.
   QuirkName: E- Veloci Raptor
