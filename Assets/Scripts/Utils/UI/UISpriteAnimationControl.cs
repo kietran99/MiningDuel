@@ -21,6 +21,9 @@ namespace Utils.UI
         private bool playOnStart = false;
 
         [SerializeField]
+        private bool looping = false;
+
+        [SerializeField]
         private bool disableOnEnd = true;
 
         [SerializeField]
@@ -75,14 +78,21 @@ namespace Utils.UI
 
             if (++curFrameIdx >= frames.Length)
             {
-                if (disableOnEnd)
-                {
-                    DisableImg();
-                }
-
-                shouldPlay = false;
                 OnEnd?.Invoke();
-                return;
+
+                if (!looping)
+                {
+                    shouldPlay = false;
+
+                    if (disableOnEnd)
+                    {
+                        DisableImg();
+                    }
+            
+                    return;             
+                }
+                          
+                curFrameIdx = 0;
             }
 
             image.sprite = frames[curFrameIdx];
