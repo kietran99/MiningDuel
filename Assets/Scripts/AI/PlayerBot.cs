@@ -369,7 +369,7 @@ namespace MD.AI
             // }
             Vector2 position = Vector2.zero;
             position = mainCam.WorldToViewportPoint(transform.position);       
-            if (position.x >= 0.1 && position.x <= .9 && position.y >= .1 && position.y <=.9)
+            if (position.x >= 0 && position.x <= 1 && position.y >= 0 && position.y <=1)
             {
                 canSeePlayer = true;
                 lastSeenPlayer = Target.transform.position;
