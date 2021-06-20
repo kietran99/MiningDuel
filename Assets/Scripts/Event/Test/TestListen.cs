@@ -10,8 +10,7 @@ public class TestListen : MonoBehaviour
     void Start()
     {
         consumer.StartListening<NewTestEvent>(TestCallback);
-        
-        // consumer.StartListening<NewTestEvent>(_ => {});
+
         // consumer.StartListening<NewTestEvent>(OnEvent);
         // consumer.StartListeningWithMap<NewTestEvent, int>(data => data.myInt, OnEvent);
         // consumer.StartListening<NewTestEvent, float>(OnEvent, data => data.myFloat);
@@ -27,8 +26,17 @@ public class TestListen : MonoBehaviour
 
     private void TestCallback(NewTestEvent _)
     // {
-    //     Thread.Sleep(3000); 
-    //     } 
-    // {for (int i = 0; i < 10000000; i++) x = 1;}
-    {}
+    //     Thread.Sleep(3000);
+    //     Debug.Log("Listen");
+    // } 
+    {
+        var cnt = 0;
+        for (int i = 0; i < 1000000; i++)
+        {
+            cnt++;
+        }
+
+        Debug.Log(++x);
+    }
+    // {}
 }

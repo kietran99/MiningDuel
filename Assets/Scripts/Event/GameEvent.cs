@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Unity.Jobs;
 
 namespace EventSystems
 {
@@ -10,6 +13,11 @@ namespace EventSystems
 
         public void Remove(Action<T> listener) => listeners -= listener;
 
-        public void Invoke(T eventData) => listeners?.Invoke(eventData);       
-    }  
+        public void Invoke(T eventData) => listeners?.Invoke(eventData);
+
+        public async Task InvokeAsync(T eventData)
+        {
+            await Task.Run(() => listeners?.Invoke(eventData));
+        }
+    }
 }

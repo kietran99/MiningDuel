@@ -54,6 +54,14 @@ namespace EventSystems
                 (publisher as PackagedEvent<T>).Invoke(eventData);
             }
         }
+
+        public async System.Threading.Tasks.Task TriggerEventAsync<T>(T eventData) where T : IEventData
+        {
+            if (instance.eventDictionary.TryGetValue(typeof(T), out IBaseEvent publisher))
+            {
+                await (publisher as PackagedEvent<T>).InvokeAsync(eventData);
+            }
+        }
     }
 }
 
