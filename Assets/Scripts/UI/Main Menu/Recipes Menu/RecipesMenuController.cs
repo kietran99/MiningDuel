@@ -22,6 +22,9 @@ namespace MD.UI
         private Text RecipeName = null;
 
         [SerializeField]
+        private Text currentPageText = null;
+
+        [SerializeField]
         private RecipeMenuMaterialsUIController materialsUIController = null;
 
         [SerializeField]
@@ -43,14 +46,14 @@ namespace MD.UI
 
         private void Start() => pageTurnAnimControl.OnEnd.AddListener(OnPageTurnEnd);
 
-        public void NextItemCallback()
+        public void NextItemCallback() // Editor ref
         {
             shouldMoveNext = true;
             pageTurnAnimControl.transform.eulerAngles = new Vector3(0f, 0f, 0f);
             pageTurnAnimControl.Play();
         }
 
-        public void PrevItemCallback()
+        public void PrevItemCallback() // Editor ref
         {
             shouldMoveNext = false;
             pageTurnAnimControl.transform.eulerAngles = new Vector3(0f, 180f, 0f);
@@ -117,6 +120,8 @@ namespace MD.UI
             {
                 RecipeName.text = name;
             }
+
+            currentPageText.text = (currentIndex + 1).FormatNum();
         }
     }
 }

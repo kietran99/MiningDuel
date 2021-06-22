@@ -6,7 +6,7 @@ public class TestListen : MonoBehaviour
 {
     public EventConsumer consumer;
 
-    int x = 0;
+    // int x = 0;
     void Start()
     {
         consumer.StartListening<NewTestEvent>(TestCallback);

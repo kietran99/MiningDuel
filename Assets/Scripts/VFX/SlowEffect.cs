@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-namespace MD.VisualEffects
+﻿namespace MD.VisualEffects
 {
     public class SlowEffect : TrailParticle
     {
@@ -9,6 +6,7 @@ namespace MD.VisualEffects
         {
             particle.Play();
         }
+        
         public void Stop()
         {
             if (particle.isPlaying)

@@ -1,15 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+
 namespace MD.VisualEffects
 {
     [RequireComponent(typeof(ParticleSystem))]
     public class TrailParticle : MonoBehaviour
     {
         protected ParticleSystem particle;
-        Vector2 LastPos = Vector3.zero;
-
-        // Update is called once per frame
+        Vector2 lastPos = Vector3.zero;
 
         protected void OnEnable()
         {   
@@ -18,15 +15,21 @@ namespace MD.VisualEffects
 
         protected void Update()
         {
-            if (!particle.isPlaying) return;
-            if (LastPos != (Vector2)transform.position)
+            if (!particle.isPlaying) 
             {
-                float angle = Vector2.SignedAngle(Vector2.up,(Vector2)transform.position - LastPos);
-                transform.rotation = Quaternion.Euler(0,0,angle);
-                var main = particle.main;   
-                main.startRotationZ = -angle*Mathf.Deg2Rad;
-                LastPos = transform.position;
+                return;
             }
+
+            if (lastPos == (Vector2)transform.position)
+            {
+                return;
+            }
+           
+            float angle = Vector2.SignedAngle(Vector2.up, (Vector2)transform.position - lastPos);
+            transform.rotation = Quaternion.Euler(0, 0, angle);
+            var main = particle.main;   
+            main.startRotationZ = -angle * Mathf.Deg2Rad;
+            lastPos = transform.position;     
         }
     }
 }

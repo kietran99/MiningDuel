@@ -67,7 +67,7 @@ namespace MD.Character
             transform.localRotation = baseRotation;
             isSwinging = false;
             attackTime = 0f;
-            hitList = new HashSet<int>();
+            hitList.Clear();
             gameObject.SetActive(false);
         }
 
