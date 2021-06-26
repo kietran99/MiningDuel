@@ -1,0 +1,53 @@
+﻿using UnityEngine;
+using UnityEngine.UI;
+
+namespace Utils.UI
+{
+    public class FPSCounter : MonoBehaviour
+    {
+        [SerializeField]
+        private Text _currentFPSText = null;
+
+        [SerializeField]
+        private Text _averageFPSText = null;
+
+        [SerializeField]
+        private float _refreshTime = 0.5f;
+
+        int _frameCounter = 0;
+        float _timeCounter = 0.0f;
+        float _lastFramerate = 0.0f;
+
+        private void Start()
+        {
+            if (_refreshTime <= 0f)
+            {
+                Debug.Log("Refresh time must be greater than 0.0");
+                gameObject.SetActive(false);
+            }
+        }
+
+        private void Update() 
+        {
+            float fps = 1f / Time.unscaledDeltaTime;
+            _currentFPSText.text = fps.ToString();
+            UpdateAvgFPSInfo();
+        }
+
+        private void UpdateAvgFPSInfo()
+        {
+            if (_timeCounter < _refreshTime)
+            {
+                _timeCounter += Time.unscaledDeltaTime;
+                _frameCounter++;
+                return;
+            }
+            
+            //This code will break if you set your m_refreshTime to 0, which makes no sense.
+            _lastFramerate = (float)_frameCounter/_timeCounter;
+            _frameCounter = 0;
+            _timeCounter = 0f;
+            _averageFPSText.text = _lastFramerate.ToString();  
+        }
+    }
+}
