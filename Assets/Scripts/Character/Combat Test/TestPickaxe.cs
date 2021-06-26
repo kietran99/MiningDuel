@@ -20,11 +20,14 @@ public class TestPickaxe : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {
             pickaxe.Play();
             damageZone.AttemptSwing();
-            Invoke(nameof(DelaySwing), counteredStartTime);
+            if (counteredDamageZone != null)
+            {
+                Invoke(nameof(DelaySwing), counteredStartTime);
+            }
         }
     }
 

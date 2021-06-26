@@ -546,7 +546,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   arcMeasure: 225
-  speed: 720
+  speed: 504
   pivotTransform: {fileID: 5122476143436802385}
   criticalZone: {fileID: 6803609827223249002}
 --- !u!1 &6042700992340156675
