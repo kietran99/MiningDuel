@@ -40,6 +40,8 @@ namespace MD.AI.TheWarden
             }
 
             var res = moveAssist.Move(actor.transform, lastGoal, moveSpeed);
+            var actorPos = actor.transform.position;
+            blackboard.Set(WardenMacros.WANDER_DIR, lastGoal - new Vector2(actorPos.x, actorPos.y));
 
             if (res == BTNodeState.SUCCESS)
             {
@@ -52,8 +54,22 @@ namespace MD.AI.TheWarden
 
         private (int, Vector2) FindNextGoal(Vector2 actorPos, int lastAngle, Vector2 lastGoal)
         {
-            var movableQuadrants = quadrants.Filter(quadrant => quadrant.Movable(actorPos, distanceToNextDecision) && !quadrant.IsIn(lastAngle));
-            var nextAngle = movableQuadrants.Length == 0 ? (lastAngle + 180) : movableQuadrants.Random().RandAngle();
+            int FindNextAngle(Quadrant[] quadrants, float moveDist, int lastMovedAngle)
+            {
+                var movableQuadrants = new System.Collections.Generic.List<Quadrant>();
+
+                for (int i = 0; i < quadrants.Length; i++)
+                {
+                    if (quadrants[i].Movable(actorPos, moveDist) && !quadrants[i].IsIn(lastMovedAngle))
+                    {
+                        movableQuadrants.Add(quadrants[i]);
+                    }
+                }
+
+                return movableQuadrants.Count == 0 ? (lastMovedAngle + 180) : movableQuadrants.Random().RandAngle();
+            }
+
+            var nextAngle = FindNextAngle(quadrants, distanceToNextDecision, lastAngle);
             var angleInRad = nextAngle * Mathf.Deg2Rad;
             var nextGoal = new Vector2(distanceToNextDecision * Mathf.Cos(angleInRad) + lastGoal.x, distanceToNextDecision * Mathf.Sin(angleInRad) + lastGoal.y);
             return (nextAngle, nextGoal);

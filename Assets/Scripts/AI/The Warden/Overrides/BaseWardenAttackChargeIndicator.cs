@@ -2,15 +2,15 @@
 
 namespace MD.AI.TheWarden
 {
-    public class SimWardenAttackChargeIndicator : MonoBehaviour, IWardenAttackChargeIndicator
+    public class BaseWardenAttackChargeIndicator : MonoBehaviour, IWardenAttackChargeIndicator
     {
         [SerializeField]
         private GameObject indicator = null;
 
         public void Show()
         {
+            indicator.transform.localScale = new Vector3(1f, 1f, 1f);
             indicator.gameObject.SetActive(true);
-            Scale(1f);
         }
 
         public void Scale(float scale)

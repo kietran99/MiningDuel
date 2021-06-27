@@ -4,6 +4,7 @@
     {
         public const string PLAYERS = "Players";
         public const string QUADRANTS = "Quadrants";
+        public const string WANDER_DIR = "WanderDir";
         public const string DELTA_CHASE_RANGE = "DeltaChaseRange";
         public const string CHASE_TARGET = "ChaseTarget";
         public const string PARTICLE_CONTROLLER = "ParticleController";

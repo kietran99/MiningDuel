@@ -43,7 +43,6 @@ namespace Utils.UI
                 return;
             }
             
-            //This code will break if you set your m_refreshTime to 0, which makes no sense.
             _lastFramerate = (float)_frameCounter/_timeCounter;
             _frameCounter = 0;
             _timeCounter = 0f;

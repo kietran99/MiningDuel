@@ -6,43 +6,36 @@ namespace MD.AI.TheWarden
     public class NetWardenParticleController : NetworkBehaviour, IWardenParticleController
     {
         [SerializeField]
-        private ParticleSystem chaseParticles = null, attackParticles = null;
+        private BaseWardenParticleController baseController = null;
 
         [Server]        
-        public void HideChaseEffect()
-        {
-            RpcHideChaseEffect();
-        }
+        public void HideChaseEffect() => RpcHideChaseEffect();
 
         [Server]
-        public void PlayAttackEffect()
-        {
-            RpcPlayAttackEffect();
-        }
+        public void HideWanderEffect() => RpcHideWanderEffect();
 
         [Server]
-        public void PlayChaseEffect(Vector2 targetDir)
-        {
-            RpcPlayChaseEffect(targetDir);
-        }
+        public void PlayAttackEffect() => RpcPlayAttackEffect();
+
+        [Server]
+        public void PlayChaseEffect(Vector2 targetDir) => RpcPlayChaseEffect(targetDir);
+
+        [Server]
+        public void PlayWanderEffect(Vector2 targetDir) => RpcPlayWanderEffect(targetDir);
 
         [ClientRpc]
-        private void RpcHideChaseEffect()
-        {
-            chaseParticles.Stop();
-        }
+        private void RpcHideChaseEffect() => baseController.HideChaseEffect();    
 
         [ClientRpc]
-        private void RpcPlayAttackEffect()
-        {
-            attackParticles.Play();
-        }
+        private void RpcPlayAttackEffect() => baseController.PlayAttackEffect();
 
         [ClientRpc]
-        public void RpcPlayChaseEffect(Vector2 targetDir)
-        {
-            chaseParticles.transform.Rotate(new Vector3(0f, 0f, Vector2.SignedAngle(-chaseParticles.transform.right, targetDir)));
-            chaseParticles.Play();
-        }
+        private void RpcPlayChaseEffect(Vector2 targetDir) => baseController.PlayChaseEffect(targetDir);
+
+        [ClientRpc]    
+        private void RpcPlayWanderEffect(Vector2 targetDir) => baseController.PlayWanderEffect(targetDir);
+    
+        [ClientRpc]
+        private void RpcHideWanderEffect() => baseController.HideWanderEffect();
     }
 }

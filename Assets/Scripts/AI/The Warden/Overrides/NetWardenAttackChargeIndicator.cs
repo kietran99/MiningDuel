@@ -6,7 +6,7 @@ namespace MD.AI.TheWarden
     public class NetWardenAttackChargeIndicator : NetworkBehaviour, IWardenAttackChargeIndicator
     {
         [SerializeField]
-        private GameObject indicator = null;
+        private BaseWardenAttackChargeIndicator baseIndicator = null;
 
         [Server]
         public void Hide() => RpcHide();
@@ -18,22 +18,12 @@ namespace MD.AI.TheWarden
         public void Show() => RpcShow();
 
         [ClientRpc]
-        private void RpcHide()
-        {
-            indicator.gameObject.SetActive(false);
-        }
+        private void RpcHide() => baseIndicator.Hide();
 
         [ClientRpc]
-        private void RpcScale(float scale)
-        {
-            indicator.transform.localScale = new Vector3(scale, scale, 1f);
-        }
+        private void RpcScale(float scale) => baseIndicator.Scale(scale);
 
         [ClientRpc]
-        private void RpcShow()
-        {
-            indicator.gameObject.SetActive(true);
-            Scale(1f);
-        }
+        private void RpcShow() => baseIndicator.Show();
     }
 }

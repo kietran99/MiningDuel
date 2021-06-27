@@ -52,6 +52,7 @@ namespace MD.AI.BehaviourTree
 
         private void Update()
         {
+            BTLogger.LogSeparator();
             child.Tick(actor, blackboard);
             BTLogger.LogSeparator();
 
