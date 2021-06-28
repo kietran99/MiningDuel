@@ -8,7 +8,7 @@ namespace MD.AI
         private bool lastSeenPlayerArrived = false;
         private float elapsedTime = 0f;
 
-        private float nearbyRange = 6f;
+        // private float nearbyRange = 6f;
 
         public PB_FindPlayer(PlayerBot bot) : base(bot)
         {

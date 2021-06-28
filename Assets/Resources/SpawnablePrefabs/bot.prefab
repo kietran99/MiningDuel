@@ -5087,7 +5087,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   arcMeasure: 225
-  speed: 720
+  speed: 504
+  counterablePercentage: 0.5
   pivotTransform: {fileID: 5264880470744521975}
   criticalZone: {fileID: 5795406056747652556}
 --- !u!1 &4844660683178531978
@@ -5548,6 +5549,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   power: 10
+  cooldown: 1.6
   hitScore: 20
   criticalMultiplier: 2
   immobilizeTime: 0.5
