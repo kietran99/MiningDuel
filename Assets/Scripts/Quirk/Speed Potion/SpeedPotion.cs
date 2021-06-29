@@ -1,33 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using MD.Quirk;
+﻿using UnityEngine;
 using Mirror;
 using MD.Character;
-public class SpeedPotion : BaseQuirk
-{
-    [SerializeField]
-    float speedPercentage = 0f;
-    [SerializeField]
-    float time = 3f;
 
-    public override void SingleActivate(NetworkIdentity user)
+namespace MD.Quirk
+{
+    public class SpeedPotion : BaseQuirk
     {
-        Debug.Log("active speed potion");
-        base.SingleActivate(user);
-        MoveAction moveAction = user.GetComponent<MoveAction>();
-        if (moveAction != null)
+        [SerializeField]
+        float speedPercentage = 0f;
+        
+        [SerializeField]
+        float time = 3f;
+
+        public override void SingleActivate(NetworkIdentity user)
         {
-            moveAction.CmdModifySpeed(speedPercentage,time);
+            user.GetComponent<MoveAction>()?.CmdModifySpeed(speedPercentage, time);
+            CmdRequestDestroy();
         }
 
-        CmdRequestDestroy();
+        [Command]
+        private void CmdRequestDestroy()
+        {
+            NetworkServer.Destroy(gameObject);   
+        }   
     }
-
-    [Command]
-    private void CmdRequestDestroy()
-    {
-        NetworkServer.Destroy(gameObject);   
-    }
-
 }

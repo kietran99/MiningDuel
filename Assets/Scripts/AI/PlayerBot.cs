@@ -112,6 +112,7 @@ namespace MD.AI
         public void StartWandering() => moveAction.StartWandering();
 
         public void Attack() => attackAction.Attack();
+        public float AttackCooldown() => attackAction.Cooldown;
 
         // bool digBomb = false, takeControl = false;
 
