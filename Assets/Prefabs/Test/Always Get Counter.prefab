@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3396130771928546038}
   - component: {fileID: 3396130771928546039}
   m_Layer: 0
-  m_Name: Damage Zone
+  m_Name: Always Get Counter Zone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,7 +83,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   arcMeasure: 225
-  speed: 720
+  speed: 504
+  counterablePercentage: 0.8
   pivotTransform: {fileID: 3396130773654146845}
   criticalZone: {fileID: 0}
 --- !u!1 &3396130773654146854
@@ -188,6 +189,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 427bcf663ea4ac344b030fb56e7323d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
 --- !u!114 &3264688550610477107
 MonoBehaviour:
   m_ObjectHideFlags: 0

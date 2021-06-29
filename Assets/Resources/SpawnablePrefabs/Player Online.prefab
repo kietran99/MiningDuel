@@ -547,6 +547,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   arcMeasure: 225
   speed: 504
+  counterablePercentage: 0.5
   pivotTransform: {fileID: 5122476143436802385}
   criticalZone: {fileID: 6803609827223249002}
 --- !u!1 &6042700992340156675
@@ -1204,6 +1205,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   power: 10
+  cooldown: 0.7
   hitScore: 20
   criticalMultiplier: 2
   immobilizeTime: 0.5
@@ -1287,7 +1289,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 1.2
+  m_Radius: 3
 --- !u!114 &3718961518730160324
 MonoBehaviour:
   m_ObjectHideFlags: 0

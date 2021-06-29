@@ -10,6 +10,9 @@ namespace MD.Character
         protected int power = 2;
 
         [SerializeField]
+        private float cooldown = 1.6f;
+
+        [SerializeField]
         protected int hitScore = 50;
 
         [SerializeField]
@@ -27,6 +30,8 @@ namespace MD.Character
         [SerializeField]
         protected PickaxeAnimatorController pickaxeAnimatorController = null;
 
+        private Utils.Misc.Stopwatch cooldownStopwatch;
+
         public override void OnStartServer()
         {
             damageZone.OnDamagableCollide += GiveDamage;
@@ -43,12 +48,21 @@ namespace MD.Character
 
         public override void OnStartAuthority()
         {
+            cooldownStopwatch = gameObject.AddComponent<Utils.Misc.Stopwatch>();
+            cooldownStopwatch.OnStop += () => EventSystems.EventManager.Instance.TriggerEvent(new AttackCooldownData(true));
             EventSystems.EventConsumer.GetOrAttach(gameObject).StartListening<AttackInvokeData>(HandleAttackInvoke);
         }
 
         [Client]
-        protected void HandleAttackInvoke(AttackInvokeData _)
+        protected void HandleAttackInvoke()
         {
+            if (cooldownStopwatch.IsActive)
+            {
+                return;
+            }
+
+            cooldownStopwatch.Begin(cooldown);
+            EventSystems.EventManager.Instance.TriggerEvent(new AttackCooldownData(false));
             enemyDetect.RaiseAttackDirEvent();
             pickaxeAnimatorController.Play();
             CmdAttemptSwingWeapon();
@@ -67,7 +81,8 @@ namespace MD.Character
 
         protected virtual void IncreaseScore(bool isCritical)
         {
-            EventSystems.EventManager.Instance.TriggerEvent(new HitScoreObtainData(Mathf.RoundToInt(hitScore * (isCritical ? criticalMultiplier : 1f))));
+            int score = Mathf.RoundToInt(hitScore * (isCritical ? criticalMultiplier : 1f));
+            EventSystems.EventManager.Instance.TriggerEvent(new HitScoreObtainData(score));
         }
 
         protected virtual void OnCounterSuccessfully(Vector2 counterVect) => TargetOnCounterSuccessfully(counterVect);

@@ -7,10 +7,14 @@ namespace MD.Character
     public class WeaponDamageZone : MonoBehaviour
     {
         [SerializeField]
-        private float arcMeasure = 225f;
+        protected float arcMeasure = 225f;
 
         [SerializeField]
-        private float speed = 720f;      
+        private float speed = 504f;
+
+        [Range(0f, 1f)]
+        [SerializeField]
+        protected float counterablePercentage = .8f;
 
         [SerializeField]
         private Transform pivotTransform = null;
@@ -19,9 +23,10 @@ namespace MD.Character
         private WeaponCriticalZone criticalZone = null;
 
         private Quaternion baseRotation;
+        protected float rotatedArc = 0f;
         private bool isSwinging = false;
-        protected float attackTime = 0f;
         private HashSet<int> hitList = new HashSet<int>();
+        protected float counterableArc;
 
         public Action<IDamagable, bool> OnDamagableCollide { get; set; }
         public Action<Vector2> OnCounterSuccessfully { get; set; }
@@ -30,6 +35,7 @@ namespace MD.Character
         private void Start()
         {
             baseRotation = transform.localRotation;
+            counterableArc = counterablePercentage * arcMeasure;
             criticalZone.OnCollide += OnCriticalZoneEnter;
         }
 
@@ -47,14 +53,12 @@ namespace MD.Character
         private System.Collections.IEnumerator Rotate()
         {
             isSwinging = true;
-            var rotated = 0f;
 
-            while (rotated < arcMeasure)
+            while (rotatedArc < arcMeasure)
             {
                 var rotateAngle = Time.deltaTime * speed;
-                attackTime += Time.deltaTime;
                 transform.RotateAround(pivotTransform.position, -transform.forward, rotateAngle);
-                rotated += rotateAngle;
+                rotatedArc += rotateAngle;
 
                 yield return null;
             }
@@ -65,8 +69,8 @@ namespace MD.Character
         private void Reset()
         {
             transform.localRotation = baseRotation;
+            rotatedArc = 0f;
             isSwinging = false;
-            attackTime = 0f;
             hitList.Clear();
             gameObject.SetActive(false);
         }
@@ -86,23 +90,29 @@ namespace MD.Character
                 return;
             }
             
+            CounterCheck(other);
+        }
+
+        private void CounterCheck(Collider2D other)
+        {
             if (!other.TryGetComponent<WeaponDamageZone>(out var otherWeapon))
             {
                 return;
             }  
-            // Debug.Log(other.name + ": " + otherWeapon.AttackTime + " " + name + ": " + AttackTime);
-            if (!Counterable(otherWeapon))
+
+            // Debug.Log(name + ": " + rotatedArc + " " + other.name + ": " + otherWeapon.rotatedArc);
+
+            if (rotatedArc >= counterableArc || otherWeapon.rotatedArc < counterableArc)
             {
-                Reset();
                 return;
             }
 
             var counterVect = (other.transform.position - transform.position).normalized;
-            otherWeapon.GetCountered(counterVect);
+            // Debug.Log("Get Countered: " + otherWeapon.name);
+            otherWeapon.Reset();
+            otherWeapon.OnGetCountered?.Invoke(counterVect);
             OnCounterSuccessfully?.Invoke(counterVect);
         }
-
-        private bool Counterable(WeaponDamageZone otherWeapon) => otherWeapon.attackTime < attackTime;
 
         private void OnCriticalZoneEnter(Collider2D other)
         { 
@@ -119,12 +129,6 @@ namespace MD.Character
             // Debug.Log("Critical Hit: " + other.name);
             hitList.Add(other.GetInstanceID());
             OnDamagableCollide?.Invoke(damagable, true);          
-        }
-
-        private void GetCountered(Vector2 counterVect)
-        {
-            Debug.Log("Get Countered: " + name);
-            OnGetCountered?.Invoke(counterVect);
         }
     }
 }

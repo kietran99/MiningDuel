@@ -30,7 +30,7 @@ namespace MD.Diggable.Projectile
         private float WireLenghPadding = .8f;
 
         [SerializeField]
-        private ContactFilter2D explodeFilter;
+        private ContactFilter2D explodeFilter = default;
 
         private Vector2 HALF_CELL_OFFSET = Vector2.one / 2f;
         private float MIN_WIRE_LENGTH = .3f;
