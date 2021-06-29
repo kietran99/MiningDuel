@@ -9,6 +9,11 @@ namespace MD.AI
         [SerializeField]
         private PlayerBot bot = null;
 
+        public float Cooldown
+        {
+            get {return cooldown;}
+        }
+
         public override void OnStartAuthority()
         {}
 

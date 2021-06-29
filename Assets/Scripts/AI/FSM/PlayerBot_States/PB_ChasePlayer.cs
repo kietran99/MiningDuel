@@ -4,9 +4,9 @@ namespace MD.AI
 {
     public class PB_ChasePlayer : FSMState
     {
-        private float squareAttackRange = 2.25f;
-        private float distanceCheckInterval = .1f;
-        private float planCheckInterval = 1f;
+        private float squareAttackRange = 2.5f;
+        private float distanceCheckInterval = .1667f;
+        private float planCheckInterval = 0.708f;
         private float chaseTime = 5f;
 
         private float stopChasingTime = 0f;
