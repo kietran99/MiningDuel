@@ -160,13 +160,22 @@ namespace MD.Character
         [Command]
         public void CmdModifySpeed(float percentage, float time)
         {
+            RpcRaiseSpeedBoostEvent(netId, time);
             StartCoroutine(IncreaseSpeedCoroutine(percentage,time));
         }
+
+        [ClientRpc]
+        private void RpcRaiseSpeedBoostEvent(uint playerId, float time)
+        {
+            EventSystems.EventManager.Instance.TriggerEvent(new SpeedBoostData(netId, time));
+        }
+
         [Server]
         public void SlowDown(float time)
         {
             StartCoroutine(SlowDownCoroutine(time));
         }
+
         [Server]
         private IEnumerator SlowDownCoroutine(float time)
         {
