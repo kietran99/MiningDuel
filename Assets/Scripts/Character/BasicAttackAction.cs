@@ -10,7 +10,7 @@ namespace MD.Character
         protected int power = 2;
 
         [SerializeField]
-        private float cooldown = 1.6f;
+        protected float cooldown = 1.6f;
 
         [SerializeField]
         protected int hitScore = 50;

@@ -4,9 +4,8 @@ namespace MD.AI
 {
     public class PB_AttackPlayer : FSMState
     {
-        private float attackCoolDown = 1f; 
 
-        private float nextCanAttackTime = 0f;
+        private static float nextCanAttackTime = 0f;
         public PB_AttackPlayer(PlayerBot bot) : base(bot)
         {
             name = STATE.ATTACKPLAYER;
@@ -24,10 +23,8 @@ namespace MD.AI
             nextState = new PB_ChasePlayer(bot);
             if (Time.time > nextCanAttackTime)
             {
-                //attack
-                Debug.Log("attack");
                 bot.Attack();
-                nextCanAttackTime = Time.time + attackCoolDown;  
+                nextCanAttackTime = Time.time + bot.AttackCooldown();  
             }
         }
     }
