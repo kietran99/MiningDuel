@@ -1222,6 +1222,8 @@ MonoBehaviour:
   head: 0
   craftableItemsList: []
   SelectedIndex: 0
+  quirkToSpawn: {fileID: 2740418514757632502, guid: 5b01c34e8d9fb8a47b18d68dd02deb62,
+    type: 3}
 --- !u!114 &952904458067874826
 MonoBehaviour:
   m_ObjectHideFlags: 0

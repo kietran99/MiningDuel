@@ -1,9 +1,20 @@
 using UnityEngine;
 using Mirror;
 using MD.UI;
+using EventSystems;
 
 namespace MD.Character
 {
+    public interface IAtkMultCalculator
+    {
+        float GetResult(float criticalMult, bool isCritical = false);
+    }
+
+    public class BaseAtkMultCalculator : IAtkMultCalculator
+    {
+        public float GetResult(float criticalMult, bool isCritical = false) => isCritical ? criticalMult : 1f;
+    }
+
     public class BasicAttackAction : NetworkBehaviour
     {
         [SerializeField]
@@ -31,12 +42,14 @@ namespace MD.Character
         protected PickaxeAnimatorController pickaxeAnimatorController = null;
 
         private Utils.Misc.Stopwatch cooldownStopwatch;
+        public IAtkMultCalculator MultCalculator { get; set; }
 
         public override void OnStartServer()
         {
             damageZone.OnDamagableCollide += GiveDamage;
             damageZone.OnCounterSuccessfully += OnCounterSuccessfully;
             damageZone.OnGetCountered += OnGetCountered;
+            MultCalculator = new BaseAtkMultCalculator();
         }
 
         public override void OnStopServer()
@@ -50,7 +63,7 @@ namespace MD.Character
         {
             cooldownStopwatch = gameObject.AddComponent<Utils.Misc.Stopwatch>();
             cooldownStopwatch.OnStop += () => EventSystems.EventManager.Instance.TriggerEvent(new AttackCooldownData(true));
-            EventSystems.EventConsumer.GetOrAttach(gameObject).StartListening<AttackInvokeData>(HandleAttackInvoke);
+            EventConsumer.GetOrAttach(gameObject).StartListening<AttackInvokeData>(HandleAttackInvoke);
         }
 
         [Client]
@@ -62,7 +75,7 @@ namespace MD.Character
             }
 
             cooldownStopwatch.Begin(cooldown);
-            EventSystems.EventManager.Instance.TriggerEvent(new AttackCooldownData(false));
+            EventManager.Instance.TriggerEvent(new AttackCooldownData(false));
             enemyDetect.RaiseAttackDirEvent();
             pickaxeAnimatorController.Play();
             CmdAttemptSwingWeapon();
@@ -74,15 +87,15 @@ namespace MD.Character
         [Server]
         protected void GiveDamage(IDamagable damagable, bool isCritical)
         {
-            var dmg = Mathf.RoundToInt(power * (isCritical ? criticalMultiplier : 1f));
+            var dmg = Mathf.RoundToInt(power * MultCalculator.GetResult(criticalMultiplier, isCritical));
             damagable.TakeDamage(netIdentity, dmg, isCritical);
             IncreaseScore(isCritical);
         }
 
         protected virtual void IncreaseScore(bool isCritical)
         {
-            int score = Mathf.RoundToInt(hitScore * (isCritical ? criticalMultiplier : 1f));
-            EventSystems.EventManager.Instance.TriggerEvent(new HitScoreObtainData(score));
+            int score = Mathf.RoundToInt(hitScore * MultCalculator.GetResult(criticalMultiplier, isCritical));
+            EventManager.Instance.TriggerEvent(new HitScoreObtainData(score));
         }
 
         protected virtual void OnCounterSuccessfully(Vector2 counterVect) => TargetOnCounterSuccessfully(counterVect);
@@ -90,12 +103,15 @@ namespace MD.Character
         protected virtual void OnGetCountered(Vector2 counterVect) => TargetOnGetCountered(counterVect);
 
         [TargetRpc]
-        protected void TargetOnCounterSuccessfully(Vector2 counterVect) => EventSystems.EventManager.Instance.TriggerEvent(new CounterSuccessData(counterVect));
+        protected void TargetOnCounterSuccessfully(Vector2 counterVect) 
+        {
+            EventManager.Instance.TriggerEvent(new CounterSuccessData(counterVect));
+        }
 
         [TargetRpc]
         protected void TargetOnGetCountered(Vector2 counterVect)
         {
-            EventSystems.EventManager.Instance.TriggerEvent(new GetCounteredData(counterVect, immobilizeTime));
+            EventManager.Instance.TriggerEvent(new GetCounteredData(counterVect, immobilizeTime + cooldown));
         }
     }
 }

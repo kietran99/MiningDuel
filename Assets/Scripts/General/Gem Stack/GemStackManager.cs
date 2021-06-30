@@ -376,6 +376,9 @@ namespace MD.CraftingSystem
         }
 
         #if UNITY_EDITOR
+        [SerializeField]
+        private GameObject quirkToSpawn = null;
+
         [ClientCallback]
         private void Update()
         {
@@ -386,8 +389,16 @@ namespace MD.CraftingSystem
 
             if (Input.GetKeyDown(KeyCode.Tab))
             {
-                CmdRequestUse(CraftItemName.Syringe1);
+                CmdSpawnQuirk(quirkToSpawn);
             }
+        }
+
+        [Command]
+        private void CmdSpawnQuirk(GameObject prefab)
+        {
+            var ins = Instantiate(quirkToSpawn, Vector3.zero, Quaternion.identity, transform);
+            NetworkServer.Spawn(ins.gameObject, connectionToClient);
+            ins.GetComponent<Quirk.UmbraMod>().ServerActivate(netIdentity);
         }
         #endif
     }

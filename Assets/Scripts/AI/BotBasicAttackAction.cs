@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+
 namespace MD.AI
 {
     public class BotBasicAttackAction : MD.Character.BasicAttackAction
@@ -9,10 +10,7 @@ namespace MD.AI
         [SerializeField]
         private PlayerBot bot = null;
 
-        public float Cooldown
-        {
-            get {return cooldown;}
-        }
+        public float Cooldown => cooldown;
 
         public override void OnStartAuthority()
         {}

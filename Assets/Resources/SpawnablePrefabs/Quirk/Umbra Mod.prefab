@@ -60,3 +60,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13cfe455d8128af4dbf99f050e346ea3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  quirkData: {fileID: 11400000, guid: 25460cac1ae9d3345acf28f23a122942, type: 2}
+  _time: 3
+  _boostModifier: 3
+  _recoilModifier: 0.2

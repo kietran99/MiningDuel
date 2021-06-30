@@ -3,7 +3,6 @@ using Mirror;
 
 namespace MD.Quirk
 {
-    [System.Serializable]
     public abstract class BaseQuirk : NetworkBehaviour
     {
         [SerializeField]
