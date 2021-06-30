@@ -10,6 +10,18 @@ namespace MD.UI
     {
         [SerializeField]
         private Button button = null;
+        
+        [SerializeField]
+        private Image buttonImage = null;
+
+        [SerializeField]
+        private Sprite AttackActionSprite = null;
+
+        [SerializeField]
+        private Sprite DigActionSprite = null;
+        
+        [SerializeField]
+        private Sprite SetTrapActionSprite = null;
 
         private MainActionType curActionType;
 
@@ -42,6 +54,7 @@ namespace MD.UI
         private void ToggleInvoker(MainActionToggleData actionToggleData)
         {
             curActionType = actionToggleData.actionType;
+            buttonImage.sprite = GetSprite();
         }
 
         public void Invoke()
@@ -65,6 +78,21 @@ namespace MD.UI
         private void HandleStunStatusChange(StunStatusData data)
         {
             button.interactable = !data.isStunned;
+        }
+
+        private Sprite GetSprite()
+        {
+            switch (curActionType)
+            {
+                case MainActionType.ATTACK:
+                    return AttackActionSprite;
+                case MainActionType.DIG:
+                    return DigActionSprite;
+                case MainActionType.SETTRAP:
+                    return SetTrapActionSprite;
+                default:
+                    return DigActionSprite;
+            }
         }
     }
 }
