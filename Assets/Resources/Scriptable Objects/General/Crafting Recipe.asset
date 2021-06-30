@@ -67,7 +67,7 @@ MonoBehaviour:
     UISprite: {fileID: 21300000, guid: 8703b6a2749e21743bf5a5fd51efb86a, type: 3}
   - name: 11
     quirk: {fileID: 2740418514757632503, guid: 5b01c34e8d9fb8a47b18d68dd02deb62, type: 3}
-    UISprite: {fileID: 21300180, guid: 88ae461370fb3334d8f7009dad27cd8f, type: 3}
+    UISprite: {fileID: 21300000, guid: a14e82a3bf109a944b853db7391efc0d, type: 3}
   - name: 10
     quirk: {fileID: -8500650738032078455, guid: 75ede8a2c6074fc4496ea2678c5977aa,
       type: 3}

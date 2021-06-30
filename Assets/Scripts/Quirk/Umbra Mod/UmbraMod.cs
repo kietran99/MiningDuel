@@ -27,7 +27,7 @@ namespace MD.Quirk
         }
 
         [SerializeField]
-        private float _time = 3f;
+        private float _duration = 20f;
 
         [SerializeField]
         private float _boostModifier = 1f;
@@ -64,7 +64,7 @@ namespace MD.Quirk
             _modMultCalculator = new ModMultCalculator(_atkAction.MultCalculator, _boostModifier, hp.GetLossPercentage());
             _atkAction.MultCalculator = _modMultCalculator;
             _active = true;
-            _elapsed = _time;
+            _elapsed = _duration;
             base.ServerActivate(user);
         }
 

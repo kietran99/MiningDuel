@@ -63,6 +63,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   quirkData: {fileID: 11400000, guid: 25460cac1ae9d3345acf28f23a122942, type: 2}
-  _time: 3
+  _time: 20
   _boostModifier: 3
   _recoilModifier: 0.2

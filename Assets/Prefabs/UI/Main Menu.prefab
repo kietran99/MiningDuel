@@ -1735,7 +1735,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: /10
+  m_Text: /11
 --- !u!1 &1211116580774110834
 GameObject:
   m_ObjectHideFlags: 0
@@ -4836,6 +4836,7 @@ MonoBehaviour:
   RecipeDescription: {fileID: 1986470534606331703}
   RecipeName: {fileID: 6152282699305453406}
   currentPageText: {fileID: 8221551851167364367}
+  pageCountText: {fileID: 862595147802403080}
   materialsUIController: {fileID: 8335061779846949965}
   pageTurnAnimControl: {fileID: 6587435252299005477}
 --- !u!114 &5522643445699824458
