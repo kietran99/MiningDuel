@@ -106,6 +106,7 @@ namespace MD.Quirk
                 // Debug.Log("Effect worn out");
                 _atkAction.MultCalculator = _curMultCalculator;
                 _active = false;
+                NetworkServer.Destroy(gameObject);
                 return;
             }
 
