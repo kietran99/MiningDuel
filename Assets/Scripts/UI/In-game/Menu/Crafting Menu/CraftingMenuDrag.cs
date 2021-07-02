@@ -49,7 +49,7 @@ namespace MD.UI
             if (!isSwiping)
             {
                 float YDiff = (data.pressPosition.y - data.position.y) * dragSpeed;
-                if (YDiff < - .2f * cellSize) // move menu to hand curent drag point position; 
+                if (YDiff < - .15f * cellSize) // move menu to hand curent drag point position; 
                 {
                     isSwitchMenu = true;
                     YDiff = Mathf.Clamp(YDiff, -maxDragLength , 0f);
@@ -65,7 +65,7 @@ namespace MD.UI
             
             float difference = (data.pressPosition.x - data.position.x) * dragSpeed;
 
-            if (Mathf.Abs(difference) <= .1f * cellSize) 
+            if (Mathf.Abs(difference) <= .05f * cellSize) 
             {
                 return;
             }
