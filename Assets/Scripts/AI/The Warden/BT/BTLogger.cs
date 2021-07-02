@@ -25,7 +25,7 @@ namespace MD.AI.BehaviourTree
             }
 
             var resStr = result == BTNodeState.SUCCESS ? SUCCESS_STR : (result == BTNodeState.FAILURE ? FAILURE_STR : RUNNING_STR);
-            Log(node.name + " - " + resStr);
+            Log(node.name + resStr);
         }
 
         public static void Log(string msg)

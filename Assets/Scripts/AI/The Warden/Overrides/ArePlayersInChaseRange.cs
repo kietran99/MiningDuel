@@ -38,6 +38,9 @@ namespace MD.AI.TheWarden
 
         [SerializeField]
         private float baseChaseRange = 7f;
+
+        [SerializeField]
+        private float lockTargetDistance = 1.6f;
         
         private ChaseTarget[] targets;
         private System.Collections.Generic.List<ChaseTarget> possibleTargets;
@@ -135,8 +138,19 @@ namespace MD.AI.TheWarden
 
         private float CalcScore(Vector3 actorPos, ChaseTarget target)
         {
-            var MULT = 1000f;
-            return target.Score * MULT / (actorPos - target.Position).sqrMagnitude;
+            var targetDist = (actorPos - target.Position).sqrMagnitude;
+
+            if (targetDist <= lockTargetDistance)
+            {
+                return Mathf.Infinity;
+            }
+
+            int getMult(int val, int accum = 1)
+            {
+                return accum < val ? getMult(val, accum * 10) : accum;
+            }     
+
+            return target.Score - getMult(Mathf.FloorToInt(target.Score / targetDist)) * (targetDist);
         }
 
         void OnDrawGizmos()

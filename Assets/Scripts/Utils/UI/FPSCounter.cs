@@ -6,20 +6,30 @@ namespace Utils.UI
     public class FPSCounter : MonoBehaviour
     {
         [SerializeField]
-        private Text _currentFPSText = null;
+        private MD.General.GlobalSettings globalSettings = null;
+
+        // [SerializeField]
+        // private Text _currentFPSText = null;
+
+        [SerializeField]
+        private Text _scaledFPSText = null;
 
         [SerializeField]
         private Text _averageFPSText = null;
 
         [SerializeField]
-        private float _refreshTime = 0.5f;
+        private float _refreshTime = .5f;
 
-        int _frameCounter = 0;
-        float _timeCounter = 0.0f;
-        float _lastFramerate = 0.0f;
+        int _frameCounter = 0, _totalFrameCounter = 0;
+        float _timeCounter = 0f, _lastFramerate = 0f, _totalFPS = 0f; 
 
         private void Start()
         {
+            if (!globalSettings.ShouldShowFPS)
+            {
+                gameObject.SetActive(false);
+            }
+
             if (_refreshTime <= 0f)
             {
                 Debug.Log("Refresh time must be greater than 0.0");
@@ -30,7 +40,10 @@ namespace Utils.UI
         private void Update() 
         {
             float fps = 1f / Time.unscaledDeltaTime;
-            _currentFPSText.text = fps.ToString();
+            _totalFrameCounter++;
+            _totalFPS += fps;
+            _averageFPSText.text = Mathf.FloorToInt(_totalFPS / _totalFrameCounter).ToString();
+            // _currentFPSText.text = fps.ToString();
             UpdateAvgFPSInfo();
         }
 
@@ -46,7 +59,7 @@ namespace Utils.UI
             _lastFramerate = (float)_frameCounter/_timeCounter;
             _frameCounter = 0;
             _timeCounter = 0f;
-            _averageFPSText.text = _lastFramerate.ToString();  
+            _scaledFPSText.text = Mathf.FloorToInt(_lastFramerate).ToString();  
         }
     }
 }
