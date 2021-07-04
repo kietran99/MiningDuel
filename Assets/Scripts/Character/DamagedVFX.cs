@@ -24,7 +24,7 @@ namespace MD.VisualEffects
         {
             originalPlayerColor = playerRenderer.color;
             flashDelayWFS = new WaitForSecondsRealtime(flashDelay);
-            hitPoints.OnDamageTaken += Play;
+            hitPoints.OnDamageTakenSync += Play;
         }
 
         public void Play()

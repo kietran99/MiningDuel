@@ -28,7 +28,8 @@ namespace MD.CraftingSystem
         MightyBlessing1,
         MightyBlessing2,
         DrillMachine,
-        CamoPerse
+        CamoPerse,
+        UmbraMod
     }
     public enum CraftableGem
     {

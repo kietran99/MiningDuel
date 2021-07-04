@@ -25,6 +25,9 @@ namespace MD.UI
         private Text currentPageText = null;
 
         [SerializeField]
+        private Text pageCountText = null;
+
+        [SerializeField]
         private RecipeMenuMaterialsUIController materialsUIController = null;
 
         [SerializeField]
@@ -42,6 +45,7 @@ namespace MD.UI
             currentIndex = 0;
             UpdateUI();
             count = recipeSO.CrafteditemsList.Count;
+            pageCountText.text = "/" + count;
         }
 
         private void Start() => pageTurnAnimControl.OnEnd.AddListener(OnPageTurnEnd);

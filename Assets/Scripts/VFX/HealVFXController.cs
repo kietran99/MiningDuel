@@ -13,7 +13,7 @@ namespace MD.VisualEffects
 
         private void Start()
         {
-            hitPoints.OnHeal += Play;
+            hitPoints.OnHealSync += Play;
         }
 
         private void Play() => healEffect.Play();
