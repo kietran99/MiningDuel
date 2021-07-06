@@ -1929,7 +1929,7 @@ MonoBehaviour:
   buttonImage: {fileID: 72249920976186710}
   AttackActionSprite: {fileID: 21300000, guid: e62c4845ae4683747bccbed2800afe5e, type: 3}
   DigActionSprite: {fileID: 21300000, guid: e62c4845ae4683747bccbed2800afe5e, type: 3}
-  SetTrapActionSprite: {fileID: -7727387657964021991, guid: daba6a573c9bbc6439a0e4c819f74993,
+  SetTrapActionSprite: {fileID: 21300000, guid: 06574ce41f055554083d7d803576c3c3,
     type: 3}
 --- !u!1 &72249921552515076
 GameObject:
