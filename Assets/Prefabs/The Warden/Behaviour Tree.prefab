@@ -620,6 +620,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseChaseRange: 7
+  lockTargetDistance: 1.6
 --- !u!1 &2528878070479763494
 GameObject:
   m_ObjectHideFlags: 0
@@ -1064,7 +1065,7 @@ PrefabInstance:
     - target: {fileID: 2173323544543068229, guid: ed715fafab2a13d4c94d76118722567a,
         type: 3}
       propertyPath: m_Name
-      value: Hide Chase Succeeder
+      value: Succeeder
       objectReference: {fileID: 0}
     - target: {fileID: 4357631119478446732, guid: ed715fafab2a13d4c94d76118722567a,
         type: 3}
@@ -1214,7 +1215,7 @@ PrefabInstance:
     - target: {fileID: 6864505179916636100, guid: 8382887fbde2a734cac2f6cb0e4d46ae,
         type: 3}
       propertyPath: m_Name
-      value: Attack Selector
+      value: Selector
       objectReference: {fileID: 0}
     - target: {fileID: 6864505179916636103, guid: 8382887fbde2a734cac2f6cb0e4d46ae,
         type: 3}
@@ -1364,7 +1365,7 @@ PrefabInstance:
     - target: {fileID: 2173323544543068229, guid: ed715fafab2a13d4c94d76118722567a,
         type: 3}
       propertyPath: m_Name
-      value: Play Effect Succeeder
+      value: Succeeder
       objectReference: {fileID: 0}
     - target: {fileID: 4357631119478446732, guid: ed715fafab2a13d4c94d76118722567a,
         type: 3}
@@ -1494,7 +1495,7 @@ PrefabInstance:
     - target: {fileID: 334233623061329522, guid: eaf5dfc7d3ddd1444b6bd76b3ab35800,
         type: 3}
       propertyPath: m_Name
-      value: Expand Sequencer
+      value: Sequencer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eaf5dfc7d3ddd1444b6bd76b3ab35800, type: 3}
@@ -1644,7 +1645,7 @@ PrefabInstance:
     - target: {fileID: 334233623061329522, guid: eaf5dfc7d3ddd1444b6bd76b3ab35800,
         type: 3}
       propertyPath: m_Name
-      value: In Chase Range Sequencer
+      value: Sequencer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eaf5dfc7d3ddd1444b6bd76b3ab35800, type: 3}
@@ -1719,7 +1720,7 @@ PrefabInstance:
     - target: {fileID: 334233623061329522, guid: eaf5dfc7d3ddd1444b6bd76b3ab35800,
         type: 3}
       propertyPath: m_Name
-      value: Chase Sequencer
+      value: Sequencer
       objectReference: {fileID: 0}
     - target: {fileID: 334233623061329522, guid: eaf5dfc7d3ddd1444b6bd76b3ab35800,
         type: 3}
@@ -1799,7 +1800,7 @@ PrefabInstance:
     - target: {fileID: 334233623061329522, guid: eaf5dfc7d3ddd1444b6bd76b3ab35800,
         type: 3}
       propertyPath: m_Name
-      value: Attack Cooldown Sequencer
+      value: Sequencer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eaf5dfc7d3ddd1444b6bd76b3ab35800, type: 3}
@@ -1874,7 +1875,7 @@ PrefabInstance:
     - target: {fileID: 1404747077058479693, guid: a48fb6e6840955d49bce523c2136280f,
         type: 3}
       propertyPath: m_Name
-      value: Expand Failer
+      value: Failer
       objectReference: {fileID: 0}
     - target: {fileID: 1404747077058479693, guid: a48fb6e6840955d49bce523c2136280f,
         type: 3}
@@ -1899,7 +1900,7 @@ PrefabInstance:
     - target: {fileID: 6864505179916636100, guid: 8382887fbde2a734cac2f6cb0e4d46ae,
         type: 3}
       propertyPath: m_Name
-      value: Main Selector
+      value: Selector
       objectReference: {fileID: 0}
     - target: {fileID: 6864505179916636100, guid: 8382887fbde2a734cac2f6cb0e4d46ae,
         type: 3}
@@ -2034,7 +2035,7 @@ PrefabInstance:
     - target: {fileID: 1404747077058479693, guid: a48fb6e6840955d49bce523c2136280f,
         type: 3}
       propertyPath: m_Name
-      value: Hide Chase Particles Failer
+      value: Failer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a48fb6e6840955d49bce523c2136280f, type: 3}
@@ -2204,7 +2205,7 @@ PrefabInstance:
     - target: {fileID: 2173323544543068229, guid: ed715fafab2a13d4c94d76118722567a,
         type: 3}
       propertyPath: m_Name
-      value: Reset Chase Succeeder
+      value: Succeeder
       objectReference: {fileID: 0}
     - target: {fileID: 4357631119478446732, guid: ed715fafab2a13d4c94d76118722567a,
         type: 3}
@@ -2559,7 +2560,7 @@ PrefabInstance:
     - target: {fileID: 334233623061329522, guid: eaf5dfc7d3ddd1444b6bd76b3ab35800,
         type: 3}
       propertyPath: m_Name
-      value: Sequencer (1)
+      value: Sequencer
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eaf5dfc7d3ddd1444b6bd76b3ab35800, type: 3}
@@ -2579,7 +2580,7 @@ PrefabInstance:
     - target: {fileID: 2173323544543068229, guid: ed715fafab2a13d4c94d76118722567a,
         type: 3}
       propertyPath: m_Name
-      value: Attack Succeeder
+      value: Succeeder
       objectReference: {fileID: 0}
     - target: {fileID: 4357631119478446732, guid: ed715fafab2a13d4c94d76118722567a,
         type: 3}

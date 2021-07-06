@@ -1927,9 +1927,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 72249920767011519}
   buttonImage: {fileID: 72249920976186710}
-  AttackActionSprite: {fileID: -1628547297254667745, guid: 3c3e61ae3bec3ce4abee28e4800eeadc,
-    type: 3}
-  DigActionSprite: {fileID: 21300000, guid: 66b76f9d923664a4e972225082d35c60, type: 3}
+  AttackActionSprite: {fileID: 21300000, guid: e62c4845ae4683747bccbed2800afe5e, type: 3}
+  DigActionSprite: {fileID: 21300000, guid: e62c4845ae4683747bccbed2800afe5e, type: 3}
   SetTrapActionSprite: {fileID: -7727387657964021991, guid: daba6a573c9bbc6439a0e4c819f74993,
     type: 3}
 --- !u!1 &72249921552515076
@@ -6708,6 +6707,12 @@ PrefabInstance:
       propertyPath: m_PreserveAspect
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2900253976875378529, guid: f7e3093fe5cf872478fd3778c89b2cff,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: e62c4845ae4683747bccbed2800afe5e,
+        type: 3}
     - target: {fileID: 2900253976875378531, guid: f7e3093fe5cf872478fd3778c89b2cff,
         type: 3}
       propertyPath: offset
@@ -6746,7 +6751,7 @@ PrefabInstance:
     - target: {fileID: 2900253976875378534, guid: f7e3093fe5cf872478fd3778c89b2cff,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2900253976875378534, guid: f7e3093fe5cf872478fd3778c89b2cff,
         type: 3}
@@ -6762,6 +6767,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2900253976875378534, guid: f7e3093fe5cf872478fd3778c89b2cff,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2900253976875378534, guid: f7e3093fe5cf872478fd3778c89b2cff,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2900253976875378534, guid: f7e3093fe5cf872478fd3778c89b2cff,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f7e3093fe5cf872478fd3778c89b2cff, type: 3}

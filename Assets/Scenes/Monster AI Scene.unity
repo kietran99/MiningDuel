@@ -1333,7 +1333,7 @@ PrefabInstance:
     - target: {fileID: 1561958260217484817, guid: 9ec0e9e5c45c7174ebde6be132a3cb4c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 96
       objectReference: {fileID: 0}
     - target: {fileID: 1561958260217484817, guid: 9ec0e9e5c45c7174ebde6be132a3cb4c,
         type: 3}
@@ -1384,6 +1384,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FPS Counter
+      objectReference: {fileID: 0}
+    - target: {fileID: 1561958260705617607, guid: 9ec0e9e5c45c7174ebde6be132a3cb4c,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -65
+      objectReference: {fileID: 0}
+    - target: {fileID: 1642658034582314184, guid: 9ec0e9e5c45c7174ebde6be132a3cb4c,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -145
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9ec0e9e5c45c7174ebde6be132a3cb4c, type: 3}

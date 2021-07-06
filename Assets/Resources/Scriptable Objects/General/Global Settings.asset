@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7058f82001e95734abf201bce8a0274e, type: 3}
   m_Name: Global Settings
   m_EditorClassIdentifier: 
-  shouldShowFPS: 0
+  shouldShowFPS: 1
