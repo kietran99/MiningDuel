@@ -6,37 +6,60 @@ namespace MD.Character
 {
     public class WeaponDamageZone : MonoBehaviour
     {
+        [Range(0f, 1f)]
+        [SerializeField]
+        private float criticalRate = .2f;
+
+        [Range(0f, 1f)]
+        [SerializeField]
+        protected float counterablePercentage = .5f;
+
         [SerializeField]
         protected float arcMeasure = 225f;
 
         [SerializeField]
         private float speed = 504f;
 
-        [Range(0f, 1f)]
         [SerializeField]
-        protected float counterablePercentage = .8f;
+        private CircleCollider2D userCollider = null;
 
         [SerializeField]
         private Transform pivotTransform = null;
-
-        [SerializeField]
-        private WeaponCriticalZone criticalZone = null;
 
         private Quaternion baseRotation;
         protected float rotatedArc = 0f;
         private bool isSwinging = false;
         private HashSet<int> hitList = new HashSet<int>();
-        protected float counterableArc;
+        protected float counterableArc, minSqrCritDist, maxSqrCritDist;
 
         public Action<IDamagable, bool> OnDamagableCollide { get; set; }
         public Action<Vector2> OnCounterSuccessfully { get; set; }
         public Action<Vector2> OnGetCountered { get; set; }
-
+        
         private void Start()
         {
             baseRotation = transform.localRotation;
             counterableArc = counterablePercentage * arcMeasure;
-            criticalZone.OnCollide += OnCriticalZoneEnter;
+
+            var weaponCollider = GetComponent<BoxCollider2D>();
+            var weaponColliderSizeX = weaponCollider.size.x;
+            var scale = transform.localScale.x;
+            var userColliderRadius = userCollider.radius;   
+            var weaponHiltToUserColliderDist = (weaponCollider.offset.x - weaponColliderSizeX * .5f) * scale - userColliderRadius;
+            var weaponTipToUserColliderDist = weaponHiltToUserColliderDist + weaponColliderSizeX * scale;
+            var maxCritRate = (userColliderRadius * 2) / (weaponTipToUserColliderDist);
+
+            if (criticalRate > maxCritRate)
+            {
+                Debug.LogWarning($"Critical Rate should be less than or equal to {maxCritRate}");
+            }
+
+            var critAreaRadius = (criticalRate * weaponTipToUserColliderDist) * .5f;
+            var minCritDist = userColliderRadius + weaponTipToUserColliderDist - critAreaRadius;
+            minSqrCritDist = Mathf.Pow(minCritDist, 2f);
+            var maxCritDist = userColliderRadius + weaponTipToUserColliderDist + critAreaRadius;
+            maxSqrCritDist = Mathf.Pow(maxCritDist, 2f);
+            // Debug.Log($"Crit Radius: {critAreaRadius} Min: {minSqrCritDist} Max: {maxSqrCritDist}");
         }
 
         public void AttemptSwing()
@@ -84,9 +107,11 @@ namespace MD.Character
 
             if (other.TryGetComponent<IDamagable>(out var damagable))
             {
-                // Debug.Log("Regular Hit: " + other.name);
                 hitList.Add(other.GetInstanceID());
-                OnDamagableCollide?.Invoke(damagable, false);
+                var sqrDist = (other.transform.position - transform.position).sqrMagnitude;
+                // Debug.Log($"Sqr Dist: {sqrDist}");
+                var isCritical = sqrDist >= minSqrCritDist && sqrDist <= maxSqrCritDist;
+                OnDamagableCollide?.Invoke(damagable, isCritical);
                 return;
             }
             
@@ -112,23 +137,6 @@ namespace MD.Character
             otherWeapon.Reset();
             otherWeapon.OnGetCountered?.Invoke(counterVect);
             OnCounterSuccessfully?.Invoke(counterVect);
-        }
-
-        private void OnCriticalZoneEnter(Collider2D other)
-        { 
-            if (hitList.Contains(other.GetInstanceID()))
-            {
-                return;
-            }
-
-            if (!other.TryGetComponent<IDamagable>(out var damagable))
-            {
-                return;
-            }
-
-            // Debug.Log("Critical Hit: " + other.name);
-            hitList.Add(other.GetInstanceID());
-            OnDamagableCollide?.Invoke(damagable, true);          
         }
     }
 }
