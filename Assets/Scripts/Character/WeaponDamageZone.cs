@@ -18,7 +18,7 @@ namespace MD.Character
         protected float arcMeasure = 225f;
 
         [SerializeField]
-        private float speed = 504f;
+        private float swingAnimDuration = .39f;
 
         [SerializeField]
         private CircleCollider2D userCollider = null;
@@ -26,6 +26,7 @@ namespace MD.Character
         [SerializeField]
         private Transform pivotTransform = null;
 
+        private float speed = 576f;
         private Quaternion baseRotation;
         protected float rotatedArc = 0f;
         private bool isSwinging = false;
@@ -38,6 +39,7 @@ namespace MD.Character
         
         private void Start()
         {
+            speed = arcMeasure / swingAnimDuration;
             baseRotation = transform.localRotation;
             counterableArc = counterablePercentage * arcMeasure;
 
