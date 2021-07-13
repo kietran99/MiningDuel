@@ -1190,6 +1190,80 @@ MonoBehaviour:
   serverOnly: 1
   m_AssetId: 02af81bcfdcf1854496855ce9003539b
   hasSpawned: 0
+--- !u!1001 &748395511
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4149481539919628481, guid: 9ef613f57d368bb47ba134444ddadaf7,
+        type: 3}
+      propertyPath: sceneId
+      value: 99179151
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149481539919628485, guid: 9ef613f57d368bb47ba134444ddadaf7,
+        type: 3}
+      propertyPath: m_Name
+      value: Test Attack Target
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149481539919628542, guid: 9ef613f57d368bb47ba134444ddadaf7,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149481539919628542, guid: 9ef613f57d368bb47ba134444ddadaf7,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149481539919628542, guid: 9ef613f57d368bb47ba134444ddadaf7,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149481539919628542, guid: 9ef613f57d368bb47ba134444ddadaf7,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149481539919628542, guid: 9ef613f57d368bb47ba134444ddadaf7,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149481539919628542, guid: 9ef613f57d368bb47ba134444ddadaf7,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149481539919628542, guid: 9ef613f57d368bb47ba134444ddadaf7,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149481539919628542, guid: 9ef613f57d368bb47ba134444ddadaf7,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149481539919628542, guid: 9ef613f57d368bb47ba134444ddadaf7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149481539919628542, guid: 9ef613f57d368bb47ba134444ddadaf7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4149481539919628542, guid: 9ef613f57d368bb47ba134444ddadaf7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9ef613f57d368bb47ba134444ddadaf7, type: 3}
 --- !u!1 &756928218
 GameObject:
   m_ObjectHideFlags: 0
@@ -2540,6 +2614,7 @@ GameObject:
   - component: {fileID: 2072605618153717755}
   - component: {fileID: 2072605618153717752}
   - component: {fileID: 2072605618153717756}
+  - component: {fileID: 2072605618153717757}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2562,7 +2637,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2072605618153717754}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a160d838ff8b4b4693ac20007e008c7, type: 3}
   m_Name: 
@@ -2575,6 +2650,22 @@ MonoBehaviour:
   m_CropFrameX: 0
   m_CropFrameY: 0
   m_StretchFill: 0
+--- !u!114 &2072605618153717757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2072605618153717754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fd48c574ef3cbe44b237c48dc34edee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxZoomRate: 1.25
+  _zoomInSpeed: 6
+  _zoomOutSpeed: 1
+  _acceptableZoomOffset: 0.05
 --- !u!1001 &4514157975153254318
 PrefabInstance:
   m_ObjectHideFlags: 0
