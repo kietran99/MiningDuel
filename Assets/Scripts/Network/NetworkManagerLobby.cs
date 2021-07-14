@@ -61,6 +61,7 @@ namespace MD.UI
         private IGameModeManager gameModeManager;
         private Map.Core.SpawnPositionsData spawnPositionsData;
         private List<uint> aliveBots = new List<uint>();
+        private List<Vector3> storagePos = null;
         #endregion
 
         public static event Action OnClientConnected;
@@ -220,6 +221,7 @@ namespace MD.UI
         private void InitEnv()
         {
             var mapGenerator = SpawnMapGenerator();  
+            storagePos = mapGenerator.SpawnStoragePos();
             spawnPositionsData = mapGenerator.SpawnPositionsData;
             SpawnDiggableGenerator();            
         }
@@ -291,9 +293,14 @@ namespace MD.UI
         private void SpawnStorage(NetworkIdentity playerId, Color flagColor)
         {
             // var storage = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(STORAGE)), playerId.transform.position, Quaternion.identity);
-            var storage = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(STORAGE)), playerId.transform.position + new Vector3(-2f, 0f, 0f), Quaternion.identity);
+            int rnd = UnityEngine.Random.Range(0,storagePos.Count);
+            var storage = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(STORAGE)), 
+            // playerId.transform.position + new Vector3(-2f, 0f, 0f),
+            storagePos[rnd],
+             Quaternion.identity);
             storage.GetComponent<Diggable.Core.Storage>().Initialize(playerId, flagColor);
             NetworkServer.Spawn(storage.gameObject);
+            storagePos.RemoveAt(rnd);
         }
 
         private void SpawnSonar()

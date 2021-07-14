@@ -267,6 +267,10 @@ namespace MD.Map.Core{
             
             return newMap;
         }
+        public List<Vector3> SpawnStoragePos()
+        {
+            return new List<Vector3>();
+        }
         int[] GetNeighBor(int posX, int posY)
         {
             int[] neighbor = new int[2];

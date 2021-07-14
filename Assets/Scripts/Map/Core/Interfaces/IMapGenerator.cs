@@ -13,6 +13,6 @@ namespace MD.Map.Core
         bool IsObstacle(int x, int y);
         bool UseGeneratedMaps {get;}
         string mapUsed{ get;}
-
+        List<Vector3> SpawnStoragePos();
     }
 }

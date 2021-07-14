@@ -65,7 +65,7 @@ MonoBehaviour:
   useGeneratedMaps: 0
   allMapsName:
   - map9
-  noObstacleAreaRadius: 4
+  noObstacleAreaRadius: 3
   spawnOffset:
   - {x: -3, y: 3}
   - {x: 3, y: 3}
