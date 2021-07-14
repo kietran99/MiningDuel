@@ -1,52 +1,46 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
 namespace MD.VisualEffects
 {
     public class TextPopupSpawner : MonoBehaviour
     {
         [SerializeField]
-        private ObjectPool pool = null;
+        private Color _normalDamageColor = Color.white;
 
         [SerializeField]
-        private float yOffset = 1f;
+        private Color _criticalDamageColor = Color.white;
 
         [SerializeField]
-        private Color normalDamageColor = Color.white;
+        private ObjectPool _popupPool = null;
 
         [SerializeField]
-        private Color criticalDamageColor = Color.white;
+        private GameObject canvas = null;
 
-        private Dictionary<int, TextPopupBlaster> cachedPopup = new Dictionary<int, TextPopupBlaster>();
+        private Camera _camera;
+        private ObjectPoolCache<TextPopup> _poolCache;
 
         private void Start()
         {
-            EventSystems.EventConsumer.Attach(gameObject).StartListening<Character.DamageGivenData>(HandleDamageGiven);
+            _camera = Camera.main;
+            _poolCache = new ObjectPoolCache<TextPopup>(_popupPool);
+            EventSystems.EventConsumer.Attach(gameObject).StartListening<Character.DamageGivenData>(OnDamageGiven);
         }
 
-        private void HandleDamageGiven(Character.DamageGivenData data)
+        private void OnDamageGiven(Character.DamageGivenData data)
         {
-            Spawn(data.dmg, data.isCritical, new Vector2(data.damagablePos.x, data.damagablePos.y + yOffset));
+            Spawn(data.dmg, _camera.WorldToScreenPoint(data.damagablePos), data.isCritical);
         }
 
-        private void Spawn(int dmg, bool isCritical, Vector2 spawnPos)
+        private void Spawn(int dmg, Vector2 spawnPos, bool isCritical)
         {
-            var popup = pool.Pop();
-            var popupId = popup.GetInstanceID();
-
-            if (!cachedPopup.TryGetValue(popupId, out var popupBlaster))
-            {
-                popupBlaster = popup.GetComponent<TextPopupBlaster>();
-                cachedPopup.Add(popupId, popupBlaster);
-                popupBlaster.OnFade += PushToPool;
-            }
-
-            popupBlaster.Blast(dmg.ToString(), spawnPos, isCritical ? criticalDamageColor : normalDamageColor);
+            var popup = _poolCache.Pop();
+            popup.transform.SetParent(canvas.transform);
+            popup.Play(dmg.ToString(), spawnPos, isCritical ? _criticalDamageColor : _normalDamageColor, PushToPool);
         }
 
-        private void PushToPool(GameObject popup)
+        private void PushToPool(TextPopup popup)
         {
-            pool.Push(popup);
+            _poolCache.Push(popup);
         }
     }
 }
