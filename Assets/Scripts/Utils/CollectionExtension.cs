@@ -171,6 +171,14 @@ public static class CollectionExtension
             function(iter[i], i);
         }
     }
+
+    public static void ForEach<T>(this List<T> iter, Action<T, int> function)
+    {
+        for (int i = 0; i < iter.Count; i++)
+        {
+            function(iter[i], i);
+        }
+    }
     
     public static T2[] Map<T1, T2>(this T1[] iter, Func<T1, T2> function)
     {

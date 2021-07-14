@@ -66,11 +66,7 @@ MonoBehaviour:
   allMapsName:
   - map9
   noObstacleAreaRadius: 3
-  spawnOffset:
-  - {x: -3, y: 3}
-  - {x: 3, y: 3}
-  - {x: -3, y: -3}
-  - {x: 3, y: -3}
+  _cornerSpawnOffset: {x: 1, y: 1}
   width: 30
   height: 30
   seed: 

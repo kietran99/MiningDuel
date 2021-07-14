@@ -61,7 +61,7 @@ namespace MD.UI
         private IGameModeManager gameModeManager;
         private Map.Core.SpawnPositionsData spawnPositionsData;
         private List<uint> aliveBots = new List<uint>();
-        private List<Vector3> storagePos = null;
+        private List<Vector3> storagePosList = null;
         #endregion
 
         public static event Action OnClientConnected;
@@ -221,7 +221,7 @@ namespace MD.UI
         private void InitEnv()
         {
             var mapGenerator = SpawnMapGenerator();  
-            storagePos = mapGenerator.SpawnStoragePos();
+            storagePosList = mapGenerator.SpawnStoragePos();
             spawnPositionsData = mapGenerator.SpawnPositionsData;
             SpawnDiggableGenerator();            
         }
@@ -245,9 +245,9 @@ namespace MD.UI
 
         public void SpawnPvPPlayers()
         {
-            RoomPlayers.ToArray().ForEach(roomPlayer =>
+            RoomPlayers.ForEach((roomPlayer, idx) =>
             {
-                var player = Instantiate(NetworkPlayerPrefab, spawnPositionsData.NextSpawnPoint, Quaternion.identity);
+                var player = Instantiate(NetworkPlayerPrefab, spawnPositionsData.SpawnPositions[idx], Quaternion.identity);
                 player.SetPlayerNameAndColor(roomPlayer.DisplayName);
                 var conn = roomPlayer.netIdentity.connectionToClient;
                 NetworkServer.Destroy(conn.identity.gameObject);
@@ -264,8 +264,8 @@ namespace MD.UI
             
             SpawnSonar();            
             SpawnDiggableGeneratorCommunicator();  
-            Players.ForEach(player => GenMapRenderer(player.connectionToClient)); 
-            Players.ForEach(player => SpawnSpawnPlatform(player.netIdentity));
+            Players.ForEach(player => GenMapRenderer(player.connectionToClient));
+            Players.ForEach((_, idx) => SpawnSpawnPlatform(idx));
             Players.ForEach(player => SpawnStorage(player.netIdentity, player.PlayerColor));
 
             SpawnScanWaveSpawner();
@@ -278,29 +278,28 @@ namespace MD.UI
             var scanWaveSpawner = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(SCAN_WAVE_SPAWNER)));
             NetworkServer.Spawn(scanWaveSpawner);
         } 
+
         private void SpawnOffScreenIndicator()
         {
             var offscreenIndicator = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(OFFSCREEN_INDICATOR)));
             NetworkServer.Spawn(offscreenIndicator);
         }
 
-        private void SpawnSpawnPlatform(NetworkIdentity playerId)
+        private void SpawnSpawnPlatform(int playerIdx)
         {
-            var platform = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(SPAWN_PLATFORM)), playerId.transform.position - new Vector3(0f, .4f, 0f), Quaternion.identity);
+            var prefabToSpawn = spawnPrefabs.Find(prefab => prefab.name.Equals(SPAWN_PLATFORM));
+            var platform = Instantiate(prefabToSpawn, spawnPositionsData.SpawnPositions[playerIdx] - new Vector2(0f, .4f), Quaternion.identity);
             NetworkServer.Spawn(platform);
         }
 
         private void SpawnStorage(NetworkIdentity playerId, Color flagColor)
         {
             // var storage = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(STORAGE)), playerId.transform.position, Quaternion.identity);
-            int rnd = UnityEngine.Random.Range(0,storagePos.Count);
-            var storage = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(STORAGE)), 
-            // playerId.transform.position + new Vector3(-2f, 0f, 0f),
-            storagePos[rnd],
-             Quaternion.identity);
+            int rnd = UnityEngine.Random.Range(0, storagePosList.Count);
+            var storage = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(STORAGE)), storagePosList[rnd], Quaternion.identity);
             storage.GetComponent<Diggable.Core.Storage>().Initialize(playerId, flagColor);
             NetworkServer.Spawn(storage.gameObject);
-            storagePos.RemoveAt(rnd);
+            storagePosList.RemoveAt(rnd);
         }
 
         private void SpawnSonar()

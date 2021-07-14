@@ -6,7 +6,7 @@ using Random = System.Random;
 
 namespace MD.Map.Core
 {
-    public struct SpawnPositionsData
+    public class SpawnPositionsData
     {
         private int idx;
         private Vector2[] spawnPositions;
@@ -17,12 +17,13 @@ namespace MD.Map.Core
             this.spawnPositions = spawnPositions;
         }
 
+        public Vector2[] SpawnPositions => spawnPositions;
+
         public Vector2 NextSpawnPoint
         {
             get
             {
-                idx++;
-                // Debug.Log("Spawn at: " + (spawnPositions[idx] + CentreOffset));            
+                idx++;        
                 return spawnPositions[idx];            
             }
         }
@@ -57,30 +58,43 @@ namespace MD.Map.Core
     }
 
     public class MapGenerator : NetworkBehaviour, IMapGenerator
-    {
-        
+    { 
         [SerializeField] 
         bool useGeneratedMaps = false;
-        [SerializeField] 
-        string[] allMapsName;
 
+        [SerializeField] 
+        string[] allMapsName = null;
 
         [SerializeField] 
         int noObstacleAreaRadius = 4;
 
         [SerializeField]
-        private Vector2[] spawnOffset = null;
+        private Vector2 _cornerSpawnOffset = Vector2.zero;
+
         string mapName = "";
 
         public int MapWidth => width;
         public int MapHeight => height;
         public bool UseGeneratedMaps => useGeneratedMaps;
 
-        public string mapUsed => mapName ;
-        public SpawnPositionsData SpawnPositionsData => new SpawnPositionsData(spawnOffset.Map(pos => pos + new Vector2(width / 2, height / 2)));
-        // [SerializeField] bool useGeneratedMaps = false;
-        // [SerializeField] int noObtacleAreaRadius = 4;
-        // public int GetCount{get{return count;}}
+        public string mapUsed => mapName;
+        
+        public SpawnPositionsData SpawnPositionsData 
+        {
+            get
+            {
+                var spawnPosList = new Vector2[]
+                {
+                    new Vector2(_cornerSpawnOffset.x, _cornerSpawnOffset.y),
+                    new Vector2(width - _cornerSpawnOffset.x, height - _cornerSpawnOffset.y),
+                    new Vector2(width - _cornerSpawnOffset.x, _cornerSpawnOffset.y),
+                    new Vector2(_cornerSpawnOffset.x, height - _cornerSpawnOffset.y)
+                };
+
+                return new SpawnPositionsData(spawnPosList);
+            }
+        }
+
         [SerializeField] int width = 0;
         [SerializeField] int height =  0;
         [SerializeField] string seed = "";
@@ -95,13 +109,15 @@ namespace MD.Map.Core
         int[,] map = null; 
         int totalFill;
 
-        ChunkObstacle chunksT = new ChunkObstacle(new int[,]{{0,0},{1,0},{2,0},{1,1}});
+        // ChunkObstacle chunksT = new ChunkObstacle(new int[,]{{0,0},{1,0},{2,0},{1,1}});
         ChunkObstacle[] chunks = new ChunkObstacle[] {  new ChunkObstacle(new int[,] {{0,0},{1,0},{2,0},{1,1}}),
                                                         new ChunkObstacle(new int[,] {{0,0},{1,0},{2,0},{2,1}}),
                                                         new ChunkObstacle(new int[,] {{0,0},{1,0},{2,0},{0,1}}),
                                                         new ChunkObstacle(new int[,] {{0,0},{2,0},{1,1},{0,2},{2,2}}),
                                                         new ChunkObstacle(new int[,] {{1,0},{0,1},{1,1},{2,1},{1,2}})};
 
+
+        private Vector2Int[] _storagePosList;
 
         public override void OnStartServer()
         {
@@ -177,6 +193,8 @@ namespace MD.Map.Core
                     }
                 }
             }
+
+            // _storagePosList = ;
             return lst;
         }
 
@@ -188,11 +206,28 @@ namespace MD.Map.Core
                 return true;
             }
             // if(map[x,y] == Constants.BLOCK)
-            if(map == null) return true;
+
+            // if (_storagePosList != null)
+            // {
+            //     foreach (var storagePos in _storagePosList)
+            //     {
+            //         if (storagePos.x == x && storagePos.y == y)
+            //         {
+            //             return true;
+            //         }
+            //     }
+            // }
+
+            if(map == null) 
+            {
+                return true;
+            }
+
             if(map[x,y] < 0)
             {
                 return true;
             }
+
             return false;
         }
 
