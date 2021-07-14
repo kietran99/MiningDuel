@@ -10,14 +10,20 @@ namespace MD.AI.TheWarden
 
         protected abstract (Vector2, Vector2) MapBounds { get; }
 
+        protected abstract IWardenParticleController ParticleController { get; }
+
+        protected abstract IWardenAttackChargeIndicator AtkChargeIndicator { get; }
+
         protected override void SetupAdditionalStates(BTBlackboard blackboard)
         {
-            blackboard.Set<Transform[]>(WardenMacros.PLAYERS, Players); 
-            blackboard.Set<float>(WardenMacros.ATTACK_COOLDOWN, 0f);
-            blackboard.Set<Quadrant[]>(WardenMacros.QUADRANTS, MakeQuadrant(MapBounds.Item1, MapBounds.Item2));
-            blackboard.Set<IWardenParticleController>(WardenMacros.PARTICLE_CONTROLLER, actor.GetComponent<IWardenParticleController>());
-            blackboard.Set<Animator>(WardenMacros.ANIMATOR, actor.GetComponentInChildren<Animator>());
-            blackboard.Set<float>(WardenMacros.DELTA_CHASE_RANGE, 0);   
+            blackboard.Set(WardenMacros.PLAYERS, Players); 
+            blackboard.Set(WardenMacros.ATTACK_COOLDOWN, 0f);
+            blackboard.Set(WardenMacros.QUADRANTS, MakeQuadrant(MapBounds.Item1, MapBounds.Item2));
+            blackboard.Set(WardenMacros.PARTICLE_CONTROLLER, ParticleController);
+            blackboard.Set(WardenMacros.ANIMATOR, actor.GetComponentInChildren<Animator>());
+            blackboard.Set(WardenMacros.DELTA_CHASE_RANGE, 0f);   
+            blackboard.Set(WardenMacros.SHOULD_CHARGE_ATK, false);
+            blackboard.Set(WardenMacros.ATK_CHARGE_INDICATOR, AtkChargeIndicator);
         }
 
         protected Quadrant[] MakeQuadrant(Vector2 topRightLimit, Vector2 botLeftLimit)

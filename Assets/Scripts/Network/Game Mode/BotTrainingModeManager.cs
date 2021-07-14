@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MD.AI;
 using MD.Character;
 using Mirror;
 using UnityEngine;
@@ -42,12 +43,12 @@ namespace MD.Network.GameMode
             base.SetupGame(matchTime, players);
             SetupPlayerState(player);
             SetupBotState(players);
+            EventSystems.EventManager.Instance.StartListening<CharacterDeathData>(LoseBotTrainingByElimination);
         }
 
         private void SetupPlayerState(Player player)
         {
-            player.transform.position = networkManager.NextSpawnPoint;
-            EventSystems.EventManager.Instance.StartListening<CharacterDeathData>(LoseBotTrainingByElimination);
+            player.transform.position = networkManager.NextSpawnPoint;       
         }
 
         private void SetupBotState(List<Character.Player> players)
@@ -79,16 +80,24 @@ namespace MD.Network.GameMode
 
         private void WinBotTrainingByElimination()
         {
-            EventSystems.EventManager.Instance.StopListening<CharacterDeathData>(LoseBotTrainingByElimination);
+            StopListeningToDeathEvent();
             player.TargetNotifyEndGame(true);          
             StopCountdown();        
         }
 
         private void LoseBotTrainingByElimination(CharacterDeathData data)
         {
-            EventSystems.EventManager.Instance.StopListening<CharacterDeathData>(LoseBotTrainingByElimination);
+            StopListeningToDeathEvent();
             player.TargetNotifyEndGame(false);          
             StopCountdown();
         }
+
+        public override void EndGameByTimeOut(List<Player> players, List<PlayerBot> bots)
+        {
+            base.EndGameByTimeOut(players, bots);
+            StopListeningToDeathEvent();
+        }
+
+        private void StopListeningToDeathEvent() => EventSystems.EventManager.Instance.StopListening<CharacterDeathData>(LoseBotTrainingByElimination);
     }
 }

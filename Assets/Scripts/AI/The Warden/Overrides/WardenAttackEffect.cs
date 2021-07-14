@@ -5,8 +5,6 @@ namespace MD.AI.TheWarden
 {
     public class WardenAttackEffect : BTLeaf
     {
-        private SpriteRenderer spriteRenderer;
-
         protected override BTNodeState DecoratedTick(GameObject actor, BTBlackboard blackboard)
         {
             Play(blackboard);

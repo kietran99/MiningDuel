@@ -9,7 +9,7 @@ namespace MD.Diggable.Gem
         [SerializeField]
         private float driveSpeed = 10f;
 
-        public Transform ThrowerTransform { get; set; }
+        public Transform Attacker { get; set; }
 
         public override void OnStartServer()
         {
@@ -19,9 +19,9 @@ namespace MD.Diggable.Gem
         [ServerCallback]
         private void Update()
         {
-            if (ThrowerTransform == null)
+            if (Attacker == null)
             {
-                Debug.LogError("ThrowerTransform is null");
+                Debug.LogError("Attacker is null");
                 return;
             }
 
@@ -30,8 +30,8 @@ namespace MD.Diggable.Gem
 
         private void DriveTowardsThrower()
         {    
-            Vector2 movePos = new Vector2(ThrowerTransform.position.x - transform.position.x, 
-                                            ThrowerTransform.position.y - transform.position.y);    
+            Vector2 movePos = new Vector2(Attacker.position.x - transform.position.x, 
+                                            Attacker.position.y - transform.position.y);    
             transform.Translate(movePos * driveSpeed * Time.deltaTime);
         } 
     }

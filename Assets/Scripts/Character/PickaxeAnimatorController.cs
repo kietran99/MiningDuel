@@ -4,25 +4,24 @@ namespace MD.Character
 {
     public class PickaxeAnimatorController : MonoBehaviour
     {
+        protected readonly string SWING = "Swing";
+        protected readonly string INTERRUPT = "Interrupt";
+
         [SerializeField]
-        private Animator animator = null;
+        protected Animator animator = null;
 
         public bool IsAnimPlaying { get; set; } = false;
 
-        private readonly string SWING = "Swing";
-
-        private readonly string INTERRUPT = "Interrupt";
-
-        private void Start()
+        protected virtual void Start()
         {
             EventSystems.EventConsumer.Attach(gameObject).StartListening<GetCounteredData>(CancelAnim);
         }
 
-        private void CancelAnim(GetCounteredData _)
+        protected virtual void CancelAnim(GetCounteredData _)
         {
             animator.SetTrigger(INTERRUPT);
         }
-
+        
         public void Play()
         {
             animator.SetTrigger(SWING);

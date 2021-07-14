@@ -330,12 +330,6 @@ namespace MD.UI
 
         public bool IsReadyToStart() => gameModeManager.IsReadyToStart();
 
-        private void SetupGame()
-        {  
-            gameModeManager.SetupGame(matchTime, Players);
-            Invoke(nameof(EndGameByTimeOut), matchTime);
-        }
-
         public GameObject SpawnBot(Vector2 spawnPos)
         {
             var bot = Instantiate(botPrefab, spawnPos, Quaternion.identity);
@@ -344,38 +338,13 @@ namespace MD.UI
             return bot;
         }
 
-        private void EndGameByTimeOut()
-        {
-            Debug.Log("Player count: " + Players.Count);
-            
-            if (Players.Count <= 0) 
-            {
-                return;
-            }
-
-            Time.timeScale = 0f;
-            
-            if (Bots.Count > 0)
-            {
-                Players[0].TargetNotifyEndGame(Players[0].FinalScore >= Bots[(int)0].CurrentScore);
-                return;
-            }
-            
-            Players.ForEach(player => player.Movable(false));
-            List<Player> orderedPlayers = Players.OrderBy(player => -player.FinalScore).ToList<Player>();
-            int highestScore = orderedPlayers[0].FinalScore;
-            orderedPlayers[0].TargetNotifyEndGame(true);
-            foreach (Player player in orderedPlayers.Skip(1))
-            {
-                if (player.FinalScore == highestScore)
-                {
-                    //tied
-                    player.TargetNotifyEndGame(true);
-                    continue;
-                }
-                player.TargetNotifyEndGame(false);
-            }
+        private void SetupGame()
+        {  
+            gameModeManager.SetupGame(matchTime, Players);
+            Invoke(nameof(EndGameByTimeOut), matchTime);
         }
+
+        private void EndGameByTimeOut() => gameModeManager.EndGameByTimeOut(Players, Bots);
 
     #if UNITY_EDITOR
         void Update()

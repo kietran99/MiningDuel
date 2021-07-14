@@ -1,12 +1,15 @@
-public struct InventoryItemAmountChangeData: EventSystems.IEventData
+namespace MD.UI
 {
-    //index of the first used gem start from bottom of stack
-    public int index;
-    public int amount;
-    //number of gems used
-    public InventoryItemAmountChangeData(int index, int amount)
+    public struct InventoryItemAmountChangeData: EventSystems.IEventData
     {
-        this.index = index;
-        this.amount = amount;
+        //index of the first used gem start from bottom of stack
+        public int index;
+        public int amount;
+        //number of gems used
+        public InventoryItemAmountChangeData(int index, int amount)
+        {
+            this.index = index;
+            this.amount = amount;
+        }
     }
 }

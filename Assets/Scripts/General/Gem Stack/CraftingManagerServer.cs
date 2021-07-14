@@ -1,36 +1,38 @@
 ﻿using UnityEngine;
-using MD.CraftingSystem;
 using Mirror;
 using MD.Quirk;
 
-public class CraftingManagerServer : NetworkBehaviour
+namespace MD.CraftingSystem
 {
-    [SerializeField]
-    private CraftingRecipe recipeSO;
-
-    [ServerCallback]
-    private void Start()
+    public class CraftingManagerServer : NetworkBehaviour
     {
-        EventSystems.EventManager.Instance.StartListening<CraftItemData>(CraftItem);
-    }
+        [SerializeField]
+        private CraftingRecipe recipeSO = null;
 
-    [ServerCallback]
-    private void OnDisable()
-    {
-        EventSystems.EventManager.Instance.StopListening<CraftItemData>(CraftItem);
-    }
+        [ServerCallback]
+        private void Start()
+        {
+            EventSystems.EventManager.Instance.StartListening<CraftItemData>(CraftItem);
+        }
 
-    private void CraftItem(CraftItemData data)
-    {
-        BaseQuirk itemPrefab = GetItem(data.item);
-        if (itemPrefab == null) return;
-        BaseQuirk ins = Instantiate(itemPrefab.gameObject,Vector3.zero, Quaternion.identity, data.player.transform).GetComponent<BaseQuirk>();
-        NetworkServer.Spawn(ins.gameObject,data.player.connectionToClient);
-        ins.Activate(data.player);
-    }
+        [ServerCallback]
+        private void OnDisable()
+        {
+            EventSystems.EventManager.Instance.StopListening<CraftItemData>(CraftItem);
+        }
 
-    BaseQuirk GetItem(CraftItemName item)
-    {
-        return recipeSO.GetItem(item);
+        private void CraftItem(CraftItemData data)
+        {
+            BaseQuirk itemPrefab = recipeSO.GetItem(data.item);
+
+            if (itemPrefab == null) 
+            {
+                return;
+            }
+
+            BaseQuirk ins = Instantiate(itemPrefab.gameObject, Vector3.zero, Quaternion.identity, data.player.transform).GetComponent<BaseQuirk>();
+            NetworkServer.Spawn(ins.gameObject, data.player.connectionToClient);
+            ins.ServerActivate(data.player);
+        }
     }
 }

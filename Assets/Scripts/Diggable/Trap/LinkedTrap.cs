@@ -9,7 +9,7 @@ namespace MD.Diggable.Projectile
     public class LinkedTrap : NetworkBehaviour, IDamagable
     {
         [SerializeField]
-        float slowDownTime = 1.5f;
+        float slowDownTime = 5f;
 
         [SerializeField]
         float explosionTime = .2f;
@@ -30,7 +30,7 @@ namespace MD.Diggable.Projectile
         private float WireLenghPadding = .8f;
 
         [SerializeField]
-        private ContactFilter2D explodeFilter;
+        private ContactFilter2D explodeFilter = default;
 
         private Vector2 HALF_CELL_OFFSET = Vector2.one / 2f;
         private float MIN_WIRE_LENGTH = .3f;
@@ -50,9 +50,8 @@ namespace MD.Diggable.Projectile
 
         public override void OnStartAuthority()
         {
-            base.OnStartAuthority();
             SpriteRenderer[] spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
-            for (int i=0; i< spriteRenderers.Length; i++)
+            for (int i = 0; i < spriteRenderers.Length; i++)
             {
                 spriteRenderers[i].maskInteraction = SpriteMaskInteraction.None;
             }
@@ -72,7 +71,11 @@ namespace MD.Diggable.Projectile
         [Server]
         public void Detonate()
         {
-            if (isExploding) return;
+            if (isExploding) 
+            {
+                return;
+            }
+
             isExploding = true;
             StartCoroutine(Explode()); 
         }
@@ -81,6 +84,7 @@ namespace MD.Diggable.Projectile
         public void SpreadExplode(LinkedTrap from)
         {
             int index = linkedTrapsList.IndexOf(from);
+
             if (index != -1)
             {
                 linkedTrapsList.RemoveAt(index);
@@ -91,14 +95,14 @@ namespace MD.Diggable.Projectile
             {
                 Debug.LogError("explode triggered from out of range trap from " + from.transform.position + " this" + transform.position );
             }
+
             Detonate();
         }
 
         [Server]
         private IEnumerator Explode()
         {
-            //animate
-            Debug.Log("explode");
+            RpcPlayExplosionEffect(transform.position);
             
             yield return new WaitForSeconds(explosionTime);
 
@@ -109,21 +113,20 @@ namespace MD.Diggable.Projectile
                 collider.OverlapCollider(explodeFilter, results);
                 for (int i = 0; i < results.Count; i++)
                 {
-                    if (results[i].CompareTag(Constants.PLAYER_TAG))
+                    if (!results[i].CompareTag(Constants.PLAYER_TAG))
                     {
-                        IPlayer player = results[i].GetComponent<IPlayer>();
-
-                        if (player.GetNetworkIdentity().Equals(owner)) continue;
-
-                        var explodable = results[i].GetComponent<MD.Diggable.Projectile.IExplodable>();
-
-                        if (explodable != null)
-                        {
-                            explodable.HandleTrapExplode(slowDownTime);
-                        }
-
-                        results[i].GetComponent<IDamagable>()?.TakeDamage(owner, power, false);
+                        continue;
                     }
+                        
+                    IPlayer player = results[i].GetComponent<IPlayer>();
+
+                    if (player.GetNetworkIdentity().Equals(owner)) 
+                    {
+                        continue;
+                    }
+
+                    results[i].GetComponent<MD.Diggable.Projectile.IExplodable>()?.HandleTrapExplode(slowDownTime);
+                    results[i].GetComponent<IDamagable>()?.TakeDamage(owner, power, false);
                 }
             }
             else
@@ -131,17 +134,25 @@ namespace MD.Diggable.Projectile
                 Debug.LogError("cant find collider of range control");
             }
 
-            for (int i=0; i<linkedTrapsList.Count; i++)
+            for (int i = 0; i < linkedTrapsList.Count; i++)
             {
                 if (linkedTrapsList[i].gameObject == null) 
                 {
                     Debug.Break();
                 }
+
                 linkedTrapsList[i].SpreadExplode(this);
             }
+
             NetworkServer.Destroy(gameObject);
         }
-        
+
+        [ClientRpc]
+        private void RpcPlayExplosionEffect(Vector2 pos)
+        {
+            EventSystems.EventManager.Instance.TriggerEvent(new VisualEffects.ExplosionEffectRequestData(pos));
+        }
+
         [ClientRpc]
         public void RpcAssignOwnerAndLinkTraps(NetworkIdentity owner)
         {
@@ -186,7 +197,7 @@ namespace MD.Diggable.Projectile
 
         private void RemoveWire()
         {   
-            foreach ( KeyValuePair<LinkedTrap, GameObject> entry in WireDict)
+            foreach (KeyValuePair<LinkedTrap, GameObject> entry in WireDict)
             {
                 Destroy(entry.Value);
             }
@@ -198,7 +209,12 @@ namespace MD.Diggable.Projectile
             if (source == owner)
             {
                 Detonate();
+                RpcRaiseActiveLinkedTrapEvent(source.netId);
             }
         }
+
+        [ClientRpc]
+        private void RpcRaiseActiveLinkedTrapEvent(uint activatorId) 
+            => EventSystems.EventManager.Instance.TriggerEvent(new ActivateLinkedTrapEvent(activatorId));
     }
 }

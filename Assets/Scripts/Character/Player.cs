@@ -101,6 +101,7 @@ namespace MD.Character
         } 
 
         public NetworkIdentity GetNetworkIdentity() => netIdentity;  
+        public int GetUID() => GetInstanceID();
 
         [ClientRpc]
         public void RpcTriggerNumAliveChangeEvent(int nAlive) => EventSystems.EventManager.Instance.TriggerEvent(new AliveCountChangeData(nAlive));     

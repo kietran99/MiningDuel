@@ -1,14 +1,16 @@
-public struct AddInventoryItemData: EventSystems.IEventData
+namespace MD.UI
 {
-
-    public int index;
-
-    public InventoryController.InventoryItem item;
-
-    //number of gems used
-    public AddInventoryItemData(int index, InventoryController.InventoryItem item)
+    public class AddInventoryItemData: EventSystems.IEventData
     {
-        this.index = index;
-        this.item = item;
+        public int index;
+
+        public InventoryController.InventoryItem item;
+
+        //number of gems used
+        public AddInventoryItemData(int index, InventoryController.InventoryItem item)
+        {
+            this.index = index;
+            this.item = item;
+        }
     }
 }

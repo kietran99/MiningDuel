@@ -20,7 +20,7 @@ namespace MD.Diggable.Core
                 { DiggableType.SUPER_RARE_GEM, TriggerGemDugEvent },
                 { DiggableType.NORMAL_BOMB, TriggerProjectileDugEvent },
                 { DiggableType.LINKED_TRAP, TriggerProjectileDugEvent },
-                { DiggableType.EMPTY, (id, cur, max, type) => { UnityEngine.Debug.Log("Dug Empty Tile"); } }
+                { DiggableType.EMPTY, (id, cur, max, type) => { } }
             };
         }
 

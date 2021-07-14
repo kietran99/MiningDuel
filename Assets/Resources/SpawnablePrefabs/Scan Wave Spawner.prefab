@@ -97,3 +97,5 @@ MonoBehaviour:
   syncInterval: 0.1
   LinkedTrapPrefab: {fileID: 8555643561292018698, guid: c904baffc352bd4458a849fd09feac6c,
     type: 3}
+  CamoPersePrefab: {fileID: 3136954806002261184, guid: 6dc351115f300fd44a776b926bd01f13,
+    type: 3}

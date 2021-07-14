@@ -21,10 +21,10 @@ namespace MD.VisualEffects
 
         private void Start()
         {
-            EventSystems.EventConsumer.Attach(gameObject).StartListening<Character.DamageGivenData>(HandleDamageTaken);
+            EventSystems.EventConsumer.Attach(gameObject).StartListening<Character.DamageGivenData>(HandleDamageGiven);
         }
 
-        private void HandleDamageTaken(Character.DamageGivenData data)
+        private void HandleDamageGiven(Character.DamageGivenData data)
         {
             Spawn(data.dmg, data.isCritical, new Vector2(data.damagablePos.x, data.damagablePos.y + yOffset));
         }

@@ -6,7 +6,8 @@ namespace MD.Character
     {
         void Start()
         {
-            attackTime = 0f;
+            rotatedArc = arcMeasure;
+            counterableArc = counterablePercentage * arcMeasure;
         }
     }
 }

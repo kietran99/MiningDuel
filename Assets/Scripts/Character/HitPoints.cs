@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Mirror;
+using EventSystems;
 
 namespace MD.Character
 {
@@ -11,12 +12,13 @@ namespace MD.Character
         [SerializeField]
         private int minHP = 0;
 
-        [SerializeField]
         [SyncVar(hook = nameof(OnCurrentHPSync))]
         private int currentHP = 100;
 
-        [SerializeField]
-        private VisualEffects.DamagedVFX damagedVFX = null;
+        public System.Action OnDamageTakenSync { get; set; }
+        public System.Action OnHealSync { get; set; } 
+
+        public float GetLossPercentage() => 1f - ((float) currentHP / (float) maxHP);
 
         [Server]
         public void TakeWardenDamage(int dmg)
@@ -32,13 +34,23 @@ namespace MD.Character
         }
 
         [Server]
+        public void HealPercentageHealth(float percentage)
+        {
+            currentHP = Mathf.Clamp(currentHP + Mathf.FloorToInt(maxHP * percentage), minHP, maxHP);
+        }
+
+        [Server]
         public void TakeDamage(NetworkIdentity source, int dmg, bool isCritical)
         {
             currentHP = Mathf.Clamp(currentHP - dmg, minHP, maxHP);
-            TargetOnDamageGiven(source.connectionToClient, dmg, isCritical);
-            TargetOnDamageTaken((transform.position - source.transform.position).normalized);
 
-            if (!currentHP.Equals(minHP))
+            if (source.netId != netId)
+            {
+                TargetOnDamageGiven(source.connectionToClient, dmg, isCritical);
+                TargetOnDamageTaken((transform.position - source.transform.position).normalized);
+            }
+
+            if (currentHP != minHP)
             {
                 return;
             }
@@ -49,17 +61,27 @@ namespace MD.Character
         [TargetRpc]
         private void TargetOnDamageGiven(NetworkConnection atker, int dmg, bool isCritical)
         {
-            EventSystems.EventManager.Instance.TriggerEvent(new DamageGivenData(transform.position, dmg, isCritical));
+            EventManager.Instance.TriggerEvent(new DamageGivenData(transform.position, dmg, isCritical));
         }
 
         [TargetRpc]
-        private void TargetOnDamageTaken(Vector2 atkDir) => EventSystems.EventManager.Instance.TriggerEvent(new DamageTakenData(netId, atkDir));
+        private void TargetOnDamageTaken(Vector2 atkDir)
+        {
+            EventManager.Instance.TriggerEvent(new DamageTakenData(netId, atkDir));
+        }
 
-        protected virtual void RaiseDeathEvent() => EventSystems.EventManager.Instance.TriggerEvent(new CharacterDeathData(netId));
+        protected virtual void RaiseDeathEvent() => EventManager.Instance.TriggerEvent(new CharacterDeathData(netId));
 
         private void OnCurrentHPSync(int oldCurHP, int newCurHP)
         {
-            damagedVFX.Play();
+            if (oldCurHP > newCurHP)
+            {
+                OnDamageTakenSync?.Invoke();
+            }
+            else 
+            {
+                OnHealSync?.Invoke();
+            }
 
             if (hasAuthority)
             {
@@ -69,7 +91,7 @@ namespace MD.Character
 
         protected virtual void OnAuthorityCurrentHPSync(int oldCurHP, int newCurHP)
         {
-            EventSystems.EventManager.Instance.TriggerEvent(new HPChangeData(oldCurHP, newCurHP, maxHP));
+            EventManager.Instance.TriggerEvent(new HPChangeData(oldCurHP, newCurHP, maxHP));
         }
 
     #region TEST_TAKE_DMG

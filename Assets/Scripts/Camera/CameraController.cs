@@ -4,10 +4,17 @@ using UnityEngine.Tilemaps;
 public class CameraController : MonoBehaviour
 {
     [SerializeField]
-    private Tilemap map = null;
+    private bool smoothFollow = true;
 
+    [SerializeField]
+    private float smoothSpeed = .125f;
+
+    private Tilemap map = null;
     private Transform player;
     private Vector3 botLeftLimit, topRightLimit;
+
+    private Vector3 offset;
+    private Vector3 smoothVelocity = Vector3.zero;
 
     public void SetMapData(Tilemap tilemap) 
     {
@@ -31,6 +38,7 @@ public class CameraController : MonoBehaviour
         var camHalfHeight = mainCamera.orthographicSize;
         var camHalfWidth = mainCamera.aspect * camHalfHeight;
         
+        offset = new Vector3(0f, 0f, transform.position.z);
         botLeftLimit = botLeft + new Vector3(camHalfWidth, camHalfHeight, 0f);
         topRightLimit = topRight - new Vector3(camHalfWidth, camHalfHeight, 0f);
 
@@ -41,7 +49,11 @@ public class CameraController : MonoBehaviour
     {
         if (player == null) return;
 
-        transform.position = new Vector3(player.position.x, player.position.y, transform.position.z);
+        var movedPos = smoothFollow 
+                            ? Vector3.SmoothDamp(transform.position, player.position + offset, ref smoothVelocity, smoothSpeed)
+                            : player.position + offset;
+
+        transform.position = movedPos;
         
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, botLeftLimit.x, topRightLimit.x),
                                         Mathf.Clamp(transform.position.y, botLeftLimit.y, topRightLimit.y),

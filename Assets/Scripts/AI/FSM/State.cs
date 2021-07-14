@@ -12,7 +12,9 @@
             THROW_PROJECTILE, 
             DIG, 
             FINDING_DIGGABLE, 
-            WANDER
+            WANDER,
+            CHASEPLAYER,
+            ATTACKPLAYER
         }
 
         public enum EVENT { ENTER, UPDATE, EXIT }

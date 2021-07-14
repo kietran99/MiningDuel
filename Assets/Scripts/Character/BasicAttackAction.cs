@@ -1,34 +1,55 @@
 using UnityEngine;
 using Mirror;
 using MD.UI;
+using EventSystems;
 
 namespace MD.Character
 {
+    public interface IAtkMultCalculator
+    {
+        float GetResult(float criticalMult, bool isCritical = false);
+    }
+
+    public class BaseAtkMultCalculator : IAtkMultCalculator
+    {
+        public float GetResult(float criticalMult, bool isCritical = false) => isCritical ? criticalMult : 1f;
+    }
+
     public class BasicAttackAction : NetworkBehaviour
     {
         [SerializeField]
-        private int power = 2;
+        protected int power = 2;
 
         [SerializeField]
-        private float criticalMultiplier = 1.5f;
+        protected float cooldown = 1.6f;
 
         [SerializeField]
-        private float immobilizeTime = .5f;
+        protected int hitScore = 50;
 
         [SerializeField]
-        private EnemyInAttackRangeDetect enemyDetect = null;
+        protected float criticalMultiplier = 1.5f;
 
         [SerializeField]
-        private WeaponDamageZone damageZone = null;
+        protected float immobilizeTime = .5f;
 
         [SerializeField]
-        private PickaxeAnimatorController pickaxeAnimatorController = null;
+        protected EnemyInAttackRangeDetect enemyDetect = null;
+
+        [SerializeField]
+        protected WeaponDamageZone damageZone = null;
+
+        [SerializeField]
+        protected PickaxeAnimatorController pickaxeAnimatorController = null;
+
+        private Utils.Misc.Stopwatch cooldownStopwatch;
+        public IAtkMultCalculator MultCalculator { get; set; }
 
         public override void OnStartServer()
         {
             damageZone.OnDamagableCollide += GiveDamage;
             damageZone.OnCounterSuccessfully += OnCounterSuccessfully;
             damageZone.OnGetCountered += OnGetCountered;
+            MultCalculator = new BaseAtkMultCalculator();
         }
 
         public override void OnStopServer()
@@ -40,66 +61,57 @@ namespace MD.Character
 
         public override void OnStartAuthority()
         {
-            EventSystems.EventManager.Instance.StartListening<AttackInvokeData>(HandleAttackInvoke);
-            enemyDetect.OnTrackingTargetsChanged += ToggleMainAction;
-        }
-
-        public override void OnStopClient()
-        {
-            EventSystems.EventManager.Instance.StopListening<AttackInvokeData>(HandleAttackInvoke);
-            enemyDetect.OnTrackingTargetsChanged -= ToggleMainAction;
+            cooldownStopwatch = gameObject.AddComponent<Utils.Misc.Stopwatch>();
+            cooldownStopwatch.OnStop += () => EventSystems.EventManager.Instance.TriggerEvent(new AttackCooldownData(true));
+            EventConsumer.GetOrAttach(gameObject).StartListening<AttackInvokeData>(HandleAttackInvoke);
         }
 
         [Client]
-        private void HandleAttackInvoke(AttackInvokeData _)
+        protected void HandleAttackInvoke()
         {
+            if (cooldownStopwatch.IsActive)
+            {
+                return;
+            }
+
+            cooldownStopwatch.Begin(cooldown);
+            EventManager.Instance.TriggerEvent(new AttackCooldownData(false));
             enemyDetect.RaiseAttackDirEvent();
             pickaxeAnimatorController.Play();
             CmdAttemptSwingWeapon();
         }
 
         [Command]
-        private void CmdAttemptSwingWeapon() => damageZone.AttemptSwing();
-
-        private void ToggleMainAction(bool targetsInRange)
-        {
-            EventSystems.EventManager.Instance.TriggerEvent(new Character.MainActionToggleData(targetsInRange ? MainActionType.ATTACK : MainActionType.DIG));
-        }
+        protected void CmdAttemptSwingWeapon() => damageZone.AttemptSwing();
 
         [Server]
-        private void GiveDamage(IDamagable damagable, bool isCritical)
+        protected void GiveDamage(IDamagable damagable, bool isCritical)
         {
-            var dmg = Mathf.RoundToInt(power * (isCritical ? criticalMultiplier : 1f));
+            var dmg = Mathf.RoundToInt(power * MultCalculator.GetResult(criticalMultiplier, isCritical));
             damagable.TakeDamage(netIdentity, dmg, isCritical);
+            IncreaseScore(isCritical);
         }
 
-        private void OnCounterSuccessfully(Vector2 counterVect) => TargetOnCounterSuccessfully(counterVect);
+        protected virtual void IncreaseScore(bool isCritical)
+        {
+            int score = Mathf.RoundToInt(hitScore * MultCalculator.GetResult(criticalMultiplier, isCritical));
+            EventManager.Instance.TriggerEvent(new HitScoreObtainData(score));
+        }
 
-        private void OnGetCountered(Vector2 counterVect) => TargetOnGetCountered(counterVect);
+        protected virtual void OnCounterSuccessfully(Vector2 counterVect) => TargetOnCounterSuccessfully(counterVect);
+
+        protected virtual void OnGetCountered(Vector2 counterVect) => TargetOnGetCountered(counterVect);
 
         [TargetRpc]
-        private void TargetOnCounterSuccessfully(Vector2 counterVect) => EventSystems.EventManager.Instance.TriggerEvent(new CounterSuccessData(counterVect));
+        protected void TargetOnCounterSuccessfully(Vector2 counterVect) 
+        {
+            EventManager.Instance.TriggerEvent(new CounterSuccessData(counterVect));
+        }
 
         [TargetRpc]
-        private void TargetOnGetCountered(Vector2 counterVect)
+        protected void TargetOnGetCountered(Vector2 counterVect)
         {
-            EventSystems.EventManager.Instance.TriggerEvent(new GetCounteredData(counterVect, immobilizeTime));
+            EventManager.Instance.TriggerEvent(new GetCounteredData(counterVect, immobilizeTime + cooldown));
         }
-
-    #if UNITY_EDITOR
-        [ClientCallback]
-        void Update()
-        {
-            if (!hasAuthority)
-            {
-                return;
-            }    
-
-            if (Input.GetMouseButtonDown(1))
-            {
-                EventSystems.EventManager.Instance.TriggerEvent(new AttackInvokeData());
-            }
-        }
-    #endif
     }
 }

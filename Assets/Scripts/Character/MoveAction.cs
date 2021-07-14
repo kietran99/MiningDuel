@@ -9,6 +9,8 @@ namespace MD.Character
     public class MoveAction : NetworkBehaviour
     {
         private float DASH_MULTIPLIER = 1000f;
+        [SerializeField]
+        MD.VisualEffects.SlowEffect slowEffect = null;
 
         [SerializeField]
         private float speed = 1f;
@@ -21,14 +23,13 @@ namespace MD.Character
 
         private Rigidbody2D rigidBody;
         private Vector2 moveVect, minMoveBound, maxMoveBound;
-        // private Vector2 offset = new Vector2(.5f, .5f);
         
-        [SerializeField] [SyncVar]
+        [SyncVar]
         private float speedModifier = 1f;
 
         [SyncVar]
         private int slowedDownCount = 0;
-        private float SlowDownPercentage = .8f;
+        private float SlowDownPercentage = .7f;
         private Player player = null;
         private bool isImmobilize = false;
 
@@ -41,7 +42,12 @@ namespace MD.Character
             eventConsumer.StartListening<JoystickDragData>(BindMoveVector);
             eventConsumer.StartListening<DamageTakenData>(OnDamageTaken);
             eventConsumer.StartListening<GetCounteredData>(HandleGetCountered);
-            eventConsumer.StartListening<CounterSuccessData>(OnCounterSuccessful);
+            eventConsumer.StartListening<CounterSuccessData>(OnCounterSuccessful);           
+        }
+
+        public override void OnStartServer()
+        {
+            EventSystems.EventConsumer.GetOrAttach(gameObject).StartListening<ExplodedData>(ServerHandleExploded);
         }
 
         private void OnDamageTaken(DamageTakenData data)
@@ -56,20 +62,42 @@ namespace MD.Character
 
         private void HandleGetCountered(GetCounteredData counterData)
         {
+            Immobilize(counterData.immobilizeTime);
+        }
+
+        [Server]
+        private void ServerHandleExploded(ExplodedData data)
+        {
+            RpcHandleExploded(data.explodedTargetID, data.immobilizeTime);
+        }
+
+        [ClientRpc]
+        private void RpcHandleExploded(uint explodedPlayerId, float immobilizeTime)
+        {
+            if (netId != explodedPlayerId)
+            {
+                return;
+            }
+
+            Immobilize(immobilizeTime);
+        }
+
+        private void Immobilize(float time)
+        {
             if (hasAuthority)
             {
-                EventSystems.EventManager.Instance.TriggerEvent(new StunData(true));
+                EventSystems.EventManager.Instance.TriggerEvent(new StunStatusData(true));
             }
 
             isImmobilize = true;
-            Invoke(nameof(RegainMobility), counterData.immobilizeTime);
+            Invoke(nameof(RegainMobility), time);
         }
 
         private void RegainMobility() 
         {
             if (hasAuthority)
             {
-                EventSystems.EventManager.Instance.TriggerEvent(new StunData(false));
+                EventSystems.EventManager.Instance.TriggerEvent(new StunStatusData(false));
             }
 
             isImmobilize = false;
@@ -132,19 +160,42 @@ namespace MD.Character
         [Command]
         public void CmdModifySpeed(float percentage, float time)
         {
+            RpcRaiseSpeedBoostEvent(netId, time);
             StartCoroutine(IncreaseSpeedCoroutine(percentage,time));
         }
 
+        [ClientRpc]
+        private void RpcRaiseSpeedBoostEvent(uint playerId, float time)
+        {
+            EventSystems.EventManager.Instance.TriggerEvent(new SpeedBoostData(netId, time));
+        }
+
+        [Server]
         public void SlowDown(float time)
         {
             StartCoroutine(SlowDownCoroutine(time));
         }
 
+        [Server]
         private IEnumerator SlowDownCoroutine(float time)
         {
+            RpcPlaySlowEffect();
             slowedDownCount += 1;
             yield return new WaitForSeconds(time);
             slowedDownCount -= 1;
+            if (slowedDownCount<=0) RpcStopSlowEffect();
+        }
+
+        [ClientRpc]
+        private void RpcPlaySlowEffect()
+        {
+            slowEffect.Play();
+        }
+
+        [ClientRpc]
+        private void RpcStopSlowEffect()
+        {
+            slowEffect.Stop();
         }
 
         private IEnumerator IncreaseSpeedCoroutine(float percentage, float time)

@@ -20,6 +20,12 @@ namespace MD.AI
         // private float collideRightDistance = 0f;
         // private bool collideAhead = false;
         [SerializeField]
+        MD.VisualEffects.SlowEffect slowEffect = null;
+        
+        [SerializeField]
+        GameObject stunnedIcon = null;
+
+        [SerializeField]
         private float SlowDownPercentage = .8f;
         [SerializeField]
         private int length;
@@ -40,8 +46,9 @@ namespace MD.AI
         [SerializeField]
         private float knockbackForce = 2f;
 
-        // [SerializeField]
-        // private float counterSuccessDashDistance = .2f;
+
+        [SerializeField]
+        private float counterSuccessDashDistance = .2f;
 
         private int slowDownCount = 0;
 
@@ -60,7 +67,7 @@ namespace MD.AI
 
         private Rigidbody2D theRigidbody;
 
-        // private bool isImmobilize = false;
+        private bool isImmobilize = false;
 
         void Start()
         {
@@ -73,6 +80,8 @@ namespace MD.AI
             playerBot = transform.GetComponent<PlayerBot>();
             var eventConsumer = EventSystems.EventConsumer.GetOrAttach(gameObject);
             eventConsumer.StartListening<DamageTakenData>(OnDamageTaken);
+            eventConsumer.StartListening<BotGetCounteredData>(HandleGetCountered);
+            eventConsumer.StartListening<BotCounterSuccessData>(OnCounterSuccessful);
         }
 
         private void OnDamageTaken(DamageTakenData data)
@@ -85,18 +94,31 @@ namespace MD.AI
             Dash(data.atkDir * knockbackForce);
         }
 
-        // private void HandleGetCountered(GetCounteredData counterData)
-        // {
-        //     isImmobilize = true;
-        //     Invoke(nameof(RegainMobility), counterData.immobilizeTime);
-        // }
+        public void Immobilize(float time)
+        {
+            isImmobilize = true;
+            stunnedIcon.SetActive(true);
+            animator.PlayIdle();
+            Invoke(nameof(RegainMobility), time);
+        }
 
-        // private void RegainMobility() => isImmobilize = false;
+        public bool IsStuned() => isImmobilize;
+        
 
-        // private void OnCounterSuccessful(CounterSuccessData data)
-        // {
-        //     Dash(data.counterDir * counterSuccessDashDistance);
-        // }
+        private void RegainMobility() 
+        {
+            stunnedIcon.SetActive(false);
+            isImmobilize = false;
+        }
+        private void OnCounterSuccessful(BotCounterSuccessData data)
+        {
+            Dash(data.counterDir * counterSuccessDashDistance);
+        }
+
+        private void HandleGetCountered(BotGetCounteredData counterData)
+        {
+            Immobilize(counterData.immobilizeTime);
+        }
 
         private void Dash(Vector2 vect)
         {
@@ -204,11 +226,11 @@ namespace MD.AI
             //         Debug.DrawLine(IndexToWorldMiddleSquare(node.index) -Vector2.one/10f,IndexToWorldMiddleSquare(node.index)+Vector2.one/10f, Color.green);
             //     }
             // }
-
-            // if (isImmobilize)
-            // {
-            //     return;
-            // }
+            
+            if (isImmobilize)
+            {
+                return;
+            }
 
             MoveBot();
         }
@@ -216,6 +238,11 @@ namespace MD.AI
         public void SetAnimator(BotAnimator anim) => animator = anim;
         public bool IsMoving => isMoving;
         public void startMoving() => isMoving = true;
+        public void StopMoving()
+        {
+            isMoving = false;
+            animator.PlayIdle();
+        }
         
         void ReplanPath(Vector2 movePos)
         {
@@ -228,23 +255,16 @@ namespace MD.AI
 
         public bool SetMovePos(Vector2 movePos) 
         {         
-            // Debug.Log("find path for pos " + movePos);
             path = aStar.FindPath(WorldToIndex(transform.position),WorldToIndex(movePos));
             if (path != null)
             {
-                // Debug.Log("found path ");
                 length = path.Count;
-                // foreach (PathFinding.Node node in path)
-                // {
-                //     Debug.Log("->"+ IndexToWorld(node.index));
-                // }
                 currentNode = 0;
                 currentGoal = IndexToWorldMiddleSquare(path[currentNode].index);
                 hasPath = true;
                 return true;
             }
             hasPath = false;
-            // Debug.Log("not found path");
             return false;
         }
 
@@ -278,6 +298,7 @@ namespace MD.AI
         public void SlowDown(float time)
         {
             StartCoroutine(SlowDownCoroutine(time));
+            slowEffect.Play();
         }
 
         private IEnumerator SlowDownCoroutine(float time)
@@ -285,6 +306,7 @@ namespace MD.AI
             slowDownCount += 1;
             yield return new WaitForSeconds(time);
             slowDownCount -= 1;
+            if (slowDownCount <= 0) slowEffect.Stop();
         }
     }
 }

@@ -16,6 +16,9 @@ namespace MD.Character
         private float maxExplosionForce = 250f;
 
         [SerializeField]
+        private float immobilizeTime = .2f;
+
+        [SerializeField]
         private SpriteRenderer playerRenderer = null;
 
         [SerializeField]
@@ -39,19 +42,19 @@ namespace MD.Character
         }
 
         [Server]
-        public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage)
+        public void HandleExplosion(Transform attacker, uint throwerID, float gemDropPercentage)
         {
             int dropAmount = Mathf.FloorToInt(scoreManager.CurrentMultiplier * scoreManager.CurrentScore * gemDropPercentage * PERCENTAGE_MODIFIER);
             RpcPlayDamagingEffect();
 
-            EventSystems.EventManager.Instance.TriggerEvent(new ExplodedData(playerId, dropAmount));
+            EventSystems.EventManager.Instance.TriggerEvent(new ExplodedData(playerId, dropAmount, immobilizeTime));
 
             for (int i = 0; i < dropAmount; i++)
             {
                 GameObject droppingGem = Instantiate(droppingGemPrefab, transform.position, Quaternion.identity);
                 NetworkServer.Spawn(droppingGem);
                 droppingGem.GetComponent<Diggable.Gem.DropObtain>().ThrowerID = throwerID;
-                droppingGem.GetComponent<Diggable.Gem.DropDriver>().ThrowerTransform = throwerTransform;
+                droppingGem.GetComponent<Diggable.Gem.DropDriver>().Attacker = attacker;
                 droppingGem.GetComponent<Rigidbody2D>().AddForce(RandomExplosionForce() * RandomExplosionDirection());
             }
         }

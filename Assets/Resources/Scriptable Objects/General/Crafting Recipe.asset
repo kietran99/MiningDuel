@@ -26,9 +26,15 @@ MonoBehaviour:
   - Materials: 0a0000000a0000000a0000000a0000000a000000
     craftItemName: 8
   - Materials: 140000001400000014000000
-    craftItemName: 9
+    craftItemName: 5
   - Materials: 1400000014000000140000001400000014000000
+    craftItemName: 6
+  - Materials: 0a0000000a0000000a0000001400000014000000
+    craftItemName: 9
+  - Materials: 010000000100000004000000
     craftItemName: 10
+  - Materials: 040000000400000001000000
+    craftItemName: 11
   CrafteditemsList:
   - name: 1
     quirk: {fileID: -1094164381378787549, guid: 43f9e416aeef7fa4e9606072d227354a,
@@ -40,29 +46,39 @@ MonoBehaviour:
     UISprite: {fileID: 21300000, guid: c90c94bcdd7827e4e911532c2276c46e, type: 3}
   - name: 3
     quirk: {fileID: 2546628773844665902, guid: 84ed190a922b6fb4793ac88d8cab95c1, type: 3}
-    UISprite: {fileID: 21300000, guid: e41b2b144be710b4f9b07453260f78df, type: 3}
+    UISprite: {fileID: 21300000, guid: e1dc196df3a372a439a1387e18d28dd5, type: 3}
   - name: 4
-    quirk: {fileID: 2546628773844665902, guid: 84ed190a922b6fb4793ac88d8cab95c1, type: 3}
-    UISprite: {fileID: 21300000, guid: ff59100b66d634941a0814e1b2c9570c, type: 3}
+    quirk: {fileID: 2546628773844665902, guid: c4b67ed671442e14f9d732bd29f645e0, type: 3}
+    UISprite: {fileID: 21300000, guid: 63f1d54f54559034abc0d6edaba7ed6a, type: 3}
   - name: 7
     quirk: {fileID: -340574861393307268, guid: ff669b176ebb0cf47b6aca86b0ce4401, type: 3}
-    UISprite: {fileID: 21300000, guid: 7181120dece3daf45be8163f6745dd08, type: 3}
+    UISprite: {fileID: 21300000, guid: 8a2e14b3b034b404eb4df87c121aaa36, type: 3}
   - name: 8
     quirk: {fileID: -340574861393307268, guid: 4ab427837e3ddfd40b6c5f6c8a568e35, type: 3}
-    UISprite: {fileID: 21300000, guid: b2b1f4f1674a10644a54814815daa928, type: 3}
+    UISprite: {fileID: 21300000, guid: 86385ba0be6b082488f60938faab569b, type: 3}
   - name: 9
-    quirk: {fileID: 3520053942578419180, guid: af76e9757b8384540bc6149832c84146, type: 3}
-    UISprite: {fileID: 21300000, guid: 26b1f708ad1bee24e94f3d668cc19a8e, type: 3}
+    quirk: {fileID: 7267176726980965476, guid: d3d86a13f978d544fb1b64d5b58e439a, type: 3}
+    UISprite: {fileID: 21300000, guid: c1200fba9ced0694582075c61527fc8a, type: 3}
+  - name: 5
+    quirk: {fileID: 882582063969667997, guid: da11ce95d4b9ff94e9d75c1b0089c5d5, type: 3}
+    UISprite: {fileID: 21300000, guid: a95a5572133bee14d9bb407dd5e1e7fe, type: 3}
+  - name: 6
+    quirk: {fileID: 882582063969667997, guid: ddcd113322d49d04c968765f87b55c33, type: 3}
+    UISprite: {fileID: 21300000, guid: 8703b6a2749e21743bf5a5fd51efb86a, type: 3}
+  - name: 11
+    quirk: {fileID: 2740418514757632503, guid: 5b01c34e8d9fb8a47b18d68dd02deb62, type: 3}
+    UISprite: {fileID: 21300000, guid: a14e82a3bf109a944b853db7391efc0d, type: 3}
   - name: 10
-    quirk: {fileID: 3520053942578419180, guid: 801f7b7cda7f3de4ab5f60697704481e, type: 3}
-    UISprite: {fileID: 21300000, guid: b3e7e022f9313404eb32fd9654bc72cf, type: 3}
+    quirk: {fileID: -8500650738032078455, guid: 75ede8a2c6074fc4496ea2678c5977aa,
+      type: 3}
+    UISprite: {fileID: 21300000, guid: f7c36399c8f53cc41a88f65ee2417ac7, type: 3}
   LONG_RECIPE_LENGTH: 5
   SHORT_RECIPE_LENGTH: 3
   trie:
     trieNodesList:
     - children: 01000000ffffffffffffffffffffffff
       name: 0
-    - children: 02000000ffffffffffffffffffffffff
+    - children: 0200000016000000ffffffffffffffff
       name: 0
     - children: 03000000ffffffffffffffffffffffff
       name: 1
@@ -72,7 +88,7 @@ MonoBehaviour:
       name: 2
     - children: ffffffff06000000ffffffffffffffff
       name: 0
-    - children: ffffffff07000000ffffffffffffffff
+    - children: 1700000007000000ffffffffffffffff
       name: 0
     - children: ffffffff08000000ffffffffffffffff
       name: 3
@@ -84,7 +100,7 @@ MonoBehaviour:
       name: 0
     - children: ffffffffffffffff0c000000ffffffff
       name: 0
-    - children: ffffffffffffffff0d000000ffffffff
+    - children: ffffffffffffffff0d00000014000000
       name: 7
     - children: ffffffffffffffff0e000000ffffffff
       name: 0
@@ -95,11 +111,19 @@ MonoBehaviour:
     - children: ffffffffffffffffffffffff11000000
       name: 0
     - children: ffffffffffffffffffffffff12000000
-      name: 9
+      name: 5
     - children: ffffffffffffffffffffffff13000000
       name: 0
     - children: ffffffffffffffffffffffffffffffff
+      name: 6
+    - children: ffffffffffffffffffffffff15000000
+      name: 0
+    - children: ffffffffffffffffffffffffffffffff
+      name: 9
+    - children: ffffffffffffffffffffffffffffffff
       name: 10
+    - children: ffffffffffffffffffffffffffffffff
+      name: 11
     root:
       children: 00000000050000000a0000000f000000
       name: 0

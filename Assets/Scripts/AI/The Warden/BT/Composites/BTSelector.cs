@@ -10,14 +10,14 @@ namespace MD.AI.BehaviourTree
             {
                 var res = child.Tick(actor, blackboard);
 
-                if (!res.Equals(BTNodeState.FAILURE))
+                if (res != BTNodeState.FAILURE)
                 {
-                    BTLogger.Log(name + " - " + res);
+                    BTLogger.LogResult(gameObject, res);
                     return res;
                 }
             }
 
-            BTLogger.Log(name + " - FAILURE");
+            BTLogger.LogResult(gameObject, BTNodeState.FAILURE);
             return BTNodeState.FAILURE;
         }
     }

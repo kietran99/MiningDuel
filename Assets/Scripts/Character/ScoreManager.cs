@@ -37,7 +37,9 @@ namespace MD.Character
         {
             currentScore = 0;
             currentMultiplier = 1f;
+            var eventConsumer = EventSystems.EventConsumer.GetOrAttach(gameObject);
             EventSystems.EventManager.Instance.StartListening<StoreFinishedData>(StoreGem);
+            eventConsumer.StartListening<HitScoreObtainData>(data => IncreaseScore(data.score));
             player = GetComponent<Player>();
         }
 

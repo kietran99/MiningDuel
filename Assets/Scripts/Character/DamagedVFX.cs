@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
+using MD.Character;
 
 namespace MD.VisualEffects
 {
     public class DamagedVFX : MonoBehaviour
     {
+        [SerializeField]
+        private HitPoints hitPoints = null;
+
         [SerializeField]
         private SpriteRenderer playerRenderer = null;
 
@@ -20,6 +24,7 @@ namespace MD.VisualEffects
         {
             originalPlayerColor = playerRenderer.color;
             flashDelayWFS = new WaitForSecondsRealtime(flashDelay);
+            hitPoints.OnDamageTakenSync += Play;
         }
 
         public void Play()
@@ -35,7 +40,9 @@ namespace MD.VisualEffects
             while (flashCnt < numberOfFlashes)
             {               
                 playerRenderer.color = Color.red;
+
                 yield return flashDelayWFS;
+
                 playerRenderer.color = originalPlayerColor;
                 flashCnt++;
 

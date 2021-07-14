@@ -9,14 +9,7 @@ public class BotAnimator : MonoBehaviour
 
     private void Start() 
     {
-        var eventManager = EventSystems.EventManager.Instance;
-        eventManager.StartListening<BotDigInvokeData>(HandleDigEvent);
-    }
-
-    private void OnDestroy() 
-    {
-        var eventManager = EventSystems.EventManager.Instance;
-        eventManager.StopListening<BotDigInvokeData>(HandleDigEvent);
+        EventSystems.EventConsumer.GetOrAttach(gameObject).StartListening<BotDigInvokeData>(HandleDigEvent);
     }
 
     private void HandleDigEvent(BotDigInvokeData obj)
@@ -42,21 +35,31 @@ public class BotAnimator : MonoBehaviour
     public void SetMovementState(Vector2 move)
     {
         var speed = move.sqrMagnitude;
+        if (speed < 0.1f) return;
+
         animator.SetFloat(AnimatorConstants.HORIZONTAL, move.x);
         animator.SetFloat(AnimatorConstants.VERTICAL, move.y);
         animator.SetFloat(AnimatorConstants.SPEED, speed);
 
-        if (speed.IsEqual(0f))
-        {
-            PlayIdle();
-            return;
-        }
+        // if (speed.IsEqual(0f))
+        // {
+        //     PlayIdle();
+        //     return;
+        // }
 
         BindLastMoveStats(move.x, move.y);
     }
 
+    public void PlayBasicAttack(Vector2 dir)
+    {
+        animator.SetFloat(AnimatorConstants.ATK_X, dir.x);
+        animator.SetFloat(AnimatorConstants.ATK_Y, dir.y);
+        animator.SetTrigger(AnimatorConstants.BASIC_ATTACK);
+    }
+
     public void PlayIdle()
     {
+        animator.SetFloat(AnimatorConstants.SPEED, 0f);
         animator.SetFloat(AnimatorConstants.LAST_X, lastX);
         animator.SetFloat(AnimatorConstants.LAST_Y, lastY);
     }

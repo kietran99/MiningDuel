@@ -19,6 +19,8 @@ public class ObjectPool : MonoBehaviour, IObjectPool
 
     private Queue<GameObject> pooledObjects, freeObjects;
 
+    public int InitCapactity => capacity;
+
     void Awake()
     {
         objectName = objectToPool.name;
@@ -107,4 +109,35 @@ public class ObjectPool : MonoBehaviour, IObjectPool
 //         }
 //     }
 // #endif
+}
+
+public class ObjectPoolCache<T> where T : MonoBehaviour
+{
+    private ObjectPool pool;
+
+    private Dictionary<int, T> cachedDict;
+
+    public ObjectPoolCache(ObjectPool pool)
+    {
+        this.pool = pool;
+        cachedDict = new Dictionary<int, T>(pool.InitCapactity);
+    }
+
+    public T Pop()
+    {
+        var GO = pool.Pop();
+
+        if (cachedDict.TryGetValue(GO.GetInstanceID(), out var res))
+        {
+            return res;
+        }
+
+        var component = GO.GetComponent<T>();
+        cachedDict.Add(GO.GetInstanceID(), component);
+        return component;
+    }
+
+    public void Push(T obj) => pool.Push(obj.gameObject);
+
+    public void Reset() => pool.Reset();
 }

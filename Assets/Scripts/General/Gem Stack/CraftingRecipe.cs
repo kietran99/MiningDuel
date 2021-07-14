@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using MD.Quirk;
 using System;
+using UnityEngine.UI;
 namespace MD.CraftingSystem
 {
 
@@ -18,16 +19,17 @@ namespace MD.CraftingSystem
     public enum CraftItemName
     {
         None = 0,
-        SpeedPotion1 = 1,
-        SpeedPotion2,
+        SpeedBoost1 = 1,
+        SpeedBoost2,
         Shield1,
         Shield2,
-        SonarUpgrade1,
-        SonarUpgrade2,
-        DigPotion1,
-        DigPotion2,
-        AvatarPotion1,
-        AvatarPotion2
+        Syringe1,
+        Syringe2,
+        MightyBlessing1,
+        MightyBlessing2,
+        DrillMachine,
+        CamoPerse,
+        UmbraMod
     }
     public enum CraftableGem
     {
@@ -97,6 +99,18 @@ namespace MD.CraftingSystem
         public CraftItemName Search(CraftableGem[] gems)
         {
             return trie.Search(gems);
+        }
+
+        public CraftableGem[] GetMaterials(CraftItemName name)
+        {
+            for (int i=0; i< Recipes.Count; i++)
+            {
+                if (Recipes[i].craftItemName.Equals(name))
+                {
+                    return Recipes[i].Materials;
+                }
+            }
+            return null;
         }
     }
 }

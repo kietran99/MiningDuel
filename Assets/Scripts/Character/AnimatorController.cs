@@ -15,6 +15,8 @@ namespace MD.Character
 
         private float lastX, lastY;
 
+        private bool isStunned = false;
+
         void Awake()
         {
             animator = GetComponent<Animator>();
@@ -31,6 +33,8 @@ namespace MD.Character
             eventManager.StartListening<ThrowInvokeData>(RevertToIdleState);
             var eventConsumer = EventSystems.EventConsumer.Attach(gameObject);
             eventConsumer.StartListening<AttackDirectionData>(PlayBasicAttack);
+            eventConsumer.StartListening<Quirk.MightyBlessingActivateData>(PlayMightyBlessing);
+            eventConsumer.StartListening<StunStatusData>(HandleStunStatusChange);
         }
 
         private void OnDisable()
@@ -42,6 +46,11 @@ namespace MD.Character
             eventManager.StopListening<DigInvokeData>(InvokeDig);
             eventManager.StopListening<ProjectileObtainData>(SetHoldState);
             eventManager.StopListening<ThrowInvokeData>(RevertToIdleState);
+        }
+
+        private void HandleStunStatusChange(StunStatusData data)
+        {
+            isStunned = data.isStunned;
         }
 
         private void RevertToIdleState(ThrowInvokeData obj)
@@ -59,11 +68,19 @@ namespace MD.Character
 
         private void InvokeDig(DigInvokeData obj)
         {
+            if (isStunned) return;
             animator.SetBool(AnimatorConstants.IS_DIGGING, true); 
         }
 
         private void SetMovementState(JoystickDragData dragData)
         {
+            if (isStunned) 
+            {
+                animator.SetFloat(AnimatorConstants.SPEED, 0f);
+                PlayIdle();  
+                return;
+            }
+            
             var speed = dragData.InputDirection.sqrMagnitude;
             animator.SetFloat(AnimatorConstants.HORIZONTAL, dragData.InputDirection.x);
             animator.SetFloat(AnimatorConstants.VERTICAL, dragData.InputDirection.y);
@@ -91,9 +108,19 @@ namespace MD.Character
 
         private void PlayBasicAttack(AttackDirectionData data)
         {
-            animator.SetFloat(AnimatorConstants.ATK_X, data.dir.x);
-            animator.SetFloat(AnimatorConstants.ATK_Y, data.dir.y);
+            PlayBasicAttack(data.dir);
+        }
+
+        private void PlayBasicAttack(Vector2 dir)
+        {
+            animator.SetFloat(AnimatorConstants.ATK_X, dir.x);
+            animator.SetFloat(AnimatorConstants.ATK_Y, dir.y);
             networkAnimator.SetTrigger(AnimatorConstants.BASIC_ATTACK);
+        }
+
+        private void PlayMightyBlessing(Quirk.MightyBlessingActivateData _)
+        {
+            animator.SetBool(AnimatorConstants.IS_DIGGING, true);
         }
     }
 }

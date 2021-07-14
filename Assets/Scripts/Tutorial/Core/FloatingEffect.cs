@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace MD.Tutorial
+namespace Utils.VFX
 {
     public class FloatingEffect : MonoBehaviour
     {
@@ -10,22 +10,43 @@ namespace MD.Tutorial
         [SerializeField]
         private float moveSpeed = 10f;
 
+        private Vector2 originalPos;
         private float maxY, minY;
         private bool shouldMoveUp = true;
 
         private void Start()
         {
-            maxY = transform.position.y + offset;
-            minY = transform.position.y - offset;
+            originalPos = transform.localPosition;
+            maxY = transform.localPosition.y + offset;
+            minY = transform.localPosition.y - offset;
         }
+
+        public void SetPlayState(bool shouldPlay)
+        {
+            if (shouldPlay)
+            {
+                Play();
+                return;
+            }
+
+            Stop();
+        }
+
+        private void Play() => enabled = true;
+
+        private void Stop()
+        {
+            transform.localPosition = originalPos;
+            enabled = false;
+        }    
 
         private void Update()
         {
             if (shouldMoveUp)
             {            
-                transform.position += new Vector3(0f, moveSpeed * Time.deltaTime, 0f);
+                transform.localPosition += new Vector3(0f, moveSpeed * Time.deltaTime, 0f);
 
-                if (transform.position.y >= maxY)
+                if (transform.localPosition.y >= maxY)
                 {
                     shouldMoveUp = false;
                 }
@@ -33,9 +54,9 @@ namespace MD.Tutorial
                 return;
             }
            
-            transform.position -= new Vector3(0f, moveSpeed * Time.deltaTime, 0f);
+            transform.localPosition -= new Vector3(0f, moveSpeed * Time.deltaTime, 0f);
 
-            if (transform.position.y <= minY)
+            if (transform.localPosition.y <= minY)
             {
                 shouldMoveUp = true;
             }

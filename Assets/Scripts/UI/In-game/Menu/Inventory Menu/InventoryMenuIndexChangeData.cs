@@ -1,8 +1,11 @@
-public struct InventoryMenuIndexChangeData: EventSystems.IEventData
+namespace MD.UI
 {
-    public int index;
-    public InventoryMenuIndexChangeData(int index)
+    public struct InventoryMenuIndexChangeData: EventSystems.IEventData
     {
-        this.index = index;
+        public int index;
+        public InventoryMenuIndexChangeData(int index)
+        {
+            this.index = index;
+        }
     }
 }

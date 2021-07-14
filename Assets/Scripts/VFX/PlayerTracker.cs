@@ -5,29 +5,29 @@ namespace MD.VisualEffects
 {
     public class PlayerTracker : MonoBehaviour
     {
-        protected Transform playerTransform;
+        private Transform player;
 
-        protected virtual void Start()
+        private void Start()
         {
             if (!ServiceLocator.Resolve<Player>(out Player player))
             {
                 return;
             }
 
-            playerTransform = player.transform;
+            this.player = player.transform;
         }
 
         private void LateUpdate()
         {
-            if (playerTransform == null)
+            if (player == null)
             {
                 return;
             }
             
-            transform.position = GetFollowOffset(playerTransform.position);
+            transform.position = GetFollowOffset(player.position);
         }
 
-        protected virtual Vector3 GetFollowOffset(Vector3 playerPos) => new Vector3(playerPos.x, playerPos.y, transform.position.z);
+        private Vector3 GetFollowOffset(Vector3 playerPos) => new Vector3(playerPos.x, playerPos.y, transform.position.z);
     }
 }
 

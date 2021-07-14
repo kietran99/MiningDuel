@@ -1,6 +1,6 @@
 ﻿namespace MD.Character
 {
-    public class MainActionToggleData : EventSystems.IEventData
+    public struct MainActionToggleData : EventSystems.IEventData
     {
         public MainActionType actionType;
 

@@ -6,34 +6,63 @@ namespace MD.Character
 {
     public class WeaponDamageZone : MonoBehaviour
     {
+        [Range(0f, 1f)]
         [SerializeField]
-        private float arcMeasure = 225f;
+        private float criticalRate = .2f;
+
+        [Range(0f, 1f)]
+        [SerializeField]
+        protected float counterablePercentage = .5f;
 
         [SerializeField]
-        private float speed = 720f;      
+        protected float arcMeasure = 225f;
+
+        [SerializeField]
+        private float swingAnimDuration = .39f;
+
+        [SerializeField]
+        private CircleCollider2D userCollider = null;
 
         [SerializeField]
         private Transform pivotTransform = null;
 
-        [SerializeField]
-        private WeaponCriticalZone criticalZone = null;
-
+        private float speed = 576f;
         private Quaternion baseRotation;
+        protected float rotatedArc = 0f;
         private bool isSwinging = false;
-        protected float attackTime = 0f;
         private HashSet<int> hitList = new HashSet<int>();
+        protected float counterableArc, minSqrCritDist, maxSqrCritDist;
 
         public Action<IDamagable, bool> OnDamagableCollide { get; set; }
         public Action<Vector2> OnCounterSuccessfully { get; set; }
         public Action<Vector2> OnGetCountered { get; set; }
-
+        
         private void Start()
         {
+            speed = arcMeasure / swingAnimDuration;
             baseRotation = transform.localRotation;
-            criticalZone.OnCollide += OnCriticalZoneEnter;
+            counterableArc = counterablePercentage * arcMeasure;
+
+            var weaponCollider = GetComponent<BoxCollider2D>();
+            var weaponColliderSizeX = weaponCollider.size.x;
+            var scale = transform.localScale.x;
+            var userColliderRadius = userCollider.radius;   
+            var weaponHiltToUserColliderDist = (weaponCollider.offset.x - weaponColliderSizeX * .5f) * scale - userColliderRadius;
+            var weaponTipToUserColliderDist = weaponHiltToUserColliderDist + weaponColliderSizeX * scale;
+            var maxCritRate = (userColliderRadius * 2) / (weaponTipToUserColliderDist);
+
+            if (criticalRate > maxCritRate)
+            {
+                Debug.LogWarning($"Critical Rate should be less than or equal to {maxCritRate}");
+            }
+
+            var critAreaRadius = (criticalRate * weaponTipToUserColliderDist) * .5f;
+            var minCritDist = userColliderRadius + weaponTipToUserColliderDist - critAreaRadius;
+            minSqrCritDist = Mathf.Pow(minCritDist, 2f);
+            var maxCritDist = userColliderRadius + weaponTipToUserColliderDist + critAreaRadius;
+            maxSqrCritDist = Mathf.Pow(maxCritDist, 2f);
+            // Debug.Log($"Crit Radius: {critAreaRadius} Min: {minSqrCritDist} Max: {maxSqrCritDist}");
         }
-   
-        private void OnDestroy() => criticalZone.OnCollide -= OnCriticalZoneEnter;
 
         public void AttemptSwing()
         {
@@ -49,14 +78,12 @@ namespace MD.Character
         private System.Collections.IEnumerator Rotate()
         {
             isSwinging = true;
-            var rotated = 0f;
 
-            while (rotated < arcMeasure)
+            while (rotatedArc < arcMeasure)
             {
                 var rotateAngle = Time.deltaTime * speed;
-                attackTime += Time.deltaTime;
                 transform.RotateAround(pivotTransform.position, -transform.forward, rotateAngle);
-                rotated += rotateAngle;
+                rotatedArc += rotateAngle;
 
                 yield return null;
             }
@@ -67,9 +94,9 @@ namespace MD.Character
         private void Reset()
         {
             transform.localRotation = baseRotation;
+            rotatedArc = 0f;
             isSwinging = false;
-            attackTime = 0f;
-            hitList = new HashSet<int>();
+            hitList.Clear();
             gameObject.SetActive(false);
         }
 
@@ -82,51 +109,36 @@ namespace MD.Character
 
             if (other.TryGetComponent<IDamagable>(out var damagable))
             {
-                // Debug.Log("Regular Hit: " + other.name);
                 hitList.Add(other.GetInstanceID());
-                OnDamagableCollide?.Invoke(damagable, false);
+                var sqrDist = (other.transform.position - transform.position).sqrMagnitude;
+                // Debug.Log($"Sqr Dist: {sqrDist}");
+                var isCritical = sqrDist >= minSqrCritDist && sqrDist <= maxSqrCritDist;
+                OnDamagableCollide?.Invoke(damagable, isCritical);
                 return;
             }
             
+            CounterCheck(other);
+        }
+
+        private void CounterCheck(Collider2D other)
+        {
             if (!other.TryGetComponent<WeaponDamageZone>(out var otherWeapon))
             {
                 return;
             }  
-            // Debug.Log(other.name + ": " + otherWeapon.AttackTime + " " + name + ": " + AttackTime);
-            if (!Counterable(otherWeapon))
+
+            // Debug.Log(name + ": " + rotatedArc + " " + other.name + ": " + otherWeapon.rotatedArc);
+
+            if (rotatedArc >= counterableArc || otherWeapon.rotatedArc < counterableArc)
             {
-                Reset();
                 return;
             }
 
             var counterVect = (other.transform.position - transform.position).normalized;
-            otherWeapon.GetCountered(counterVect);
+            // Debug.Log("Get Countered: " + otherWeapon.name);
+            otherWeapon.Reset();
+            otherWeapon.OnGetCountered?.Invoke(counterVect);
             OnCounterSuccessfully?.Invoke(counterVect);
-        }
-
-        private bool Counterable(WeaponDamageZone otherWeapon) => otherWeapon.attackTime < attackTime;
-
-        private void OnCriticalZoneEnter(Collider2D other)
-        { 
-            if (hitList.Contains(other.GetInstanceID()))
-            {
-                return;
-            }
-
-            if (!other.TryGetComponent<IDamagable>(out var damagable))
-            {
-                return;
-            }
-
-            // Debug.Log("Critical Hit: " + other.name);
-            hitList.Add(other.GetInstanceID());
-            OnDamagableCollide?.Invoke(damagable, true);          
-        }
-
-        private void GetCountered(Vector2 counterVect)
-        {
-            Debug.Log("Get Countered: " + name);
-            OnGetCountered?.Invoke(counterVect);
         }
     }
 }

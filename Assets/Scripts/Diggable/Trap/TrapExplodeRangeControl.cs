@@ -10,7 +10,7 @@ namespace MD.Diggable.Projectile
         LinkedTrap trap = null;
 
         [SerializeField]
-        ContactFilter2D filterMask;
+        ContactFilter2D filterMask = default;
 
         public void LinkNearbyTraps()
         {
