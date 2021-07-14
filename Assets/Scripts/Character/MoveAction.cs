@@ -137,9 +137,9 @@ namespace MD.Character
         
         private void MoveCharacter(float moveX, float moveY)
         {
-            var movePos = new Vector2(moveX, moveY).normalized * speed*speedModifier;
-            if (slowedDownCount > 0) movePos*=(1f-SlowDownPercentage);
-           rigidBody.MovePosition(rigidBody.position + movePos*Time.fixedDeltaTime);
+            var movePos = new Vector2(moveX, moveY).normalized * speed * speedModifier;
+            if (slowedDownCount > 0) movePos *= (1f-SlowDownPercentage);
+            rigidBody.MovePosition(rigidBody.position + movePos * Time.fixedDeltaTime);
         } 
 
         private void LateUpdate()

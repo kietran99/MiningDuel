@@ -85,10 +85,11 @@ namespace MD.Character
         protected void CmdAttemptSwingWeapon() => damageZone.AttemptSwing();
 
         [Server]
-        protected void GiveDamage(IDamagable damagable, bool isCritical)
+        protected void GiveDamage(IDamagable damagable, Vector2 otherPos, bool isCritical)
         {
             var dmg = Mathf.RoundToInt(power * MultCalculator.GetResult(criticalMultiplier, isCritical));
             damagable.TakeDamage(netIdentity, dmg, isCritical);
+            RpcRaiseAttackCollideEvent(otherPos);
             IncreaseScore(isCritical);
         }
 
@@ -96,6 +97,12 @@ namespace MD.Character
         {
             int score = Mathf.RoundToInt(hitScore * MultCalculator.GetResult(criticalMultiplier, isCritical));
             EventManager.Instance.TriggerEvent(new HitScoreObtainData(score));
+        }
+
+        [ClientRpc]
+        private void RpcRaiseAttackCollideEvent(Vector2 otherPos)
+        {
+            EventManager.Instance.TriggerEvent(new AttackCollideData(otherPos.x, otherPos.y));
         }
 
         protected virtual void OnCounterSuccessfully(Vector2 counterVect) => TargetOnCounterSuccessfully(counterVect);
