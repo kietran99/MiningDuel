@@ -62,7 +62,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  useGeneratedMaps: 1
+  useGeneratedMaps: 0
   allMapsName:
   - map9
   noObstacleAreaRadius: 4

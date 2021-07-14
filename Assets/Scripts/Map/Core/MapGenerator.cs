@@ -45,6 +45,8 @@ namespace MD.Map.Core
                 int xPos = rootX + obstaPositions[i,0];
                 int yPos = rootY + obstaPositions[i,1];
                 if(xPos >= map.GetLength(0) || yPos >= map.GetLength(1)) return false;
+                // if ( xPos == 0 || xPos == map.GetLength(0) - 1 || yPos == 0 || yPos == map.GetLength(1) - 1) return false;
+                // if(InCornerArea(xPos,yPos))
                 if(map[xPos,yPos] == -1)
                     return false;
             }
@@ -88,7 +90,8 @@ namespace MD.Map.Core
         [Range(0,100)] public int randomFillPercent2 = 0;
         [Range(1,8)] [SerializeField] int deathLim = 1;
         [Range(1,8)] [SerializeField] int birthLim = 1;
-        
+        [Range(1,5)] [SerializeField] int emptyRadius = 3;
+
         int[,] map = null; 
         int totalFill;
 
@@ -188,7 +191,10 @@ namespace MD.Map.Core
                         // if(map[x,y] >= 0)
                         if(!IsObstacle(x,y))
                         {
-                            res.Add(new Vector2Int(x,y));
+                            if (!InCornerArea(x,y))
+                            {
+                                res.Add(new Vector2Int(x,y));
+                            }
                         }
                     }
                 }
@@ -264,6 +270,10 @@ namespace MD.Map.Core
         void AddChunkObstacle(int x, int y)
         {
             ChunkObstacle theChosenOne = chunks[UnityEngine.Random.Range(0,chunks.Length)];
+            if(InCornerArea(x,y))
+            {
+                return;
+            }
             if(theChosenOne.Available(x,y,map))
             {
                 int size = theChosenOne.Size;
@@ -400,6 +410,15 @@ namespace MD.Map.Core
             neighbor[0] = count;
             neighbor[1] = (numOfNo2 > numOfNo1)? 2:1;
             return neighbor;
+        }
+
+        bool InCornerArea(int x, int y)
+        {
+            if(((x>=0 && x < emptyRadius)||(x>= width - emptyRadius && x < width))&&((y>=0 && y < emptyRadius)||(y>= height - emptyRadius && y < height)))
+            {
+                return true;
+            }
+            return false;
         }
 
         #region Delete these when release
