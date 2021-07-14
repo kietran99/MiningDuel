@@ -510,9 +510,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   criticalRate: 0.125
-  counterablePercentage: 0.5
+  counterablePercentage: 0.75
   arcMeasure: 225
-  speed: 504
+  swingAnimDuration: 0.39
   userCollider: {fileID: 7833096806051087419}
   pivotTransform: {fileID: 5122476143436802385}
 --- !u!1 &6068277045544607805
