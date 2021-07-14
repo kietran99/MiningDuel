@@ -1,10 +1,15 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
+
+public class InventoryMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
 {
+    // [SerializeField]
+    // SwipeMenu swipeMenu = null;
+
+    // [SerializeField]
+    // private float SwitchMenuPercentThreshold = .5f;
     [SerializeField]
     private float PercentThreshold = .2f;
 
@@ -21,29 +26,36 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField]
     private int index;
 
-    private int count = 5;
+    [SerializeField]
+    private int count = 0;
+
+    private Transform Container;
 
     private float swipeLength;
 
     private Vector3 location;
+    // private Vector3 YLocation;
     private float cellSize;
     private float cellSpacing;
 
-    private bool isDraging;
+    // private bool isDraging;
     private RectTransform rectTransform;
+
+    // private bool isSwitchMenu = false;
 
     public void OnDrag(PointerEventData data)
     {
-        float difference = (data.pressPosition.x - data.position.x)*dragSpeed;
-        if ((index == 0 && difference < 0) ||  (index == count-1 && difference > 0 ))
+
+        float XDiff = (data.pressPosition.x - data.position.x)*dragSpeed;
+        if ((index == 0 && XDiff < 0) ||  (index == count-1 && XDiff > 0 ))
         {
-            difference =  Mathf.Clamp(difference,-dragMaxExceedLength,dragMaxExceedLength);
+            XDiff =  Mathf.Clamp(XDiff,-dragMaxExceedLength,dragMaxExceedLength);
         }
         else
         {
-            difference =  Mathf.Clamp(difference,-swipeLength -dragMaxExceedLength, swipeLength + dragMaxExceedLength);
+            XDiff =  Mathf.Clamp(XDiff,-swipeLength -dragMaxExceedLength, swipeLength + dragMaxExceedLength);
         }
-        transform.localPosition = location - new Vector3(difference,0,0);
+        rectTransform.anchoredPosition  = location - new Vector3(XDiff,0,0);
     }
 
     public void OnEndDrag(PointerEventData data)
@@ -64,12 +76,12 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
                 index--;
                 TriggerIndexChangeEvent();
             }
-            StartCoroutine(SmoothMove(transform.localPosition,newLocation));
+            StartCoroutine(SmoothMove(rectTransform.anchoredPosition ,newLocation));
             location = newLocation;
         }
         else
         {
-            StartCoroutine(SmoothMove(transform.localPosition, location));
+            StartCoroutine(SmoothMove(rectTransform.anchoredPosition , location));
         }   
     }
 
@@ -81,13 +93,13 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
         {
             elapsedTime += Time.deltaTime;
             if (elapsedTime >= time) elapsedTime = time;
-            transform.localPosition = Vector3.Slerp(start,end,elapsedTime*SwipeSpeed);
+            rectTransform.anchoredPosition  = Vector3.Slerp(start,end,elapsedTime*SwipeSpeed);
             yield return null;
         }
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         GridLayoutGroup glg = GetComponent<GridLayoutGroup>();
@@ -95,39 +107,56 @@ public class CraftingMenuDrag : MonoBehaviour, IDragHandler, IEndDragHandler
         cellSize = glg.cellSize.x;
         cellSpacing = glg.spacing.x;
         index =0;
+        count =0;
         // TriggerIndexChangeEvent();
         Initialize();
         SetSelectedIndex(0);
-
-        var eventConsumer = GetComponent<EventSystems.EventConsumer>();
-        eventConsumer.StartListening<CraftItemsNumberChangeData>(HandleItemsNumberChange);   
+        // Container = swipeMenu.transform;
+        var consumer = gameObject.AddComponent<EventSystems.EventConsumer>();
+        consumer.StartListening<AddInventoryItemData>(HandleAddItem);   
+        consumer.StartListening<RemoveInventoryItemData>(HandleRemoveItem);  
     }
 
     private void Initialize()
     {
-        rectTransform.sizeDelta = new Vector2(count*cellSize + (count-1)*cellSpacing,rectTransform.sizeDelta.y);
+        // 2*halfcellsizePadding + num*cell + (num-1)*space
+        rectTransform.sizeDelta = new Vector2(cellSize + count*cellSize + (count-1)*cellSpacing,rectTransform.sizeDelta.y);
     }
 
     private void SetSelectedIndex(int index)
     {
-        if (index <= 0) transform.localPosition = new Vector3(-cellSize/2f,0,0);
-        else transform.localPosition = new Vector3(-cellSize/2f - index*(cellSize + cellSpacing),0,0);
-        location = transform.localPosition;
+        if (index <= 0) rectTransform.anchoredPosition  = new Vector3(-cellSize/2f,0,0);
+        else rectTransform.anchoredPosition = new Vector3(-cellSize/2f - index*(cellSize + cellSpacing),0,0);
+        if (index <= 0) rectTransform.anchoredPosition  = new Vector3(0,0,0);
+        else rectTransform.anchoredPosition = new Vector3( -index*(cellSize + cellSpacing), 0, 0);
+        location = rectTransform.anchoredPosition;
         TriggerIndexChangeEvent();
     }
 
-    private void HandleItemsNumberChange(CraftItemsNumberChangeData data)
+
+
+    private void HandleAddItem(AddInventoryItemData data)
     {
-        count = data.numOfItems;
+        count+= 1;
+        HandleItemsNumberChange();
+    }
+
+    private void HandleRemoveItem(RemoveInventoryItemData data)
+    {
+        count -= 1;
+        HandleItemsNumberChange();
+    }
+
+    private void HandleItemsNumberChange()
+    {
         Initialize();
         if (index >= count) index = Mathf.Max(0,count-1);
-        // TriggerIndexChangeEvent();
         SetSelectedIndex(index);
     }
 
     public void TriggerIndexChangeEvent()
     {
-        EventSystems.EventManager.Instance.TriggerEvent<CraftMenuChangeIndexData>(new CraftMenuChangeIndexData(index));
+        EventSystems.EventManager.Instance.TriggerEvent<InventoryMenuIndexChangeData>(new InventoryMenuIndexChangeData(index));
     }
 
 }

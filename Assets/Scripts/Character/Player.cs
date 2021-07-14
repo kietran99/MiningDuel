@@ -100,24 +100,9 @@ namespace MD.Character
             SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);            
         } 
 
+        public NetworkIdentity GetNetworkIdentity() => netIdentity;  
 
-        //for testing purpose
-        void Update()
-        {
-            if(!hasAuthority) return;
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                CmdRequestSpawnLinkedTrap(netIdentity,Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
-            }
-        }
-
-        [Command]
-        private void CmdRequestSpawnLinkedTrap(NetworkIdentity owner, int x, int y)
-        {
-                var data = new LinkedTrapSpawnData(owner,x,y);
-                EventSystems.EventManager.Instance.TriggerEvent<LinkedTrapSpawnData>(data);
-        }
-
-        public NetworkIdentity GetNetworkIdentity() => netIdentity;      
+        [ClientRpc]
+        public void RpcTriggerNumAliveChangeEvent(int nAlive) => EventSystems.EventManager.Instance.TriggerEvent(new AliveCountChangeData(nAlive));     
     }
 }

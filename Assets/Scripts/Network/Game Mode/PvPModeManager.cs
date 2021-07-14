@@ -45,6 +45,7 @@ namespace MD.Network.GameMode
             }
 
             var res = alivePlayerIds.Remove(eliminatedPlayerId);
+            players.Random().RpcTriggerNumAliveChangeEvent(alivePlayerIds.Count);
 
             if (!res)
             {

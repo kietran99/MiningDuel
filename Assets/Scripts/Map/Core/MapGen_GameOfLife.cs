@@ -15,6 +15,11 @@ namespace MD.Map.Core{
         public int MapWidth => width; 
         public int MapHeight{get{return height;}}
         public int GetCount{get{return count;}}
+        bool useGeneratedMaps = false;
+        string mapName = "";
+        public bool UseGeneratedMaps => useGeneratedMaps;
+
+        public string mapUsed => mapName ;
 
         public List<Vector2Int> MovablePostions {get{
             List<Vector2Int> res = new List<Vector2Int>();

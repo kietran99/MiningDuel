@@ -4,13 +4,13 @@ using MD.CraftingSystem;
 public class CraftItemUI : MonoBehaviour
 {
     [SerializeField]
-    private Image image;
+    private Image image = null;
 
     [SerializeField]
-    private CraftingRecipe recipeSO;
+    private CraftingRecipe recipeSO = null;
 
     [SerializeField]
-    private CraftItemName itemName;
+    private CraftItemName itemName = CraftItemName.SpeedPotion1;
 
     public void SetItem(CraftItemName name) 
     {

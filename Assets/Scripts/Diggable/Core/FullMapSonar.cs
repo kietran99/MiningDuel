@@ -48,12 +48,11 @@ namespace MD.Diggable.Core
             SendScanData(conn);
         }
 
-
-        [ServerCallback]
-        private void OnDisable()
-        {
-            UnsubscribeDiggableEvents();
-        }
+        // [ServerCallback]
+        // private void OnDisable()
+        // {
+        //     UnsubscribeDiggableEvents();
+        // }
 
         private void InitializePool()
         {

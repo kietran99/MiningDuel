@@ -32,7 +32,7 @@ namespace MD.CraftingSystem
         }
 
         [SerializeField]
-        private CraftingRecipe recipeSO;
+        private CraftingRecipe recipeSO = null;
 
         [SerializeField]
         private int MAX_NO_SLOTS = 15;
@@ -41,14 +41,13 @@ namespace MD.CraftingSystem
         private int stackSize = 0;
 
         [SerializeField]
-        private DiggableType[] gemStack;
+        private DiggableType[] gemStack = null;
         [SerializeField]
-        private int head; //start index of the stack
-        [SerializeField]
+        private int head = 0; //start index of the stack
         private int tail; //last index of the stack ;
 
         [SerializeField]
-        List<CraftableItemsData> craftableItemsList;
+        List<CraftableItemsData> craftableItemsList = null;
         
         [SerializeField]
         int SelectedIndex = 0;
@@ -186,65 +185,19 @@ namespace MD.CraftingSystem
             AddToStack(data.type);
             if (stackSize <recipeSO.SHORT_RECIPE_LENGTH) return;
 
-            List<CraftableItemsData> tempList = new List<CraftableItemsData>();
+            // List<CraftableItemsData> tempList = new List<CraftableItemsData>();
+            craftableItemsList.Clear();
             for (int i = 0; i< stackSize - (recipeSO.SHORT_RECIPE_LENGTH -1) ; i++) // ignore 2 last gems
             {
                 List<CraftableItemsData> res = CanCraft(GetIndex(i), out bool skipCheck);
                 if (skipCheck) i+= recipeSO.LONG_RECIPE_LENGTH -1;
-                tempList.AddRange(res);
-            }
-            if (!IsEqual(craftableItemsList,tempList))
-            {
-                craftableItemsList = tempList;
-                EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(GetItemListData()));
+                craftableItemsList.AddRange(res);
             }
 
-            // if (isRemovingfirstGem)   //check first two recipes = maximum number of recipes can be affected by removing the first gem
-            // {
-            //     if (craftableItemsList.Count > 0 && craftableItemsList[0].index == 0)
-            //     {
-            //         if(craftableItemsList.Count > 1 && craftableItemsList[1].index == 0)
-            //         {
-            //             craftableItemsList.RemoveRange(0,2);
-            //             isChanged = true;
-            //         }
-            //         else
-            //         {
-            //             craftableItemsList.RemoveRange(0,1);
-            //             isChanged = true;
-            //         }
-            //     }
-            // }
-
-            // int startPos = 0; //find start positions to recheck recipes
-            // for (int i = recipeSO.SHORT_RECIPE_LENGTH; i <= recipeSO.LONG_RECIPE_LENGTH; i++)
-            // {
-            //     if (stackSize >= i) startPos = stackSize - i;
-            //     else break;
-            // }
-            // int removeCount = 0;
-            // for (int i= craftableItemsList.Count-1; i>=0; i--) // remove old recipes
-            // {
-            //     if (GetPos(craftableItemsList[i].index) < startPos) break;
-            //     removeCount++;
-            // }
-            // craftableItemsList.RemoveRange( craftableItemsList.Count - removeCount, removeCount);
-            
-            // for (int i = startPos; i < stackSize -(recipeSO.SHORT_RECIPE_LENGTH -1); i++) //add new recipes from gems start at startPos
-            // {
-            //     List<CraftableItemsData> res = CanCraft(GetIndex(i), out bool skipCheck);
-            //     if (res.Count > 0)
-            //     {
-            //         craftableItemsList.AddRange(res);
-            //         isChanged = true;
-            //     }
-            //     if (skipCheck) i+= recipeSO.LONG_RECIPE_LENGTH;
-            // }
-
-            // if (isChanged)
-            // {
-            //     EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(GetItemListData()));
-            // }
+            // craftableItemsList = tempList;
+            EventSystems.EventManager.Instance.TriggerEvent<CraftableItemsListChangeData>(new CraftableItemsListChangeData(GetItemListData()));
+            //update Material indicator when add a new gem
+            EventSystems.EventManager.Instance.TriggerEvent<CraftMenuChangeIndexData> (new CraftMenuChangeIndexData(Mathf.Max(SelectedIndex))); 
         }
 
         private bool IsEqual(List<CraftableItemsData> list1, List<CraftableItemsData> list2)
@@ -261,7 +214,7 @@ namespace MD.CraftingSystem
         {
             int pos = index - head;
             if (pos < 0) pos += gemStack.Length;
-            // Debug.Log("pos is " + pos + " index  is " + index);
+            Debug.Log("pos is " + pos + " index  is " + index);
             return pos;
         }
 
@@ -358,7 +311,7 @@ namespace MD.CraftingSystem
         public (int, int) GetCraftItemMaterialsInfor(int index)
         {
             if (index < 0 || index >= craftableItemsList.Count) return (0, 0);
-            return (GetIndex(craftableItemsList[index].index), craftableItemsList[index].length);
+            return (GetPos(craftableItemsList[index].index), craftableItemsList[index].length);
         }
 
     }

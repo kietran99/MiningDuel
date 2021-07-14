@@ -62,9 +62,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  useGeneratedMaps: 0
+  useGeneratedMaps: 1
   allMapsName:
-  - map2
+  - map9
   noObstacleAreaRadius: 4
   spawnOffset:
   - {x: -3, y: 3}

@@ -268,9 +268,7 @@ namespace MD.UI
 
             SpawnScanWaveSpawner();
             //TODO check if all players loaded scene
-            SpawnOffScreenIndicator();
-
-            SetupGame();           
+            SetupGame();      
         }
 
         private void SpawnScanWaveSpawner()
@@ -334,7 +332,7 @@ namespace MD.UI
 
         private void SetupGame()
         {  
-            gameModeManager.SetupGame(matchTime, Players); 
+            gameModeManager.SetupGame(matchTime, Players);
             Invoke(nameof(EndGameByTimeOut), matchTime);
         }
 

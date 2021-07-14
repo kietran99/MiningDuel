@@ -2,7 +2,8 @@
 {
     public enum MainActionType
     {
-        DIG,
-        ATTACK
+        DIG = 0,
+        ATTACK,
+        SETTRAP
     }
 }

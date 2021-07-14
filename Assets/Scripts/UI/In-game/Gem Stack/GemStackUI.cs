@@ -8,19 +8,19 @@ public class GemStackUI : MonoBehaviour
     private int MAX_NO_SLOTS = 15;
 
     [SerializeField]
-    private RectTransform[] SlotsRect;
+    private RectTransform[] SlotsRect = null;
 
     [SerializeField]
-    private GameObject SuperRareGemObjectPoolPrefab;
+    private GameObject SuperRareGemObjectPoolPrefab = null;
 
     [SerializeField]
-    private GameObject RareGemObjectPoolPrefab;
+    private GameObject RareGemObjectPoolPrefab = null;
     
     [SerializeField]
-    private GameObject UncommonGemObjectPoolPrefab;
+    private GameObject UncommonGemObjectPoolPrefab = null;
 
     [SerializeField]
-    private GameObject CommonGemObjectPoolPrefab;
+    private GameObject CommonGemObjectPoolPrefab = null;
 
 
     
