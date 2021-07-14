@@ -33,7 +33,7 @@ namespace MD.Character
         private HashSet<int> hitList = new HashSet<int>();
         protected float counterableArc, minSqrCritDist, maxSqrCritDist;
 
-        public Action<IDamagable, bool> OnDamagableCollide { get; set; }
+        public Action<IDamagable, Vector2, bool> OnDamagableCollide { get; set; }
         public Action<Vector2> OnCounterSuccessfully { get; set; }
         public Action<Vector2> OnGetCountered { get; set; }
         
@@ -113,7 +113,7 @@ namespace MD.Character
                 var sqrDist = (other.transform.position - transform.position).sqrMagnitude;
                 // Debug.Log($"Sqr Dist: {sqrDist}");
                 var isCritical = sqrDist >= minSqrCritDist && sqrDist <= maxSqrCritDist;
-                OnDamagableCollide?.Invoke(damagable, isCritical);
+                OnDamagableCollide?.Invoke(damagable, other.transform.position, isCritical);
                 return;
             }
             

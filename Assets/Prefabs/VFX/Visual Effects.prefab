@@ -114,6 +114,67 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   offset: 0.05
   moveSpeed: 0.4
+--- !u!1 &2517540494308092750
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3806949464975894204}
+  - component: {fileID: 7632868899235498859}
+  - component: {fileID: 1496923405701484866}
+  m_Layer: 0
+  m_Name: Hit Effect Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3806949464975894204
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2517540494308092750}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4514157975218842917}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7632868899235498859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2517540494308092750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08050cff6f0d4dd4fb5d352f2962cb7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _vfxPrefabPool: {fileID: 1496923405701484866}
+--- !u!114 &1496923405701484866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2517540494308092750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83d2a692782e8894e9a5f23327b77b6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extendable: 1
+  capacity: 1
+  objectToPool: {fileID: 2505619734820597552, guid: 4c88f398642fc2f49a85ff1b4ff6cb32,
+    type: 3}
 --- !u!1 &4514157973411625842
 GameObject:
   m_ObjectHideFlags: 0
@@ -486,6 +547,7 @@ Transform:
   - {fileID: 3857643154892381293}
   - {fileID: 420054503211814452}
   - {fileID: 6033572698615633042}
+  - {fileID: 3806949464975894204}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

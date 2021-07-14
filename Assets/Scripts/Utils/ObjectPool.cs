@@ -111,7 +111,7 @@ public class ObjectPool : MonoBehaviour, IObjectPool
 // #endif
 }
 
-public class ObjectPoolCache<T> where T : MonoBehaviour
+public class ObjectPoolCache<T> where T : Component
 {
     private ObjectPool pool;
 
@@ -123,9 +123,14 @@ public class ObjectPoolCache<T> where T : MonoBehaviour
         cachedDict = new Dictionary<int, T>(pool.InitCapactity);
     }
 
-    public T Pop()
+    public T Pop(bool detachParent = false)
     {
         var GO = pool.Pop();
+        
+        if (detachParent)
+        {
+            GO.transform.SetParent(null);
+        }
 
         if (cachedDict.TryGetValue(GO.GetInstanceID(), out var res))
         {
@@ -137,7 +142,11 @@ public class ObjectPoolCache<T> where T : MonoBehaviour
         return component;
     }
 
-    public void Push(T obj) => pool.Push(obj.gameObject);
+    public void Push(T obj) 
+    {
+        obj.transform.SetParent(pool.transform);
+        pool.Push(obj.gameObject);
+    }
 
     public void Reset() => pool.Reset();
 }
