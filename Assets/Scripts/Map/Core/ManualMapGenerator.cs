@@ -15,6 +15,9 @@ public class ManualMapGenerator : MonoBehaviour
     [Range(1,8)] [SerializeField] int deathLim = 1;
     [Range(1,8)] [SerializeField] int birthLim = 1;
     [Range(0,100)] public int randomFillPercent = 0;
+    [Range(1,5)] [SerializeField] int emptyRadius = 3;
+    [SerializeField] int noObstacleAreaRadius = 4;
+    [Range(1,20)][SerializeField] int obstacleFill = 3;
     [SerializeField] string myName = "map";
     // [SerializeField] Tilemap botMap = null;
     // [SerializeField] Tilemap topMap = null;
@@ -75,7 +78,10 @@ public class ManualMapGenerator : MonoBehaviour
             }
         ApplyTiles();
         UpdateNotice();
-        Debug.Log("Use Arrow key to move around\nUse MouseScroll to Zoom And LeftClick to draw\nUse Button \"T\" to switch Tile to draw and Button \"L\" to switch tile map to draw on\nTo autogenerate sum gud shit, press \"A\"\nFinally, Hit \"S\" to Save");
+        Debug.Log("Use Arrow key to move around\nUse MouseScroll to Zoom And LeftClick to draw\nUse Button \"T\" to switch Tile to draw and Button \"L\" to switch tile map to draw on\nTo autogenerate sum gud shit, press \"A\"\nBackQuote Button(The button left to alpha 1) to delete that tile from layer mask\nHit Button \"O\" to auto gen only Obstacle\nFinally, Hit \"S\" to Save");
+        #if UNITY_EDITOR
+        EditorUtility.DisplayDialog("Please read carefully","Use Arrow key to move around\nUse MouseScroll to Zoom And LeftClick to draw\nUse Button \"T\" to switch Tile to draw and Button \"L\" to switch tile map to draw on\nTo autogenerate sum gud shit, press \"A\"\nBackQuote Button(The button left to alpha 1) to delete that tile from layer mask\nHit Button \"O\" to auto gen only Obstacle\nFinally, Hit \"S\" to Save \n\n Also check console log to read again.","Okay!","Not Okay!");
+        #endif
     }
 
     // Update is called once per frame
@@ -155,6 +161,10 @@ public class ManualMapGenerator : MonoBehaviour
             EditorUtility.DisplayDialog("Ahh you cheating bastard","Auto-gen will use Tile: "+ allTile[0].name+" to fill the first tilemap (layer 0) and Tile: "+ allTile[1].name+" to fill the second tilemap(Layer 1)","Roger!");
             #endif
             ApplyTiles();
+        }
+        if(Input.GetKeyDown(KeyCode.O))
+        {
+            AddObstacle();
         }
         if(Input.GetMouseButton(0))
         {
@@ -298,7 +308,7 @@ public class ManualMapGenerator : MonoBehaviour
     void ApplyTiles(int x, int y, int mask)
     {
         if(x < 0 || y < 0 || mask < 0 || allLayer == null || mask >= allLayer.Length) return;
-        int weight = map[x,y];
+        // int weight = map[x,y];
         if(tileID == -1)
         {
             allLayer[mask].SetTile(new Vector3Int(x, y,0), null);
@@ -381,5 +391,37 @@ public class ManualMapGenerator : MonoBehaviour
         PrefabUtility.SaveAsPrefabAsset(grid,prefabSavePath);
         EditorUtility.DisplayDialog("Map Data saved","The file was saved under Streaming Assests with name: " + fileName,"Continue");
         #endif
+    }
+
+    bool InCornerArea(int x, int y)
+    {
+        if(((x>=0 && x < emptyRadius)||(x>= width - emptyRadius && x < width))&&((y>=0 && y < emptyRadius)||(y>= height - emptyRadius && y < height)))
+        {
+            return true;
+        }
+        return false;
+    }
+    void AddObstacle()
+    {
+        Random random = new Random();
+        for(int x = 0; x < width; x++)
+            for(int y = 0; y < height; y++)
+            {
+                if ((x <= width / 2 + noObstacleAreaRadius && x >= width / 2 - noObstacleAreaRadius)&&(y <= height / 2 + noObstacleAreaRadius && y >= height / 2 - noObstacleAreaRadius))
+                {
+                    continue;
+                }
+                int chance = random.Next(1,100);
+                if(chance <= obstacleFill)
+                {
+                    // map[x,y] = -1;
+                    // AddChunkObstacle(x,y);
+                    if (!(InCornerArea(x,y)))
+                    {
+                        obstacleMap.SetTile(new Vector3Int(x,y,0),obstacleTile);
+                        map[x,y] = -1;
+                    }
+                }
+            }
     }
 }

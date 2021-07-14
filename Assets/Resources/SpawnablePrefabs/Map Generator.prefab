@@ -79,3 +79,4 @@ MonoBehaviour:
   randomFillPercent2: 10
   deathLim: 4
   birthLim: 3
+  emptyRadius: 3
