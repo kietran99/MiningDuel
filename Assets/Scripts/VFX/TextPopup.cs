@@ -21,6 +21,7 @@ namespace MD.VisualEffects
 
         public void Play(string value, Vector2 pos, Color color, System.Action<TextPopup> onFadeOutCallback)
         {
+            _text.text = value;
             _text.color = new Color(color.r, color.g, color.b, 1f);
             _text.rectTransform.position = pos + _offset;
             OnFadeOut = onFadeOutCallback;
