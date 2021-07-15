@@ -14,5 +14,7 @@ namespace MD.Map.Core
         bool UseGeneratedMaps {get;}
         string mapUsed{ get;}
         List<Vector3> SpawnStoragePos();
+        void UpdateObsatcleData(int x, int y);
+        Vector3 SpawnStorage();
     }
 }

@@ -62,6 +62,7 @@ namespace MD.UI
         private Map.Core.SpawnPositionsData spawnPositionsData;
         private List<uint> aliveBots = new List<uint>();
         private List<Vector3> storagePosList = null;
+        private Map.Core.IMapGenerator mapGenerator;
         #endregion
 
         public static event Action OnClientConnected;
@@ -217,11 +218,9 @@ namespace MD.UI
             InitEnv();
             gameModeManager.HandleServerChangeScene();
         }
-
         private void InitEnv()
         {
-            var mapGenerator = SpawnMapGenerator();  
-            storagePosList = mapGenerator.SpawnStoragePos();
+            mapGenerator = SpawnMapGenerator();  
             spawnPositionsData = mapGenerator.SpawnPositionsData;
             SpawnDiggableGenerator();            
         }
@@ -245,7 +244,7 @@ namespace MD.UI
 
         public void SpawnPvPPlayers()
         {
-            RoomPlayers.ForEach((roomPlayer, idx) =>
+            RoomPlayers.ToArray().ForEach((roomPlayer, idx) =>
             {
                 var player = Instantiate(NetworkPlayerPrefab, spawnPositionsData.SpawnPositions[idx], Quaternion.identity);
                 player.SetPlayerNameAndColor(roomPlayer.DisplayName);
@@ -295,11 +294,12 @@ namespace MD.UI
         private void SpawnStorage(NetworkIdentity playerId, Color flagColor)
         {
             // var storage = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(STORAGE)), playerId.transform.position, Quaternion.identity);
-            int rnd = UnityEngine.Random.Range(0, storagePosList.Count);
-            var storage = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(STORAGE)), storagePosList[rnd], Quaternion.identity);
+            // int rnd = UnityEngine.Random.Range(0, storagePosList.Count);
+            var storage = Instantiate(spawnPrefabs.Find(prefab => prefab.name.Equals(STORAGE)), mapGenerator.SpawnStorage(), Quaternion.identity);
             storage.GetComponent<Diggable.Core.Storage>().Initialize(playerId, flagColor);
             NetworkServer.Spawn(storage.gameObject);
-            storagePosList.RemoveAt(rnd);
+            // mapGenerator.UpdateObsatcleData(((int)storagePosList[rnd].x),((int)storagePosList[rnd].y));
+            // storagePosList.RemoveAt(rnd);
         }
 
         private void SpawnSonar()

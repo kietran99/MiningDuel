@@ -86,8 +86,8 @@ namespace MD.Map.Core
                 var spawnPosList = new Vector2[]
                 {
                     new Vector2(_cornerSpawnOffset.x, _cornerSpawnOffset.y),
-                    new Vector2(width - _cornerSpawnOffset.x, height - _cornerSpawnOffset.y),
-                    new Vector2(width - _cornerSpawnOffset.x, _cornerSpawnOffset.y),
+                    new Vector2(width - _cornerSpawnOffset.x , height - _cornerSpawnOffset.y),
+                    new Vector2(width - _cornerSpawnOffset.x , _cornerSpawnOffset.y),
                     new Vector2(_cornerSpawnOffset.x, height - _cornerSpawnOffset.y)
                 };
 
@@ -116,7 +116,7 @@ namespace MD.Map.Core
                                                         new ChunkObstacle(new int[,] {{0,0},{2,0},{1,1},{0,2},{2,2}}),
                                                         new ChunkObstacle(new int[,] {{1,0},{0,1},{1,1},{2,1},{1,2}})};
 
-
+        List<Vector3> avail_storage_pos = null;
         private Vector2Int[] _storagePosList;
 
         public override void OnStartServer()
@@ -155,7 +155,8 @@ namespace MD.Map.Core
                 map = Smoothening();
             }
 
-            AddObstacle();         
+            AddObstacle();     
+            avail_storage_pos = SpawnStoragePos();   
         }
 
 
@@ -196,6 +197,24 @@ namespace MD.Map.Core
 
             // _storagePosList = ;
             return lst;
+        }
+        public Vector3 SpawnStorage()
+        {
+            int rnd = UnityEngine.Random.Range(0,avail_storage_pos.Count);
+            Vector3 res = avail_storage_pos[rnd];
+            map[((int)res.x),((int)res.y)] = -1;
+            avail_storage_pos.RemoveAt(rnd);
+            return res;
+
+        }
+
+        public void UpdateObsatcleData(int x, int y)
+        {
+            if (x < 0 || x >= width || y < 0 || y >= height)
+            {
+                return;
+            }
+            map[x,y] = -1;
         }
 
         public bool IsObstacle(int x, int y)

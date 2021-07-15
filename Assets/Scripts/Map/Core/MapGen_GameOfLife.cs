@@ -271,6 +271,15 @@ namespace MD.Map.Core{
         {
             return new List<Vector3>();
         }
+        public void UpdateObsatcleData(int x, int y)
+        {
+            return;
+        }
+        public Vector3 SpawnStorage()
+        {
+            return Vector3.zero;
+        }
+
         int[] GetNeighBor(int posX, int posY)
         {
             int[] neighbor = new int[2];
