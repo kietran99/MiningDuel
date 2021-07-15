@@ -5,9 +5,10 @@ using UnityEngine.Networking;
 
 public static class SaveMapData 
 {
+#if UNITY_EDITOR
     public static void SaveArray(ManualMapGenerator mapGenerator, string name, out string fName)
     {
-        #if UNITY_EDITOR
+        
         BinaryFormatter formatter = new BinaryFormatter();
         int count = 0;
         string fileName = name + ".md";
@@ -23,8 +24,8 @@ public static class SaveMapData
         formatter.Serialize(stream, mapData);
         stream.Close();
         fName = fileName;
-        #endif
     }
+#endif
 
     public static MapData LoadMap(string name)
     {

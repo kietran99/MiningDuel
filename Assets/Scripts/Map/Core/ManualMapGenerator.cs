@@ -84,7 +84,7 @@ public class ManualMapGenerator : MonoBehaviour
         #endif
     }
 
-    // Update is called once per frame
+#if UNITY_EDITOR
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.Space))
@@ -157,9 +157,8 @@ public class ManualMapGenerator : MonoBehaviour
             {
                 map = newSmoothmap(map);
             }
-            #if UNITY_EDITOR
+
             EditorUtility.DisplayDialog("Ahh you cheating bastard","Auto-gen will use Tile: "+ allTile[0].name+" to fill the first tilemap (layer 0) and Tile: "+ allTile[1].name+" to fill the second tilemap(Layer 1)","Roger!");
-            #endif
             ApplyTiles();
         }
         if(Input.GetKeyDown(KeyCode.O))
@@ -192,6 +191,8 @@ public class ManualMapGenerator : MonoBehaviour
         }
         
     }
+#endif
+
     void OnDrawGizmos()
     {
         if(map!= null)
@@ -378,9 +379,11 @@ public class ManualMapGenerator : MonoBehaviour
             }
         }
     }
+
+#if UNITY_EDITOR
     void SaveArrayData()
     {
-        #if UNITY_EDITOR
+ 
         string saveName = myName;
         string fileName = "";
         string prefabSavePath = "Assets/Resources/GeneratedMaps/";
@@ -390,8 +393,8 @@ public class ManualMapGenerator : MonoBehaviour
         prefabSavePath += names[0] + ".prefab";
         PrefabUtility.SaveAsPrefabAsset(grid,prefabSavePath);
         EditorUtility.DisplayDialog("Map Data saved","The file was saved under Streaming Assests with name: " + fileName,"Continue");
-        #endif
     }
+#endif
 
     bool InCornerArea(int x, int y)
     {
