@@ -76,6 +76,22 @@ namespace MD.Map.Core
         public int MapWidth => width;
         public int MapHeight => height;
         public bool UseGeneratedMaps => useGeneratedMaps;
+        public int[] ObstacleData 
+        {
+            get
+            {
+                int[] simpleData = new int[width * height];
+                for(int x = 0; x < width; x++)
+                {
+                    for(int y = 0; y < height; y++)
+                    {
+                        simpleData[x*width + y] = obstacleData[x,y];
+                    }
+                }
+
+                return simpleData;
+            }
+        }
 
         public string mapUsed => mapName;
         
@@ -108,6 +124,7 @@ namespace MD.Map.Core
 
         int[,] map = null; 
         int totalFill;
+        int[,] obstacleData = null;
 
         // ChunkObstacle chunksT = new ChunkObstacle(new int[,]{{0,0},{1,0},{2,0},{1,1}});
         ChunkObstacle[] chunks = new ChunkObstacle[] {  new ChunkObstacle(new int[,] {{0,0},{1,0},{2,0},{1,1}}),
@@ -131,16 +148,19 @@ namespace MD.Map.Core
                 width = mapData.width;
                 height = mapData.height;
                 map = new int[width,height];
+                obstacleData = new int[width,height];
                 for(int x = 0; x < width; x++)
                 {
                     for(int y =0; y < height; y++)
                     {
                         map[x,y] = mapData.GetElement(x,y);
+                        obstacleData[x,y] = map[x,y]; 
                     }
                 }
+                // obstacleData = map.Clone();
+                avail_storage_pos = SpawnStoragePos();  
                 return;
             }
-            
             totalFill = randomFillPercent1 + randomFillPercent2;
             totalFill = (totalFill > 100)? 100: totalFill;
             GenerateMap();
@@ -202,7 +222,7 @@ namespace MD.Map.Core
         {
             int rnd = UnityEngine.Random.Range(0,avail_storage_pos.Count);
             Vector3 res = avail_storage_pos[rnd];
-            map[((int)res.x),((int)res.y)] = -1;
+            obstacleData[((int)res.x),((int)res.y)] = -1;
             avail_storage_pos.RemoveAt(rnd);
             return res;
 
@@ -214,7 +234,7 @@ namespace MD.Map.Core
             {
                 return;
             }
-            map[x,y] = -1;
+            obstacleData[x,y] = -1;
         }
 
         public bool IsObstacle(int x, int y)
@@ -242,7 +262,7 @@ namespace MD.Map.Core
                 return true;
             }
 
-            if(map[x,y] < 0)
+            if(obstacleData[x,y] < 0)
             {
                 return true;
             }
@@ -340,17 +360,17 @@ namespace MD.Map.Core
 
         void AddChunkObstacle(int x, int y)
         {
-            ChunkObstacle theChosenOne = chunks[UnityEngine.Random.Range(0,chunks.Length)];
             if(InCornerArea(x,y))
             {
                 return;
             }
-            if(theChosenOne.Available(x,y,map))
+            ChunkObstacle theChosenOne = chunks[UnityEngine.Random.Range(0,chunks.Length)];
+            if(theChosenOne.Available(x,y,obstacleData))
             {
                 int size = theChosenOne.Size;
                 for(int i = 0; i < size; i++)
                 {
-                    map[x + theChosenOne.Positions[i,0], y + theChosenOne.Positions[i,1]] = -1;
+                    obstacleData[x + theChosenOne.Positions[i,0], y + theChosenOne.Positions[i,1]] = -1;
                 }
             }
         }
@@ -367,6 +387,7 @@ namespace MD.Map.Core
                 totalFill = (totalFill > 100)? 100: totalFill;
                 Array.Clear(map,0,map.Length);
             }
+            obstacleData = new int[width,height];
             RandomFillMap();
         }
         void RandomFillMap()

@@ -16,5 +16,6 @@ namespace MD.Map.Core
         List<Vector3> SpawnStoragePos();
         void UpdateObsatcleData(int x, int y);
         Vector3 SpawnStorage();
+        int[] ObstacleData{get;}
     }
 }
