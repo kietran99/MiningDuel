@@ -29,12 +29,12 @@ namespace MD.Map.Core
                 .Resolve<IMapGenerator>()
                 .Match(
                     errMessage => Debug.Log(errMessage.Message), 
-                    mapGenerator => TargetRender(mapGenerator.MapData, mapGenerator.MapWidth, mapGenerator.MapHeight, mapGenerator.UseGeneratedMaps, mapGenerator.mapUsed)
+                    mapGenerator => TargetRender(mapGenerator.MapData,mapGenerator.ObstacleData, mapGenerator.MapWidth, mapGenerator.MapHeight, mapGenerator.UseGeneratedMaps, mapGenerator.mapUsed)
                 );
         }
         
         [TargetRpc]
-        private void TargetRender(int[] map, int width, int height, bool useGeneratedMaps, string mapName)
+        private void TargetRender(int[] map,int[] obstacleData, int width, int height, bool useGeneratedMaps, string mapName)
         {
             if(useGeneratedMaps)
             {
@@ -74,6 +74,19 @@ namespace MD.Map.Core
                         {
                             obstacleMap.SetTile(new Vector3Int(x, y, 0), obstacleTile);
                         }                  
+                    }
+                }
+            }
+            if(obstacleData != null)
+            {
+                for(int x = 0;x < width ; x++)
+                {
+                    for(int y = 0;y < height; y++)
+                    {
+                        if(obstacleData[x*width + y] == -1)
+                        {
+                            obstacleMap.SetTile(new Vector3Int(x, y, 0), obstacleTile);
+                        }  
                     }
                 }
             }
