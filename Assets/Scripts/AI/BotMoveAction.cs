@@ -2,12 +2,15 @@ using UnityEngine;
 using Mirror;
 using PathFinding;
 using System.Collections.Generic;
+using System.Collections;
+using MD.Character;
 
 namespace MD.AI
 {
     [RequireComponent(typeof(PlayerBot))]
     public class BotMoveAction : NetworkBehaviour
     {
+        private float DASH_MULTIPLIER = 1000f;
         public float speed = 3f;
         // private int resCount = 0;
         // private bool collideLeft = false;
@@ -16,7 +19,14 @@ namespace MD.AI
 
         // private float collideRightDistance = 0f;
         // private bool collideAhead = false;
+        [SerializeField]
+        MD.VisualEffects.SlowEffect slowEffect = null;
+        
+        [SerializeField]
+        GameObject stunnedIcon = null;
 
+        [SerializeField]
+        private float SlowDownPercentage = .8f;
         [SerializeField]
         private int length;
         [SerializeField]
@@ -33,6 +43,15 @@ namespace MD.AI
         [SerializeField]
         private bool hasPath = false;
 
+        [SerializeField]
+        private float knockbackForce = 2f;
+
+
+        [SerializeField]
+        private float counterSuccessDashDistance = .2f;
+
+        private int slowDownCount = 0;
+
         private BotAnimator animator;
 
         private AStar aStar;
@@ -48,9 +67,10 @@ namespace MD.AI
 
         private Rigidbody2D theRigidbody;
 
+        private bool isImmobilize = false;
+
         void Start()
         {
-
             theRigidbody = GetComponent<Rigidbody2D>();
             ServiceLocator.Resolve(out mapGenerator);
             mapWidth = mapGenerator.MapWidth;
@@ -58,6 +78,51 @@ namespace MD.AI
             mapRoot = Vector2Int.zero;
             aStar = new AStar(mapGenerator.MapWidth,mapGenerator.MapHeight,IsWalkable);
             playerBot = transform.GetComponent<PlayerBot>();
+            var eventConsumer = EventSystems.EventConsumer.GetOrAttach(gameObject);
+            eventConsumer.StartListening<DamageTakenData>(OnDamageTaken);
+            eventConsumer.StartListening<BotGetCounteredData>(HandleGetCountered);
+            eventConsumer.StartListening<BotCounterSuccessData>(OnCounterSuccessful);
+        }
+
+        private void OnDamageTaken(DamageTakenData data)
+        {
+            if (!data.damagedId.Equals(netId))
+            {
+                return;
+            }
+            
+            Dash(data.atkDir * knockbackForce);
+        }
+
+        public void Immobilize(float time)
+        {
+            isImmobilize = true;
+            stunnedIcon.SetActive(true);
+            animator.PlayIdle();
+            Invoke(nameof(RegainMobility), time);
+        }
+
+        public bool IsStuned() => isImmobilize;
+        
+
+        private void RegainMobility() 
+        {
+            stunnedIcon.SetActive(false);
+            isImmobilize = false;
+        }
+        private void OnCounterSuccessful(BotCounterSuccessData data)
+        {
+            Dash(data.counterDir * counterSuccessDashDistance);
+        }
+
+        private void HandleGetCountered(BotGetCounteredData counterData)
+        {
+            Immobilize(counterData.immobilizeTime);
+        }
+
+        private void Dash(Vector2 vect)
+        {
+            theRigidbody.AddForce(vect * DASH_MULTIPLIER, ForceMode2D.Impulse);
         }
 
         ///END HARD CODE ZONE 
@@ -138,7 +203,8 @@ namespace MD.AI
 
                 Vector2 moveDir = currentGoal - (Vector2)transform.position;
                 animator.SetMovementState(moveDir);
-                theRigidbody.MovePosition(theRigidbody.position + moveDir.normalized*speed*Time.fixedDeltaTime);
+                theRigidbody.MovePosition(theRigidbody.position + 
+                moveDir.normalized*speed*Time.fixedDeltaTime * (slowDownCount>0?(1- SlowDownPercentage):1));
             }
         }
 
@@ -146,7 +212,7 @@ namespace MD.AI
         {
             Vector2Int playerIndex= WorldToIndex(transform.position);
             if (currentNode >= path.Count || currentNode < 0) return false;
-            if (playerIndex == path[currentNode].index || playerIndex == path[currentNode + 1].index ) return true;
+            if (playerIndex == path[currentNode].index || (currentNode + 1 < path.Count && playerIndex == path[currentNode + 1].index) ) return true;
             return false;
         }
 
@@ -160,12 +226,23 @@ namespace MD.AI
             //         Debug.DrawLine(IndexToWorldMiddleSquare(node.index) -Vector2.one/10f,IndexToWorldMiddleSquare(node.index)+Vector2.one/10f, Color.green);
             //     }
             // }
+            
+            if (isImmobilize)
+            {
+                return;
+            }
+
             MoveBot();
         }
 
         public void SetAnimator(BotAnimator anim) => animator = anim;
         public bool IsMoving => isMoving;
         public void startMoving() => isMoving = true;
+        public void StopMoving()
+        {
+            isMoving = false;
+            animator.PlayIdle();
+        }
         
         void ReplanPath(Vector2 movePos)
         {
@@ -178,23 +255,16 @@ namespace MD.AI
 
         public bool SetMovePos(Vector2 movePos) 
         {         
-            // Debug.Log("find path for pos " + movePos);
             path = aStar.FindPath(WorldToIndex(transform.position),WorldToIndex(movePos));
             if (path != null)
             {
-                // Debug.Log("found path ");
                 length = path.Count;
-                // foreach (PathFinding.Node node in path)
-                // {
-                //     Debug.Log("->"+ IndexToWorld(node.index));
-                // }
                 currentNode = 0;
                 currentGoal = IndexToWorldMiddleSquare(path[currentNode].index);
                 hasPath = true;
                 return true;
             }
             hasPath = false;
-            // Debug.Log("not found path");
             return false;
         }
 
@@ -223,6 +293,20 @@ namespace MD.AI
                 tried++;
             }
             hasPath = false;
+        }
+
+        public void SlowDown(float time)
+        {
+            StartCoroutine(SlowDownCoroutine(time));
+            slowEffect.Play();
+        }
+
+        private IEnumerator SlowDownCoroutine(float time)
+        {
+            slowDownCount += 1;
+            yield return new WaitForSeconds(time);
+            slowDownCount -= 1;
+            if (slowDownCount <= 0) slowEffect.Stop();
         }
     }
 }

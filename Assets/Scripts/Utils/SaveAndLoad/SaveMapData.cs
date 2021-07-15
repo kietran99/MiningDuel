@@ -5,22 +5,30 @@ using UnityEngine.Networking;
 
 public static class SaveMapData 
 {
-    public static void SaveArray(ManualMapGenerator mapGenerator, string name)
+    public static void SaveArray(ManualMapGenerator mapGenerator, string name, out string fName)
     {
         #if UNITY_EDITOR
         BinaryFormatter formatter = new BinaryFormatter();
-        name = name + ".map";
-        string path = Path.Combine(Application.streamingAssetsPath,name);
+        int count = 0;
+        string fileName = name + ".md";
+        string path = Path.Combine(Application.streamingAssetsPath,fileName);
+        while(File.Exists(path))
+        {
+            count++;
+            fileName = name + count.ToString() + ".md";
+            path = Path.Combine(Application.streamingAssetsPath,fileName);
+        }
         FileStream stream = new FileStream(path, FileMode.Create);
         MapData mapData = new MapData(mapGenerator);
         formatter.Serialize(stream, mapData);
         stream.Close();
+        fName = fileName;
         #endif
     }
 
     public static MapData LoadMap(string name)
     {
-        name = name+".map";
+        name = name+".md";
         string path = Path.Combine(Application.streamingAssetsPath,name);
         if(Application.platform == RuntimePlatform.Android )
         {

@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using MD.Character;
 using MD.Diggable.Projectile;
+using System.Collections;
 
 namespace MD.AI
 {
     public class BotThrowAction : ThrowAction
     {
+        [SerializeField]
+        private ThrowChargeIndicator throwIndicator = null;
         private BotAnimator botAnimator;
 
         private void Start()
@@ -22,8 +25,15 @@ namespace MD.AI
 
         public void ThrowProjectile()
         {
-            Vector2 dir = Vector2.one;
+            StartCoroutine(WaitAndThrowProjectile());
+        }
 
+        public IEnumerator WaitAndThrowProjectile()
+        {
+            throwIndicator.Show();
+            yield return new WaitForSeconds(chargeTime);
+            throwIndicator.Hide();
+            Vector2 dir = Vector2.one;
             if (ServiceLocator.Resolve<Player>(out Player player))
             {
                 dir = (player.transform.position - transform.position).normalized;

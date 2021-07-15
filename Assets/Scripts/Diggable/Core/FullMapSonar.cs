@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
+
 namespace MD.Diggable.Core
 {
     public class FullMapSonar : NetworkBehaviour
@@ -20,7 +21,7 @@ namespace MD.Diggable.Core
         #region FIELDS
         private Transform playerTransform;
         private IObjectPool tilePool;
-        private System.Collections.Generic.Dictionary<Vector2Int, SpriteRenderer> tileDataDict;
+        private Dictionary<Vector2Int, SpriteRenderer> tileDataDict;
         #endregion
 
         private void Awake()
@@ -47,18 +48,14 @@ namespace MD.Diggable.Core
             SendScanData(conn);
         }
 
-
-        [ServerCallback]
-        private void OnDiasble()
-        {
-            UnsubscribeDiggableEvents();
-        }
+        // [ServerCallback]
+        // private void OnDisable()
+        // {
+        //     UnsubscribeDiggableEvents();
+        // }
 
         private void InitializePool()
         {
-            // GetComponent<SpriteMask>().enabled = true;
-            // GetComponent<SpriteRenderer>().enabled = true;
-
             ServiceLocator
                 .Resolve<MD.Character.Player>()
                 .Match(
@@ -67,8 +64,6 @@ namespace MD.Diggable.Core
                     {
                         playerTransform = player.transform;
                         tilePool = Instantiate(tilePoolPrefab).GetComponent<IObjectPool>();                                   
-                        // CmdRequestScanData();   // Bug: something about NetworkWriter that can be fixed by modify the script then save it
-                        // CmdSubscribeDiggableEvents();
                     }
                 );
         }
@@ -100,7 +95,7 @@ namespace MD.Diggable.Core
         [TargetRpc]
         private void TargetSetupSonarData(NetworkConnection conn,Vector3Int[] sonarTileData)
         {
-            tileDataDict = new System.Collections.Generic.Dictionary<Vector2Int, SpriteRenderer>(sonarTileData.Length);
+            tileDataDict = new Dictionary<Vector2Int, SpriteRenderer>(sonarTileData.Length);
 
             sonarTileData
                 .ForEach(
@@ -184,6 +179,8 @@ namespace MD.Diggable.Core
         [ClientRpc]
         private void RpcHandleDiggableSpawnEvent(Vector3Int diggableSpawnData)
         {
+            if (tileDataDict == null) return;
+            
             var spawnPos = new Vector2Int(diggableSpawnData.x, diggableSpawnData.y);
             var sprite = GetSonarSprite(diggableSpawnData.z);
 

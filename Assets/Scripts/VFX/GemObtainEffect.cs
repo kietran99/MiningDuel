@@ -26,7 +26,7 @@ namespace MD.VisualEffects
 
         private void HandleGemDug(GemObtainData gemObtainData)
         {
-            var gem = DiggableTypeConverter.Convert(gemObtainData.value);
+            var gem = DiggableTypeConverter.Convert(gemObtainData.type);
             Play(gem.WorldSprite);
         } 
 

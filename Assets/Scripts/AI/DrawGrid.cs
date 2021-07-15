@@ -105,11 +105,11 @@ public class DrawGrid : MonoBehaviour
     private TestGrid grid;
     private AStar aStar;
     [SerializeField]
-    private GameObject obstacle;
+    private GameObject obstacle = null;
     [SerializeField]
-    private GameObject road;
+    private GameObject road = null;
     [SerializeField]
-    private GameObject goal;
+    private GameObject goal = null;
 
 
     private Vector2Int characterIndex = Vector2Int.zero;

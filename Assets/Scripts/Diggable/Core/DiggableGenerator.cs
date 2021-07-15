@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using Mirror;
-using MD.Quirk;
+using Functional.Type;
 
 namespace MD.Diggable.Core
 {
@@ -15,12 +15,6 @@ namespace MD.Diggable.Core
 
         [Serializable]
         public class DiggableLootTable : LootTable<DiggableSpawnEntry, DiggableType> {}
-
-        [Serializable]
-        public class QuirkSpawnEntry : LootEntry<QuirkType> {}
-
-        [Serializable]
-        public class QuirkLootTable : LootTable<QuirkSpawnEntry, QuirkType> {}
         #endregion
 
         #region SERIALIZE FIELDS
@@ -33,13 +27,6 @@ namespace MD.Diggable.Core
 
         [SerializeField]
         private float generateInterval = 2f;
-
-        [Header("Quirk")]
-        [SerializeField]
-        private QuirkLootTable quirkLootTable = null;
-
-        [SerializeField]
-        private GameObject quirkObtainPrefab = null;
         #endregion
 
         #region FIELDS
@@ -50,9 +37,9 @@ namespace MD.Diggable.Core
         #endregion
 
         #region EVENTS
-        public Action<Mirror.NetworkConnection, Diggable.Gem.DigProgressData> DigProgressEvent { get; set; }
-        public Action<Mirror.NetworkConnection, Diggable.Gem.GemObtainData> GemObtainEvent { get; set; }
-        public Action<Mirror.NetworkConnection, Diggable.Projectile.ProjectileObtainData> ProjectileObtainEvent { get; set; }
+        public Action<NetworkConnection, Diggable.Gem.DigProgressData> DigProgressEvent { get; set; }
+        public Action<NetworkConnection, Diggable.Gem.GemObtainData> GemObtainEvent { get; set; }
+        public Action<NetworkConnection, Diggable.Projectile.ProjectileObtainData> ProjectileObtainEvent { get; set; }
         public Action<Diggable.DiggableRemoveData> DiggableDestroyEvent { get; set; }
         public Action<Diggable.DiggableSpawnData> DiggableSpawnEvent { get; set; }
         #endregion
@@ -75,7 +62,7 @@ namespace MD.Diggable.Core
                         diggableData = new DiggableData(MakeEmptyTiles(tilePositions));
                         FillInitSonarTileData(tilePositions);
                         System.Linq.Enumerable.Range(0, startSpawnAmount).ForEach(_ => RandomSpawn());
-                        quirkLootTable.Log();
+                        diggableLootTable.Log();
                         botEventHandler = new BotDiggableEventHandler();
                         StartCoroutine(RandomSpawnOverTime());
                     }
@@ -141,12 +128,6 @@ namespace MD.Diggable.Core
                     invalidTileErr => Debug.Log("Invalid Tile"),
                     access => 
                     {
-                        if (type.Equals(DiggableType.QUIRK))
-                        {
-                            SpawnQuirkObtainAt(pos.x, pos.y, quirkLootTable.Random);
-                            return;
-                        }
-
                         tileGraph.OnDiggableSpawn(pos);
                         diggableData.Spawn(access, type);
                         eventBroadcaster.TriggerDiggableSpawnEvent(pos.x, pos.y, type); 
@@ -235,24 +216,22 @@ namespace MD.Diggable.Core
             return diggableArea;
         }
     
-        public Functional.Type.Either<InvalidTileError, bool> IsProjectileAt(int x, int y)
+        public Either<InvalidTileError, bool> IsProjectileAt(int x, int y)
         {
             return diggableData.GetDataAt(x, y).Map(tileData => tileData.Type.IsProjectile());
         }
 
-        public Functional.Type.Either<InvalidTileError, bool> IsGemAt(int x, int y)
+        public Either<InvalidTileError, bool> IsGemAt(int x, int y)
         {
             return diggableData.GetDataAt(x, y).Map(tileData => tileData.Type.IsGem());
         }
 
-        public void SpawnQuirkObtainAt(int x, int y, QuirkType type)
+        public Either<InvalidTileError, bool> IsEmptyAt(int x, int y)
         {
-            var quirkObtainInstance = 
-                Instantiate(quirkObtainPrefab, new Vector3(x + MapConstants.GRID_OFFSET, y + MapConstants.GRID_OFFSET, 0f), Quaternion.identity);
-            NetworkServer.Spawn(quirkObtainInstance);
-            quirkObtainInstance.GetComponent<QuirkObtain>().RpcInit(type);
+            return diggableData.GetDataAt(x, y).Map(tileData => tileData.IsEmpty);
         }
 
+        #if UNITY_EDITOR
         [ServerCallback]
         void Update()
         {
@@ -261,11 +240,7 @@ namespace MD.Diggable.Core
                 SpawnAt(new Vector2Int(0, 0), DiggableType.RARE_GEM);
                 eventBroadcaster.TriggerDiggableSpawnEvent(0, 0, DiggableType.RARE_GEM);
             }
-
-            else if (Input.GetKeyDown(KeyCode.X))
-            {               
-                SpawnQuirkObtainAt(11, 17, QuirkType.CAMO_PERSE);
-            }
         }
+        #endif
     }
 }

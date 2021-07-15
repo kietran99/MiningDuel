@@ -1,6 +1,11 @@
 ﻿public struct NewTestEvent : EventSystems.IEventData
 {
-    public int x;
+    public int myInt;
+    public float myFloat;
 
-    public NewTestEvent(int x) => this.x = x;
+    public NewTestEvent(int myInt, float myFloat)
+    {
+        this.myInt = myInt;
+        this.myFloat = myFloat;
+    }
 }

@@ -92,6 +92,22 @@ public static class CollectionExtension
         return result;
     }
 
+    public static int Filter<T>(this T[] iter, Predicate<T> conditions, List<T> results)
+    {
+        var cnt = 0;
+
+        for (int i = 0; i < iter.Length; i++)
+        {
+            if (conditions(iter[i]))
+            {
+                ++cnt;
+                results.Add(iter[i]);
+            }
+        }
+
+        return cnt;
+    }
+
     public static T Reduce<T>(this T[] iter, Func<T, T, T> function)
     {
         if (iter.Length == 0) return default(T);
@@ -99,6 +115,20 @@ public static class CollectionExtension
         T currentVal = iter[0];
 
         for (int i = 0; i < iter.Length; i++)
+        {
+            currentVal = function(currentVal, iter[i]);
+        }
+
+        return currentVal;
+    }
+
+    public static T Reduce<T>(this List<T> iter, Func<T, T, T> function)
+    {
+        if (iter.Count == 0) return default(T);
+
+        T currentVal = iter[0];
+
+        for (int i = 0; i < iter.Count; i++)
         {
             currentVal = function(currentVal, iter[i]);
         }
@@ -141,6 +171,14 @@ public static class CollectionExtension
             function(iter[i], i);
         }
     }
+
+    public static void ForEach<T>(this List<T> iter, Action<T, int> function)
+    {
+        for (int i = 0; i < iter.Count; i++)
+        {
+            function(iter[i], i);
+        }
+    }
     
     public static T2[] Map<T1, T2>(this T1[] iter, Func<T1, T2> function)
     {
@@ -169,5 +207,10 @@ public static class CollectionExtension
     public static T Random<T>(this T[] arr)
     {
         return arr[UnityEngine.Random.Range(0, arr.Length)];
+    }
+
+    public static T Random<T>(this List<T> arr)
+    {
+        return arr[UnityEngine.Random.Range(0, arr.Count)];
     }
 }

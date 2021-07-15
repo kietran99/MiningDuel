@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
 using UnityEngine.SceneManagement;
+using MD.Diggable.Projectile;
 
 namespace MD.Character
 {
@@ -8,7 +9,7 @@ namespace MD.Character
     [RequireComponent(typeof(DigAction))]
     [RequireComponent(typeof(PlayerExplosionHandler))]
     [RequireComponent(typeof(ScoreManager))]
-    public class Player : NetworkBehaviour
+    public class Player : NetworkBehaviour, IPlayer
     {        
         [SerializeField]
         private PlayerColorPicker colorPicker = null;
@@ -97,6 +98,12 @@ namespace MD.Character
             NetworkManager.singleton.StopClient();
             (NetworkManager.singleton as UI.NetworkManagerLobby).CleanObjectsOnDisconnect();
             SceneManager.LoadScene(Constants.MAIN_MENU_SCENE_NAME);            
-        }       
+        } 
+
+        public NetworkIdentity GetNetworkIdentity() => netIdentity;  
+        public int GetUID() => GetInstanceID();
+
+        [ClientRpc]
+        public void RpcTriggerNumAliveChangeEvent(int nAlive) => EventSystems.EventManager.Instance.TriggerEvent(new AliveCountChangeData(nAlive));     
     }
 }

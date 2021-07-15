@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 5191761636295062666}
   - component: {fileID: 5667387462877232526}
   - component: {fileID: 9174775117415270495}
+  - component: {fileID: -2671589326720325048}
+  - component: {fileID: 7279418720675028973}
   m_Layer: 0
   m_Name: Scan Wave Spawner
   m_TagString: Untagged
@@ -63,4 +65,37 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   ScanWave: {fileID: 8134483737104149790, guid: c749eea4be55cb84fa544a467a0057d3,
+    type: 3}
+--- !u!114 &-2671589326720325048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7528864647066919903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b729a924eef8dde4e81df61444bc271d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  recipeSO: {fileID: 11400000, guid: deff49a5303b1a94bbd47ae38b282830, type: 2}
+--- !u!114 &7279418720675028973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7528864647066919903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66ade0b1830a8b84b96e8da3ddfc0f13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  LinkedTrapPrefab: {fileID: 8555643561292018698, guid: c904baffc352bd4458a849fd09feac6c,
+    type: 3}
+  CamoPersePrefab: {fileID: 3136954806002261184, guid: 6dc351115f300fd44a776b926bd01f13,
     type: 3}

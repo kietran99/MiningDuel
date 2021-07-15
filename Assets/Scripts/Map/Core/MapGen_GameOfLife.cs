@@ -15,6 +15,11 @@ namespace MD.Map.Core{
         public int MapWidth => width; 
         public int MapHeight{get{return height;}}
         public int GetCount{get{return count;}}
+        bool useGeneratedMaps = false;
+        string mapName = "";
+        public bool UseGeneratedMaps => useGeneratedMaps;
+
+        public string mapUsed => mapName ;
 
         public List<Vector2Int> MovablePostions {get{
             List<Vector2Int> res = new List<Vector2Int>();
@@ -262,6 +267,19 @@ namespace MD.Map.Core{
             
             return newMap;
         }
+        public List<Vector3> SpawnStoragePos()
+        {
+            return new List<Vector3>();
+        }
+        public void UpdateObsatcleData(int x, int y)
+        {
+            return;
+        }
+        public Vector3 SpawnStorage()
+        {
+            return Vector3.zero;
+        }
+
         int[] GetNeighBor(int posX, int posY)
         {
             int[] neighbor = new int[2];

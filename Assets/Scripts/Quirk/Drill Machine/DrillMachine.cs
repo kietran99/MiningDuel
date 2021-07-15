@@ -8,13 +8,23 @@ namespace MD.Quirk
     public class DrillMachine : BaseQuirk, MD.Diggable.Projectile.IExplodable 
     {
         [SerializeField]
-        private int drillPower = 5;
+        private int drillPower = 9999;
+
+        [SerializeField]
+        private int diggingRadius = 3;
         
         [SerializeField]
         private float drillDelay = 2f;
 
         private readonly float GRID_OFFSET = .5f;
         private bool shouldDestroy = false;
+
+        private DiggableType typeToDig;
+
+        private Vector2Int[] digArea;
+        private IDiggableGenerator diggableGenerator; 
+
+        private bool isInitialized = false;
 
         // public int maxUses = 3; 
         // int usesLeft = 0;
@@ -27,13 +37,25 @@ namespace MD.Quirk
         public override void SyncActivate(NetworkIdentity user)
         {
             base.SyncActivate(user);
+            if (hasAuthority) return;
+
             System.Func<float, float> SnapPosition = val => Mathf.FloorToInt(val) + GRID_OFFSET;
             transform.position = new Vector3(SnapPosition(user.transform.position.x), SnapPosition(user.transform.position.y), 0f);
+            transform.parent = null;
         }
 
         public override void SingleActivate(NetworkIdentity user)
-        {             
+        {
+            System.Func<float, float> SnapPosition = val => Mathf.FloorToInt(val) + GRID_OFFSET;
+            transform.position = new Vector3(SnapPosition(user.transform.position.x), SnapPosition(user.transform.position.y), 0f);
+            transform.parent = null;
+            CmdInitializeData();
             StartCoroutine(StartDrilling(user));
+        }
+
+        private void SetDiggableType()
+        {
+            typeToDig = DiggableType.COMMON_GEM;
         }      
 
         private IEnumerator StartDrilling(NetworkIdentity user)
@@ -47,79 +69,75 @@ namespace MD.Quirk
         }
 
         [Command]
-        private void CmdRequestDrill(NetworkIdentity user)
+        private void CmdInitializeData()
         {
-            if (!GetClosestDiggable(out Vector2 currentTarget))
+            if (!ServiceLocator.Resolve(out diggableGenerator))
             {
+                Debug.LogError("cant find diggable generator");
                 return;
             }
-
-            ServiceLocator
-                .Resolve<IDiggableGenerator>()
-                .Match(
-                    unavailServiceErr => Debug.LogError(unavailServiceErr.Message),
-                    diggableGenerator => 
-                        diggableGenerator.DigAt(
-                            user, 
-                            Mathf.FloorToInt(currentTarget.x), 
-                            Mathf.FloorToInt(currentTarget.y), 
-                            drillPower)                
-                );
+            SetDiggableType();
+            Vector2Int centerSquare= new Vector2Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
+            Vector2Int position  = Vector2Int.zero;
+            System.Collections.Generic.List<Vector2Int> area = new System.Collections.Generic.List<Vector2Int>();
+            for (int x = -diggingRadius; x <= diggingRadius; x++)
+            {
+                for (int y = -diggingRadius; y<= diggingRadius; y++)
+                {
+                    position = centerSquare + new Vector2Int(x,y);
+                    area.Add(position);
+                }
+            }
+            digArea = area.ToArray();
+            isInitialized = true;
         }
 
-        public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage)
+        [Command]
+        private void CmdRequestDrill(NetworkIdentity user)
         {
-            Debug.Log("Drill Machine Exploded");
+            if (!isInitialized) return;
+
+            if (!GetDiggablePosition(out Vector2Int currentTarget))
+            {
+                Debug.Log("no " + typeToDig + " in area");
+                return;
+            }
+            diggableGenerator.DigAt(
+                            user, 
+                            currentTarget.x, 
+                            currentTarget.y, 
+                            drillPower)                
+            ;
+        }
+
+        public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage)   => HandleDestroy();
+        public void HandleTrapExplode(float slowDownTime) => HandleDestroy();
+
+
+        public void HandleDestroy()
+        {
+            Debug.Log("Drill Machine Detroyed");
             StopAllCoroutines();
             shouldDestroy = true;
             Destroy(gameObject);
         }
 
         [Server]
-        private bool GetClosestDiggable(out Vector2 pos)
+        private bool GetDiggablePosition(out Vector2Int pos)
         {
-            Vector2 sqrCenter = new Vector2(Mathf.FloorToInt(transform.position.x) + .5f, Mathf.FloorToInt(transform.position.y) + .5f);
-
-            if (IsGemAt(sqrCenter)) 
+            if (diggableGenerator == null) Debug.LogError(" null digg");
+            pos = Vector2Int.zero;
+            DiggableType[] diggableInfosArr = diggableGenerator.GetDiggableArea(digArea);
+            for (int i=0; i < diggableInfosArr.Length; i++)
             {
-                pos = sqrCenter;
-                return true;
-            } 
-
-            Vector2 position = Vector2.zero;
-
-            for (int i = 1; i <= 3; i++)
-            {
-                for (int x = -i; x <= i; x++)
+                if (diggableInfosArr[i].Equals(typeToDig))
                 {
-                    for (int y = -i; y <= i; y++)
-                    {
-                        if (x != i && x != -i && y != i && y != -i) continue;
-
-                        position = sqrCenter + new Vector2((float)x, (float)y);
-
-                        if (IsGemAt(position))
-                        {
-                            pos = position;
-                            return true;
-                        }
-                    }
+                    pos = digArea[i];
+                    return true;
                 }
             }
-
-            pos = default;
             return false;
         }
 
-        [Server]
-        private bool IsGemAt(Vector2 pos)
-        {
-            if (!ServiceLocator.Resolve(out IDiggableGenerator diggableGenerator))
-            {
-                return false;
-            }
-
-            return diggableGenerator.IsGemAt(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y)).Match(err => false, isProjAt => isProjAt);
-        }
     }
 }

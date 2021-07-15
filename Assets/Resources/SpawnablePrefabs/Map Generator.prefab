@@ -63,12 +63,10 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   useGeneratedMaps: 0
-  noObstacleAreaRadius: 4
-  spawnOffset:
-  - {x: -3, y: 3}
-  - {x: 3, y: 3}
-  - {x: -3, y: -3}
-  - {x: 3, y: -3}
+  allMapsName:
+  - map9
+  noObstacleAreaRadius: 3
+  _cornerSpawnOffset: {x: 1, y: 1}
   width: 30
   height: 30
   seed: 
@@ -77,3 +75,4 @@ MonoBehaviour:
   randomFillPercent2: 10
   deathLim: 4
   birthLim: 3
+  emptyRadius: 3

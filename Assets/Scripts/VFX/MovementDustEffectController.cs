@@ -10,7 +10,7 @@ namespace MD.VisualEffects
         private void Start()
         {
             dustEffect = GetComponent<ParticleSystem>();
-            gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<UI.JoystickDragData>(ToggleEffect);
+            EventSystems.EventConsumer.Attach(gameObject).StartListening<UI.JoystickDragData>(ToggleEffect);
         }
 
         private void ToggleEffect(UI.JoystickDragData joystickDragData)

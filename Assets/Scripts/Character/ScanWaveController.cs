@@ -18,6 +18,8 @@ namespace MD.Character
         private float intervalCheckTime;
         private int maxLevel;
 
+        private bool isStunned = false;
+
         public override void OnStartAuthority()
         {
             currentLevel = 1;
@@ -25,17 +27,25 @@ namespace MD.Character
             intervalCheckTime = ReplenishTime / 10f;
             StartCoroutine(nameof(Replenish));
             EventSystems.EventManager.Instance.StartListening<ScanInvokeData>(Scan);
+            EventSystems.EventManager.Instance.StartListening<StunStatusData>(HandleStunStatusChange);
         }
 
-        void OnDestroy()
+        void OnDisable()
         {
+            StopAllCoroutines();
             if (hasAuthority)
+            {
                 EventSystems.EventManager.Instance.StopListening<ScanInvokeData>(Scan);
+                EventSystems.EventManager.Instance.StopListening<StunStatusData>(HandleStunStatusChange);
+            }
         }
+
+
+        private void HandleStunStatusChange (StunStatusData data) => isStunned = data.isStunned;
 
         private void Scan(ScanInvokeData data) 
         {
-            if (currentLevel <= 10)
+            if (isStunned || currentLevel <= 10)
             {
                 return;
             }
@@ -49,11 +59,6 @@ namespace MD.Character
         private void CmdSpawnScanWave(NetworkIdentity owner)
         {
             EventSystems.EventManager.Instance.TriggerEvent(new ScanWaveSpawnData(owner));
-        }
-
-        private void OnDisable()
-        {
-            StopAllCoroutines();
         }
 
         private IEnumerator Replenish()    

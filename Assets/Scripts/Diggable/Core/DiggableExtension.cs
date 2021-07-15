@@ -33,6 +33,8 @@
                 return DiggableType.UNCOMMON_GEM;
             case (int) DiggableType.RARE_GEM:
                 return DiggableType.RARE_GEM;
+            case (int) DiggableType.SUPER_RARE_GEM:
+                return DiggableType.SUPER_RARE_GEM;
             case (int) DiggableType.NORMAL_BOMB:
                 return DiggableType.NORMAL_BOMB;
             default: return DiggableType.EMPTY;

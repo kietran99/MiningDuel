@@ -7,6 +7,7 @@ TagManager:
   - CheckPoint
   - Obstacle
   - Grid
+  - Linked Trap
   layers:
   - Default
   - TransparentFX
@@ -18,7 +19,7 @@ TagManager:
   - 
   - Bomb Only
   - Bomb
-  - 
+  - Linked Trap
   - 
   - 
   - 
@@ -52,4 +53,7 @@ TagManager:
     locked: 0
   - name: Character
     uniqueID: 384472861
+    locked: 0
+  - name: VFX
+    uniqueID: 3310051705
     locked: 0

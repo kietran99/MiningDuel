@@ -6,7 +6,7 @@ using Random = System.Random;
 
 namespace MD.Map.Core
 {
-    public struct SpawnPositionsData
+    public class SpawnPositionsData
     {
         private int idx;
         private Vector2[] spawnPositions;
@@ -17,28 +17,151 @@ namespace MD.Map.Core
             this.spawnPositions = spawnPositions;
         }
 
+        public Vector2[] SpawnPositions => spawnPositions;
+
         public Vector2 NextSpawnPoint
         {
             get
             {
-                idx++;
-                // Debug.Log("Spawn at: " + (spawnPositions[idx] + CentreOffset));            
+                idx++;        
                 return spawnPositions[idx];            
             }
         }
     }
+    public struct ChunkObstacle
+    {
+        private int[,] obstaPositions;
+        private int size;
+        public ChunkObstacle(int[,] pos)
+        {
+            obstaPositions = pos;
+            size = obstaPositions.GetLength(0);
+        }
+        public bool Available(int rootX, int rootY, int[,] map)
+        {
+            if (map == null || rootX < 0 || rootY < 0) return false;
+            // int size = obstaPositions.GetLength(0);
+            for(int i = 0; i < size; i++)
+            {
+                int xPos = rootX + obstaPositions[i,0];
+                int yPos = rootY + obstaPositions[i,1];
+                if(xPos >= map.GetLength(0) || yPos >= map.GetLength(1)) return false;
+                // if ( xPos == 0 || xPos == map.GetLength(0) - 1 || yPos == 0 || yPos == map.GetLength(1) - 1) return false;
+                // if(InCornerArea(xPos,yPos))
+                if(map[xPos,yPos] == -1)
+                    return false;
+            }
+            return true;
+        }
+        public int[,] Positions => obstaPositions;
+        public int Size => size;
+    }
 
     public class MapGenerator : NetworkBehaviour, IMapGenerator
-    {
-        
+    { 
         [SerializeField] 
         bool useGeneratedMaps = false;
+
+        [SerializeField] 
+        string[] allMapsName = null;
 
         [SerializeField] 
         int noObstacleAreaRadius = 4;
 
         [SerializeField]
-        private Vector2[] spawnOffset = null;
+        private Vector2 _cornerSpawnOffset = Vector2.zero;
+
+        string mapName = "";
+
+        public int MapWidth => width;
+        public int MapHeight => height;
+        public bool UseGeneratedMaps => useGeneratedMaps;
+
+        public string mapUsed => mapName;
+        
+        public SpawnPositionsData SpawnPositionsData 
+        {
+            get
+            {
+                var spawnPosList = new Vector2[]
+                {
+                    new Vector2(_cornerSpawnOffset.x, _cornerSpawnOffset.y),
+                    new Vector2(width - _cornerSpawnOffset.x , height - _cornerSpawnOffset.y),
+                    new Vector2(width - _cornerSpawnOffset.x , _cornerSpawnOffset.y),
+                    new Vector2(_cornerSpawnOffset.x, height - _cornerSpawnOffset.y)
+                };
+
+                return new SpawnPositionsData(spawnPosList);
+            }
+        }
+
+        [SerializeField] int width = 0;
+        [SerializeField] int height =  0;
+        [SerializeField] string seed = "";
+        [SerializeField] bool useRandomSeed = true;
+        // [SerializeField] int reGenTimes = 0;
+        [Range(0,100)] public int randomFillPercent1 = 0;
+        [Range(0,100)] public int randomFillPercent2 = 0;
+        [Range(1,8)] [SerializeField] int deathLim = 1;
+        [Range(1,8)] [SerializeField] int birthLim = 1;
+        [Range(1,5)] [SerializeField] int emptyRadius = 3;
+
+        int[,] map = null; 
+        int totalFill;
+
+        // ChunkObstacle chunksT = new ChunkObstacle(new int[,]{{0,0},{1,0},{2,0},{1,1}});
+        ChunkObstacle[] chunks = new ChunkObstacle[] {  new ChunkObstacle(new int[,] {{0,0},{1,0},{2,0},{1,1}}),
+                                                        new ChunkObstacle(new int[,] {{0,0},{1,0},{2,0},{2,1}}),
+                                                        new ChunkObstacle(new int[,] {{0,0},{1,0},{2,0},{0,1}}),
+                                                        new ChunkObstacle(new int[,] {{0,0},{2,0},{1,1},{0,2},{2,2}}),
+                                                        new ChunkObstacle(new int[,] {{1,0},{0,1},{1,1},{2,1},{1,2}})};
+
+        List<Vector3> avail_storage_pos = null;
+        private Vector2Int[] _storagePosList;
+
+        public override void OnStartServer()
+        {
+            ServiceLocator.Register((IMapGenerator)this);  
+            if (useGeneratedMaps && allMapsName.Length > 0)
+            {
+                // Destroy(GameObject.FindGameObjectWithTag("Grid"));
+                int rd = UnityEngine.Random.Range(0, allMapsName.Length);
+                MapData mapData = SaveMapData.LoadMap(allMapsName[rd]);
+                mapName = allMapsName[rd];
+                width = mapData.width;
+                height = mapData.height;
+                map = new int[width,height];
+                for(int x = 0; x < width; x++)
+                {
+                    for(int y =0; y < height; y++)
+                    {
+                        map[x,y] = mapData.GetElement(x,y);
+                    }
+                }
+                return;
+            }
+            
+            totalFill = randomFillPercent1 + randomFillPercent2;
+            totalFill = (totalFill > 100)? 100: totalFill;
+            GenerateMap();
+            if (useRandomSeed)
+            {
+                seed = Time.time.ToString();
+            }
+            Random pseudoRandom = new Random(seed.GetHashCode());
+            int random = pseudoRandom.Next(1,10);
+            for(int i = 0; i < random*3+1; i++)
+            {
+                map = Smoothening();
+            }
+
+            AddObstacle();     
+            avail_storage_pos = SpawnStoragePos();   
+        }
+
+
+
+
 
         public int[] MapData 
         {
@@ -57,36 +180,74 @@ namespace MD.Map.Core
             }
         }
 
-        public int MapWidth => width;
-        public int MapHeight => height;
 
-        public SpawnPositionsData SpawnPositionsData => new SpawnPositionsData(spawnOffset.Map(pos => pos + new Vector2(width / 2, height / 2)));
-
-        // public int GetCount{get{return count;}}
-
-        public override void OnStartServer()
+        public List<Vector3> SpawnStoragePos()
         {
-            ServiceLocator.Register((IMapGenerator)this);  
-            if (useGeneratedMaps)
+            List<Vector3> lst = new List<Vector3>();
+            for(int x = width/2 - noObstacleAreaRadius; x <= width/2 + noObstacleAreaRadius; x++)
+            {
+                for(int y = height/2 - noObstacleAreaRadius; y <= height/2 + noObstacleAreaRadius; y++)
+                {
+                    if(!(IsObstacle(x,y)))
+                    {
+                        lst.Add(new Vector3(x,y,0));
+                    }
+                }
+            }
+
+            // _storagePosList = ;
+            return lst;
+        }
+        public Vector3 SpawnStorage()
+        {
+            int rnd = UnityEngine.Random.Range(0,avail_storage_pos.Count);
+            Vector3 res = avail_storage_pos[rnd];
+            map[((int)res.x),((int)res.y)] = -1;
+            avail_storage_pos.RemoveAt(rnd);
+            return res;
+
+        }
+
+        public void UpdateObsatcleData(int x, int y)
+        {
+            if (x < 0 || x >= width || y < 0 || y >= height)
             {
                 return;
             }
-            
-            totalFill = randomFillPercent1 + randomFillPercent2;
-            totalFill = (totalFill > 100)? 100: totalFill;
-            GenerateMap();
-            if (useRandomSeed)
+            map[x,y] = -1;
+        }
+
+        public bool IsObstacle(int x, int y)
+        {
+            if(x < 0 || x>= MapWidth || y < 0 || y >= MapHeight)
             {
-                seed = Time.time.ToString();
+                // Debug.LogError("Negative index on Obstacle check! x= " + x + " y= " + y);
+                return true;
             }
-            Random pseudoRandom = new Random(seed.GetHashCode());
-            int random = pseudoRandom.Next(1,10);
-            for(int i = 0; i < random*3+1; i++)
+            // if(map[x,y] == Constants.BLOCK)
+
+            // if (_storagePosList != null)
+            // {
+            //     foreach (var storagePos in _storagePosList)
+            //     {
+            //         if (storagePos.x == x && storagePos.y == y)
+            //         {
+            //             return true;
+            //         }
+            //     }
+            // }
+
+            if(map == null) 
             {
-                map = Smoothening();
+                return true;
             }
 
-            AddObstacle();         
+            if(map[x,y] < 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public List<Vector2Int> MovablePostions 
@@ -101,7 +262,10 @@ namespace MD.Map.Core
                         // if(map[x,y] >= 0)
                         if(!IsObstacle(x,y))
                         {
-                            res.Add(new Vector2Int(x,y));
+                            if (!InCornerArea(x,y))
+                            {
+                                res.Add(new Vector2Int(x,y));
+                            }
                         }
                     }
                 }
@@ -109,39 +273,6 @@ namespace MD.Map.Core
                 return res;
             }
         }
-        
-        public bool IsObstacle(int x, int y)
-        {
-            if(x < 0 || x>= MapWidth || y < 0 || y >= MapHeight)
-            {
-                // Debug.LogError("Negative index on Obstacle check! x= " + x + " y= " + y);
-                return true;
-            }
-            // if(map[x,y] == Constants.BLOCK)
-            if(map == null) return true;
-            if(map[x,y] < 0)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        [SerializeField] int width = 0;
-        [SerializeField] int height =  0;
-        [SerializeField] string seed = "";
-        [SerializeField] bool useRandomSeed = true;
-        // [SerializeField] int reGenTimes = 0;
-        [Range(0,100)] public int randomFillPercent1 = 0;
-        [Range(0,100)] public int randomFillPercent2 = 0;
-        [Range(1,8)] [SerializeField] int deathLim = 1;
-        [Range(1,8)] [SerializeField] int birthLim = 1;
-        // [SerializeField] Tilemap topMap = null;
-        // [SerializeField] Tilemap botMap = null;
-        // [SerializeField] RuleTile tileNo1 = null;
-        // [SerializeField] RuleTile tileNo2 = null;
-        // [SerializeField] RuleTile tileNo3 = null;
-        int[,] map = null; 
-        int totalFill;
 
         #if UNITY_EDITOR
         void Update()
@@ -194,16 +325,34 @@ namespace MD.Map.Core
             for(int x = 0; x < width; x++)
                 for(int y = 0; y < height; y++)
                 {
-                    if((x >= width / 2 - noObstacleAreaRadius&& x <= width / 2 + noObstacleAreaRadius)&&(y >= height / 2 - noObstacleAreaRadius&& y <= height / 2 + noObstacleAreaRadius))
+                    if ((x <= width / 2 + noObstacleAreaRadius && x >= width / 2 - noObstacleAreaRadius)&&(y <= height / 2 + noObstacleAreaRadius && y >= height / 2 - noObstacleAreaRadius))
                     {
                         continue;
                     }
-                    int chance = random.Next(1,100);
-                    if(chance <= 5)
+                    int chance = random.Next(1,1000);
+                    if(chance <= 20)
                     {
-                        map[x,y] = -1;
+                        // map[x,y] = -1;
+                        AddChunkObstacle(x,y);
                     }
                 }
+        }
+
+        void AddChunkObstacle(int x, int y)
+        {
+            ChunkObstacle theChosenOne = chunks[UnityEngine.Random.Range(0,chunks.Length)];
+            if(InCornerArea(x,y))
+            {
+                return;
+            }
+            if(theChosenOne.Available(x,y,map))
+            {
+                int size = theChosenOne.Size;
+                for(int i = 0; i < size; i++)
+                {
+                    map[x + theChosenOne.Positions[i,0], y + theChosenOne.Positions[i,1]] = -1;
+                }
+            }
         }
 
         void GenerateMap()
@@ -332,6 +481,15 @@ namespace MD.Map.Core
             neighbor[0] = count;
             neighbor[1] = (numOfNo2 > numOfNo1)? 2:1;
             return neighbor;
+        }
+
+        bool InCornerArea(int x, int y)
+        {
+            if(((x>=0 && x < emptyRadius)||(x>= width - emptyRadius && x < width))&&((y>=0 && y < emptyRadius)||(y>= height - emptyRadius && y < height)))
+            {
+                return true;
+            }
+            return false;
         }
 
         #region Delete these when release
