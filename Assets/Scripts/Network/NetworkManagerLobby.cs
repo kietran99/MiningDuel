@@ -61,7 +61,6 @@ namespace MD.UI
         private IGameModeManager gameModeManager;
         private Map.Core.SpawnPositionsData spawnPositionsData;
         private List<uint> aliveBots = new List<uint>();
-        private List<Vector3> storagePosList = null;
         private Map.Core.IMapGenerator mapGenerator;
         #endregion
 
