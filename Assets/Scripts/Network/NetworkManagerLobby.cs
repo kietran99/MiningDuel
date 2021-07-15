@@ -244,7 +244,7 @@ namespace MD.UI
 
         public void SpawnPvPPlayers()
         {
-            RoomPlayers.ToArray().ForEach((roomPlayer, idx) =>
+            RoomPlayers.ForEach((roomPlayer, idx) =>
             {
                 var player = Instantiate(NetworkPlayerPrefab, spawnPositionsData.SpawnPositions[idx], Quaternion.identity);
                 player.SetPlayerNameAndColor(roomPlayer.DisplayName);
