@@ -89,7 +89,7 @@ namespace MD.Character
         {
             var dmg = Mathf.RoundToInt(power * MultCalculator.GetResult(criticalMultiplier, isCritical));
             damagable.TakeDamage(netIdentity, dmg, isCritical);
-            RpcRaiseAttackCollideEvent(otherPos);
+            RpcRaiseAttackCollideEvent(otherPos, isCritical);
             IncreaseScore(isCritical);
         }
 
@@ -100,9 +100,9 @@ namespace MD.Character
         }
 
         [ClientRpc]
-        private void RpcRaiseAttackCollideEvent(Vector2 otherPos)
+        private void RpcRaiseAttackCollideEvent(Vector2 otherPos, bool isCritical)
         {
-            EventManager.Instance.TriggerEvent(new AttackCollideData(otherPos.x, otherPos.y));
+            EventManager.Instance.TriggerEvent(new AttackCollideData(otherPos.x, otherPos.y, isCritical));
         }
 
         protected virtual void OnCounterSuccessfully(Vector2 counterVect) => TargetOnCounterSuccessfully(counterVect);
