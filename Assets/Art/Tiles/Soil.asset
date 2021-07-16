@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d1514134bc4fbd41bb739b1b9a49231, type: 3}
   m_Name: Soil
   m_EditorClassIdentifier: 
-  m_DefaultSprite: {fileID: 1436671532648610551, guid: f8cec062677d2bb459ca5746489d081f,
+  m_DefaultSprite: {fileID: -6318601254603692420, guid: f8cec062677d2bb459ca5746489d081f,
     type: 3}
   m_DefaultGameObject: {fileID: 0}
   m_DefaultColliderType: 1
@@ -91,12 +91,12 @@ MonoBehaviour:
     m_RuleTransform: 0
   - m_Id: 0
     m_Sprites:
+    - {fileID: -6318601254603692420, guid: f8cec062677d2bb459ca5746489d081f, type: 3}
+    - {fileID: -6318601254603692420, guid: f8cec062677d2bb459ca5746489d081f, type: 3}
+    - {fileID: -6318601254603692420, guid: f8cec062677d2bb459ca5746489d081f, type: 3}
+    - {fileID: -6318601254603692420, guid: f8cec062677d2bb459ca5746489d081f, type: 3}
     - {fileID: 1436671532648610551, guid: f8cec062677d2bb459ca5746489d081f, type: 3}
-    - {fileID: 1436671532648610551, guid: f8cec062677d2bb459ca5746489d081f, type: 3}
-    - {fileID: 1436671532648610551, guid: f8cec062677d2bb459ca5746489d081f, type: 3}
-    - {fileID: 1436671532648610551, guid: f8cec062677d2bb459ca5746489d081f, type: 3}
-    - {fileID: 1436671532648610551, guid: f8cec062677d2bb459ca5746489d081f, type: 3}
-    - {fileID: 1436671532648610551, guid: f8cec062677d2bb459ca5746489d081f, type: 3}
+    - {fileID: 5783925936855911165, guid: f8cec062677d2bb459ca5746489d081f, type: 3}
     - {fileID: 2125315498823801022, guid: f8cec062677d2bb459ca5746489d081f, type: 3}
     - {fileID: 2914941532658970984, guid: f8cec062677d2bb459ca5746489d081f, type: 3}
     - {fileID: 2076663201891447059, guid: f8cec062677d2bb459ca5746489d081f, type: 3}

@@ -61,7 +61,6 @@ namespace MD.UI
         private IGameModeManager gameModeManager;
         private Map.Core.SpawnPositionsData spawnPositionsData;
         private List<uint> aliveBots = new List<uint>();
-        private List<Vector3> storagePosList = null;
         private Map.Core.IMapGenerator mapGenerator;
         #endregion
 
@@ -244,7 +243,7 @@ namespace MD.UI
 
         public void SpawnPvPPlayers()
         {
-            RoomPlayers.ToArray().ForEach((roomPlayer, idx) =>
+            RoomPlayers.ForEach((roomPlayer, idx) =>
             {
                 var player = Instantiate(NetworkPlayerPrefab, spawnPositionsData.SpawnPositions[idx], Quaternion.identity);
                 player.SetPlayerNameAndColor(roomPlayer.DisplayName);
