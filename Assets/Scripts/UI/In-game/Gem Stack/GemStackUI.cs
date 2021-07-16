@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MD.Diggable.Gem;
+
 public class GemStackUI : MonoBehaviour
 {
     [SerializeField]
     private int MAX_NO_SLOTS = 15;
+
+    [SerializeField]
+    private RectTransform gemsAppearedPos = null;
 
     [SerializeField]
     private RectTransform[] SlotsRect = null;
@@ -21,6 +25,9 @@ public class GemStackUI : MonoBehaviour
 
     [SerializeField]
     private GameObject CommonGemObjectPoolPrefab = null;
+
+    [SerializeField]
+    private float gemsMoveTime = 1f;
 
 
     
@@ -74,7 +81,6 @@ public class GemStackUI : MonoBehaviour
             count++;
             return;
         }
-
         //full
         DiscardSlotObject(Slots[0].gameObject);
         for (int i=0 ; i< MAX_NO_SLOTS; i++)
@@ -90,6 +96,18 @@ public class GemStackUI : MonoBehaviour
             Slots[i].transform.position = SlotsRect[i].position;
         }
     }
+
+    private IEnumerator AddNewGemEffect(GameObject gem, Vector3 position)
+    {
+        float distance = Vector2.Distance((Vector2) gemsAppearedPos.transform.position, (Vector2) position);
+        float speed = distance/gemsMoveTime;
+        float elapsedTime = 0f;
+        while (elapsedTime < gemsMoveTime)
+        {
+            yield return null;
+        }
+    }
+
 
     private void RemoveGem(GemStackUsedData data)
     {
