@@ -33,6 +33,11 @@ public class GemStackUI : MonoBehaviour
     [SerializeField]
     private float gemsMoveTime = .05f;
 
+    [SerializeField]
+    private float afterEffectTime = .5f;
+    [SerializeField]
+    private float distance = 15f;
+
 
     
     private GameObject[] Slots;
@@ -45,6 +50,8 @@ public class GemStackUI : MonoBehaviour
     private bool needWait = false;
 
     private Queue<(IEnumerator,bool)> coroutinesQueue;
+
+    private Vector3 basePosition;
 
     private void Awake()
     {
@@ -65,6 +72,7 @@ public class GemStackUI : MonoBehaviour
         consumer.StartListening<GemObtainData>(AddNewGem);
         consumer.StartListening<GemStackUsedData>(RemoveGem);
         count = 0;
+        basePosition = transform.position;
         StartCoroutine(CoroutineCoordinator());
     }
 
@@ -148,6 +156,27 @@ public class GemStackUI : MonoBehaviour
             gem.transform.position += dir*speed*Time.deltaTime;
         }
         gem.transform.position = GetSlotPosition(end);
+        StartCoroutine(StackAfterEffect());
+    }
+
+    private IEnumerator StackAfterEffect()
+    {
+        float elapsedTime = 0f;
+        float speed = distance/afterEffectTime;
+        while (elapsedTime < afterEffectTime)
+        {
+            yield return null;
+            transform.position += Vector3.left*speed*Time.deltaTime;
+            elapsedTime += Time.deltaTime;
+        }
+        elapsedTime = 0;
+        while (elapsedTime < afterEffectTime)
+        {
+            yield return null;
+            transform.position += Vector3.right*speed*Time.deltaTime;
+            elapsedTime += Time.deltaTime;
+        }
+        transform.position = basePosition;
     }
 
     private IEnumerator MoveMultipleGemsEffect(GameObject[] gems, int startIndex, int IndexMove, float time, bool isMoveleft = true, float wait =0f)
@@ -176,6 +205,7 @@ public class GemStackUI : MonoBehaviour
             gems[i].transform.position = GetSlotPosition(startIndex + i- IndexMove);
         }
         needWait = false;
+        StartCoroutine(StackAfterEffect());
     }
     IEnumerator CoroutineCoordinator()
     {
@@ -192,15 +222,16 @@ public class GemStackUI : MonoBehaviour
     }
     private IEnumerator AddGemWhenFullEffect(GameObject newGem,GameObject[] movingGems, GameObject discardGem)
     {
-        StartCoroutine( MoveGemEffect(newGem,MAX_NO_SLOTS,gemsMoveTime*5));
-        yield return new WaitForSeconds (gemsMoveTime*5);
-        StartCoroutine( MoveMultipleGemsEffect(movingGems,0,1,gemsMoveTime*5));
-        yield return new WaitForSeconds (gemsMoveTime*5);
+        StartCoroutine( MoveGemEffect(newGem,MAX_NO_SLOTS,gemsMoveTime*2));
+        yield return new WaitForSeconds (gemsMoveTime*2);
+        StartCoroutine( MoveMultipleGemsEffect(movingGems,0,1,gemsMoveTime*3));
+        yield return new WaitForSeconds (gemsMoveTime*3);
         DiscardSlotObject(discardGem);
     }
 
     private void RemoveGem(GemStackUsedData data)
     {
+        Debug.Log("remove data " + data.pos + " " + data.length);
         for (int i = data.pos ; i < data.pos + data.length ; i++)
         {
             DiscardSlotObject(Slots[i]);
@@ -213,8 +244,8 @@ public class GemStackUI : MonoBehaviour
             // Slots[i + data.length] = null;
             // Slots[i].transform.position = GetSlotPosition(i);
         }
-        count-=data.length;
-        if (count - data.length > 0)
+        count-=data.length;  
+        if (count> 0)
             coroutinesQueue.Enqueue((MoveMultipleGemsEffect(movingGems.ToArray(), data.pos + data.length, data.length,gemsMoveTime*data.length),true));
     }
 

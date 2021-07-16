@@ -500,6 +500,8 @@ MonoBehaviour:
     type: 3}
   gemUIObjectWidth: 56
   gemsMoveTime: 0.05
+  afterEffectTime: 0.1
+  distance: 15
 --- !u!114 &1274202664
 MonoBehaviour:
   m_ObjectHideFlags: 0
