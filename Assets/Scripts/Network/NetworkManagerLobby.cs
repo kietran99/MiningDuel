@@ -219,7 +219,7 @@ namespace MD.UI
         }
         private void InitEnv()
         {
-            mapGenerator = SpawnMapGenerator();  
+            mapGenerator = SpawnMapGenerator();
             spawnPositionsData = mapGenerator.SpawnPositionsData;
             SpawnDiggableGenerator();            
         }
@@ -243,7 +243,7 @@ namespace MD.UI
 
         public void SpawnPvPPlayers()
         {
-            RoomPlayers.ForEach((roomPlayer, idx) =>
+            RoomPlayers.ToArray().ForEach((roomPlayer, idx) =>
             {
                 var player = Instantiate(NetworkPlayerPrefab, spawnPositionsData.SpawnPositions[idx], Quaternion.identity);
                 player.SetPlayerNameAndColor(roomPlayer.DisplayName);
