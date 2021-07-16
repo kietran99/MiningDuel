@@ -162,6 +162,15 @@ public class ManualMapGenerator : MonoBehaviour
             #endif
             ApplyTiles();
         }
+        if(Input.GetKeyDown(KeyCode.V))
+        {
+            RandomFillMap();
+        }
+        if(Input.GetKeyDown(KeyCode.B))
+        {
+            map = newSmoothmap(map);
+            ApplyTiles();
+        }
         if(Input.GetKeyDown(KeyCode.O))
         {
             AddObstacle();
