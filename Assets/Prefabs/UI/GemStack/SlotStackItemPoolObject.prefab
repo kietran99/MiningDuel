@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2714798114448287848}
   - component: {fileID: 8144127246407671886}
   m_Layer: 0
-  m_Name: RareGemPoolObject
+  m_Name: SlotStackItemPoolObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,6 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83d2a692782e8894e9a5f23327b77b6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capacity: 15
-  objectToPool: {fileID: 1268127306610758565, guid: af673545463a55f48933d4a941187bb4,
+  extendable: 0
+  capacity: 20
+  objectToPool: {fileID: 4809892153207925170, guid: c65fa3e53a677a44dac6adaaf6859f62,
     type: 3}

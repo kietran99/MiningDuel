@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MD.Diggable.Gem;
-
+using UnityEngine.UI;
 public class GemStackUI : MonoBehaviour
 {
 
@@ -13,16 +13,19 @@ public class GemStackUI : MonoBehaviour
     private RectTransform gemsAppearedPos = null;
 
     [SerializeField]
-    private GameObject SuperRareGemObjectPoolPrefab = null;
+    private Sprite SuperRareGem= null;
 
     [SerializeField]
-    private GameObject RareGemObjectPoolPrefab = null;
+    private Sprite RareGem = null;
     
     [SerializeField]
-    private GameObject UncommonGemObjectPoolPrefab = null;
+    private Sprite UncommonGem = null;
 
     [SerializeField]
-    private GameObject CommonGemObjectPoolPrefab = null;
+    private Sprite CommonGem = null;
+
+    [SerializeField]
+    private GameObject GemSlotObjectPool = null;
 
     [SerializeField]
     private float gemUIObjectWidth = 56f;
@@ -37,12 +40,7 @@ public class GemStackUI : MonoBehaviour
 
     private int count;
 
-    private IObjectPool SuperRareGemPool;
-    private IObjectPool RareGemPool;
-
-    private IObjectPool UncommonGemPool;
-
-    private IObjectPool CommonGemPool;
+    private IObjectPool GemSlotPool;
 
     private bool needWait = false;
 
@@ -72,10 +70,8 @@ public class GemStackUI : MonoBehaviour
 
     private void InitializePool()
     {
-        SuperRareGemPool = Instantiate(SuperRareGemObjectPoolPrefab,Vector3.zero,Quaternion.identity,gameObject.transform).GetComponent<IObjectPool>();
-        RareGemPool = Instantiate(RareGemObjectPoolPrefab,Vector3.zero,Quaternion.identity,gameObject.transform).GetComponent<IObjectPool>();
-        UncommonGemPool = Instantiate(UncommonGemObjectPoolPrefab,Vector3.zero,Quaternion.identity,gameObject.transform).GetComponent<IObjectPool>();
-        CommonGemPool = Instantiate(CommonGemObjectPoolPrefab,Vector3.zero,Quaternion.identity,gameObject.transform).GetComponent<IObjectPool>();
+        GemSlotPool = Instantiate(GemSlotObjectPool,Vector3.zero,Quaternion.identity,gameObject.transform).GetComponent<IObjectPool>();
+        
     }
 
     private void InitializeSlotPosition()
@@ -224,27 +220,29 @@ public class GemStackUI : MonoBehaviour
 
     private void DiscardSlotObject(GameObject obj)
     {
-        SuperRareGemPool.Push(obj);
-        RareGemPool.Push(obj);
-        UncommonGemPool.Push(obj);
-        CommonGemPool.Push(obj);
+        GemSlotPool.Push(obj);
     }
 
     private GameObject GetSlotObject(DiggableType type)
     {
+        GameObject gem = GemSlotPool.Pop();
+        Image gemImage = gem.GetComponent<Image>();
         switch(type)
         {
             case DiggableType.SUPER_RARE_GEM:
-                return SuperRareGemPool.Pop();
+                gemImage.sprite = SuperRareGem;
+                break;
             case DiggableType.RARE_GEM:
-                return RareGemPool.Pop();
+                gemImage.sprite = RareGem;
+                break;
             case DiggableType.UNCOMMON_GEM:
-                return UncommonGemPool.Pop();
+                gemImage.sprite = UncommonGem;
+                break;
             case DiggableType.COMMON_GEM:
-                return CommonGemPool.Pop();
-            default:
-                return null;
+                gemImage.sprite = CommonGem;
+                break;
         }
+        return gem;
     }
 
 }

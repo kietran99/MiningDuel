@@ -492,13 +492,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MAX_NO_SLOTS: 15
   gemsAppearedPos: {fileID: 6684557608081780973}
-  SuperRareGemObjectPoolPrefab: {fileID: 7760809605920379277, guid: 94d23f067311fe441af509cd2b8e8071,
-    type: 3}
-  RareGemObjectPoolPrefab: {fileID: 7760809605920379277, guid: 3fe39abdee07f654fa75f0abea85e88b,
-    type: 3}
-  UncommonGemObjectPoolPrefab: {fileID: 7760809605920379277, guid: 69a28a92ceab05b44bbc49c8cdd6c810,
-    type: 3}
-  CommonGemObjectPoolPrefab: {fileID: 7760809605920379277, guid: 1c99e874403e22b458452e59ad96700a,
+  SuperRareGem: {fileID: 21300000, guid: 8221b048a8c9c1842b0d5835aa8d3166, type: 3}
+  RareGem: {fileID: 21300000, guid: 8cf23e933441f1b408a3752dc0711b7c, type: 3}
+  UncommonGem: {fileID: 21300000, guid: e48908ff538d6034290975fed9e50820, type: 3}
+  CommonGem: {fileID: 21300000, guid: 4cc835dac09350543a6bb24168ec4912, type: 3}
+  GemSlotObjectPool: {fileID: 7760809605920379277, guid: 1c99e874403e22b458452e59ad96700a,
     type: 3}
   gemUIObjectWidth: 56
   gemsMoveTime: 0.05
@@ -1427,7 +1425,7 @@ RectTransform:
   m_GameObject: {fileID: 72249921851178018}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 72249920691956793}
   - {fileID: 72249921323674844}
@@ -1447,9 +1445,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 960, y: 540}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &72249921851178017
 Canvas:
   m_ObjectHideFlags: 0
