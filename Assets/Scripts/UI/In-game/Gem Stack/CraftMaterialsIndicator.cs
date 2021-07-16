@@ -6,11 +6,8 @@ public class CraftMaterialsIndicator : MonoBehaviour
 {
     [SerializeField]
     MD.CraftingSystem.GemStackManager gemStack = null;
-
     [SerializeField]
-    RectTransform Slot = null;
-
-    private float slotWidth = 0f;
+    private float slotWidth = 56f;
 
     private Vector2 baseSize = Vector2.zero;
 
@@ -20,7 +17,6 @@ public class CraftMaterialsIndicator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        slotWidth = Slot.rect.width;
         rectTransform = GetComponent<RectTransform>();
         baseSize = rectTransform.sizeDelta;
         basePadding = rectTransform.anchoredPosition.x;

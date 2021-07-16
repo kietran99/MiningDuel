@@ -5,14 +5,12 @@ using MD.Diggable.Gem;
 
 public class GemStackUI : MonoBehaviour
 {
+
     [SerializeField]
     private int MAX_NO_SLOTS = 15;
 
     [SerializeField]
     private RectTransform gemsAppearedPos = null;
-
-    [SerializeField]
-    private RectTransform[] SlotsRect = null;
 
     [SerializeField]
     private GameObject SuperRareGemObjectPoolPrefab = null;
@@ -27,11 +25,15 @@ public class GemStackUI : MonoBehaviour
     private GameObject CommonGemObjectPoolPrefab = null;
 
     [SerializeField]
-    private float gemsMoveTime = 1f;
+    private float gemUIObjectWidth = 56f;
+
+    [SerializeField]
+    private float gemsMoveTime = .05f;
 
 
     
     private GameObject[] Slots;
+    private Dictionary<int,Vector3> SlotPositionsDict;
 
     private int count;
 
@@ -41,7 +43,10 @@ public class GemStackUI : MonoBehaviour
     private IObjectPool UncommonGemPool;
 
     private IObjectPool CommonGemPool;
-    
+
+    private bool needWait = false;
+
+    private Queue<(IEnumerator,bool)> coroutinesQueue;
 
     private void Awake()
     {
@@ -52,6 +57,8 @@ public class GemStackUI : MonoBehaviour
     private void Initialize()
     {
         Slots = new GameObject[MAX_NO_SLOTS];
+        InitializeSlotPosition();
+        coroutinesQueue = new Queue<(IEnumerator,bool)>();
     }
 
     private void Start()
@@ -60,6 +67,7 @@ public class GemStackUI : MonoBehaviour
         consumer.StartListening<GemObtainData>(AddNewGem);
         consumer.StartListening<GemStackUsedData>(RemoveGem);
         count = 0;
+        StartCoroutine(CoroutineCoordinator());
     }
 
     private void InitializePool()
@@ -70,44 +78,130 @@ public class GemStackUI : MonoBehaviour
         CommonGemPool = Instantiate(CommonGemObjectPoolPrefab,Vector3.zero,Quaternion.identity,gameObject.transform).GetComponent<IObjectPool>();
     }
 
+    private void InitializeSlotPosition()
+    {
+        SlotPositionsDict = new Dictionary<int, Vector3>(); //2 extras : for (index: -1) and (index: MAX_NO_SLOTS)
+        RectTransform parentRect = GetComponent<RectTransform>();
+        float yPos = parentRect.position.y;
+        for (int i=-1; i<= MAX_NO_SLOTS; ++i)
+        {
+            float xPos = parentRect.position.x + gemUIObjectWidth/2f + i*gemUIObjectWidth;
+            Debug.Log(i + " " + xPos);
+            SlotPositionsDict.Add(i,new Vector3(xPos,yPos,0f));
+        }
+    }
+
+    private Vector3 GetSlotPosition(int i)
+    {
+        if (!SlotPositionsDict.TryGetValue(i, out Vector3 value))
+        {
+            Debug.LogError("invalid i " + i);
+            return Vector3.zero;
+        }
+        return value;
+    }
+
     private void AddNewGem(GemObtainData data)
     {
         GameObject newGem = GetSlotObject(data.type);
+        newGem.transform.position = gemsAppearedPos.position;
         if (newGem == null) return; 
         if (count < MAX_NO_SLOTS)
         {
             Slots[count] = newGem;
-            Slots[count].transform.position = SlotsRect[count].position;
+            // Slots[count].transform.position = SlotsRect[count].position;
+            // StartCoroutine(MoveGemEffect(newGem, count, gemsMoveTime*(MAX_NO_SLOTS - count)));
+            coroutinesQueue.Enqueue((MoveGemEffect(newGem, count, gemsMoveTime*(MAX_NO_SLOTS - count)),false));
             count++;
             return;
         }
         //full
-        DiscardSlotObject(Slots[0].gameObject);
+        GameObject[] movingGems = new GameObject[MAX_NO_SLOTS + 1];
+        GameObject discardGem = Slots[0];
         for (int i=0 ; i< MAX_NO_SLOTS; i++)
         {
             //add new gem if last slot
             if (i == MAX_NO_SLOTS - 1)
             {
+                movingGems[i] = Slots[i];
                 Slots[i] = newGem;
-                Slots[i].transform.position = SlotsRect[i].position;
-                return;
+                // Slots[i].transform.position = SlotsRect[i].position;
+                break;
             }
+            movingGems[i] = Slots[i];
             Slots[i] = Slots[i+1];
-            Slots[i].transform.position = SlotsRect[i].position;
+            // Slots[i].transform.position = SlotsRect[i].position;
         }
+        movingGems[movingGems.Length -1] = newGem;
+        // StartCoroutine(AddGemWhenFullEffect(newGem,movingGems, discardGem));
+        coroutinesQueue.Enqueue((AddGemWhenFullEffect(newGem,movingGems, discardGem),true));
     }
 
-    private IEnumerator AddNewGemEffect(GameObject gem, Vector3 position)
+    private IEnumerator MoveGemEffect(GameObject gem, int end, float time, bool isMoveleft =true)
     {
-        float distance = Vector2.Distance((Vector2) gemsAppearedPos.transform.position, (Vector2) position);
-        float speed = distance/gemsMoveTime;
+        float distance = Vector2.Distance((Vector2) gem.transform.position, (Vector2) GetSlotPosition(end));
+        float speed = distance/time;
+        Vector3 dir = Vector3.left;
+        if (!isMoveleft) dir = Vector3.right;
+        
         float elapsedTime = 0f;
-        while (elapsedTime < gemsMoveTime)
+        while (elapsedTime < time)
         {
+            yield return null;
+            elapsedTime+= Time.deltaTime;
+            gem.transform.position += dir*speed*Time.deltaTime;
+        }
+        gem.transform.position = GetSlotPosition(end);
+    }
+
+    private IEnumerator MoveMultipleGemsEffect(GameObject[] gems, int startIndex, int IndexMove, float time, bool isMoveleft = true, float wait =0f)
+    {
+        if (wait >0) yield return new WaitForSeconds(wait);
+        float distance = gemUIObjectWidth*IndexMove;
+        float speed = distance/time;
+        Vector3 dir = Vector3.left;
+        if (!isMoveleft) dir = Vector3.right;
+        
+        float elapsedTime = 0f;
+        Vector3 distanceMoved = Vector3.zero;
+        while (elapsedTime < time)
+        {
+            yield return null;
+            elapsedTime+= Time.deltaTime;
+            distanceMoved = dir*Time.deltaTime*speed;
+            for (int i=0; i< gems.Length; ++i)
+            {
+                gems[i].transform.position += distanceMoved;
+            }
+        }
+
+        for (int i=0; i< gems.Length; ++i)
+        {
+            gems[i].transform.position = GetSlotPosition(startIndex + i- IndexMove);
+        }
+        needWait = false;
+    }
+    IEnumerator CoroutineCoordinator()
+    {
+        while (true)
+        {
+            if (coroutinesQueue.Count >0 && !needWait)
+            {
+                (IEnumerator,bool) res = coroutinesQueue.Dequeue();
+                if (res.Item2 == true) needWait = true;
+                yield return StartCoroutine(res.Item1);
+            }    
             yield return null;
         }
     }
-
+    private IEnumerator AddGemWhenFullEffect(GameObject newGem,GameObject[] movingGems, GameObject discardGem)
+    {
+        StartCoroutine( MoveGemEffect(newGem,MAX_NO_SLOTS,gemsMoveTime*5));
+        yield return new WaitForSeconds (gemsMoveTime*5);
+        StartCoroutine( MoveMultipleGemsEffect(movingGems,0,1,gemsMoveTime*5));
+        yield return new WaitForSeconds (gemsMoveTime*5);
+        DiscardSlotObject(discardGem);
+    }
 
     private void RemoveGem(GemStackUsedData data)
     {
@@ -115,14 +209,17 @@ public class GemStackUI : MonoBehaviour
         {
             DiscardSlotObject(Slots[i]);
         }
-
+        List<GameObject> movingGems = new List<GameObject>();
         for (int i = data.pos ; i < count - data.length; i++)
         {
             Slots[i] = Slots[i + data.length];
-            Slots[i + data.length] = null;
-            Slots[i].transform.position = SlotsRect[i].position;
+            movingGems.Add(Slots[i]);
+            // Slots[i + data.length] = null;
+            // Slots[i].transform.position = GetSlotPosition(i);
         }
         count-=data.length;
+        if (count - data.length > 0)
+            coroutinesQueue.Enqueue((MoveMultipleGemsEffect(movingGems.ToArray(), data.pos + data.length, data.length,gemsMoveTime*data.length),true));
     }
 
     private void DiscardSlotObject(GameObject obj)
@@ -151,3 +248,4 @@ public class GemStackUI : MonoBehaviour
     }
 
 }
+
