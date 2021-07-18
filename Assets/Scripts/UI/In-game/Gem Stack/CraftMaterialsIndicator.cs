@@ -22,6 +22,7 @@ public class CraftMaterialsIndicator : MonoBehaviour
         basePadding = rectTransform.anchoredPosition.x;
         gameObject.AddComponent<EventSystems.EventConsumer>().StartListening<CraftMenuChangeIndexData>(HandleChangeIndex);
         ServiceLocator.Resolve<MD.CraftingSystem.GemStackManager>(out gemStack);
+        rectTransform.sizeDelta = Vector2.zero;
     }
 
     void HandleChangeIndex(CraftMenuChangeIndexData data)
