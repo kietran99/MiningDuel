@@ -20,8 +20,6 @@ namespace MD.Diggable.Core
             UnsubscribeDiggableEvents();
         }
 
-        // TargetRpc callbacks without NetworkConnection as an arg are invoked on every authoritative DigGenComm.
-        // TargetRpc callbacks with NetworkConnection as an arg are invoked on the same DigGenComm on each client regardless of its authority.
         [Server]
         private void SubscribeDiggableEvents()
         {
