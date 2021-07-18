@@ -499,9 +499,10 @@ MonoBehaviour:
   GemSlotObjectPool: {fileID: 7760809605920379277, guid: 1c99e874403e22b458452e59ad96700a,
     type: 3}
   gemUIObjectWidth: 56
-  gemsMoveTime: 0.05
+  gemsMoveTime: 0.06
+  gemDestroyTime: 0.1
   afterEffectTime: 0.1
-  distance: 15
+  afterEffectdistance: 10
 --- !u!114 &1274202664
 MonoBehaviour:
   m_ObjectHideFlags: 0
