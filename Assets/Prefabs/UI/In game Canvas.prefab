@@ -1401,6 +1401,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreText: {fileID: 8694861728254440394}
   finalScoreText: {fileID: 8231890106030171788}
+  delayTime: 0.02
 --- !u!1 &72249921851178018
 GameObject:
   m_ObjectHideFlags: 0
