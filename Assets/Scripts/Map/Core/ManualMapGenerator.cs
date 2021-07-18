@@ -161,6 +161,15 @@ public class ManualMapGenerator : MonoBehaviour
             EditorUtility.DisplayDialog("Ahh you cheating bastard","Auto-gen will use Tile: "+ allTile[0].name+" to fill the first tilemap (layer 0) and Tile: "+ allTile[1].name+" to fill the second tilemap(Layer 1)","Roger!");
             ApplyTiles();
         }
+        if(Input.GetKeyDown(KeyCode.V))
+        {
+            RandomFillMap();
+        }
+        if(Input.GetKeyDown(KeyCode.B))
+        {
+            map = newSmoothmap(map);
+            ApplyTiles();
+        }
         if(Input.GetKeyDown(KeyCode.O))
         {
             AddObstacle();

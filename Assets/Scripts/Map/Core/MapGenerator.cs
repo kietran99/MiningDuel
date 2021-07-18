@@ -204,9 +204,9 @@ namespace MD.Map.Core
         public List<Vector3> SpawnStoragePos()
         {
             List<Vector3> lst = new List<Vector3>();
-            for(int x = width/2 - noObstacleAreaRadius; x <= width/2 + noObstacleAreaRadius; x++)
+            for(int x = width/2 - noObstacleAreaRadius + 2; x <= width/2 + noObstacleAreaRadius - 2; x++)
             {
-                for(int y = height/2 - noObstacleAreaRadius; y <= height/2 + noObstacleAreaRadius; y++)
+                for(int y = height/2 - noObstacleAreaRadius + 2; y <= height/2 + noObstacleAreaRadius - 2; y++)
                 {
                     if(!(IsObstacle(x,y)))
                     {
@@ -350,7 +350,7 @@ namespace MD.Map.Core
                         continue;
                     }
                     int chance = random.Next(1,1000);
-                    if(chance <= 20)
+                    if(chance <= 30)
                     {
                         // map[x,y] = -1;
                         AddChunkObstacle(x,y);
