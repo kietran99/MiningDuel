@@ -4988,4 +4988,5 @@ MonoBehaviour:
   syncInterval: 0.1
   quirkData: {fileID: 11400000, guid: 123f987951770ae43a440580660bc815, type: 2}
   drillPower: 9999
-  drillDelay: 1.5
+  diggingRadius: 3
+  drillDelay: 3
