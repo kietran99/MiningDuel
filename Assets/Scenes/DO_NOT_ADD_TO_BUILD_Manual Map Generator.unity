@@ -358,6 +358,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1711365860}
   - component: {fileID: 1711365859}
+  - component: {fileID: 1711365861}
   m_Layer: 0
   m_Name: Automata
   m_TagString: Untagged
@@ -382,6 +383,9 @@ MonoBehaviour:
   deathLim: 3
   birthLim: 4
   randomFillPercent: 36
+  emptyRadius: 3
+  noObstacleAreaRadius: 5
+  obstacleFill: 3
   myName: map
   obstacleMap: {fileID: 1778653030}
   obstacleTile: {fileID: 11400000, guid: 5835e723cbe260e40b0a98f97c2d44a5, type: 2}
@@ -408,6 +412,31 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1711365861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1711365858}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bf97082f044d2f499be38ce3516fbb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  width: 0
+  height: 0
+  seed: 
+  useRandomSeed: 0
+  randomFillPercent1: 0
+  randomFillPercent2: 0
+  deathLim: 3
+  birthLim: 3
+  topMap: {fileID: 1819624727}
+  botMap: {fileID: 1796263150}
+  tileNo1: {fileID: 0}
+  tileNo2: {fileID: 0}
+  tileNo3: {fileID: 0}
 --- !u!1 &1750809919
 GameObject:
   m_ObjectHideFlags: 0

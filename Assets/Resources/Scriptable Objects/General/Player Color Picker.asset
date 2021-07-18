@@ -17,3 +17,9 @@ MonoBehaviour:
   - {r: 0.3176471, g: 0.7257666, b: 0.8980392, a: 1}
   - {r: 0.9245283, g: 0.39318013, b: 0.2660199, a: 1}
   - {r: 0.62623566, g: 0.23589355, b: 0.8773585, a: 1}
+  blankCrownSprite: {fileID: 21300000, guid: 44a72913bb5e77c46a4a59ba11a8a845, type: 3}
+  crownSprites:
+  - {fileID: 21300000, guid: 15cb9f11e87093640a74eeb59c3beaa5, type: 3}
+  - {fileID: 21300000, guid: 1c832136ba93f944380218a8757f6ece, type: 3}
+  - {fileID: 21300000, guid: 191623b6d2a017047a756d41abecde0f, type: 3}
+  - {fileID: 21300000, guid: bf5f1eef18421d74181f007e023b7ef6, type: 3}
