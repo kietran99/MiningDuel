@@ -53,9 +53,18 @@ namespace MD.Quirk
             StartCoroutine(StartDrilling(user));
         }
 
+        [Server]
         private void SetDiggableType()
         {
-            typeToDig = DiggableType.COMMON_GEM;
+            if (!ServiceLocator.Resolve<IDiggableGenerator>(out var digGen))
+            {
+                typeToDig = DiggableType.COMMON_GEM;
+            }
+            
+            do
+            {
+                typeToDig = digGen.RandomDiggableType;
+            } while (typeToDig == DiggableType.NORMAL_BOMB || typeToDig == DiggableType.LINKED_TRAP);
         }      
 
         private IEnumerator StartDrilling(NetworkIdentity user)

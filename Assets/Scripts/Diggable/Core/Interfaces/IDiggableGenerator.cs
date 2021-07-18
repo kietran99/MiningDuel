@@ -13,6 +13,7 @@ namespace MD.Diggable.Core
         Action<Diggable.DiggableSpawnData> DiggableSpawnEvent { get; set; }
 
         SonarTileData[] InitSonarTileData { get; }
+        DiggableType RandomDiggableType { get; }
         void DigAt(Mirror.NetworkIdentity digger, int x, int y, int power);
         void BotDigAt(MD.AI.PlayerBot digger, int x, int y, int power);
         DiggableType[] GetDiggableArea(Vector2Int[] positions);

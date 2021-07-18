@@ -69,6 +69,8 @@ namespace MD.Diggable.Core
                 );
         }
         
+        public DiggableType RandomDiggableType => diggableLootTable.Random;
+
         private void FillInitSonarTileData(Vector2Int[] tilePositions)
         {
             initSonarTileData = new SonarTileData[tilePositions.Length];
