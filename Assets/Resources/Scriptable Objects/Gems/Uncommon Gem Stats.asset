@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gemSprite: {fileID: 21300000, guid: 6f5bea299d36924408b405dad700ee18, type: 3}
   sonarSprite: {fileID: 21300000, guid: 8c5d2090980cca44db53f7e13aec8944, type: 3}
-  value: 4
+  value: 12
