@@ -2,7 +2,7 @@
 using UnityEngine;
 using MD.Diggable.Core;
 using System.Collections;
-
+using MD.Diggable.Gem;
 namespace MD.Quirk
 {
     public class DrillMachine : BaseQuirk, MD.Diggable.Projectile.IExplodable 
@@ -14,13 +14,12 @@ namespace MD.Quirk
         private int diggingRadius = 3;
         
         [SerializeField]
-        private float drillDelay = 2f;
+        private float drillDelay = 3f;
 
         private readonly float GRID_OFFSET = .5f;
         private bool shouldDestroy = false;
 
         private DiggableType typeToDig;
-
         private Vector2Int[] digArea;
         private IDiggableGenerator diggableGenerator; 
 
@@ -69,11 +68,12 @@ namespace MD.Quirk
 
         private IEnumerator StartDrilling(NetworkIdentity user)
         {
+            WaitForSeconds delay = new WaitForSeconds(drillDelay);
             while(!shouldDestroy)
             {                            
                 CmdRequestDrill(user);
                 
-                yield return new WaitForSeconds(drillDelay);
+                yield return delay;
             }
         }
 
@@ -108,7 +108,7 @@ namespace MD.Quirk
 
             if (!GetDiggablePosition(out Vector2Int currentTarget))
             {
-                Debug.Log("no " + typeToDig + " in area");
+                CmdSendGemObtainData(user);
                 return;
             }
             diggableGenerator.DigAt(
@@ -117,6 +117,12 @@ namespace MD.Quirk
                             currentTarget.y, 
                             drillPower)                
             ;
+        }
+
+        [Command]
+        private void CmdSendGemObtainData(NetworkIdentity user)
+        {
+            EventSystems.EventManager.Instance.TriggerEvent(new GemObtainData(user.netId, 2, typeToDig));
         }
 
         public void HandleExplosion(Transform throwerTransform, uint throwerID, float gemDropPercentage)   => HandleDestroy();

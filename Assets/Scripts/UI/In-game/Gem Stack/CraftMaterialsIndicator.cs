@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CraftMaterialsIndicator : MonoBehaviour
 {
-    [SerializeField]
     MD.CraftingSystem.GemStackManager gemStack = null;
     [SerializeField]
     private float slotWidth = 56f;
