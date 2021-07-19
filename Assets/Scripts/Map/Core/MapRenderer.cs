@@ -83,6 +83,10 @@ namespace MD.Map.Core
                 {
                     for(int y = 0;y < height; y++)
                     {
+                        if( x > width /2 - 5 && x < width /2 + 5 && y > height /2 - 5 && y < height /2 + 5)
+                        {
+                            continue;
+                        }
                         if(obstacleData[x*width + y] == -1)
                         {
                             obstacleMap.SetTile(new Vector3Int(x, y, 0), obstacleTile);

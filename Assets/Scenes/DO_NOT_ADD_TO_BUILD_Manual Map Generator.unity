@@ -388,7 +388,7 @@ MonoBehaviour:
   obstacleFill: 3
   myName: map
   obstacleMap: {fileID: 1778653030}
-  obstacleTile: {fileID: 11400000, guid: 5835e723cbe260e40b0a98f97c2d44a5, type: 2}
+  obstacleTile: {fileID: 11400000, guid: d675689a730e72a47a694bb15237235b, type: 2}
   allLayer:
   - {fileID: 1796263150}
   - {fileID: 1819624727}

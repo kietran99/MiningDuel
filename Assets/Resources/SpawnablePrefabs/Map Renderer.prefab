@@ -66,4 +66,4 @@ MonoBehaviour:
   tileNo1: {fileID: 11400000, guid: dd60eac33a7ea714ab56b208f6e650c2, type: 2}
   tileNo2: {fileID: 11400000, guid: a3433020993e44b458901000993fe8b5, type: 2}
   tileNo3: {fileID: 0}
-  obstacleTile: {fileID: 11400000, guid: 5835e723cbe260e40b0a98f97c2d44a5, type: 2}
+  obstacleTile: {fileID: 11400000, guid: d675689a730e72a47a694bb15237235b, type: 2}
