@@ -14,7 +14,6 @@ namespace MD.Map.Core
         [SerializeField] RuleTile tileNo2 = null;
         [SerializeField] RuleTile tileNo3 = null;
         [SerializeField] RuleTile obstacleTile = null;
-
         public override void OnStartAuthority()
         {
             // Instantiate(grid);
@@ -93,6 +92,19 @@ namespace MD.Map.Core
                         }  
                     }
                 }
+            }
+
+
+            // SetUpWalls around map
+            for(int x = -1 ; x <= width; x++)
+            {
+                obstacleMap.SetTile(new Vector3Int(x,-1,0),obstacleTile);
+                obstacleMap.SetTile(new Vector3Int(x,height,0),obstacleTile);
+            }
+            for(int y = 0 ; y < height; y++)
+            {
+                obstacleMap.SetTile(new Vector3Int(-1,y,0),obstacleTile);
+                obstacleMap.SetTile(new Vector3Int(width,y,0),obstacleTile);
             }
             
             botMap.CompressBounds();
