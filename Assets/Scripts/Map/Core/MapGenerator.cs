@@ -70,6 +70,10 @@ namespace MD.Map.Core
         [SerializeField] 
         string[] allMapsName = null;
 
+        [Range(0f, 100f)]
+        [SerializeField]
+        private float obstacleFillRate = 30f;
+
         [SerializeField] 
         int noObstacleAreaRadius = 4;
 
@@ -347,6 +351,8 @@ namespace MD.Map.Core
         void AddObstacle()
         {
             Random random = new Random();
+            var fillMult = 10f / GetAvgObsChunkSize(chunks);
+
             for(int x = 0; x < width; x++)
                 for(int y = 0; y < height; y++)
                 {
@@ -355,12 +361,25 @@ namespace MD.Map.Core
                         continue;
                     }
                     int chance = random.Next(1,1000);
-                    if(chance <= 30)
+                    if (chance <= obstacleFillRate * fillMult)
                     {
                         // map[x,y] = -1;
                         AddChunkObstacle(x,y);
                     }
                 }
+        }
+
+        private float GetAvgObsChunkSize(ChunkObstacle[] chunks)
+        {
+            var (cnt, sum) = (0, 0);
+
+            foreach (var chunk in chunks)
+            {
+                sum += chunk.Size;
+                cnt++;
+            }
+
+            return ((float) sum) / ((float)cnt); 
         }
 
         void AddChunkObstacle(int x, int y)
