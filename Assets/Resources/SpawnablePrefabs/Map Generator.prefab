@@ -65,7 +65,7 @@ MonoBehaviour:
   useGeneratedMaps: 0
   allMapsName:
   - map9
-  obstacleFillRate: 20
+  obstacleFillRate: 15
   noObstacleAreaRadius: 5
   _cornerSpawnOffset: {x: 3, y: 3}
   width: 30

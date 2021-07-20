@@ -92,7 +92,7 @@ public class GemStackUI : MonoBehaviour
         for (int i=-1; i<= MAX_NO_SLOTS; ++i)
         {
             float xPos = parentRect.position.x + gemUIObjectWidth/2f + i*gemUIObjectWidth;
-            Debug.Log(i + " " + xPos);
+            // Debug.Log(i + " " + xPos);
             SlotPositionsDict.Add(i,new Vector3(xPos,yPos,0f));
         }
     }
