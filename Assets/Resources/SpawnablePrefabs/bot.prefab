@@ -5088,7 +5088,7 @@ MonoBehaviour:
   criticalRate: 0.125
   counterablePercentage: 0.5
   arcMeasure: 225
-  speed: 504
+  swingAnimDuration: 0.39
   userCollider: {fileID: 6773149020054984751}
   pivotTransform: {fileID: 5264880470744521975}
 --- !u!1 &4844660683178531978
@@ -5465,7 +5465,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   power: 10
-  cooldown: 1.6
+  cooldown: 0.8
   hitScore: 20
   criticalMultiplier: 2
   immobilizeTime: 0.5
