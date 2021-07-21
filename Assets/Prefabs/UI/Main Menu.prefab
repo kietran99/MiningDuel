@@ -772,6 +772,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _materialContainer: {fileID: 5772671389610974677}
+  _transitionSpeed: 7000
+  _screen: {fileID: 3597918494241213024}
 --- !u!114 &4566598173012962683
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -53,7 +53,7 @@ namespace MD.UI.MainMenu
         //     UnityEngine.SceneManagement.SceneManager.LoadScene(tutorialScene);
         // }
 
-        public void OpenTutorial()
+        public void OpenTutorial() // Inspector
         {
             tutorial.SetActive(true);
         }
