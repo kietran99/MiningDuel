@@ -5465,7 +5465,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   power: 10
-  cooldown: 0.8
+  cooldown: 0.7
   hitScore: 20
   criticalMultiplier: 2
   immobilizeTime: 0.5
