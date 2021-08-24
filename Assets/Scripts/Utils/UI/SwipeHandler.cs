@@ -30,7 +30,7 @@ namespace Utils.UI
         private bool logActive = false;
 
         [SerializeField]
-        private float detectDistance = 2f;
+        private float detectDistance = 400f;
 
         [SerializeField]
         private UnityEvent onSwipeLeft = null;

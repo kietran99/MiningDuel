@@ -23,7 +23,14 @@ namespace MD.VisualEffects
         {
             _camera = Camera.main;
             _poolCache = new ObjectPoolCache<TextPopup>(_popupPool);
-            EventSystems.EventConsumer.Attach(gameObject).StartListening<Character.DamageGivenData>(OnDamageGiven);
+            var eventConsumer = EventSystems.EventConsumer.Attach(gameObject);
+            eventConsumer.StartListening<Character.DamageGivenData>(OnDamageGiven);
+            eventConsumer.StartListening<EndGameData>(OnEndGame);
+        }
+
+        private void OnEndGame()
+        {
+            _poolCache.Reset();
         }
 
         private void OnDamageGiven(Character.DamageGivenData data)

@@ -22,7 +22,10 @@ namespace MD.Diggable.Core
         private Image ProcessBarImage = null;
 
         [SerializeField]
-        private SpriteRenderer flag = null;
+        private SpriteRenderer crown = null;
+
+        [SerializeField]
+        private PlayerColorPicker playerColorPicker = null;
 
         private float checkTime;
         private NetworkIdentity ownerID;
@@ -40,11 +43,12 @@ namespace MD.Diggable.Core
         {
             this.ownerID = ownerID;
             this.flagColor = flagColor;
+
         }
 
         public override void OnStartClient()
         {
-            flag.color = flagColor;
+            crown.sprite = playerColorPicker.GetCrownSprite(flagColor);
         }
 
         [ServerCallback]

@@ -8,6 +8,12 @@ namespace MD.Character
         [SerializeField]
         private Color[] availableColors = null;
 
+        [SerializeField]
+        private Sprite blankCrownSprite = null;
+
+        [SerializeField]
+        private Sprite[] crownSprites = null;
+
         private int curIdx;
 
         private void OnEnable()
@@ -27,5 +33,11 @@ namespace MD.Character
         }
 
         public Color GetColor(int idx) => availableColors[idx];
+
+        public Sprite GetCrownSprite(Color playerColor)
+        {
+            var res = availableColors.LookUp(color => color == playerColor);
+            return res.idx == Constants.INVALID ? blankCrownSprite : crownSprites[res.idx];
+        }
     }
 }

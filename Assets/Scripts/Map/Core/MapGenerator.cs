@@ -47,11 +47,16 @@ namespace MD.Map.Core
                 int yPos = rootY + obstaPositions[i,1];
                 if(xPos >= map.GetLength(0) || yPos >= map.GetLength(1)) return false;
                 // if ( xPos == 0 || xPos == map.GetLength(0) - 1 || yPos == 0 || yPos == map.GetLength(1) - 1) return false;
-                // if(InCornerArea(xPos,yPos))
+                // if(InCornerArea(xPos,yPos,map)) return false;
                 if(map[xPos,yPos] == -1)
                     return false;
             }
             return true;
+        }
+        private bool InCornerArea(int x, int y, int[,] map)
+        {
+
+            return false;
         }
         public int[,] Positions => obstaPositions;
         public int Size => size;
@@ -65,6 +70,10 @@ namespace MD.Map.Core
         [SerializeField] 
         string[] allMapsName = null;
 
+        [Range(0f, 100f)]
+        [SerializeField]
+        private float obstacleFillRate = 30f;
+
         [SerializeField] 
         int noObstacleAreaRadius = 4;
 
@@ -76,6 +85,22 @@ namespace MD.Map.Core
         public int MapWidth => width;
         public int MapHeight => height;
         public bool UseGeneratedMaps => useGeneratedMaps;
+        public int[] ObstacleData 
+        {
+            get
+            {
+                int[] simpleData = new int[width * height];
+                for(int x = 0; x < width; x++)
+                {
+                    for(int y = 0; y < height; y++)
+                    {
+                        simpleData[x*width + y] = obstacleData[x,y];
+                    }
+                }
+
+                return simpleData;
+            }
+        }
 
         public string mapUsed => mapName;
         
@@ -104,16 +129,17 @@ namespace MD.Map.Core
         [Range(0,100)] public int randomFillPercent2 = 0;
         [Range(1,8)] [SerializeField] int deathLim = 1;
         [Range(1,8)] [SerializeField] int birthLim = 1;
-        [Range(1,5)] [SerializeField] int emptyRadius = 3;
+        // [Range(1,5)] [SerializeField] int emptyRadius = 3;
 
         int[,] map = null; 
         int totalFill;
+        int[,] obstacleData = null;
 
         // ChunkObstacle chunksT = new ChunkObstacle(new int[,]{{0,0},{1,0},{2,0},{1,1}});
         ChunkObstacle[] chunks = new ChunkObstacle[] {  new ChunkObstacle(new int[,] {{0,0},{1,0},{2,0},{1,1}}),
                                                         new ChunkObstacle(new int[,] {{0,0},{1,0},{2,0},{2,1}}),
                                                         new ChunkObstacle(new int[,] {{0,0},{1,0},{2,0},{0,1}}),
-                                                        new ChunkObstacle(new int[,] {{0,0},{2,0},{1,1},{0,2},{2,2}}),
+                                                        // new ChunkObstacle(new int[,] {{0,0},{2,0},{1,1},{0,2},{2,2}}),
                                                         new ChunkObstacle(new int[,] {{1,0},{0,1},{1,1},{2,1},{1,2}})};
 
         List<Vector3> avail_storage_pos = null;
@@ -131,16 +157,19 @@ namespace MD.Map.Core
                 width = mapData.width;
                 height = mapData.height;
                 map = new int[width,height];
+                obstacleData = new int[width,height];
                 for(int x = 0; x < width; x++)
                 {
                     for(int y =0; y < height; y++)
                     {
                         map[x,y] = mapData.GetElement(x,y);
+                        obstacleData[x,y] = map[x,y]; 
                     }
                 }
+                // obstacleData = map.Clone();
+                avail_storage_pos = SpawnStoragePos();  
                 return;
             }
-            
             totalFill = randomFillPercent1 + randomFillPercent2;
             totalFill = (totalFill > 100)? 100: totalFill;
             GenerateMap();
@@ -184,9 +213,9 @@ namespace MD.Map.Core
         public List<Vector3> SpawnStoragePos()
         {
             List<Vector3> lst = new List<Vector3>();
-            for(int x = width/2 - noObstacleAreaRadius; x <= width/2 + noObstacleAreaRadius; x++)
+            for(int x = width/2 - noObstacleAreaRadius + 2; x <= width/2 + noObstacleAreaRadius - 2; x++)
             {
-                for(int y = height/2 - noObstacleAreaRadius; y <= height/2 + noObstacleAreaRadius; y++)
+                for(int y = height/2 - noObstacleAreaRadius + 2; y <= height/2 + noObstacleAreaRadius - 2; y++)
                 {
                     if(!(IsObstacle(x,y)))
                     {
@@ -202,7 +231,7 @@ namespace MD.Map.Core
         {
             int rnd = UnityEngine.Random.Range(0,avail_storage_pos.Count);
             Vector3 res = avail_storage_pos[rnd];
-            map[((int)res.x),((int)res.y)] = -1;
+            obstacleData[((int)res.x),((int)res.y)] = -1;
             avail_storage_pos.RemoveAt(rnd);
             return res;
 
@@ -214,7 +243,7 @@ namespace MD.Map.Core
             {
                 return;
             }
-            map[x,y] = -1;
+            obstacleData[x,y] = -1;
         }
 
         public bool IsObstacle(int x, int y)
@@ -242,7 +271,7 @@ namespace MD.Map.Core
                 return true;
             }
 
-            if(map[x,y] < 0)
+            if(obstacleData[x,y] < 0)
             {
                 return true;
             }
@@ -322,6 +351,8 @@ namespace MD.Map.Core
         void AddObstacle()
         {
             Random random = new Random();
+            var fillMult = 10f / GetAvgObsChunkSize(chunks);
+
             for(int x = 0; x < width; x++)
                 for(int y = 0; y < height; y++)
                 {
@@ -330,7 +361,7 @@ namespace MD.Map.Core
                         continue;
                     }
                     int chance = random.Next(1,1000);
-                    if(chance <= 20)
+                    if (chance <= obstacleFillRate * fillMult)
                     {
                         // map[x,y] = -1;
                         AddChunkObstacle(x,y);
@@ -338,19 +369,32 @@ namespace MD.Map.Core
                 }
         }
 
+        private float GetAvgObsChunkSize(ChunkObstacle[] chunks)
+        {
+            var (cnt, sum) = (0, 0);
+
+            foreach (var chunk in chunks)
+            {
+                sum += chunk.Size;
+                cnt++;
+            }
+
+            return ((float) sum) / ((float)cnt); 
+        }
+
         void AddChunkObstacle(int x, int y)
         {
-            ChunkObstacle theChosenOne = chunks[UnityEngine.Random.Range(0,chunks.Length)];
             if(InCornerArea(x,y))
             {
                 return;
             }
-            if(theChosenOne.Available(x,y,map))
+            ChunkObstacle theChosenOne = chunks[UnityEngine.Random.Range(0,chunks.Length)];
+            if(theChosenOne.Available(x,y,obstacleData))
             {
                 int size = theChosenOne.Size;
                 for(int i = 0; i < size; i++)
                 {
-                    map[x + theChosenOne.Positions[i,0], y + theChosenOne.Positions[i,1]] = -1;
+                    obstacleData[x + theChosenOne.Positions[i,0], y + theChosenOne.Positions[i,1]] = -1;
                 }
             }
         }
@@ -367,6 +411,7 @@ namespace MD.Map.Core
                 totalFill = (totalFill > 100)? 100: totalFill;
                 Array.Clear(map,0,map.Length);
             }
+            obstacleData = new int[width,height];
             RandomFillMap();
         }
         void RandomFillMap()
@@ -485,7 +530,7 @@ namespace MD.Map.Core
 
         bool InCornerArea(int x, int y)
         {
-            if(((x>=0 && x < emptyRadius)||(x>= width - emptyRadius && x < width))&&((y>=0 && y < emptyRadius)||(y>= height - emptyRadius && y < height)))
+            if(((x>=0 && x <= _cornerSpawnOffset.x)||(x>= width - _cornerSpawnOffset.x - 3 && x < width))&&((y>=0 && y <= _cornerSpawnOffset.y)||(y>= height - _cornerSpawnOffset.y - 3 && y < height)))
             {
                 return true;
             }

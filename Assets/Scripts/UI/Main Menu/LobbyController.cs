@@ -12,9 +12,12 @@ namespace MD.UI.MainMenu
         [SerializeField]
         private RoomController joinRoomWindow = null;
 
-        [Scene]
+        // [Scene]
+        // [SerializeField]
+        // private string tutorialScene = null;
+
         [SerializeField]
-        private string tutorialScene = null;
+        private GameObject tutorial = null;
 
         private NetworkManagerLobby netManager;
         private NetworkManagerLobby NetManager
@@ -45,9 +48,14 @@ namespace MD.UI.MainMenu
             window.ShowWindow();            
         }
 
-        public void EnterTutorial()
+        // public void EnterTutorial()
+        // {
+        //     UnityEngine.SceneManagement.SceneManager.LoadScene(tutorialScene);
+        // }
+
+        public void OpenTutorial() // Inspector
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene(tutorialScene);
+            tutorial.SetActive(true);
         }
     }
 }

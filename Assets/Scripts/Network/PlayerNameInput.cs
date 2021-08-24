@@ -41,10 +41,7 @@ public class PlayerNameInput : MonoBehaviour
             SetActiveNameInput(false);
         } 
     }
-    // private void SetUpInputField(string currentName) 
-    // {
-    //     nameInputField.text = currentName;
-    // }
+
     public void OnChangeInput()
     {
         continueButton.interactable = !string.IsNullOrEmpty(nameInputField.text);

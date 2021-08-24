@@ -48,6 +48,7 @@ namespace MD.Map.Core{
             }
             return false;
         }
+        public int[] ObstacleData => obstacleData;
 
         [SerializeField] int width = 0;
         [SerializeField] int height =  0;
@@ -64,6 +65,7 @@ namespace MD.Map.Core{
         [SerializeField] RuleTile tileNo2 = null;
         [SerializeField] RuleTile tileNo3 = null;
         int[,] map = null;
+        int[] obstacleData = null;
         int count = 0;
         int totalFill;
         // int timesRegen=0;

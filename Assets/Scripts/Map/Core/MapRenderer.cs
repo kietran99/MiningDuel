@@ -14,7 +14,6 @@ namespace MD.Map.Core
         [SerializeField] RuleTile tileNo2 = null;
         [SerializeField] RuleTile tileNo3 = null;
         [SerializeField] RuleTile obstacleTile = null;
-
         public override void OnStartAuthority()
         {
             // Instantiate(grid);
@@ -29,12 +28,12 @@ namespace MD.Map.Core
                 .Resolve<IMapGenerator>()
                 .Match(
                     errMessage => Debug.Log(errMessage.Message), 
-                    mapGenerator => TargetRender(mapGenerator.MapData, mapGenerator.MapWidth, mapGenerator.MapHeight, mapGenerator.UseGeneratedMaps, mapGenerator.mapUsed)
+                    mapGenerator => TargetRender(mapGenerator.MapData,mapGenerator.ObstacleData, mapGenerator.MapWidth, mapGenerator.MapHeight, mapGenerator.UseGeneratedMaps, mapGenerator.mapUsed)
                 );
         }
         
         [TargetRpc]
-        private void TargetRender(int[] map, int width, int height, bool useGeneratedMaps, string mapName)
+        private void TargetRender(int[] map,int[] obstacleData, int width, int height, bool useGeneratedMaps, string mapName)
         {
             if(useGeneratedMaps)
             {
@@ -76,6 +75,36 @@ namespace MD.Map.Core
                         }                  
                     }
                 }
+            }
+            if(obstacleData != null)
+            {
+                for(int x = 0;x < width ; x++)
+                {
+                    for(int y = 0;y < height; y++)
+                    {
+                        if( x > width /2 - 5 && x < width /2 + 5 && y > height /2 - 5 && y < height /2 + 5)
+                        {
+                            continue;
+                        }
+                        if(obstacleData[x*width + y] == -1)
+                        {
+                            obstacleMap.SetTile(new Vector3Int(x, y, 0), obstacleTile);
+                        }  
+                    }
+                }
+            }
+
+
+            // SetUpWalls around map
+            for(int x = -1 ; x <= width; x++)
+            {
+                obstacleMap.SetTile(new Vector3Int(x,-1,0),obstacleTile);
+                obstacleMap.SetTile(new Vector3Int(x,height,0),obstacleTile);
+            }
+            for(int y = 0 ; y < height; y++)
+            {
+                obstacleMap.SetTile(new Vector3Int(-1,y,0),obstacleTile);
+                obstacleMap.SetTile(new Vector3Int(width,y,0),obstacleTile);
             }
             
             botMap.CompressBounds();
